@@ -4,3 +4,4 @@ libs/
 log/
 .classpath
 .settings/
+.project
