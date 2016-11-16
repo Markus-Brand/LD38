@@ -1,7 +1,10 @@
 package main;
 
+import game.Game;
+
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
+import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.*;
@@ -10,6 +13,8 @@ public class Main {
 
 	private long window; //The created window Object
 	private static GLFWVidMode vidmode; //primary monitors video mode
+
+	private Game game;
 
 	/**
 	 * Constructor of the Main class
@@ -26,12 +31,15 @@ public class Main {
 	 */
 	private void init() {
 		createWindow("Test window", true, vidmode.width(), vidmode.height());
+		GL.createCapabilities();
+		game = new Game();
 	}
 
 	/**
 	 * game loop
 	 */
 	private void loop() {
+		double lastTime = glfwGetTime();
 		while (!glfwWindowShouldClose(window)) {
 
 			glfwSwapBuffers(window); // swap the color buffers
@@ -42,6 +50,14 @@ public class Main {
 			if (KeyBoard.isKeyDown(GLFW_KEY_ESCAPE)) {
 				glfwSetWindowShouldClose(window, true); // We will detect this in our rendering loop
 			}
+
+			double thisTime = glfwGetTime();
+			double deltaTime = thisTime - lastTime;
+			lastTime = thisTime;
+
+			//Debug.log((int) (1 / deltaTime) + "fps");
+			game.update(deltaTime);
+
 		}
 	}
 
@@ -121,6 +137,7 @@ public class Main {
 		vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
 		setDefaultWindowHints();
+
 	}
 
 	/**
@@ -145,7 +162,7 @@ public class Main {
 	 */
 	private static void evaluateCommandLineArguments(String[] args) {
 		if (args.length < 2) {
-			Debug.initDebug(DebugMode.LOGFILE);
+			Debug.initDebug(DebugMode.CONSOLE);
 		} else if (args[1].equals("console")) {
 			Debug.initDebug(DebugMode.CONSOLE);
 		} else if (args[1].equals("logfile")) {

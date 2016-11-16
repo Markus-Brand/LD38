@@ -1,0 +1,145 @@
+package rendering;
+
+import static org.lwjgl.opengl.GL11.GL_LINEAR;
+import static org.lwjgl.opengl.GL11.GL_LINEAR_MIPMAP_LINEAR;
+import static org.lwjgl.opengl.GL11.GL_NEAREST;
+import static org.lwjgl.opengl.GL11.GL_REPEAT;
+import static org.lwjgl.opengl.GL11.GL_RGBA;
+import static org.lwjgl.opengl.GL11.GL_RGBA8;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glGenTextures;
+import static org.lwjgl.opengl.GL11.glTexImage2D;
+import static org.lwjgl.opengl.GL11.glTexParameteri;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE_CUBE_MAP;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL30.glGenerateMipmap;
+
+import java.awt.image.BufferedImage;
+import java.nio.ByteBuffer;
+
+import javax.imageio.ImageIO;
+
+public class CubeMap {
+
+	//Wrap methods
+	private static int wrapS;
+	private static int wrapT;
+
+	static {
+		wrapS = GL_REPEAT;
+		wrapT = GL_REPEAT;
+	}
+
+	public static int loadCubeMap(String name) {
+		return loadCubeMap(name, false);
+	}
+
+	public static int loadCubeMap(String name, boolean interpolate) {
+		try {
+			BufferedImage[] img = new BufferedImage[6];
+			img[0] = ImageIO.read(CubeMap.class.getResource("/tex/" + name + "_r.jpg").toURI().toURL());
+			img[1] = ImageIO.read(CubeMap.class.getResource("/tex/" + name + "_l.jpg").toURI().toURL());
+			img[2] = ImageIO.read(CubeMap.class.getResource("/tex/" + name + "_top.jpg").toURI().toURL());
+			img[3] = ImageIO.read(CubeMap.class.getResource("/tex/" + name + "_bot.jpg").toURI().toURL());
+			img[4] = ImageIO.read(CubeMap.class.getResource("/tex/" + name + "_b.jpg").toURI().toURL());
+			img[5] = ImageIO.read(CubeMap.class.getResource("/tex/" + name + "_f.jpg").toURI().toURL());
+			return loadCubeMap(img, interpolate);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return 0;
+		}
+	}
+
+	/**
+	 * Generate OpenGL CubeMap from BufferedImage Array with given interpolation method
+	 *
+	 * @param image
+	 *            input BufferedImage Array
+	 * @param interpolate
+	 *            interpolation method
+	 * @return openGl texture
+	 */
+	public static int loadCubeMap(BufferedImage[] images, boolean interpolate) {
+
+		int texture = glGenTextures();
+		glActiveTexture(GL_TEXTURE_CUBE_MAP + texture);
+
+		for (int i = 0; i < images.length; i++) {
+			ByteBuffer buffer = Texture.generateBuffer(images[i]);
+			glBindTexture(GL_TEXTURE_2D, texture);
+
+			setTexParameter(interpolate);
+
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, images[i].getWidth(), images[i].getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+
+			if (interpolate) {
+				glGenerateMipmap(GL_TEXTURE_2D);
+			}
+		}
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		return texture;
+	}
+
+	/**
+	 * set Texture Parameter
+	 *
+	 * @param interpolate
+	 */
+	private static void setTexParameter(boolean interpolate) {
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapS);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapT);
+		if (interpolate) {
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		} else {
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		}
+	}
+
+	/**
+	 * get WrapS Method
+	 *
+	 * @return wrapS
+	 */
+	public static int getWrapS() {
+		return wrapS;
+	}
+
+	/**
+	 * set WrapS method
+	 *
+	 * @param wrapS
+	 *            new method
+	 */
+	public static void setWrapS(int wrapS) {
+		CubeMap.wrapS = wrapS;
+	}
+
+	/**
+	 * get WrapT Method
+	 *
+	 * @return wrapT
+	 */
+	public static int getWrapT() {
+		return wrapT;
+	}
+
+	/**
+	 * set WrapT method
+	 *
+	 * @param wrapT
+	 *            new method
+	 */
+	public static void setWrapT(int wrapT) {
+		CubeMap.wrapT = wrapT;
+	}
+}

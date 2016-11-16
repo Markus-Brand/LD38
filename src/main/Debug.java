@@ -20,7 +20,7 @@ public class Debug {
 	 *
 	 * @param mode
 	 */
-	static void initDebug(DebugMode mode) {
+	protected static void initDebug(DebugMode mode) {
 		debugMode = mode;
 		if (debugMode == DebugMode.LOGFILE) {
 
@@ -50,7 +50,7 @@ public class Debug {
 	/**
 	 * closes log file when closing window.
 	 */
-	static void closeLogFile() {
+	protected static void closeLogFile() {
 		if (debugMode == DebugMode.LOGFILE) {
 			writer.close();
 		}
@@ -59,10 +59,11 @@ public class Debug {
 	/**
 	 * log message
 	 *
-	 * @param message
-	 *            the message being logged
+	 * @param obj
+	 *            the object (mostly Strings) being logged
 	 */
-	static void log(String message) {
+	public static void log(Object obj) {
+		String message = obj.toString();
 		if (debugMode == DebugMode.NONE) {
 			return;
 		}
@@ -83,9 +84,10 @@ public class Debug {
 	 * error message
 	 *
 	 * @param message
-	 *            the message being logged in error mode
+	 *            the object (mostly Strings) being logged
 	 */
-	static void error(String message) {
+	public static void error(Object obj) {
+		String message = obj.toString();
 		if (debugMode == DebugMode.NONE) {
 			return;
 		}
@@ -107,8 +109,10 @@ public class Debug {
 	 *
 	 * @param condition
 	 * @param message
+	 *            the object (mostly Strings) being logged
 	 */
-	static void assertIfTrue(boolean condition, String message) {
+	public static void assertIfTrue(boolean condition, Object obj) {
+		String message = obj.toString();
 		if (debugMode == DebugMode.NONE || !condition) {
 			return;
 		}
@@ -130,8 +134,10 @@ public class Debug {
 	 *
 	 * @param condition
 	 * @param message
+	 *            the object (mostly Strings) being logged
 	 */
-	static void assertIfFalse(boolean condition, String message) {
+	public static void assertIfFalse(boolean condition, Object obj) {
+		String message = obj.toString();
 		if (debugMode == DebugMode.NONE || condition) {
 			return;
 		}
@@ -154,8 +160,10 @@ public class Debug {
 	 * @param o1
 	 * @param o2
 	 * @param message
+	 *            the object (mostly Strings) being logged
 	 */
-	static void assertIfEquals(Object o1, Object o2, String message) {
+	public static void assertIfEquals(Object o1, Object o2, Object obj) {
+		String message = obj.toString();
 		if (debugMode == DebugMode.NONE || !o1.equals(o2)) {
 			return;
 		}
@@ -178,8 +186,10 @@ public class Debug {
 	 * @param o1
 	 * @param o2
 	 * @param message
+	 *            the object (mostly Strings) being logged
 	 */
-	static void assertIfNotEquals(Object o1, Object o2, String message) {
+	public static void assertIfNotEquals(Object o1, Object o2, Object obj) {
+		String message = obj.toString();
 		if (debugMode == DebugMode.NONE || o1.equals(o2)) {
 			return;
 		}
