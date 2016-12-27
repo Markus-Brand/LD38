@@ -1,19 +1,26 @@
 package main;
 
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.system.MemoryUtil.NULL;
 import game.Game;
 
-import org.lwjgl.*;
-import org.lwjgl.glfw.*;
+import org.lwjgl.Version;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
-
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.system.MemoryUtil.*;
 
 public class Main {
 
-	private long window; //The created window Object
-	private static GLFWVidMode vidmode; //primary monitors video mode
+	/** Class Name Tag */
+	private static final String TAG = "Main";
 
+	/** The created window Object */
+	private long window;
+
+	/** Primary monitors video mode */
+	private static GLFWVidMode vidmode;
+
+	/** Game Object */
 	private Game game;
 
 	/**
@@ -30,8 +37,9 @@ public class Main {
 	 * init main project
 	 */
 	private void init() {
-		createWindow("Test window", true, vidmode.width(), vidmode.height());
+		createWindow("Test window", false, vidmode.width(), vidmode.height());
 		GL.createCapabilities();
+		GLErrors.checkForError(TAG, "createCapabilities");
 		game = new Game();
 	}
 
@@ -68,7 +76,7 @@ public class Main {
 		glfwDestroyWindow(window);
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();
-		Debug.closeLogFile();
+		Log.closeLogFile();
 	}
 
 	/**
@@ -122,7 +130,7 @@ public class Main {
 	 * inits OpenGL
 	 */
 	private static void initOpenGL() {
-		Debug.log("LWJGL Version " + Version.getVersion() + " is working.");
+		Log.log("LWJGL Version " + Version.getVersion() + " is working.");
 
 		// Setup an error callback. The default implementation
 		// will print the error message in System.err.
@@ -162,13 +170,13 @@ public class Main {
 	 */
 	private static void evaluateCommandLineArguments(String[] args) {
 		if (args.length < 2) {
-			Debug.initDebug(DebugMode.CONSOLE);
+			Log.initDebug(LogMode.CONSOLE);
 		} else if (args[1].equals("console")) {
-			Debug.initDebug(DebugMode.CONSOLE);
+			Log.initDebug(LogMode.CONSOLE);
 		} else if (args[1].equals("logfile")) {
-			Debug.initDebug(DebugMode.LOGFILE);
+			Log.initDebug(LogMode.LOGFILE);
 		} else {
-			Debug.initDebug(DebugMode.NONE);
+			Log.initDebug(LogMode.NONE);
 		}
 	}
 

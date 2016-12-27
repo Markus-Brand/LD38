@@ -1,5 +1,5 @@
 package main;
 
-public enum DebugMode {
+public enum LogMode {
 	CONSOLE, LOGFILE, NONE
 }

@@ -1,24 +1,8 @@
 package rendering;
 
-import static org.lwjgl.opengl.GL11.GL_LINEAR;
-import static org.lwjgl.opengl.GL11.GL_LINEAR_MIPMAP_LINEAR;
-import static org.lwjgl.opengl.GL11.GL_NEAREST;
-import static org.lwjgl.opengl.GL11.GL_REPEAT;
-import static org.lwjgl.opengl.GL11.GL_RGBA;
-import static org.lwjgl.opengl.GL11.GL_RGBA8;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glGenTextures;
-import static org.lwjgl.opengl.GL11.glTexImage2D;
-import static org.lwjgl.opengl.GL11.glTexParameteri;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13.glActiveTexture;
-import static org.lwjgl.opengl.GL30.glGenerateMipmap;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.*;
+import static org.lwjgl.opengl.GL30.*;
 
 import java.awt.image.BufferedImage;
 import java.net.URL;
@@ -26,11 +10,16 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
+import main.GLErrors;
+
 import org.lwjgl.BufferUtils;
 
 public class Texture {
 
-	//Wrap methods
+	/** Class Name Tag */
+	private static final String TAG = "Texture";
+
+	/** Wrap methods */
 	private static int wrapS;
 	private static int wrapT;
 
@@ -93,19 +82,27 @@ public class Texture {
 		ByteBuffer buffer = generateBuffer(image);
 
 		int texture = glGenTextures();
+		GLErrors.checkForError(TAG, "glGenTextures");
+
 		glActiveTexture(GL_TEXTURE0 + texture);
+		GLErrors.checkForError(TAG, "glActiveTexture");
 
 		glBindTexture(GL_TEXTURE_2D, texture);
+		GLErrors.checkForError(TAG, "glBindTexture");
 
 		setTexParameter(interpolate);
+		GLErrors.checkForError(TAG, "setTexParameter");
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+		GLErrors.checkForError(TAG, "glTexImage2D");
 
 		if (interpolate) {
 			glGenerateMipmap(GL_TEXTURE_2D);
+			GLErrors.checkForError(TAG, "glGenerateMipmap");
 		}
 
 		glBindTexture(GL_TEXTURE_2D, 0);
+		GLErrors.checkForError(TAG, "glBindTexture");
 		return texture;
 	}
 
@@ -124,6 +121,7 @@ public class Texture {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		}
+		GLErrors.checkForError(TAG, "glTexParameteri");
 	}
 
 	/**

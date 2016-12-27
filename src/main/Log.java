@@ -9,9 +9,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class Debug {
+public class Log {
 
-	static DebugMode debugMode; //current debug mode
+	/** Class Name Tag */
+	private static final String TAG = "Log";
+
+	static LogMode logMode; //current log mode
 	static File logFile; //Log file
 	static PrintWriter writer; //File writer
 
@@ -20,9 +23,9 @@ public class Debug {
 	 *
 	 * @param mode
 	 */
-	protected static void initDebug(DebugMode mode) {
-		debugMode = mode;
-		if (debugMode == DebugMode.LOGFILE) {
+	protected static void initDebug(LogMode mode) {
+		logMode = mode;
+		if (logMode == LogMode.LOGFILE) {
 
 			// if the directory does not exist, create it
 			File theDir = new File("log");
@@ -51,7 +54,7 @@ public class Debug {
 	 * closes log file when closing window.
 	 */
 	protected static void closeLogFile() {
-		if (debugMode == DebugMode.LOGFILE) {
+		if (logMode == LogMode.LOGFILE) {
 			writer.close();
 		}
 	}
@@ -64,7 +67,7 @@ public class Debug {
 	 */
 	public static void log(Object obj) {
 		String message = obj.toString();
-		if (debugMode == DebugMode.NONE) {
+		if (logMode == LogMode.NONE) {
 			return;
 		}
 		DateFormat df = new SimpleDateFormat("[MM/dd/yyyy HH:mm:ss] ");
@@ -72,7 +75,7 @@ public class Debug {
 		String log = df.format(today);
 		log += "LOG: ";
 		log += message;
-		if (debugMode == DebugMode.CONSOLE) {
+		if (logMode == LogMode.CONSOLE) {
 			System.out.println(log);
 		} else {
 			writer.println(log);
@@ -88,7 +91,7 @@ public class Debug {
 	 */
 	public static void error(Object obj) {
 		String message = obj.toString();
-		if (debugMode == DebugMode.NONE) {
+		if (logMode == LogMode.NONE) {
 			return;
 		}
 		DateFormat df = new SimpleDateFormat("[MM/dd/yyyy HH:mm:ss] ");
@@ -96,7 +99,7 @@ public class Debug {
 		String log = df.format(today);
 		log += "ERR: ";
 		log += message;
-		if (debugMode == DebugMode.CONSOLE) {
+		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
 		} else {
 			writer.println(log);
@@ -113,7 +116,7 @@ public class Debug {
 	 */
 	public static void assertIfTrue(boolean condition, Object obj) {
 		String message = obj.toString();
-		if (debugMode == DebugMode.NONE || !condition) {
+		if (logMode == LogMode.NONE || !condition) {
 			return;
 		}
 		DateFormat df = new SimpleDateFormat("[MM/dd/yyyy HH:mm:ss] ");
@@ -121,7 +124,7 @@ public class Debug {
 		String log = df.format(today);
 		log += "ASSERTION: ";
 		log += message;
-		if (debugMode == DebugMode.CONSOLE) {
+		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
 		} else {
 			writer.println(log);
@@ -138,7 +141,7 @@ public class Debug {
 	 */
 	public static void assertIfFalse(boolean condition, Object obj) {
 		String message = obj.toString();
-		if (debugMode == DebugMode.NONE || condition) {
+		if (logMode == LogMode.NONE || condition) {
 			return;
 		}
 		DateFormat df = new SimpleDateFormat("[MM/dd/yyyy HH:mm:ss] ");
@@ -146,7 +149,7 @@ public class Debug {
 		String log = df.format(today);
 		log += "ASSERTION: ";
 		log += message;
-		if (debugMode == DebugMode.CONSOLE) {
+		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
 		} else {
 			writer.println(log);
@@ -164,7 +167,7 @@ public class Debug {
 	 */
 	public static void assertIfEquals(Object o1, Object o2, Object obj) {
 		String message = obj.toString();
-		if (debugMode == DebugMode.NONE || !o1.equals(o2)) {
+		if (logMode == LogMode.NONE || !o1.equals(o2)) {
 			return;
 		}
 		DateFormat df = new SimpleDateFormat("[MM/dd/yyyy HH:mm:ss] ");
@@ -172,7 +175,7 @@ public class Debug {
 		String log = df.format(today);
 		log += "ASSERTION: ";
 		log += message;
-		if (debugMode == DebugMode.CONSOLE) {
+		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
 		} else {
 			writer.println(log);
@@ -190,7 +193,7 @@ public class Debug {
 	 */
 	public static void assertIfNotEquals(Object o1, Object o2, Object obj) {
 		String message = obj.toString();
-		if (debugMode == DebugMode.NONE || o1.equals(o2)) {
+		if (logMode == LogMode.NONE || o1.equals(o2)) {
 			return;
 		}
 		DateFormat df = new SimpleDateFormat("[MM/dd/yyyy HH:mm:ss] ");
@@ -198,7 +201,7 @@ public class Debug {
 		String log = df.format(today);
 		log += "ASSERTION: ";
 		log += message;
-		if (debugMode == DebugMode.CONSOLE) {
+		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
 		} else {
 			writer.println(log);
