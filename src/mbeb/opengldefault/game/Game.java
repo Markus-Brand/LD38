@@ -1,9 +1,9 @@
-package game;
+package mbeb.opengldefault.game;
 
 import static org.lwjgl.opengl.GL11.*;
-import main.GLErrors;
-import rendering.ScreenAlignedQuad;
-import rendering.Shader;
+import mbeb.opengldefault.main.GLErrors;
+import mbeb.opengldefault.rendering.ScreenAlignedQuad;
+import mbeb.opengldefault.rendering.Shader;
 
 public class Game {
 	/** Class Name Tag */

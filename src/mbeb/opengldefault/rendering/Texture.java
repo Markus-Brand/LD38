@@ -1,4 +1,4 @@
-package rendering;
+package mbeb.opengldefault.rendering;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
-import main.GLErrors;
+import mbeb.opengldefault.main.GLErrors;
 
 import org.lwjgl.BufferUtils;
 
@@ -47,7 +47,7 @@ public class Texture {
 	 */
 	public static int loadTexture(String path, boolean interpolate) {
 		try {
-			URL url = Texture.class.getResource("/tex/" + path).toURI().toURL();
+			URL url = Texture.class.getResource("../tex/" + path).toURI().toURL();
 			BufferedImage img = ImageIO.read(url);
 			return loadTexture(img, interpolate);
 

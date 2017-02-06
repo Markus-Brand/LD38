@@ -1,4 +1,4 @@
-package rendering;
+package mbeb.opengldefault.rendering;
 
 public class ScreenAlignedQuad {
 	private static final String TAG = "ScreenAlignedQuad";

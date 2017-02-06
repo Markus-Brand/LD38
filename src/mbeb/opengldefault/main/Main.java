@@ -1,8 +1,8 @@
-package main;
+package mbeb.opengldefault.main;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
-import game.Game;
+import mbeb.opengldefault.game.Game;
 
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
