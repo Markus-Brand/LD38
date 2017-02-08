@@ -47,7 +47,7 @@ public class Texture {
 	 */
 	public static int loadTexture(String path, boolean interpolate) {
 		try {
-			URL url = Texture.class.getResource("/tex/" + path).toURI().toURL();
+			URL url = Texture.class.getResource("/textures/" + path).toURI().toURL();
 			BufferedImage img = ImageIO.read(url);
 			return loadTexture(img, interpolate);
 

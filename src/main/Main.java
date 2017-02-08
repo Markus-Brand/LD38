@@ -113,6 +113,25 @@ public class Main {
 			}
 		});
 
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+		glfwSetCursorPosCallback(window, (window, xPos, yPos) -> {
+			Mouse.setPos(xPos, yPos);
+		});
+
+		glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
+			if (action == GLFW_PRESS) {
+				Mouse.buttonDown(button);
+			}
+			if (action == GLFW_RELEASE) {
+				Mouse.buttonUp(button);
+			}
+		});
+
+		glfwSetScrollCallback(window, (window, xOffset, yOffset) -> {
+
+		});
+
 		// Center our window
 		glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
 
@@ -190,5 +209,17 @@ public class Main {
 		evaluateCommandLineArguments(args);
 		initOpenGL();
 		new Main();
+	}
+
+	public static GLFWVidMode getVidmode() {
+		return vidmode;
+	}
+
+	public static int getWidth() {
+		return vidmode.width();
+	}
+
+	public static int getHeight() {
+		return vidmode.height();
 	}
 }
