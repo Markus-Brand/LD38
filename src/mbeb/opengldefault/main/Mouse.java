@@ -1,4 +1,4 @@
-package main;
+package mbeb.opengldefault.main;
 
 import org.joml.Vector2f;
 

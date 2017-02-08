@@ -1,8 +1,8 @@
-package camera;
+package mbeb.opengldefault.camera;
 
-import main.KeyBoard;
-import main.Main;
-import main.Mouse;
+import mbeb.opengldefault.main.KeyBoard;
+import mbeb.opengldefault.main.Main;
+import mbeb.opengldefault.main.Mouse;
 
 import org.joml.Matrix4f;
 import org.joml.Vector2f;

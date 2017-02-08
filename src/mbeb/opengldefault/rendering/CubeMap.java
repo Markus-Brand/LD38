@@ -1,10 +1,12 @@
-package rendering;
+package mbeb.opengldefault.rendering;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL30.*;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
@@ -26,18 +28,23 @@ public class CubeMap {
 
 	public static int loadCubeMap(String name, boolean interpolate) {
 		try {
+			String imageFormat = "jpg";
 			BufferedImage[] img = new BufferedImage[6];
-			img[0] = ImageIO.read(CubeMap.class.getResource("/tex/" + name + "_r.jpg").toURI().toURL());
-			img[1] = ImageIO.read(CubeMap.class.getResource("/tex/" + name + "_l.jpg").toURI().toURL());
-			img[2] = ImageIO.read(CubeMap.class.getResource("/tex/" + name + "_top.jpg").toURI().toURL());
-			img[3] = ImageIO.read(CubeMap.class.getResource("/tex/" + name + "_bot.jpg").toURI().toURL());
-			img[4] = ImageIO.read(CubeMap.class.getResource("/tex/" + name + "_b.jpg").toURI().toURL());
-			img[5] = ImageIO.read(CubeMap.class.getResource("/tex/" + name + "_f.jpg").toURI().toURL());
+			img[0] = loadImage(name + "_r", imageFormat);
+			img[1] = loadImage(name + "_l", imageFormat);
+			img[2] = loadImage(name + "_top", imageFormat);
+			img[3] = loadImage(name + "_bot", imageFormat);
+			img[4] = loadImage(name + "_b", imageFormat);
+			img[5] = loadImage(name + "_f", imageFormat);
 			return loadCubeMap(img, interpolate);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return 0;
 		}
+	}
+	
+	private static BufferedImage loadImage(String name, String format) throws IOException, URISyntaxException {
+		return ImageIO.read(CubeMap.class.getResource("../tex/" + name + "." + format).toURI().toURL());
 	}
 
 	/**

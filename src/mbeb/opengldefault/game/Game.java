@@ -1,16 +1,16 @@
-package game;
+package mbeb.opengldefault.game;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.glUniform1i;
 
 import org.joml.Vector3f;
 
-import camera.FirstPersonCamera;
-import main.GLErrors;
-import main.Main;
-import rendering.ScreenAlignedQuad;
-import rendering.Shader;
-import rendering.Texture;
+import mbeb.opengldefault.camera.FirstPersonCamera;
+import mbeb.opengldefault.main.GLErrors;
+import mbeb.opengldefault.main.Main;
+import mbeb.opengldefault.rendering.ScreenAlignedQuad;
+import mbeb.opengldefault.rendering.Shader;
+import mbeb.opengldefault.rendering.Texture;
 
 public class Game {
 	/** Class Name Tag */

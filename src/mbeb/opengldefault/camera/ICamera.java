@@ -1,4 +1,4 @@
-package camera;
+package mbeb.opengldefault.camera;
 
 import org.joml.Matrix4f;
 

@@ -1,4 +1,4 @@
-package main;
+package mbeb.opengldefault.main;
 
 public class KeyBoard {
 	private static boolean[] keys; //Boolean array of all of the keys

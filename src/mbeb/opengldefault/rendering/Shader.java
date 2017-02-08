@@ -1,4 +1,4 @@
-package rendering;
+package mbeb.opengldefault.rendering;
 
 import java.net.URL;
 import java.nio.IntBuffer;
@@ -9,8 +9,8 @@ import java.util.Scanner;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
 
-import main.GLErrors;
-import main.Log;
+import mbeb.opengldefault.main.GLErrors;
+import mbeb.opengldefault.main.Log;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.opengl.GL40.*;
@@ -156,7 +156,7 @@ public class Shader {
 	 */
 	public static String getSource(String path) {
 		try {
-			URL shaderURL = Shader.class.getResource("/shader/" + path).toURI().toURL();
+			URL shaderURL = Shader.class.getResource("../shader/" + path).toURI().toURL();
 			Scanner sc = new Scanner(shaderURL.openStream(), "UTF-8");
 			String val = sc.useDelimiter("\\A").next();
 			sc.close();
