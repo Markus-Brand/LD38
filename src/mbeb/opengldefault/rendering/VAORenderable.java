@@ -5,7 +5,7 @@ import java.nio.IntBuffer;
 import java.util.Arrays;
 
 import mbeb.opengldefault.main.GLErrors;
-import mbeb.opengldefault.shader.IRenderable;
+import mbeb.opengldefault.scene.IRenderable;
 
 import org.lwjgl.BufferUtils;
 

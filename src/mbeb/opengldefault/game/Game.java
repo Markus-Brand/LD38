@@ -25,6 +25,10 @@ public abstract class Game {
 		glEnable(GL_DEPTH_TEST);
 	}
 
+	/**
+	 * 
+	 * @param deltaTime how much time passed since last frame
+	 */
 	public void update(double deltaTime) {
 
 		glClearColor(0.05f, 0.075f, 0.075f, 1);

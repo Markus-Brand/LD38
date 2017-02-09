@@ -1,7 +1,6 @@
 package mbeb.opengldefault.scene;
 
 import mbeb.opengldefault.rendering.VAORenderable;
-import mbeb.opengldefault.shader.IRenderable;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.Assimp;

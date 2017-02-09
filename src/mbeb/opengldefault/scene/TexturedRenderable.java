@@ -2,15 +2,17 @@ package mbeb.opengldefault.scene;
 
 import mbeb.opengldefault.rendering.Shader;
 import mbeb.opengldefault.rendering.Texture;
-import mbeb.opengldefault.shader.IRenderable;
 
 /**
  * A renderable with its own shader and texture
  */
 public class TexturedRenderable implements IRenderable {
 
+	/** a reanderable to be wrapped and rendered */
 	private IRenderable renderable;
+	/** a shader to render the wrapped renderable with */
 	private Shader shader;
+	/** a texture to bind before rendering */
 	private Texture texture;
 
 	public TexturedRenderable(IRenderable renderable, Texture texture) {
@@ -23,6 +25,10 @@ public class TexturedRenderable implements IRenderable {
 		this.texture = texture;
 	}
 
+	/**
+	 * get the objects shader (or a default one)
+	 * @return 
+	 */
 	public Shader getShader() {
 		if (shader == null) {
 			shader = new Shader("basic.vert", "phong.frag");
@@ -31,6 +37,10 @@ public class TexturedRenderable implements IRenderable {
 		return shader;
 	}
 
+	/**
+	 * set your own shader for this object
+	 * @param shader 
+	 */
 	public void setShader(Shader shader) {
 		this.shader = shader;
 	}
