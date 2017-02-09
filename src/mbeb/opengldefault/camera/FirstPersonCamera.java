@@ -39,9 +39,9 @@ public class FirstPersonCamera extends Camera {
 		speed = 0.1f;
 		rotationSpeed = 0.01f;
 
-		viewBobbingAltitude = 0.3f;
+		viewBobbingAltitude = 0.0f;
 
-		viewBobbingDistance = 1f;
+		viewBobbingDistance = 0.2f;
 
 		updateView();
 	}
@@ -122,4 +122,10 @@ public class FirstPersonCamera extends Camera {
 
 		direction.normalize();
 	}
+
+	public Vector3f getPosition() {
+		return position;
+	}
+	
+	
 }

@@ -9,6 +9,7 @@ out vec3 normal;
 layout (std140) uniform Matrices{	
 	uniform mat4 projection;
 	uniform mat4 view;
+	uniform mat4 projectionView;
 };
 
 uniform mat4 model;
@@ -16,7 +17,7 @@ uniform mat4 model;
 
 void main(){ 
 	pos = vec3(model * vec4(position, 1.0f));
-	gl_Position = projection * view * model * vec4(position, 1.0); 
+	gl_Position = projectionView * vec4(pos, 1);
 	tex = vec2(texCoord.x, texCoord.y);
 	normal = mat3(model) * normalVec;  
 }

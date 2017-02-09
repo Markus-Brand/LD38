@@ -187,6 +187,7 @@ public class Shader {
 	private void setUniformBlockIndex(int index, String name) {
 		int uniformBlockIndex = glGetUniformBlockIndex(shaderProgram, name);
 		glUniformBlockBinding(shaderProgram, uniformBlockIndex, index);
+		GLErrors.checkForError(TAG, "glUniformBlockBinding");
 	}
 
 	/**

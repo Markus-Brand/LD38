@@ -2,8 +2,10 @@ package mbeb.opengldefault.rendering;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.Arrays;
 
 import mbeb.opengldefault.main.GLErrors;
+import mbeb.opengldefault.scene.IRenderable;
 
 import org.lwjgl.BufferUtils;
 
@@ -12,7 +14,10 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
-public class Renderable {
+/**
+ * Leaf Renderable - an actual OpenGL-VAO that can be rendered
+ */
+public class VAORenderable implements IRenderable {
 
 	/** Class Name Tag */
 	private static final String TAG = "Renderable";
@@ -32,7 +37,8 @@ public class Renderable {
 	 * @param dataSizes
 	 *            size of the components in the data array in amount of floats. a RGB color would be represented by a 3
 	 */
-	public Renderable(float[] data, int[] indices, int[] dataSizes) {
+	public VAORenderable(float[] data, int[] indices, int[] dataSizes) {
+		System.out.println("DataSize:" + Arrays.toString(dataSizes));
 		this.indexSize = indices.length;
 		this.VAO = generateVAO(data, indices, dataSizes);
 	}
@@ -47,7 +53,7 @@ public class Renderable {
 	 * @param dataSizes
 	 *            size of the components in the data array in amount of floats. a RGB color would be represented by a 3
 	 */
-	public Renderable(FloatBuffer vertexBuffer, IntBuffer indexBuffer, int[] dataSizes) {
+	public VAORenderable(FloatBuffer vertexBuffer, IntBuffer indexBuffer, int[] dataSizes) {
 		this.indexSize = indexBuffer.capacity();
 		this.VAO = generateVAO(vertexBuffer, indexBuffer, dataSizes);
 	}
@@ -90,8 +96,10 @@ public class Renderable {
 	 * render the Renderable with a simple call to glDrawElements
 	 */
 	public void render() {
+		bind();
 		glDrawElements(GL_TRIANGLES, indexSize, GL_UNSIGNED_INT, 0);
 		GLErrors.checkForError(TAG, "glDrawElements");
+		unbind();
 	}
 
 	/**

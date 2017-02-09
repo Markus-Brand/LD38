@@ -1,5 +1,6 @@
 package mbeb.opengldefault.main;
 
+import mbeb.opengldefault.examples.Bunny;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import mbeb.opengldefault.game.Game;
@@ -29,6 +30,14 @@ public class Main {
 	 */
 	public Main() {
 		init();
+	}
+
+	/**
+	 * launch a window for this game object
+	 * @param game 
+	 */
+	public void startWith(Game game) {
+		this.game = game;
 		loop();
 		clean();
 	}
@@ -40,7 +49,6 @@ public class Main {
 		createWindow("Test window", false, vidmode.width(), vidmode.height());
 		GL.createCapabilities();
 		GLErrors.checkForError(TAG, "createCapabilities");
-		game = new Game();
 	}
 
 	/**
@@ -207,9 +215,12 @@ public class Main {
 	 *            command line arguments
 	 */
 	public static void main(String[] args) {
+		Bunny.main(args);
+	}
+	
+	public static void init(String[] args) {
 		evaluateCommandLineArguments(args);
 		initOpenGL();
-		new Main();
 	}
 
 	public static GLFWVidMode getVidmode() {

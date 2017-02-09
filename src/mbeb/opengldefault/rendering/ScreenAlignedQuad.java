@@ -1,11 +1,13 @@
 package mbeb.opengldefault.rendering;
 
+import mbeb.opengldefault.scene.IRenderable;
+
 public class ScreenAlignedQuad {
 	private static final String TAG = "ScreenAlignedQuad";
 
-	private static Renderable renderable;
+	private static IRenderable renderable;
 
-	public static Renderable getRenderable() {
+	public static IRenderable getRenderable() {
 		if (renderable == null) {
 
 			float[] vertexData = { -1, -1, 1, -1, -1, 1, 1, 1 };
@@ -14,16 +16,14 @@ public class ScreenAlignedQuad {
 
 			int[] dataSizes = { 2 };
 
-			renderable = new Renderable(vertexData, indexData, dataSizes);
+			renderable = new VAORenderable(vertexData, indexData, dataSizes);
 
 		}
 		return renderable;
 	}
 
 	public static void render() {
-		getRenderable().bind();
 		getRenderable().render();
-		getRenderable().unbind();
 	}
 
 }
