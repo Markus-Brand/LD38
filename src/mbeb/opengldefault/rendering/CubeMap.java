@@ -62,7 +62,7 @@ public class CubeMap {
 		glActiveTexture(GL_TEXTURE_CUBE_MAP + texture);
 
 		for (int i = 0; i < images.length; i++) {
-			ByteBuffer buffer = Texture.generateBuffer(images[i]);
+			ByteBuffer buffer = TextureUtils.generateBuffer(images[i]);
 			glBindTexture(GL_TEXTURE_2D, texture);
 
 			setTexParameter(interpolate);
