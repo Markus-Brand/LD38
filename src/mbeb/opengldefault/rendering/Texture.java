@@ -7,10 +7,13 @@ import static org.lwjgl.opengl.GL30.*;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
 import mbeb.opengldefault.main.GLErrors;
+import mbeb.opengldefault.main.Log;
 
 import org.lwjgl.BufferUtils;
 
@@ -19,14 +22,7 @@ public class Texture {
 	/** Class Name Tag */
 	private static final String TAG = "Texture";
 
-	/** Wrap methods */
-	private static int wrapS;
-	private static int wrapT;
-
-	static {
-		wrapS = GL_REPEAT;
-		wrapT = GL_REPEAT;
-	}
+	private static Map<String, Integer> cachedImages = new HashMap<String, Integer>();
 
 	/**
 	 * load Texture with given path
@@ -46,26 +42,36 @@ public class Texture {
 	 * @return openGl texture
 	 */
 	public static int loadTexture(String path, boolean interpolate) {
-		try {
-			URL url = ClassLoader.getSystemResource("textures/" + path);
-			BufferedImage img = ImageIO.read(url);
-			return loadTexture(img, interpolate);
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			return 0;
-		}
+		return loadTexture(path, interpolate, GL_REPEAT, GL_REPEAT);
 	}
 
 	/**
-	 * Generate OpenGL Texture from BufferedImage
+	 * load Texture with given path and given interpolation and wrappinh method.
+	 * Loads the texture from the cache, in case that we already loaded this image
 	 *
-	 * @param image
-	 *            input BufferedImage
+	 * @param path
+	 * @param interpolate
+	 * @param wrapS
+	 * @param wrapT
 	 * @return openGl texture
 	 */
-	public static int loadTexture(BufferedImage image) {
-		return loadTexture(image, true);
+	public static int loadTexture(String path, boolean interpolate, int wrapS, int wrapT) {
+		String key = path + interpolate + wrapS + wrapT;
+		Integer texture = cachedImages.get(key);
+		if (texture == null) {
+			try {
+				Log.log(TAG, "loaded Image: " + path);
+				URL url = ClassLoader.getSystemResource("textures/" + path);
+				BufferedImage img = ImageIO.read(url);
+				texture = loadTexture(img, interpolate, wrapS, wrapT);
+				cachedImages.put(key, texture);
+				return texture;
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				return 0;
+			}
+		}
+		return texture.intValue();
 	}
 
 	/**
@@ -77,7 +83,7 @@ public class Texture {
 	 *            interpolation method
 	 * @return openGl texture
 	 */
-	public static int loadTexture(BufferedImage image, boolean interpolate) {
+	public static int loadTexture(BufferedImage image, boolean interpolate, int wrapS, int wrapT) {
 
 		ByteBuffer buffer = generateBuffer(image);
 
@@ -90,7 +96,7 @@ public class Texture {
 		glBindTexture(GL_TEXTURE_2D, texture);
 		GLErrors.checkForError(TAG, "glBindTexture");
 
-		setTexParameter(interpolate);
+		setTexParameter(interpolate, wrapS, wrapT);
 		GLErrors.checkForError(TAG, "setTexParameter");
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
@@ -111,7 +117,7 @@ public class Texture {
 	 *
 	 * @param interpolate
 	 */
-	private static void setTexParameter(boolean interpolate) {
+	private static void setTexParameter(boolean interpolate, int wrapS, int wrapT) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapS);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapT);
 		if (interpolate) {
@@ -155,40 +161,13 @@ public class Texture {
 	}
 
 	/**
-	 * get WrapS Method
-	 *
-	 * @return wrapS
+	 * Deletes all OpenGL textures and clears the cache
 	 */
-	public static int getWrapS() {
-		return wrapS;
-	}
-
-	/**
-	 * set WrapS method
-	 *
-	 * @param wrapS
-	 *            new method
-	 */
-	public static void setWrapS(int wrapS) {
-		Texture.wrapS = wrapS;
-	}
-
-	/**
-	 * get WrapT Method
-	 *
-	 * @return wrapT
-	 */
-	public static int getWrapT() {
-		return wrapT;
-	}
-
-	/**
-	 * set WrapT method
-	 *
-	 * @param wrapT
-	 *            new method
-	 */
-	public static void setWrapT(int wrapT) {
-		Texture.wrapT = wrapT;
+	public static void clearCache() {
+		for (int value : cachedImages.values()) {
+			glDeleteTextures(value);
+			GLErrors.checkForError(TAG, "glDeleteTextures");
+		}
+		cachedImages = new HashMap<>();
 	}
 }

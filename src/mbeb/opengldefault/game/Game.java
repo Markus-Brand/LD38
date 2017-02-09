@@ -53,4 +53,8 @@ public class Game {
 
 	}
 
+	public void clear() {
+		Texture.clearCache();
+	}
+
 }

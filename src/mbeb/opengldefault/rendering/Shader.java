@@ -162,7 +162,7 @@ public class Shader {
 			sc.close();
 			return val;
 		} catch (Exception ex) {
-			Log.error("Loading shader source failed:" + path + "\n" + ex.getMessage());
+			Log.error(TAG, "Loading shader source failed:" + path + "\n" + ex.getMessage());
 			return "";
 		}
 	}
@@ -208,7 +208,7 @@ public class Shader {
 		int loc = glGetUniformLocation(shaderProgram, name);
 		GLErrors.checkForError(TAG, "glGetUniformLocation");
 		if (loc < 0) {
-			Log.error("GetUniform failed: " + name);
+			Log.error(TAG, "GetUniform failed: " + name);
 		}
 		return loc;
 	}
@@ -284,8 +284,8 @@ public class Shader {
 		glCompileShader(vertexShader);
 		int compileSuccess = glGetShaderi(vertexShader, GL_COMPILE_STATUS);
 		if (compileSuccess != 1) {
-			Log.error("Error compilng vertex shader: " + compileSuccess);
-			Log.error("Vertex log:\n" + glGetShaderInfoLog(vertexShader, 512));
+			Log.error(TAG, "Error compilng vertex shader: " + compileSuccess);
+			Log.error(TAG, "Vertex log:\n" + glGetShaderInfoLog(vertexShader, 512));
 		}
 		return vertexShader;
 	}
@@ -303,8 +303,8 @@ public class Shader {
 		glCompileShader(fragmentShader);
 		int compileSuccess = glGetShaderi(fragmentShader, GL_COMPILE_STATUS);
 		if (compileSuccess != 1) {
-			Log.error("Error compiling fragment shader: " + compileSuccess);
-			Log.error("Fragment log:\n" + glGetShaderInfoLog(fragmentShader, 512));
+			Log.error(TAG, "Error compiling fragment shader: " + compileSuccess);
+			Log.error(TAG, "Fragment log:\n" + glGetShaderInfoLog(fragmentShader, 512));
 		}
 		return fragmentShader;
 	}
@@ -325,8 +325,8 @@ public class Shader {
 		glCompileShader(geometryShader);
 		int compileSuccess = glGetShaderi(geometryShader, GL_COMPILE_STATUS);
 		if (compileSuccess != 1) {
-			Log.error("Error compiling geometry shader: " + compileSuccess);
-			Log.error("Geometry log:\n" + glGetShaderInfoLog(geometryShader, 512));
+			Log.error(TAG, "Error compiling geometry shader: " + compileSuccess);
+			Log.error(TAG, "Geometry log:\n" + glGetShaderInfoLog(geometryShader, 512));
 		}
 		return geometryShader;
 	}
@@ -347,8 +347,8 @@ public class Shader {
 		glCompileShader(tesControlShader);
 		int compileSuccess = glGetShaderi(tesControlShader, GL_COMPILE_STATUS);
 		if (compileSuccess != 1) {
-			Log.error("Error compiling tesselation control shader: " + compileSuccess);
-			Log.error("Tesselation Control log:\n" + glGetShaderInfoLog(tesControlShader, 512));
+			Log.error(TAG, "Error compiling tesselation control shader: " + compileSuccess);
+			Log.error(TAG, "Tesselation Control log:\n" + glGetShaderInfoLog(tesControlShader, 512));
 		}
 		return tesControlShader;
 	}
@@ -369,8 +369,8 @@ public class Shader {
 		glCompileShader(tesEvalShader);
 		int compileSuccess = glGetShaderi(tesEvalShader, GL_COMPILE_STATUS);
 		if (compileSuccess != 1) {
-			Log.error("Error compiling tesselation evaluation shader: " + compileSuccess);
-			Log.error("Tesselation Evaluation log:\n" + glGetShaderInfoLog(tesEvalShader, 512));
+			Log.error(TAG, "Error compiling tesselation evaluation shader: " + compileSuccess);
+			Log.error(TAG, "Tesselation Evaluation log:\n" + glGetShaderInfoLog(tesEvalShader, 512));
 		}
 		return tesEvalShader;
 	}
@@ -403,8 +403,8 @@ public class Shader {
 		IntBuffer buffer = BufferUtils.createIntBuffer(1);
 		GL20.glGetProgramiv(shaderProgram, GL_LINK_STATUS, buffer);
 		if (buffer.get(0) != 1) {
-			Log.error("Error linking shader program: " + buffer.get(0));
-			Log.error("Linking log:\n" + glGetProgramInfoLog(shaderProgram, 512));
+			Log.error(TAG, "Error linking shader program: " + buffer.get(0));
+			Log.error(TAG, "Linking log:\n" + glGetProgramInfoLog(shaderProgram, 512));
 		}
 
 		glDeleteShader(vertexShader);

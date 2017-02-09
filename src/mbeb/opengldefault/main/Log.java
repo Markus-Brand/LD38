@@ -65,16 +65,11 @@ public class Log {
 	 * @param obj
 	 *            the object (mostly Strings) being logged
 	 */
-	public static void log(Object obj) {
-		String message = obj.toString();
+	public static void log(String tag, Object obj) {
 		if (logMode == LogMode.NONE) {
 			return;
 		}
-		DateFormat df = new SimpleDateFormat("[MM/dd/yyyy HH:mm:ss] ");
-		Date today = Calendar.getInstance().getTime();
-		String log = df.format(today);
-		log += "LOG: ";
-		log += message;
+		String log = constructErrorMessage(obj, "LOG: ", tag);
 		if (logMode == LogMode.CONSOLE) {
 			System.out.println(log);
 		} else {
@@ -89,22 +84,28 @@ public class Log {
 	 * @param message
 	 *            the object (mostly Strings) being logged
 	 */
-	public static void error(Object obj) {
-		String message = obj.toString();
+	public static void error(String tag, Object obj) {
 		if (logMode == LogMode.NONE) {
 			return;
 		}
-		DateFormat df = new SimpleDateFormat("[MM/dd/yyyy HH:mm:ss] ");
-		Date today = Calendar.getInstance().getTime();
-		String log = df.format(today);
-		log += "ERR: ";
-		log += message;
+		String log = constructErrorMessage(obj, "ERR: ", tag);
 		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
 		} else {
 			writer.println(log);
 			writer.flush();
 		}
+	}
+
+	private static String constructErrorMessage(Object obj, String info, String tag) {
+		String message = obj.toString();
+		DateFormat df = new SimpleDateFormat("[MM/dd/yyyy HH:mm:ss] ");
+		Date today = Calendar.getInstance().getTime();
+		String log = df.format(today);
+		log += info;
+		log += "In class " + tag + ": ";
+		log += message;
+		return log;
 	}
 
 	/**
@@ -114,16 +115,11 @@ public class Log {
 	 * @param message
 	 *            the object (mostly Strings) being logged
 	 */
-	public static void assertIfTrue(boolean condition, Object obj) {
-		String message = obj.toString();
+	public static void assertIfTrue(String tag, boolean condition, Object obj) {
 		if (logMode == LogMode.NONE || !condition) {
 			return;
 		}
-		DateFormat df = new SimpleDateFormat("[MM/dd/yyyy HH:mm:ss] ");
-		Date today = Calendar.getInstance().getTime();
-		String log = df.format(today);
-		log += "ASSERTION: ";
-		log += message;
+		String log = constructErrorMessage(obj, "ASSERTION: ", tag);
 		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
 		} else {
@@ -139,16 +135,11 @@ public class Log {
 	 * @param message
 	 *            the object (mostly Strings) being logged
 	 */
-	public static void assertIfFalse(boolean condition, Object obj) {
-		String message = obj.toString();
+	public static void assertIfFalse(String tag, boolean condition, Object obj) {
 		if (logMode == LogMode.NONE || condition) {
 			return;
 		}
-		DateFormat df = new SimpleDateFormat("[MM/dd/yyyy HH:mm:ss] ");
-		Date today = Calendar.getInstance().getTime();
-		String log = df.format(today);
-		log += "ASSERTION: ";
-		log += message;
+		String log = constructErrorMessage(obj, "ASSERTION: ", tag);
 		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
 		} else {
@@ -165,16 +156,11 @@ public class Log {
 	 * @param message
 	 *            the object (mostly Strings) being logged
 	 */
-	public static void assertIfEquals(Object o1, Object o2, Object obj) {
-		String message = obj.toString();
+	public static void assertIfEquals(String tag, Object o1, Object o2, Object obj) {
 		if (logMode == LogMode.NONE || !o1.equals(o2)) {
 			return;
 		}
-		DateFormat df = new SimpleDateFormat("[MM/dd/yyyy HH:mm:ss] ");
-		Date today = Calendar.getInstance().getTime();
-		String log = df.format(today);
-		log += "ASSERTION: ";
-		log += message;
+		String log = constructErrorMessage(obj, "ASSERTION: ", tag);
 		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
 		} else {
@@ -191,16 +177,12 @@ public class Log {
 	 * @param message
 	 *            the object (mostly Strings) being logged
 	 */
-	public static void assertIfNotEquals(Object o1, Object o2, Object obj) {
+	public static void assertIfNotEquals(String tag, Object o1, Object o2, Object obj) {
 		String message = obj.toString();
 		if (logMode == LogMode.NONE || o1.equals(o2)) {
 			return;
 		}
-		DateFormat df = new SimpleDateFormat("[MM/dd/yyyy HH:mm:ss] ");
-		Date today = Calendar.getInstance().getTime();
-		String log = df.format(today);
-		log += "ASSERTION: ";
-		log += message;
+		String log = constructErrorMessage(obj, "ASSERTION: ", tag);
 		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
 		} else {

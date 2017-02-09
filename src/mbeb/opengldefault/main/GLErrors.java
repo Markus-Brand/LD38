@@ -22,7 +22,7 @@ public class GLErrors {
 		if (error == GL_NO_ERROR) {
 			return false;
 		} else {
-			String errorMessage = classTag + " " + message + ": caused error code " + error + " (";
+			String errorMessage = message + ": caused error code " + error + " (";
 			switch (error) {
 				case GL_INVALID_ENUM:
 					errorMessage += "GL_INVALID_ENUM";
@@ -42,7 +42,7 @@ public class GLErrors {
 
 			}
 			errorMessage += ")";
-			Log.error(errorMessage);
+			Log.error(classTag, errorMessage);
 			return true;
 		}
 	}

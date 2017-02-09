@@ -77,6 +77,7 @@ public class Main {
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();
 		Log.closeLogFile();
+		game.clear();
 	}
 
 	/**
@@ -149,7 +150,7 @@ public class Main {
 	 * inits OpenGL
 	 */
 	private static void initOpenGL() {
-		Log.log("LWJGL Version " + Version.getVersion() + " is working.");
+		Log.log(TAG, "LWJGL Version " + Version.getVersion() + " is working.");
 
 		// Setup an error callback. The default implementation
 		// will print the error message in System.err.
