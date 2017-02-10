@@ -68,6 +68,7 @@ public class Game implements IGame {
 	@Override
 	public void render() {
 		Vector3f pos = cam.getPosition();
+		bunny.getShader().use();
 		GL20.glUniform3f(bunny.getShader().getUniform("viewPos"), pos.x, pos.y, pos.z);
 		GLErrors.checkForError(TAG, "glUniform3f");
 		Matrix4f model = new Matrix4f();
