@@ -4,6 +4,7 @@ import mbeb.opengldefault.examples.Bunny;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import mbeb.opengldefault.game.Game;
+import mbeb.opengldefault.game.IGame;
 
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -22,33 +23,31 @@ public class Main {
 	private static GLFWVidMode vidmode;
 
 	/** Game Object */
-	private Game game;
+	private IGame game;
 
 	/**
 	 * Constructor of the Main class
 	 * It initializes a new Window, then starts the main loop and cleans when the window is closed
 	 */
-	public Main() {
-		init();
-	}
-
-	/**
-	 * launch a window for this game object
-	 * @param game 
-	 */
-	public void startWith(Game game) {
+	public Main(IGame game, String[] args) {
 		this.game = game;
+		init(args);
 		loop();
 		clean();
 	}
 
 	/**
-	 * init main project
+	 * Init the OpenGL context
+	 * 
+	 * @param args
 	 */
-	private void init() {
+	private void init(String[] args) {
+		evaluateCommandLineArguments(args);
+		initOpenGL();
 		createWindow("Test window", false, vidmode.width(), vidmode.height());
 		GL.createCapabilities();
 		GLErrors.checkForError(TAG, "createCapabilities");
+		game.init();
 	}
 
 	/**
@@ -73,7 +72,7 @@ public class Main {
 
 			//Debug.log((int) (1 / deltaTime) + "fps");
 			game.update(deltaTime);
-
+			game.render();
 		}
 	}
 
@@ -158,6 +157,7 @@ public class Main {
 	 * inits OpenGL
 	 */
 	private static void initOpenGL() {
+
 		Log.log(TAG, "LWJGL Version " + Version.getVersion() + " is working.");
 
 		// Setup an error callback. The default implementation
@@ -206,21 +206,6 @@ public class Main {
 		} else {
 			Log.initDebug(LogMode.NONE);
 		}
-	}
-
-	/**
-	 * main method
-	 *
-	 * @param args
-	 *            command line arguments
-	 */
-	public static void main(String[] args) {
-		Bunny.main(args);
-	}
-	
-	public static void init(String[] args) {
-		evaluateCommandLineArguments(args);
-		initOpenGL();
 	}
 
 	public static GLFWVidMode getVidmode() {
