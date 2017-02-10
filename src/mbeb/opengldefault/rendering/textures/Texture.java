@@ -1,6 +1,7 @@
-package mbeb.opengldefault.rendering;
+package mbeb.opengldefault.rendering.textures;
 
-import mbeb.opengldefault.main.GLErrors;
+import mbeb.opengldefault.logging.GLErrors;
+import mbeb.opengldefault.rendering.shader.Shader;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL20.glUniform1i;
@@ -20,7 +21,7 @@ public class Texture {
 	 * @param path where to load the image from
 	 */
 	public Texture(String path) {
-		this(TextureUtils.loadTexture(path));
+		this(TextureCache.loadTexture(path));
 	}
 
 	/**

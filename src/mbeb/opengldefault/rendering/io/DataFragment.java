@@ -1,4 +1,4 @@
-package mbeb.opengldefault.scene;
+package mbeb.opengldefault.rendering.io;
 
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIVector3D;

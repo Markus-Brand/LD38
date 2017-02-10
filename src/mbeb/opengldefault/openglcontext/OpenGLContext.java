@@ -1,23 +1,29 @@
-package mbeb.opengldefault.main;
+package mbeb.opengldefault.openglcontext;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
+
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
+import mbeb.opengldefault.controls.KeyBoard;
+import mbeb.opengldefault.controls.Mouse;
 import mbeb.opengldefault.game.IGame;
+import mbeb.opengldefault.logging.GLErrors;
+import mbeb.opengldefault.logging.Log;
+import mbeb.opengldefault.logging.LogMode;
 
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
-public class Main {
+public class OpenGLContext {
 
 	/** Class Name Tag */
-	private static final String TAG = "Main";
+	private static final String TAG = "OpenGLContext";
 
 	/** The created window Object */
 	private long window;
@@ -32,7 +38,7 @@ public class Main {
 	 * Constructor of the Main class
 	 * It initializes a new Window, then starts the main loop and cleans when the window is closed
 	 */
-	public Main(IGame game, String[] args) {
+	public OpenGLContext(IGame game, String[] args) {
 		this.game = game;
 		init(args);
 		loop();
@@ -89,11 +95,7 @@ public class Main {
 		Log.closeLogFile();
 		game.clear();
 		try {
-			Files.walk(new File("res").toPath())
-					.sorted(Comparator.reverseOrder())
-					.map(Path::toFile)
-					.peek(System.out::println)
-					.forEach(File::delete);
+			Files.walk(new File("res").toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).peek(System.out::println).forEach(File::delete);
 			System.out.println("res clear");
 		} catch (IOException ex) {
 			Log.log(TAG, ex.getMessage() + " - unable to delete old res-directory");
@@ -103,10 +105,14 @@ public class Main {
 	/**
 	 * creates the GLFW Window
 	 *
-	 * @param title windows title
-	 * @param fullscreen is the window fullscreen?
-	 * @param width window width
-	 * @param height window height
+	 * @param title
+	 *            windows title
+	 * @param fullscreen
+	 *            is the window fullscreen?
+	 * @param width
+	 *            window width
+	 * @param height
+	 *            window height
 	 */
 	private void createWindow(String title, boolean fullscreen, int width, int height) {
 		// Create the window
@@ -202,7 +208,8 @@ public class Main {
 	/**
 	 * Sets Debug Mode
 	 *
-	 * @param args command line arguments
+	 * @param args
+	 *            command line arguments
 	 */
 	private static void evaluateCommandLineArguments(String[] args) {
 		if (args.length < 2) {

@@ -1,4 +1,4 @@
-package mbeb.opengldefault.rendering;
+package mbeb.opengldefault.rendering.textures;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
@@ -12,18 +12,18 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
-import mbeb.opengldefault.main.GLErrors;
-import mbeb.opengldefault.main.Log;
+import mbeb.opengldefault.logging.GLErrors;
+import mbeb.opengldefault.logging.Log;
 
 import org.lwjgl.BufferUtils;
 
 /**
  * static methods for creating / using textures
  */
-public class TextureUtils {
+public class TextureCache {
 
 	/** Class Name Tag */
-	private static final String TAG = "TextureUtils";
+	private static final String TAG = "TextureCache";
 
 	private static Map<String, Integer> cachedImages = new HashMap<>();
 

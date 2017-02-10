@@ -1,4 +1,4 @@
-package mbeb.opengldefault.rendering;
+package mbeb.opengldefault.rendering.shader;
 
 import java.net.URL;
 import java.nio.IntBuffer;
@@ -9,8 +9,8 @@ import java.util.Scanner;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
 
-import mbeb.opengldefault.main.GLErrors;
-import mbeb.opengldefault.main.Log;
+import mbeb.opengldefault.logging.GLErrors;
+import mbeb.opengldefault.logging.Log;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.opengl.GL40.*;

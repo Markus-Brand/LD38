@@ -1,4 +1,4 @@
-package mbeb.opengldefault.rendering;
+package mbeb.opengldefault.rendering.textures;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
@@ -12,6 +12,9 @@ import java.nio.ByteBuffer;
 import javax.imageio.ImageIO;
 
 public class CubeMap {
+
+	/** Class Name Tag */
+	private static final String TAG = "CubeMap";
 
 	//Wrap methods
 	private static int wrapS;
@@ -42,7 +45,7 @@ public class CubeMap {
 			return 0;
 		}
 	}
-	
+
 	private static BufferedImage loadImage(String name, String format) throws IOException, URISyntaxException {
 		return ImageIO.read(CubeMap.class.getResource("../tex/" + name + "." + format).toURI().toURL());
 	}
@@ -62,7 +65,7 @@ public class CubeMap {
 		glActiveTexture(GL_TEXTURE_CUBE_MAP + texture);
 
 		for (int i = 0; i < images.length; i++) {
-			ByteBuffer buffer = TextureUtils.generateBuffer(images[i]);
+			ByteBuffer buffer = TextureCache.generateBuffer(images[i]);
 			glBindTexture(GL_TEXTURE_2D, texture);
 
 			setTexParameter(interpolate);

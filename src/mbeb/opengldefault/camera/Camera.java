@@ -6,8 +6,8 @@ import static org.lwjgl.opengl.GL31.*;
 
 import java.nio.FloatBuffer;
 
-import mbeb.opengldefault.main.GLErrors;
-import mbeb.opengldefault.main.Main;
+import mbeb.opengldefault.logging.GLErrors;
+import mbeb.opengldefault.openglcontext.OpenGLContext;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -30,6 +30,12 @@ public class Camera implements ICamera {
 	/** Uniform Buffer containing the Matrix data */
 	private int UBO = -1;
 
+	/** Position of the Camera */
+	protected Vector3f position;
+
+	/** View Direction of the Camera */
+	protected Vector3f viewDirection;
+
 	/**
 	 * Basic Camera Constructor. Sets the projection to a default perspective projection and the view to Camera looking from origin along positive z direction.
 	 */
@@ -37,7 +43,7 @@ public class Camera implements ICamera {
 		projection = new Matrix4f();
 		view = new Matrix4f();
 		projectionView = new Matrix4f();
-		projection.perspective(90, Main.getWidth() / (float) Main.getHeight(), 0.1f, 100);
+		projection.perspective(90, OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f, 100);
 
 		view.lookAlong(new Vector3f(0, 0, 1), new Vector3f(0, 1, 0));
 
@@ -106,6 +112,26 @@ public class Camera implements ICamera {
 		glBufferSubData(GL_UNIFORM_BUFFER, 128, getProjectionView().get(projectionViewBuffer));
 		GLErrors.checkForError(TAG, "glBufferSubData");
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	}
+
+	@Override
+	public Vector3f getPosition() {
+		return position;
+	}
+
+	@Override
+	public void setPosition(Vector3f newPosition) {
+		this.position = newPosition;
+	}
+
+	@Override
+	public Vector3f getViewDirection() {
+		return viewDirection;
+	}
+
+	@Override
+	public void setViewDirection(Vector3f newViewDirection) {
+		this.viewDirection = newViewDirection;
 	}
 
 }

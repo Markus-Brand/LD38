@@ -1,6 +1,5 @@
-package mbeb.opengldefault.rendering;
+package mbeb.opengldefault.rendering.renderable;
 
-import mbeb.opengldefault.scene.IRenderable;
 
 public class ScreenAlignedQuad {
 	private static final String TAG = "ScreenAlignedQuad";

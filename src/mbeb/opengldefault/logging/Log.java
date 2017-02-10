@@ -1,4 +1,4 @@
-package mbeb.opengldefault.main;
+package mbeb.opengldefault.logging;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,7 +23,7 @@ public class Log {
 	 *
 	 * @param mode
 	 */
-	protected static void initDebug(LogMode mode) {
+	public static void initDebug(LogMode mode) {
 		logMode = mode;
 		if (logMode == LogMode.LOGFILE) {
 
@@ -53,7 +53,7 @@ public class Log {
 	/**
 	 * closes log file when closing window.
 	 */
-	protected static void closeLogFile() {
+	public static void closeLogFile() {
 		if (logMode == LogMode.LOGFILE) {
 			writer.close();
 		}

@@ -1,11 +1,14 @@
-package mbeb.opengldefault.scene;
+package mbeb.opengldefault.rendering.io;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import mbeb.opengldefault.main.Log;
-import mbeb.opengldefault.main.Main;
-import mbeb.opengldefault.rendering.VAORenderable;
+
+import mbeb.opengldefault.logging.Log;
+import mbeb.opengldefault.openglcontext.OpenGLContext;
+import mbeb.opengldefault.rendering.renderable.IRenderable;
+import mbeb.opengldefault.rendering.renderable.VAORenderable;
+
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.Assimp;
@@ -14,14 +17,29 @@ import org.lwjgl.assimp.Assimp;
  * Contains logic to create Renderables from Files
  */
 public class ObjectLoader {
-	
+
 	private static final String TAG = "ObjectLoader";
+
+	/**
+	 * load an object into a Renderable.
+	 * Assumes, that the file contains 3 Position, 3 Normal and 2 UV Fragments
+	 *
+	 * @param path
+	 *            the absolute File-Path to the object
+	 * @return a VAO-Renderable
+	 */
+	public IRenderable loadFromFile(String path) {
+
+		return loadFromFile(path, new DataFragment[] { DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV });
+	}
 
 	/**
 	 * load an object into a Renderable
 	 *
-	 * @param path the absolute File-Path to the object
-	 * @param format which data to load
+	 * @param path
+	 *            the absolute File-Path to the object
+	 * @param format
+	 *            which data to load
 	 * @return a VAO-Renderable
 	 */
 	public IRenderable loadFromFile(String path, DataFragment[] format) {
@@ -45,9 +63,7 @@ public class ObjectLoader {
 		File export = new File(res, rawPath);
 		if (!export.exists()) {
 			try {
-				Files.copy(
-						Main.class.getResourceAsStream("/mbeb/opengldefault/resources/" + rawPath),
-						export.toPath());
+				Files.copy(OpenGLContext.class.getResourceAsStream("/mbeb/opengldefault/resources/" + rawPath), export.toPath());
 			} catch (IOException ex) {
 				Log.log(TAG, ex.getMessage() + " at extracting resource " + rawPath);
 			}
@@ -58,9 +74,12 @@ public class ObjectLoader {
 	/**
 	 * load a single mesh
 	 *
-	 * @param scene the AIScene to load from
-	 * @param meshID which mesh to load
-	 * @param format the format the data should be in
+	 * @param scene
+	 *            the AIScene to load from
+	 * @param meshID
+	 *            which mesh to load
+	 * @param format
+	 *            the format the data should be in
 	 * @return
 	 */
 	private VAORenderable loadMesh(AIScene scene, int meshID, DataFragment[] format) {

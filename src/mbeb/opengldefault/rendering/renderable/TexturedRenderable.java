@@ -1,12 +1,15 @@
-package mbeb.opengldefault.scene;
+package mbeb.opengldefault.rendering.renderable;
 
-import mbeb.opengldefault.rendering.Shader;
-import mbeb.opengldefault.rendering.Texture;
+import mbeb.opengldefault.rendering.shader.Shader;
+import mbeb.opengldefault.rendering.textures.Texture;
 
 /**
  * A renderable with its own shader and texture
  */
 public class TexturedRenderable implements IRenderable {
+
+	/** Class Name Tag */
+	private static final String TAG = "TexturedRenderable";
 
 	/** a reanderable to be wrapped and rendered */
 	private IRenderable renderable;
@@ -27,7 +30,8 @@ public class TexturedRenderable implements IRenderable {
 
 	/**
 	 * get the objects shader (or a default one)
-	 * @return 
+	 * 
+	 * @return
 	 */
 	public Shader getShader() {
 		if (shader == null) {
@@ -39,7 +43,8 @@ public class TexturedRenderable implements IRenderable {
 
 	/**
 	 * set your own shader for this object
-	 * @param shader 
+	 * 
+	 * @param shader
 	 */
 	public void setShader(Shader shader) {
 		this.shader = shader;

@@ -1,8 +1,8 @@
 package mbeb.opengldefault.camera;
 
-import mbeb.opengldefault.main.KeyBoard;
-import mbeb.opengldefault.main.Main;
-import mbeb.opengldefault.main.Mouse;
+import mbeb.opengldefault.controls.KeyBoard;
+import mbeb.opengldefault.controls.Mouse;
+import mbeb.opengldefault.openglcontext.OpenGLContext;
 
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -11,8 +11,9 @@ import org.lwjgl.glfw.GLFW;
 
 public class FirstPersonCamera extends Camera {
 
-	private Vector3f position;
-	private Vector3f direction;
+	/** Class Name Tag */
+	private static final String TAG = "FirstPersonCamera";
+
 	private Vector3f worldUp;
 
 	private Vector2f lastMousePos;
@@ -30,10 +31,10 @@ public class FirstPersonCamera extends Camera {
 	public FirstPersonCamera(Vector3f position, Vector3f direction) {
 		lastMousePos = new Vector2f(Mouse.getPos());
 		projection = new Matrix4f();
-		projection.perspective((float) Math.PI / 2, Main.getWidth() / (float) Main.getHeight(), 0.1f, 100);
+		projection.perspective((float) Math.PI / 2, OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f, 100);
 
 		this.position = position;
-		this.direction = direction;
+		this.viewDirection = direction;
 		this.worldUp = new Vector3f(0, 1, 0);
 
 		speed = 0.1f;
@@ -54,7 +55,7 @@ public class FirstPersonCamera extends Camera {
 
 		Vector3f center = new Vector3f();
 		view = new Matrix4f();
-		cameraPos.add(direction, center);
+		cameraPos.add(viewDirection, center);
 
 		view.lookAt(cameraPos, center, worldUp);
 		projectionView = null;
@@ -62,10 +63,11 @@ public class FirstPersonCamera extends Camera {
 	}
 
 	public void setDirection(Vector3f direction) {
-		direction.normalize(this.direction);
+		direction.normalize(this.viewDirection);
 		updateView();
 	}
 
+	@Override
 	public void setPosition(Vector3f position) {
 		this.position = position;
 		updateView();
@@ -79,18 +81,22 @@ public class FirstPersonCamera extends Camera {
 
 	private void updatePosition() {
 		Vector3f delta = new Vector3f();
-		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_W)) {
-			delta.add(direction);
-		}
-		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_S)) {
-			delta.sub(direction);
-		}
 		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_A)) {
-			worldUp.cross(direction, delta);
+			worldUp.cross(viewDirection, delta);
 		}
 		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_D)) {
-			direction.cross(worldUp, delta);
+			viewDirection.cross(worldUp, delta);
 		}
+		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_W)) {
+			delta.add(viewDirection);
+		}
+		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_S)) {
+			delta.sub(viewDirection);
+		}
+		if (delta.length() == 0) {
+			return;
+		}
+		delta.normalize();
 		delta.mul(speed);
 		position.add(delta);
 
@@ -116,16 +122,16 @@ public class FirstPersonCamera extends Camera {
 			pitch = -0.45f * (float) Math.PI;
 		}
 
-		direction.x = (float) (Math.cos(pitch) * Math.cos(yaw));
-		direction.y = (float) Math.sin(pitch);
-		direction.z = (float) (Math.cos(pitch) * Math.sin(yaw));
+		viewDirection.x = (float) (Math.cos(pitch) * Math.cos(yaw));
+		viewDirection.y = (float) Math.sin(pitch);
+		viewDirection.z = (float) (Math.cos(pitch) * Math.sin(yaw));
 
-		direction.normalize();
+		viewDirection.normalize();
 	}
 
+	@Override
 	public Vector3f getPosition() {
 		return position;
 	}
-	
-	
+
 }

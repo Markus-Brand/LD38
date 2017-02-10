@@ -12,13 +12,12 @@ import static org.lwjgl.opengl.GL11.glViewport;
 import java.nio.FloatBuffer;
 
 import mbeb.opengldefault.camera.FirstPersonCamera;
-import mbeb.opengldefault.main.GLErrors;
-import mbeb.opengldefault.main.Main;
-import mbeb.opengldefault.rendering.Texture;
-import mbeb.opengldefault.rendering.TextureUtils;
-import mbeb.opengldefault.scene.DataFragment;
-import mbeb.opengldefault.scene.ObjectLoader;
-import mbeb.opengldefault.scene.TexturedRenderable;
+import mbeb.opengldefault.logging.GLErrors;
+import mbeb.opengldefault.openglcontext.OpenGLContext;
+import mbeb.opengldefault.rendering.io.ObjectLoader;
+import mbeb.opengldefault.rendering.renderable.TexturedRenderable;
+import mbeb.opengldefault.rendering.textures.Texture;
+import mbeb.opengldefault.rendering.textures.TextureCache;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -28,20 +27,20 @@ import org.lwjgl.opengl.GL20;
 /**
  * Object to characterize a whole game
  */
-public class Game implements IGame {
+public class BunnyGame implements IGame {
 	/** Class Name Tag */
-	private static final String TAG = "Game";
+	private static final String TAG = "BunnyGame";
 
 	protected FirstPersonCamera cam;
 
 	TexturedRenderable bunny;
 
-	public Game() {
+	public BunnyGame() {
 	}
 
 	@Override
 	public void init() {
-		bunny = new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj", new DataFragment[] { DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV }), new Texture("bunny_2d.png"));
+		bunny = new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
 		cam = new FirstPersonCamera(new Vector3f(0, 0, 0), new Vector3f(0, 0, 1));
 
 		glEnable(GL_CULL_FACE);
@@ -56,7 +55,7 @@ public class Game implements IGame {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		GLErrors.checkForError(TAG, "glClear");
 
-		glViewport(0, 0, Main.getWidth(), Main.getHeight());
+		glViewport(0, 0, OpenGLContext.getWidth(), OpenGLContext.getHeight());
 		GLErrors.checkForError(TAG, "glViewport");
 
 		cam.update();
@@ -80,7 +79,7 @@ public class Game implements IGame {
 
 	@Override
 	public void clear() {
-		TextureUtils.clearCache();
+		TextureCache.clearCache();
 	}
 
 }

@@ -1,11 +1,10 @@
-package mbeb.opengldefault.rendering;
+package mbeb.opengldefault.rendering.renderable;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Arrays;
 
-import mbeb.opengldefault.main.GLErrors;
-import mbeb.opengldefault.scene.IRenderable;
+import mbeb.opengldefault.logging.GLErrors;
 
 import org.lwjgl.BufferUtils;
 

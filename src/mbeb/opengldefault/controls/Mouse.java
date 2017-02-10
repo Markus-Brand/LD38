@@ -1,8 +1,11 @@
-package mbeb.opengldefault.main;
+package mbeb.opengldefault.controls;
 
 import org.joml.Vector2f;
 
 public class Mouse {
+
+	/** Class Name Tag */
+	private static final String TAG = "Mouse";
 
 	private static Vector2f cursorPos;
 

@@ -1,7 +1,14 @@
-package mbeb.opengldefault.main;
+package mbeb.opengldefault.controls;
 
 public class KeyBoard {
-	private static boolean[] keys; //Boolean array of all of the keys
+
+	/** Class Name Tag */
+	private static final String TAG = "KeyBoard";
+
+	/**
+	 * Boolean array of all of the keys
+	 */
+	private static boolean[] keys;
 
 	static {
 		keys = new boolean[1024];
