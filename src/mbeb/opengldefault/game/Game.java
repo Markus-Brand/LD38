@@ -29,7 +29,7 @@ public class Game implements IGame {
 
 	@Override
 	public void init() {
-		bunny = new TexturedRenderable(new ObjectLoader().loadFromFile("D:/bunny.obj", new DataFragment[] { DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV }), new Texture("bunny_2d.png"));
+		bunny = new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj", new DataFragment[] { DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV }), new Texture("bunny_2d.png"));
 		cam = new FirstPersonCamera(new Vector3f(0, 0, 0), new Vector3f(0, 0, 1));
 
 		glEnable(GL_CULL_FACE);
