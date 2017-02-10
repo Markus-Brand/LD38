@@ -55,6 +55,7 @@ public class BunnyGame implements IGame {
 		Shader defaultShader = new Shader("basic.vert", "phong.frag");
 		defaultShader.addUniformBlockIndex(1, "Matrices");
 		bunnyScene.getSceneGraph().setShader(defaultShader);
+		bunnyScene.getSceneGraph().getTransformation().asMatrix().scale(0.01f);
 
 		glDisable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);

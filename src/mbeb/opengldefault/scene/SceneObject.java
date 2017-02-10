@@ -1,7 +1,6 @@
 package mbeb.opengldefault.scene;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.shader.Shader;
@@ -13,15 +12,15 @@ public class SceneObject {
 	
 	/** the renderable for this object, or null */
 	private Shader shader;
-	
+	/** a renderable for this Object, or null */
 	private IRenderable renderable;
-	
+	/** the combined boundingBox for this object(renderable+subObjects) */
 	private BoundingBox box;
-	
+	/** this objects Transformation */
 	private Transformation myTransformation;
-	
+	/** all subObjects (which inherit transformations) */
 	private List<SceneObject> subObjects;
-	
+	/** the parent in the Scene-graph */
 	private SceneObject parent;
 
 	/**
@@ -48,7 +47,7 @@ public class SceneObject {
 	}
 
 	/**
-	 * add SubObjects via addSubObject instead/**
+	 * add SubObjects via addSubObject instead
 	 * @return all the Objects that share this objects transformation
 	 */
 	public List<SceneObject> getSubObjects() {
@@ -58,12 +57,20 @@ public class SceneObject {
 		return subObjects;
 	}
 	
+	/**
+	 * add a new Scene-Object as child of this one to the scene
+	 * @param object the new object to add
+	 */
 	public void addSubObject(SceneObject object) {
 		getSubObjects().add(object);
 		object.setParent(this);
 		adjustBoundingBoxFor(object);
 	}
 	
+	/**
+	 * add a new Scene-Object wrapping the provided model as child of this one to the scene
+	 * @param model the new model to add
+	 */
 	public void addSubObject(IRenderable model) {
 		addSubObject(new SceneObject(model, null, null));
 	}
@@ -75,10 +82,14 @@ public class SceneObject {
 		return renderable;
 	}
 
-	public void setParent(SceneObject parent) {
+	private void setParent(SceneObject parent) {
 		this.parent = parent;
 	}
 
+	/**
+	 * get the shader this object should use (asking the parent if needed)
+	 * @return 
+	 */
 	public Shader getShader() {
 		if (!hasOwnShader() && parent != null) {
 			return parent.getShader();
@@ -86,16 +97,20 @@ public class SceneObject {
 		return shader;
 	}
 
+	/**
+	 * set an own shader for this object
+	 * @param shader 
+	 */
 	public void setShader(Shader shader) {
 		this.shader = shader;
 	}
 	
-	
-	
+	/**
+	 * @return if this object has its own shader
+	 */
 	public boolean hasOwnShader() {
 		return shader != null;
 	}
-	
 	
 	
 //<editor-fold defaultstate="collapsed" desc="BoundingBox">

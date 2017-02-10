@@ -5,7 +5,7 @@ import mbeb.opengldefault.rendering.textures.Texture;
 import mbeb.opengldefault.scene.BoundingBox;
 
 /**
- * A renderable with its own shader and texture
+ * A renderable with its own texture
  */
 public class TexturedRenderable implements IRenderable {
 

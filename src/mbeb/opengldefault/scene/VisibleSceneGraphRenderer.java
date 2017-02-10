@@ -1,16 +1,14 @@
 package mbeb.opengldefault.scene;
 
 import mbeb.opengldefault.camera.Camera;
-import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 /**
  * only renders the visible part of the sceneGraph
- * @author Erik
  */
 public class VisibleSceneGraphRenderer extends SceneGraphRenderer {
 	
-	private static final float MIN_SCREEN_AREA = 0.001f;
+	private static final float MIN_SCREEN_AREA = 0.00001f;
 
 	public VisibleSceneGraphRenderer(SceneObject root, Camera cam) {
 		super(root, cam);
@@ -23,6 +21,12 @@ public class VisibleSceneGraphRenderer extends SceneGraphRenderer {
 		}
 	}
 	
+	/**
+	 * check for visibility of an object
+	 * @param object the object to check
+	 * @param parentTransform the current transformation
+	 * @return false if this object would not be visible if rendered
+	 */
 	private boolean isVisible(SceneObject object, Transformation parentTransform) {
 		Vector3f[] edges = object.getBoundingBox()
 				.getEdgesOnScreen(parentTransform, cam);

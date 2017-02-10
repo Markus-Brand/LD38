@@ -27,7 +27,7 @@ public class VAORenderable implements IRenderable {
 	private int VAO;
 	/** amount of indices */
 	private int indexSize;
-	
+	/** the boundingBox of all my vertices */
 	private BoundingBox boundingBox;
 
 	/**

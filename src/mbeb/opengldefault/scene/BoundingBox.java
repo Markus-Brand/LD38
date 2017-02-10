@@ -60,10 +60,18 @@ public class BoundingBox {
 		this.modelTransform = localToWorld;
 	}
 
+	/**
+	 * @return a new equivalent BoundingBox
+	 */
 	public BoundingBox duplicate() {
 		return new BoundingBox(new Vector3f(localStart), new Vector3f(localSize), modelTransform);
 	}
 
+	/**
+	 * return a bigger box that also contains provided vertex
+	 * @param localVertex a new vertex to include in this box
+	 * @return a possibly new BoundingBox-object
+	 */
 	public BoundingBox extendTo(Vector3f localVertex) {
 		Vector3f localEnd = new Vector3f(localStart).add(localSize);
 		
@@ -112,7 +120,6 @@ public class BoundingBox {
 
 	/**
 	 * collect the 8 edges in local space
-	 *
 	 * @return
 	 */
 	private Vector3f[] getLocalEdges() {
@@ -132,7 +139,6 @@ public class BoundingBox {
 
 	/**
 	 * apply own transformation to local edges and return them
-	 *
 	 * @return
 	 */
 	private Vector3f[] getGlobalEdges() {
@@ -143,6 +149,12 @@ public class BoundingBox {
 		return edges;
 	}
 
+	/**
+	 * calculate the screen-space positions of my 8 edges
+	 * @param parentTransform the boundingBoxes parent transformation
+	 * @param camera the camera to look from
+	 * @return screen-space positions
+	 */
 	public Vector3f[] getEdgesOnScreen(Transformation parentTransform, ICamera camera) {
 		//apply to edges
 		Vector3f[] edges = getGlobalEdges();

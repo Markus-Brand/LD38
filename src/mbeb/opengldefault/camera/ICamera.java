@@ -85,9 +85,17 @@ public interface ICamera {
 	 */
 	void updateUniformBlock();
 	
+	/**
+	 * call this once per update cycle.
+	 */
 	default void update() {
 	}
 	
+	/**
+	 * convert the given world space coordinates to screen space
+	 * @param pos
+	 * @return 
+	 */
 	default Vector3f getPosOnScreen(Vector3f pos) {
 		return getPosOnScreen(new Vector4f(pos.x, pos.y, pos.z, 1));
 	}

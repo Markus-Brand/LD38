@@ -24,11 +24,19 @@ public class SceneGraphRenderer {
 	protected final SceneObject root;
 	protected final Camera cam;
 
+	/**
+	 * create a new renderer for the given SceneGraph and Camera
+	 * @param root
+	 * @param cam 
+	 */
 	public SceneGraphRenderer(SceneObject root, Camera cam) {
 		this.root = root;
 		this.cam = cam;
 	}
 
+	/**
+	 * render the whole scenegraph
+	 */
 	public void render() {
 		renderObject(root, Transformation.identity());
 	}

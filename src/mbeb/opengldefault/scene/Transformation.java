@@ -13,6 +13,11 @@ public class Transformation {
 		return new Transformation(new Matrix4f());
 	}
 	
+	/**
+	 * create a new Transformation that translates
+	 * @param pos translation
+	 * @return 
+	 */
 	public static Transformation fromPosition(Vector3f pos) {
 		Transformation transform = identity();
 		transform.matrix.translate(pos);
@@ -37,6 +42,9 @@ public class Transformation {
 		return new Transformation(mul);
 	}
 	
+	/**
+	 * @return a matrix representing this transformation
+	 */
 	public Matrix4f asMatrix() {
 		return matrix;
 	}
