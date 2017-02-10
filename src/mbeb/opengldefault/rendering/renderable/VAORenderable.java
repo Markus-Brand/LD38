@@ -5,6 +5,8 @@ import java.nio.IntBuffer;
 import java.util.Arrays;
 
 import mbeb.opengldefault.logging.GLErrors;
+import mbeb.opengldefault.rendering.shader.Shader;
+import mbeb.opengldefault.scene.BoundingBox;
 
 import org.lwjgl.BufferUtils;
 
@@ -25,6 +27,8 @@ public class VAORenderable implements IRenderable {
 	private int VAO;
 	/** amount of indices */
 	private int indexSize;
+	
+	private BoundingBox boundingBox;
 
 	/**
 	 * Constructor for Renderable
@@ -35,11 +39,17 @@ public class VAORenderable implements IRenderable {
 	 *            index data. The order in which the vertex data is read
 	 * @param dataSizes
 	 *            size of the components in the data array in amount of floats. a RGB color would be represented by a 3
+	 * @param boundingBox the bounding box of the vertex data
 	 */
-	public VAORenderable(float[] data, int[] indices, int[] dataSizes) {
-		System.out.println("DataSize:" + Arrays.toString(dataSizes));
+	public VAORenderable(float[] data, int[] indices, int[] dataSizes, BoundingBox boundingBox) {
 		this.indexSize = indices.length;
+		this.boundingBox = boundingBox;
 		this.VAO = generateVAO(data, indices, dataSizes);
+	}
+
+	@Override
+	public BoundingBox getBoundingBox() {
+		return boundingBox;
 	}
 
 	/**
@@ -93,8 +103,10 @@ public class VAORenderable implements IRenderable {
 
 	/**
 	 * render the Renderable with a simple call to glDrawElements
+	 * @param shader
 	 */
-	public void render() {
+	@Override
+	public void render(Shader shader) {
 		bind();
 		glDrawElements(GL_TRIANGLES, indexSize, GL_UNSIGNED_INT, 0);
 		GLErrors.checkForError(TAG, "glDrawElements");

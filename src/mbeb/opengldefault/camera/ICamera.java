@@ -2,6 +2,7 @@ package mbeb.opengldefault.camera;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 public interface ICamera {
 
@@ -83,4 +84,21 @@ public interface ICamera {
 	 * updates the UBO: Buffers the view, projection and viewProjection matrix into the UBO
 	 */
 	void updateUniformBlock();
+	
+	default void update() {
+	}
+	
+	default Vector3f getPosOnScreen(Vector3f pos) {
+		return getPosOnScreen(new Vector4f(pos.x, pos.y, pos.z, 1));
+	}
+	
+	/**
+	 * convert the given world space coordinates to screen space
+	 * @param pos
+	 * @return 
+	 */
+	default Vector3f getPosOnScreen(Vector4f pos) {
+		Vector4f res = pos.mul(getProjectionView());
+		return new Vector3f(res.x / res.z, res.y / res.z, res.z);
+	}
 }

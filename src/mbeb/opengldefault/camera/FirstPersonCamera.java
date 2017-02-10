@@ -73,6 +73,7 @@ public class FirstPersonCamera extends Camera {
 		updateView();
 	}
 
+	@Override
 	public void update() {
 		updateDirection();
 		updatePosition();
