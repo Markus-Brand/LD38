@@ -1,9 +1,12 @@
 package mbeb.opengldefault.main;
 
-import mbeb.opengldefault.examples.Bunny;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
-import mbeb.opengldefault.game.Game;
 import mbeb.opengldefault.game.IGame;
 
 import org.lwjgl.Version;
@@ -38,7 +41,7 @@ public class Main {
 
 	/**
 	 * Init the OpenGL context
-	 * 
+	 *
 	 * @param args
 	 */
 	private void init(String[] args) {
@@ -85,19 +88,25 @@ public class Main {
 		glfwSetErrorCallback(null).free();
 		Log.closeLogFile();
 		game.clear();
+		try {
+			Files.walk(new File("res").toPath())
+					.sorted(Comparator.reverseOrder())
+					.map(Path::toFile)
+					.peek(System.out::println)
+					.forEach(File::delete);
+			System.out.println("res clear");
+		} catch (IOException ex) {
+			Log.log(TAG, ex.getMessage() + " - unable to delete old res-directory");
+		}
 	}
 
 	/**
 	 * creates the GLFW Window
 	 *
-	 * @param title
-	 *            windows title
-	 * @param fullscreen
-	 *            is the window fullscreen?
-	 * @param width
-	 *            window width
-	 * @param height
-	 *            window height
+	 * @param title windows title
+	 * @param fullscreen is the window fullscreen?
+	 * @param width window width
+	 * @param height window height
 	 */
 	private void createWindow(String title, boolean fullscreen, int width, int height) {
 		// Create the window
@@ -193,8 +202,7 @@ public class Main {
 	/**
 	 * Sets Debug Mode
 	 *
-	 * @param args
-	 *            command line arguments
+	 * @param args command line arguments
 	 */
 	private static void evaluateCommandLineArguments(String[] args) {
 		if (args.length < 2) {
