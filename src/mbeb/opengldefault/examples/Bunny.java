@@ -1,6 +1,12 @@
 package mbeb.opengldefault.examples;
 
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.FloatBuffer;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mbeb.opengldefault.camera.FirstPersonCamera;
 import mbeb.opengldefault.game.Game;
 import mbeb.opengldefault.main.GLErrors;
@@ -18,21 +24,23 @@ import org.lwjgl.opengl.GL20;
  * Test the application by showing a bunny
  */
 public class Bunny {
+
 	private static final String TAG = "Bunny";
-	
+
 	public static void main(String[] args) {
+
 		Main.init(args);
 		Main main = new Main();
 		main.startWith(new Game() {
-			
+
 			TexturedRenderable bunny = new TexturedRenderable(
-					(new ObjectLoader()).loadFromFile("D:/bunny.obj", 
-							new DataFragment[]{DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV}), 
+					(new ObjectLoader()).loadFromFile("bunny.obj",
+							new DataFragment[]{DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV}),
 					new Texture("bunny_2d.png"));
 
 			@Override
 			public void render() {
-				Vector3f pos = ((FirstPersonCamera)cam).getPosition();
+				Vector3f pos = ((FirstPersonCamera) cam).getPosition();
 				GL20.glUniform3f(bunny.getShader().getUniform("viewPos"), pos.x, pos.y, pos.z);
 				GLErrors.checkForError(TAG, "glUniform3f");
 				Matrix4f model = new Matrix4f();

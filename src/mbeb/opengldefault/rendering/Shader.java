@@ -156,7 +156,7 @@ public class Shader {
 	 */
 	public static String getSource(String path) {
 		try {
-			URL shaderURL = Shader.class.getResource("../shader/" + path).toURI().toURL();
+			URL shaderURL = ClassLoader.getSystemResource("mbeb/opengldefault/shader/" + path).toURI().toURL();
 			Scanner sc = new Scanner(shaderURL.openStream(), "UTF-8");
 			String val = sc.useDelimiter("\\A").next();
 			sc.close();
