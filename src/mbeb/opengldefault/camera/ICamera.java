@@ -6,15 +6,23 @@ import org.joml.Vector3f;
 public interface ICamera {
 
 	/**
-	 * get the cameras position
+	 * updates the camera
 	 * 
+	 * @param deltaTime
+	 *            time, that passed since the last update
+	 */
+	void update(double deltaTime);
+
+	/**
+	 * get the cameras position
+	 *
 	 * @return current position of the camera
 	 */
 	Vector3f getPosition();
 
 	/**
 	 * sets a new camera position
-	 * 
+	 *
 	 * @param newPosition
 	 *            the new camera position
 	 */
@@ -22,14 +30,14 @@ public interface ICamera {
 
 	/**
 	 * get the cameras view direction
-	 * 
+	 *
 	 * @return current view direction of the camera
 	 */
 	Vector3f getViewDirection();
 
 	/**
 	 * sets a new camera view direction
-	 * 
+	 *
 	 * @param newViewDirection
 	 *            the new camera view direction
 	 */

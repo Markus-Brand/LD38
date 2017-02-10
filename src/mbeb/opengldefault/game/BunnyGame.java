@@ -10,8 +10,11 @@ import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glViewport;
 
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 
-import mbeb.opengldefault.camera.FirstPersonCamera;
+import mbeb.opengldefault.camera.BezierCamera;
+import mbeb.opengldefault.camera.Camera;
+import mbeb.opengldefault.curves.BezierCurve;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
 import mbeb.opengldefault.rendering.io.ObjectLoader;
@@ -31,7 +34,7 @@ public class BunnyGame implements IGame {
 	/** Class Name Tag */
 	private static final String TAG = "BunnyGame";
 
-	protected FirstPersonCamera cam;
+	protected Camera cam;
 
 	TexturedRenderable bunny;
 
@@ -41,7 +44,19 @@ public class BunnyGame implements IGame {
 	@Override
 	public void init() {
 		bunny = new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
-		cam = new FirstPersonCamera(new Vector3f(0, 0, 0), new Vector3f(0, 0, 1));
+		ArrayList<Vector3f> controlPoints = new ArrayList<>();
+
+		controlPoints.add(new Vector3f(10, 0, 0));
+		controlPoints.add(new Vector3f(0, 0, 10));
+		controlPoints.add(new Vector3f(-10, 0, 0));
+		controlPoints.add(new Vector3f(0, 0, -10));
+
+		ArrayList<Float> segmentLength = new ArrayList<>();
+
+		segmentLength.add(new Float(0.2));
+		segmentLength.add(new Float(2));
+
+		cam = new BezierCamera(new BezierCurve(controlPoints, true, true));
 
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
@@ -58,7 +73,7 @@ public class BunnyGame implements IGame {
 		glViewport(0, 0, OpenGLContext.getWidth(), OpenGLContext.getHeight());
 		GLErrors.checkForError(TAG, "glViewport");
 
-		cam.update();
+		cam.update(deltaTime);
 
 		render();
 
@@ -67,6 +82,7 @@ public class BunnyGame implements IGame {
 	@Override
 	public void render() {
 		Vector3f pos = cam.getPosition();
+		//System.out.println(pos.x + " " + pos.y + " " + pos.z);
 		bunny.getShader().use();
 		GL20.glUniform3f(bunny.getShader().getUniform("viewPos"), pos.x, pos.y, pos.z);
 		GLErrors.checkForError(TAG, "glUniform3f");

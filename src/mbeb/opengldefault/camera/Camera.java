@@ -134,4 +134,10 @@ public class Camera implements ICamera {
 		this.viewDirection = newViewDirection;
 	}
 
+	@Override
+	public void update(double deltaTime) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

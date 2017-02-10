@@ -62,7 +62,8 @@ public class FirstPersonCamera extends Camera {
 		updateUniformBlock();
 	}
 
-	public void setDirection(Vector3f direction) {
+	@Override
+	public void setViewDirection(Vector3f direction) {
 		direction.normalize(this.viewDirection);
 		updateView();
 	}
@@ -73,7 +74,8 @@ public class FirstPersonCamera extends Camera {
 		updateView();
 	}
 
-	public void update() {
+	@Override
+	public void update(double deltaTime) {
 		updateDirection();
 		updatePosition();
 		updateView();
@@ -127,11 +129,6 @@ public class FirstPersonCamera extends Camera {
 		viewDirection.z = (float) (Math.cos(pitch) * Math.sin(yaw));
 
 		viewDirection.normalize();
-	}
-
-	@Override
-	public Vector3f getPosition() {
-		return position;
 	}
 
 }
