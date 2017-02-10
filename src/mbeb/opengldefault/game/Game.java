@@ -1,8 +1,15 @@
 package mbeb.opengldefault.game;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glViewport;
 
-import org.joml.Vector3f;
+import java.nio.FloatBuffer;
 
 import mbeb.opengldefault.camera.FirstPersonCamera;
 import mbeb.opengldefault.main.GLErrors;
@@ -12,6 +19,11 @@ import mbeb.opengldefault.rendering.TextureUtils;
 import mbeb.opengldefault.scene.DataFragment;
 import mbeb.opengldefault.scene.ObjectLoader;
 import mbeb.opengldefault.scene.TexturedRenderable;
+
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL20;
 
 /**
  * Object to characterize a whole game
@@ -55,8 +67,14 @@ public class Game implements IGame {
 
 	@Override
 	public void render() {
-		// TODO Auto-generated method stub
-
+		Vector3f pos = cam.getPosition();
+		GL20.glUniform3f(bunny.getShader().getUniform("viewPos"), pos.x, pos.y, pos.z);
+		GLErrors.checkForError(TAG, "glUniform3f");
+		Matrix4f model = new Matrix4f();
+		FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
+		GL20.glUniformMatrix4fv(bunny.getShader().getUniform("model"), false, model.get(buffer));
+		GLErrors.checkForError(TAG, "glUniformMatrix4fv");
+		bunny.render();
 	}
 
 	@Override
