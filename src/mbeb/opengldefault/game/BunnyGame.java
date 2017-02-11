@@ -40,7 +40,8 @@ public class BunnyGame implements IGame {
 
 	@Override
 	public void init() {
-		bunny = new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
+		String object = /*/"bunny.obj"/*/"riggedStanfordBunny.dae"/**/;
+		bunny = new TexturedRenderable(new ObjectLoader().loadFromFile(object), new Texture("bunny_2d.png"));
 		cam = new FirstPersonCamera(new Vector3f(0, 0, 0), new Vector3f(0, 0, 1));
 
 		glEnable(GL_CULL_FACE);

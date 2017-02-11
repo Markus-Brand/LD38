@@ -75,6 +75,20 @@ public enum DataFragment {
 			data[dataPointer++] = 0;
 			data[dataPointer++] = 0;
 		}
+	}, BONEWEIGHTS {
+
+		@Override
+		public int size() {
+			return 3;
+		}
+
+		@Override
+		public void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
+			AIVector3D vec = mesh.mNormals().get(v);
+			data[dataPointer++] = vec.x();
+			data[dataPointer++] = vec.y();
+			data[dataPointer++] = vec.z();
+		}
 	};
 
 	/**

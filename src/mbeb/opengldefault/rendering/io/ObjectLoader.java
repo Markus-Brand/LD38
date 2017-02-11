@@ -3,20 +3,29 @@ package mbeb.opengldefault.rendering.io;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import mbeb.opengldefault.animation.AnimatedMesh;
+import mbeb.opengldefault.animation.Bone;
 
 import mbeb.opengldefault.logging.Log;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.VAORenderable;
+import org.lwjgl.assimp.AIAnimMesh;
+import org.lwjgl.assimp.AIBone;
 
 import org.lwjgl.assimp.AIMesh;
+import org.lwjgl.assimp.AIMeshAnim;
 import org.lwjgl.assimp.AIScene;
+import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.Assimp;
 
 /**
  * Contains logic to create Renderables from Files
  */
 public class ObjectLoader {
+	
+	public static final DataFragment[] PosNormUv = new DataFragment[] { DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV };
+	public static final DataFragment[] PosNormUvAnim3 = new DataFragment[] { DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV, DataFragment.BONEWEIGHTS };
 
 	private static final String TAG = "ObjectLoader";
 
@@ -30,7 +39,7 @@ public class ObjectLoader {
 	 */
 	public IRenderable loadFromFile(String path) {
 
-		return loadFromFile(path, new DataFragment[] { DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV });
+		return loadFromFile(path, PosNormUv);
 	}
 
 	/**
@@ -82,7 +91,7 @@ public class ObjectLoader {
 	 *            the format the data should be in
 	 * @return
 	 */
-	private VAORenderable loadMesh(AIScene scene, int meshID, DataFragment[] format) {
+	private IRenderable loadMesh(AIScene scene, int meshID, DataFragment[] format) {
 		long addr1 = scene.mMeshes().get(meshID);
 		AIMesh mesh = AIMesh.create(addr1);
 
@@ -101,8 +110,40 @@ public class ObjectLoader {
 			indices[indicesPointer] = indicesPointer;
 			indicesPointer++;
 		}
-
-		return new VAORenderable(data, indices, DataFragment.mapFormat(format));
+		
+		VAORenderable vaomesh = new VAORenderable(data, indices, DataFragment.mapFormat(format));
+		
+		if (mesh.mNumBones() == 0) {
+			return vaomesh;
+		}
+		System.out.println("BoneCount: " + mesh.mNumBones());
+		return loadAnimatedMesh(mesh, vaomesh);
+	}
+	
+	/**
+	 * load all necessary data for an animated mesh
+	 * @param mesh the AI-mesh containing this data
+	 * @param vaomesh the VAORenderable (raw mesh data)
+	 * @return a new AnimatedRenderable
+	 */
+	private AnimatedMesh loadAnimatedMesh(AIMesh mesh, VAORenderable vaomesh) {
+		//load bones
+		
+		Bone rootBone = null;
+		
+		//ai traverses the bones in depth-search-order
+		for (int b = 0; b < mesh.mNumBones(); b++) {
+			AIBone bone = AIBone.create(mesh.mBones().get(b));
+			String boneName = bone.mName().dataString();
+			System.err.println("boneName = " + boneName);
+			
+			if (rootBone == null) {
+				rootBone = new Bone(boneName, b);
+			} else {
+				//todo bone hierachy?
+			}
+		}
+		return new AnimatedMesh(vaomesh);
 	}
 
 }
