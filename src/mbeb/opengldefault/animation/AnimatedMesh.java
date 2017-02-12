@@ -15,7 +15,6 @@ public class AnimatedMesh implements IRenderable {
 	public AnimatedMesh(VAORenderable mesh) {
 		this.mesh = mesh;
 	}
-	
 
 	@Override
 	public BoundingBox getBoundingBox() {

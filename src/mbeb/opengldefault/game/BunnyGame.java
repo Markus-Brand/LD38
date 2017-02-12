@@ -43,7 +43,7 @@ public class BunnyGame implements IGame {
 		IRenderable bunny = new ObjectLoader().loadFromFileAnim(bunnyObjectName);
 		IRenderable cube = new TexturedRenderable(new ObjectLoader().loadFromFile("cube.obj"), new Texture("bunny_2d.png"));
 		System.gc();
-
+		
 		Shader debugShader = new Shader("boneAnimation.vert", "debugging.frag");
 		
 		cubeObj = new SceneObject(cube, null, null);

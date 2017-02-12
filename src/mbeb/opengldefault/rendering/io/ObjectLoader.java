@@ -117,49 +117,11 @@ public class ObjectLoader {
 		boolean isAnimated = DataFragment.needsBoneData(format);//todo
 		// vertex-id  3elements     bone-id  weight
 		Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights = null;
+		Bone skeleton = null;
 
 		if (isAnimated) {
-			System.err.println("isAnimated = " + isAnimated);
-			Bone skeleton = parseSkeleton(mesh, sceneStructure);
-			//calculate weights here
-			vertexBoneWeights = new HashMap<>();
-			Map<Integer, Map<Integer, Float>> rawVertexBoneWeights = new HashMap<>(2 * mesh.mNumVertices());
-			for (int b = 0; b < mesh.mNumBones(); b++) {
-				AIBone bone = AIBone.create(mesh.mBones().get(b));
-				System.err.println("mNumWeights = " + bone.mNumWeights());
-				for (int w = 0; w < bone.mNumWeights(); w++) {
-					AIVertexWeight aiWeight = bone.mWeights().get(w);
-					int vertex = aiWeight.mVertexId();
-					Map<Integer, Float> vertexMapping = rawVertexBoneWeights.get(vertex);
-					if (vertexMapping == null) {
-						vertexMapping = new HashMap<>();
-						rawVertexBoneWeights.put(vertex, vertexMapping);
-					}
-					String boneName = bone.mName().dataString();
-					int boneID = skeleton.firstBoneNamed(boneName).getIndex();
-					vertexMapping.put(boneID, aiWeight.mWeight());
-				}
-			}
-			System.err.println("rawVertexBoneWeights = " + rawVertexBoneWeights.size());
-			//normalize weights
-			for (int v = 0; v < mesh.mNumVertices(); v++) {
-				Map<Integer, Float> weights = rawVertexBoneWeights.get(v);
-				//System.err.println("weights = " + weights.size());
-				while (weights.size() < 3) {
-					//putting 0 at some non-existent index
-					weights.put(-weights.size() - 1, 0f);
-				}
-				ArrayList<Map.Entry<Integer, Float>> list = new ArrayList<>(weights.entrySet());
-
-				list.sort((Map.Entry<Integer, Float> o1, Map.Entry<Integer, Float> o2)
-						-> -o1.getValue().compareTo(o2.getValue()));
-
-				while (list.size() > 3) {
-					list.remove(list.size() - 1);
-				}
-				vertexBoneWeights.put(v, list);
-			}
-			System.err.println("vertexBoneWeights = " + vertexBoneWeights.size());
+			skeleton = parseSkeleton(mesh, sceneStructure);
+			vertexBoneWeights = loadVertexWeights(mesh, skeleton, 3);
 		}
 
 		for (int v = 0; v < vertexCount; v++) {
@@ -175,12 +137,68 @@ public class ObjectLoader {
 		VAORenderable vaomesh = new VAORenderable(data, indices, format, box);
 		
 		if (isAnimated) {
-			return loadAnimatedMesh(mesh, vaomesh, sceneStructure);
+			return loadAnimatedMesh(mesh, vaomesh, skeleton);
 		} else {
 			return vaomesh;
 		}
 	}
 	
+	/**
+	 * load the per-vertex weights on the bones ()
+	 * @param mesh
+	 * @param skeleton
+	 * @param weightsAmount how many bones per vertex
+	 * @return 
+	 */
+	private Map<Integer, List<Map.Entry<Integer, Float>>> loadVertexWeights(AIMesh mesh, Bone skeleton, int weightsAmount) {
+		//calculate weights here
+		Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights = new HashMap<>();
+		Map<Integer, Map<Integer, Float>> rawVertexBoneWeights = new HashMap<>(2 * mesh.mNumVertices());
+		for (int b = 0; b < mesh.mNumBones(); b++) {
+			AIBone bone = AIBone.create(mesh.mBones().get(b));
+			System.err.println("mNumWeights = " + bone.mNumWeights());
+			for (int w = 0; w < bone.mNumWeights(); w++) {
+				AIVertexWeight aiWeight = bone.mWeights().get(w);
+				int vertex = aiWeight.mVertexId();
+				Map<Integer, Float> vertexMapping = rawVertexBoneWeights.get(vertex);
+				if (vertexMapping == null) {
+					vertexMapping = new HashMap<>();
+					rawVertexBoneWeights.put(vertex, vertexMapping);
+				}
+				String boneName = bone.mName().dataString();
+				int boneID = skeleton.firstBoneNamed(boneName).getIndex();
+				vertexMapping.put(boneID, aiWeight.mWeight());
+			}
+		}
+		System.err.println("rawVertexBoneWeights = " + rawVertexBoneWeights.size());
+		//normalize weights
+		for (int v = 0; v < mesh.mNumVertices(); v++) {
+			Map<Integer, Float> weights = rawVertexBoneWeights.get(v);
+			//System.err.println("weights = " + weights.size());
+			while (weights.size() < weightsAmount) {
+				//putting 0 at some non-existent index
+				weights.put(-weights.size() - 1, 0f);
+			}
+			ArrayList<Map.Entry<Integer, Float>> list = new ArrayList<>(weights.entrySet());
+
+			list.sort((Map.Entry<Integer, Float> o1, Map.Entry<Integer, Float> o2)
+					-> -o1.getValue().compareTo(o2.getValue()));
+
+			while (list.size() > weightsAmount) {
+				list.remove(list.size() - 1);
+			}
+			vertexBoneWeights.put(v, list);
+		}
+		System.err.println("vertexBoneWeights = " + vertexBoneWeights.size());
+		return vertexBoneWeights;
+	}
+	
+	/**
+	 * extract a skeleton from the scene structure and adjust the bones indices
+	 * @param mesh the mesh that containts bones
+	 * @param sceneStructure the total scene structure
+	 * @return 
+	 */
 	private Bone parseSkeleton(AIMesh mesh, Bone sceneStructure) {
 		Bone rootBone = null;
 		for (int b = 0; b < mesh.mNumBones(); b++) {
@@ -237,6 +255,12 @@ public class ObjectLoader {
 		return rootBone;
 	}
 
+	/**
+	 * sub-routine for #parseScene(AIScene) that recursively converts
+	 * AINodes to Bones.
+	 * @param bone
+	 * @param node 
+	 */
 	private void parseBoneChildren(Bone bone, AINode node) {
 		for (int c = 0; c < node.mNumChildren(); c++) {
 			AINode childNode = AINode.create(node.mChildren().get(c));
