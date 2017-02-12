@@ -23,12 +23,7 @@ public class GLErrors {
 			return false;
 		} else {
 			GLException ex = new GLException(classTag, message, error);
-			new Thread() {
-				{ setName("ErrorThrower"); }
-				public void run() {
-					throw ex;
-				}
-			}.start();
+			ex.printStackTrace();
 			Log.error(classTag, ex.getMessage());
 			return true;
 		}

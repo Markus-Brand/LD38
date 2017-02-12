@@ -23,7 +23,6 @@ import mbeb.opengldefault.scene.SceneObject;
 import mbeb.opengldefault.scene.Transformation;
 
 import org.joml.Vector3f;
-import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.glDisable;
 
 /**
@@ -51,7 +50,7 @@ public class BunnyGame implements IGame {
 		cubeObj.addSubObject(bunnyObj);
 		bunnyScene.getSceneGraph().addSubObject(bunnyObj2);
 		bunnyScene.getSceneGraph().addSubObject(cubeObj);
-
+		
 		Shader defaultShader = new Shader("basic.vert", "phong.frag");
 		defaultShader.addUniformBlockIndex(1, "Matrices");
 		bunnyScene.getSceneGraph().setShader(defaultShader);
