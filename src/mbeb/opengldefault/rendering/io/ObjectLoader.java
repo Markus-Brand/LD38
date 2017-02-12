@@ -8,9 +8,12 @@ import mbeb.opengldefault.logging.Log;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.VAORenderable;
+import mbeb.opengldefault.scene.BoundingBox;
+import org.joml.Vector3f;
 
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIScene;
+import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.Assimp;
 
 /**
@@ -92,8 +95,12 @@ public class ObjectLoader {
 		int dataPointer = 0;
 		int[] indices = new int[vertexCount];
 		int indicesPointer = 0;
+		
+		BoundingBox box = new BoundingBox.Empty();
 
 		for (int v = 0; v < vertexCount; v++) {
+			AIVector3D position = mesh.mVertices().get(v);
+			box = box.extendTo(new Vector3f(position.x(), position.y(), position.z()));
 			for (DataFragment dataFormat : format) {
 				dataFormat.addTo(mesh, v, data, dataPointer);
 				dataPointer += dataFormat.size();
@@ -102,7 +109,7 @@ public class ObjectLoader {
 			indicesPointer++;
 		}
 
-		return new VAORenderable(data, indices, DataFragment.mapFormat(format));
+		return new VAORenderable(data, indices, DataFragment.mapFormat(format), box);
 	}
 
 }

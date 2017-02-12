@@ -22,21 +22,29 @@ import org.lwjgl.opengl.GL;
 
 public class OpenGLContext {
 
-	/** Class Name Tag */
+	/**
+	 * Class Name Tag
+	 */
 	private static final String TAG = "OpenGLContext";
 
-	/** The created window Object */
+	/**
+	 * The created window Object
+	 */
 	private long window;
 
-	/** Primary monitors video mode */
+	/**
+	 * Primary monitors video mode
+	 */
 	private static GLFWVidMode vidmode;
 
-	/** Game Object */
+	/**
+	 * Game Object
+	 */
 	private IGame game;
 
 	/**
-	 * Constructor of the Main class
-	 * It initializes a new Window, then starts the main loop and cleans when the window is closed
+	 * Constructor of the Main class It initializes a new Window, then starts
+	 * the main loop and cleans when the window is closed
 	 */
 	public OpenGLContext(IGame game, String[] args) {
 		this.game = game;
@@ -53,7 +61,7 @@ public class OpenGLContext {
 	private void init(String[] args) {
 		evaluateCommandLineArguments(args);
 		initOpenGL();
-		createWindow("Test window", false, vidmode.width(), vidmode.height());
+		createWindow("Test window", false, getWidth(), getHeight());
 		GL.createCapabilities();
 		GLErrors.checkForError(TAG, "createCapabilities");
 		game.init();
@@ -89,14 +97,13 @@ public class OpenGLContext {
 	 * cleaning after closing the window
 	 */
 	private void clean() {
+		game.clear();
 		glfwDestroyWindow(window);
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();
 		Log.closeLogFile();
-		game.clear();
 		try {
-			Files.walk(new File("res").toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).peek(System.out::println).forEach(File::delete);
-			System.out.println("res clear");
+			Files.walk(new File("res").toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
 		} catch (IOException ex) {
 			Log.log(TAG, ex.getMessage() + " - unable to delete old res-directory");
 		}

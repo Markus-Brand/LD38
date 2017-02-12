@@ -1,5 +1,9 @@
 package mbeb.opengldefault.rendering.renderable;
 
+import mbeb.opengldefault.rendering.shader.Shader;
+import mbeb.opengldefault.scene.BoundingBox;
+import org.joml.Vector3f;
+
 
 public class ScreenAlignedQuad {
 	private static final String TAG = "ScreenAlignedQuad";
@@ -15,14 +19,14 @@ public class ScreenAlignedQuad {
 
 			int[] dataSizes = { 2 };
 
-			renderable = new VAORenderable(vertexData, indexData, dataSizes);
+			renderable = new VAORenderable(vertexData, indexData, dataSizes, new BoundingBox(new Vector3f(-1, -1, 0), new Vector3f(2, 2, 0)));
 
 		}
 		return renderable;
 	}
 
-	public static void render() {
-		getRenderable().render();
+	public static void render(Shader shader) {
+		getRenderable().render(shader);
 	}
 
 }

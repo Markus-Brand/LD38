@@ -9,20 +9,21 @@ import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glViewport;
 
-import java.nio.FloatBuffer;
-
 import mbeb.opengldefault.camera.FirstPersonCamera;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
 import mbeb.opengldefault.rendering.io.ObjectLoader;
+import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.TexturedRenderable;
+import mbeb.opengldefault.rendering.shader.Shader;
 import mbeb.opengldefault.rendering.textures.Texture;
 import mbeb.opengldefault.rendering.textures.TextureCache;
+import mbeb.opengldefault.scene.Scene;
+import mbeb.opengldefault.scene.SceneObject;
+import mbeb.opengldefault.scene.Transformation;
 
-import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL20;
+import static org.lwjgl.opengl.GL11.glDisable;
 
 /**
  * Object to characterize a whole game
@@ -31,19 +32,30 @@ public class BunnyGame implements IGame {
 	/** Class Name Tag */
 	private static final String TAG = "BunnyGame";
 
-	protected FirstPersonCamera cam;
+	Scene bunnyScene;
 
-	TexturedRenderable bunny;
-
-	public BunnyGame() {
-	}
+	SceneObject cubeObj, bunnyObj, bunnyObj2;
 
 	@Override
 	public void init() {
-		bunny = new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
-		cam = new FirstPersonCamera(new Vector3f(0, 0, 0), new Vector3f(0, 0, 1));
+		bunnyScene = new Scene(new FirstPersonCamera(new Vector3f(0, 0, 0), new Vector3f(0, 0, 1)));
 
-		glEnable(GL_CULL_FACE);
+		IRenderable bunny = new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
+		IRenderable cube = new TexturedRenderable(new ObjectLoader().loadFromFile("cube.obj"), new Texture("bunny_2d.png"));
+
+		cubeObj = new SceneObject(cube, null, null);
+		bunnyObj = new SceneObject(bunny, Transformation.fromPosition(new Vector3f(1, 1, 1)), null);
+		bunnyObj2 = new SceneObject(bunny, Transformation.fromPosition(new Vector3f(1, -1, 1)), null);
+
+		cubeObj.addSubObject(bunnyObj);
+		bunnyScene.getSceneGraph().addSubObject(bunnyObj2);
+		bunnyScene.getSceneGraph().addSubObject(cubeObj);
+
+		Shader defaultShader = new Shader("basic.vert", "phong.frag");
+		defaultShader.addUniformBlockIndex(1, "Matrices");
+		bunnyScene.getSceneGraph().setShader(defaultShader);
+
+		glDisable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 	}
 
@@ -58,23 +70,14 @@ public class BunnyGame implements IGame {
 		glViewport(0, 0, OpenGLContext.getWidth(), OpenGLContext.getHeight());
 		GLErrors.checkForError(TAG, "glViewport");
 
-		cam.update();
-
-		render();
+		cubeObj.getTransformation().asMatrix().rotate((float) deltaTime, new Vector3f(1, 1, 0));
+		bunnyObj.getTransformation().asMatrix().rotate((float) deltaTime * 3, new Vector3f(0, 1, 0));
 
 	}
 
 	@Override
 	public void render() {
-		Vector3f pos = cam.getPosition();
-		bunny.getShader().use();
-		GL20.glUniform3f(bunny.getShader().getUniform("viewPos"), pos.x, pos.y, pos.z);
-		GLErrors.checkForError(TAG, "glUniform3f");
-		Matrix4f model = new Matrix4f();
-		FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
-		GL20.glUniformMatrix4fv(bunny.getShader().getUniform("model"), false, model.get(buffer));
-		GLErrors.checkForError(TAG, "glUniformMatrix4fv");
-		bunny.render();
+		bunnyScene.render();
 	}
 
 	@Override
