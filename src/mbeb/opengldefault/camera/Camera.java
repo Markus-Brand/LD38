@@ -13,37 +13,53 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
-public class Camera implements ICamera {
+public abstract class Camera implements ICamera {
 
-	/** Class Name Tag */
+	/**
+	 * Class Name Tag
+	 */
 	private static final String TAG = "Camera";
 
-	/** Cameras View Matrix */
+	/**
+	 * Cameras View Matrix
+	 */
 	protected Matrix4f view;
 
-	/** Cameras projection Matrix */
+	/**
+	 * Cameras projection Matrix
+	 */
 	protected Matrix4f projection;
 
-	/** Cameras projectionView Matrix */
+	/**
+	 * Cameras projectionView Matrix
+	 */
 	protected Matrix4f projectionView;
 
-	/** Uniform Buffer containing the Matrix data */
+	/**
+	 * Uniform Buffer containing the Matrix data
+	 */
 	private int UBO = -1;
 
-	/** Position of the Camera */
+	/**
+	 * Position of the Camera
+	 */
 	protected Vector3f position;
 
-	/** View Direction of the Camera */
+	/**
+	 * View Direction of the Camera
+	 */
 	protected Vector3f viewDirection;
 
 	/**
-	 * Basic Camera Constructor. Sets the projection to a default perspective projection and the view to Camera looking from origin along positive z direction.
+	 * Basic Camera Constructor. Sets the projection to a default perspective
+	 * projection and the view to Camera looking from origin along positive z
+	 * direction.
 	 */
 	public Camera() {
 		projection = new Matrix4f();
 		view = new Matrix4f();
 		projectionView = new Matrix4f();
-		projection.perspective(90, OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f, 100);
+		projection.perspective((float) (Math.PI / 2), OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f, 100);
 
 		view.lookAlong(new Vector3f(0, 0, 1), new Vector3f(0, 1, 0));
 
@@ -133,5 +149,4 @@ public class Camera implements ICamera {
 	public void setViewDirection(Vector3f newViewDirection) {
 		this.viewDirection = newViewDirection;
 	}
-
 }
