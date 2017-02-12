@@ -40,14 +40,20 @@ public class BunnyGame implements IGame {
 	public void init() {
 		String bunnyObjectName = /*/"bunny.obj"/*/"riggedStanfordBunny.dae"/**/;
 		bunnyScene = new Scene(new FirstPersonCamera(new Vector3f(0, 0, 0), new Vector3f(0, 0, 1)));
-		IRenderable bunny = new TexturedRenderable(new ObjectLoader().loadFromFile(bunnyObjectName), new Texture("bunny_2d.png"));
+		IRenderable bunny = new ObjectLoader().loadFromFileAnim(bunnyObjectName);
 		IRenderable cube = new TexturedRenderable(new ObjectLoader().loadFromFile("cube.obj"), new Texture("bunny_2d.png"));
+		System.gc();
 
+		Shader debugShader = new Shader("boneAnimation.vert", "debugging.frag");
+		
 		cubeObj = new SceneObject(cube, null, null);
 		bunnyObj = new SceneObject(bunny, Transformation.fromPosition(new Vector3f(1, 1, 1)), null);
+		bunnyObj.setShader(debugShader);
 		bunnyObj2 = new SceneObject(bunny, Transformation.fromPosition(new Vector3f(1, -1, 1)), null);
+		bunnyObj2.setShader(debugShader);
 
 		cubeObj.addSubObject(bunnyObj);
+		cubeObj.getTransformation().asMatrix().scale(0.3f);
 		bunnyScene.getSceneGraph().addSubObject(bunnyObj2);
 		bunnyScene.getSceneGraph().addSubObject(cubeObj);
 
