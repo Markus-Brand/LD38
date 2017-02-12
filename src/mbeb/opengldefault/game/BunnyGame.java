@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import mbeb.opengldefault.camera.BezierCamera;
 import mbeb.opengldefault.camera.Camera;
 import mbeb.opengldefault.curves.BezierCurve;
+import mbeb.opengldefault.curves.BezierCurve.ControlPointInputMode;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
 import mbeb.opengldefault.rendering.io.ObjectLoader;
@@ -46,17 +47,12 @@ public class BunnyGame implements IGame {
 		bunny = new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
 		ArrayList<Vector3f> controlPoints = new ArrayList<>();
 
-		controlPoints.add(new Vector3f(10, 0, 0));
-		controlPoints.add(new Vector3f(0, 0, 10));
-		controlPoints.add(new Vector3f(-10, 0, 0));
-		controlPoints.add(new Vector3f(0, 0, -10));
+		controlPoints.add(new Vector3f(1, 1, 0));
+		controlPoints.add(new Vector3f(0, 1, 1));
+		controlPoints.add(new Vector3f(-1, 1, 0));
+		controlPoints.add(new Vector3f(0, 1, -1));
 
-		ArrayList<Float> segmentLength = new ArrayList<>();
-
-		segmentLength.add(new Float(0.2));
-		segmentLength.add(new Float(2));
-
-		cam = new BezierCamera(new BezierCurve(controlPoints, true, true));
+		cam = new BezierCamera(new BezierCurve(controlPoints, ControlPointInputMode.CameraPointsCircular, true));
 
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);

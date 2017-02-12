@@ -28,7 +28,7 @@ public class BezierCamera extends Camera {
 		this.path = path;
 
 		this.distanceTraveled = 0;
-		this.speed = 4.4f;
+		this.speed = 0.4f;
 
 		updateView(0);
 	}
