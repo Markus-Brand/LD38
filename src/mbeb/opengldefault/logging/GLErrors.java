@@ -9,13 +9,14 @@ public class GLErrors {
 	private static final String TAG = "GLErrors";
 
 	/**
-	 * Checks if a error occured between this moment and the last error check. This method should be called every time a OpenGL method is called.
+	 * Checks if a error occurred between this moment and the last error check.
+	 * This method should be called every time a OpenGL method is called.
 	 *
 	 * @param classTag
 	 *            Name of the class the method was called from
 	 * @param message
 	 *            additional information. Should be the name of the OpenGL that was called and could have caused the error
-	 * @return true if a error occured
+	 * @return whether an error occurred
 	 */
 	public static boolean checkForError(String classTag, String message) {
 		int error = glGetError();
