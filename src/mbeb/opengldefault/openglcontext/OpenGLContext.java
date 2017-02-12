@@ -112,10 +112,14 @@ public class OpenGLContext {
 	/**
 	 * creates the GLFW Window
 	 *
-	 * @param title windows title
-	 * @param fullscreen is the window fullscreen?
-	 * @param width window width
-	 * @param height window height
+	 * @param title
+	 *            windows title
+	 * @param fullscreen
+	 *            is the window fullscreen?
+	 * @param width
+	 *            window width
+	 * @param height
+	 *            window height
 	 */
 	private void createWindow(String title, boolean fullscreen, int width, int height) {
 		// Create the window
@@ -211,7 +215,8 @@ public class OpenGLContext {
 	/**
 	 * Sets Debug Mode
 	 *
-	 * @param args command line arguments
+	 * @param args
+	 *            command line arguments
 	 */
 	private static void evaluateCommandLineArguments(String[] args) {
 		if (args.length < 2) {

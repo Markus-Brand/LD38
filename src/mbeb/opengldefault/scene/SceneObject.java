@@ -9,7 +9,7 @@ import mbeb.opengldefault.rendering.shader.Shader;
  * A (potentially) complex object inside a scene, with transformations
  */
 public class SceneObject {
-	
+
 	/** the renderable for this object, or null */
 	private Shader shader;
 	/** a renderable for this Object, or null */
@@ -25,9 +25,13 @@ public class SceneObject {
 
 	/**
 	 * Create a new sceneObject. All parameters are optional
-	 * @param renderable none
-	 * @param myTransformation identity
-	 * @param subObjects empty collection
+	 *
+	 * @param renderable
+	 *            none
+	 * @param myTransformation
+	 *            identity
+	 * @param subObjects
+	 *            empty collection
 	 */
 	public SceneObject(IRenderable renderable, Transformation myTransformation, List<SceneObject> subObjects) {
 		this.myTransformation = myTransformation;
@@ -48,6 +52,7 @@ public class SceneObject {
 
 	/**
 	 * add SubObjects via addSubObject instead
+	 *
 	 * @return all the Objects that share this objects transformation
 	 */
 	public List<SceneObject> getSubObjects() {
@@ -56,20 +61,24 @@ public class SceneObject {
 		}
 		return subObjects;
 	}
-	
+
 	/**
 	 * add a new Scene-Object as child of this one to the scene
-	 * @param object the new object to add
+	 *
+	 * @param object
+	 *            the new object to add
 	 */
 	public void addSubObject(SceneObject object) {
 		getSubObjects().add(object);
 		object.setParent(this);
 		adjustBoundingBoxFor(object);
 	}
-	
+
 	/**
 	 * add a new Scene-Object wrapping the provided model as child of this one to the scene
-	 * @param model the new model to add
+	 *
+	 * @param model
+	 *            the new model to add
 	 */
 	public void addSubObject(IRenderable model) {
 		addSubObject(new SceneObject(model, null, null));
@@ -88,7 +97,8 @@ public class SceneObject {
 
 	/**
 	 * get the shader this object should use (asking the parent if needed)
-	 * @return 
+	 *
+	 * @return
 	 */
 	public Shader getShader() {
 		if (!hasOwnShader() && parent != null) {
@@ -99,35 +109,32 @@ public class SceneObject {
 
 	/**
 	 * set an own shader for this object
-	 * @param shader 
+	 *
+	 * @param shader
 	 */
 	public void setShader(Shader shader) {
 		this.shader = shader;
 	}
-	
+
 	/**
 	 * @return if this object has its own shader
 	 */
 	public boolean hasOwnShader() {
 		return shader != null;
 	}
-	
-	
+
 //<editor-fold defaultstate="collapsed" desc="BoundingBox">
-	
-	
+
 	/**
 	 * @return a boundingBox so that each sub-Object lies within
 	 */
 	public BoundingBox getBoundingBox() {
-		//todo check for needed updates
-		if (box == null) {
-			reCalculateBoundingBox();
-		}
+		//TODO: Only recalculate BB if needed
+		reCalculateBoundingBox();
 		box.setModelTransform(getTransformation());
 		return box;
 	}
-	
+
 	/**
 	 * calculate the boundingBox of just the renderable
 	 */
@@ -137,22 +144,24 @@ public class SceneObject {
 		}
 		return renderable.getBoundingBox();
 	}
-	
+
 	/**
 	 * completely recalculate my own boundingBox
-	 * @return 
+	 *
+	 * @return
 	 */
 	public BoundingBox reCalculateBoundingBox() {
 		box = getRenderableBoundingBox();
-		for (SceneObject o: getSubObjects()) {
+		for (SceneObject o : getSubObjects()) {
 			adjustBoundingBoxFor(o);
 		}
 		return box;
 	}
-	
+
 	/**
 	 * insert a given object ot my own boundingBox
-	 * @param object 
+	 *
+	 * @param object
 	 */
 	private void adjustBoundingBoxFor(SceneObject object) {
 		if (box == null) {

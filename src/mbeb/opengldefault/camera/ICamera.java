@@ -8,14 +8,14 @@ public interface ICamera {
 
 	/**
 	 * get the cameras position
-	 * 
+	 *
 	 * @return current position of the camera
 	 */
 	Vector3f getPosition();
 
 	/**
 	 * sets a new camera position
-	 * 
+	 *
 	 * @param newPosition
 	 *            the new camera position
 	 */
@@ -23,14 +23,14 @@ public interface ICamera {
 
 	/**
 	 * get the cameras view direction
-	 * 
+	 *
 	 * @return current view direction of the camera
 	 */
 	Vector3f getViewDirection();
 
 	/**
 	 * sets a new camera view direction
-	 * 
+	 *
 	 * @param newViewDirection
 	 *            the new camera view direction
 	 */
@@ -84,26 +84,28 @@ public interface ICamera {
 	 * updates the UBO: Buffers the view, projection and viewProjection matrix into the UBO
 	 */
 	void updateUniformBlock();
-	
+
 	/**
 	 * call this once per update cycle.
 	 */
 	default void update() {
 	}
-	
+
 	/**
 	 * convert the given world space coordinates to screen space
+	 * 
 	 * @param pos
-	 * @return 
+	 * @return
 	 */
 	default Vector3f getPosOnScreen(Vector3f pos) {
 		return getPosOnScreen(new Vector4f(pos.x, pos.y, pos.z, 1));
 	}
-	
+
 	/**
 	 * convert the given world space coordinates to screen space
+	 * 
 	 * @param pos
-	 * @return 
+	 * @return
 	 */
 	default Vector3f getPosOnScreen(Vector4f pos) {
 		Vector4f res = pos.mul(getProjectionView());

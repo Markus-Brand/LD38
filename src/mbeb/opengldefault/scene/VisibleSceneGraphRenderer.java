@@ -7,7 +7,7 @@ import org.joml.Vector3f;
  * only renders the visible part of the sceneGraph
  */
 public class VisibleSceneGraphRenderer extends SceneGraphRenderer {
-	
+
 	private static final float MIN_SCREEN_AREA = 0.00001f;
 
 	public VisibleSceneGraphRenderer(SceneObject root, Camera cam) {
@@ -20,24 +20,26 @@ public class VisibleSceneGraphRenderer extends SceneGraphRenderer {
 			super.renderObject(object, parentTransform);
 		}
 	}
-	
+
 	/**
 	 * check for visibility of an object
-	 * @param object the object to check
-	 * @param parentTransform the current transformation
+	 *
+	 * @param object
+	 *            the object to check
+	 * @param parentTransform
+	 *            the current transformation
 	 * @return false if this object would not be visible if rendered
 	 */
 	private boolean isVisible(SceneObject object, Transformation parentTransform) {
-		Vector3f[] edges = object.getBoundingBox()
-				.getEdgesOnScreen(parentTransform, cam);
+		Vector3f[] edges = object.getBoundingBox().getEdgesOnScreen(parentTransform, cam);
 		float minX = edges[0].x;
 		float minY = edges[0].y;
 		float maxX = edges[0].x;
 		float maxY = edges[0].y;
-		
+
 		float maxZ = edges[0].z;
-		
-		for (Vector3f e: edges) {
+
+		for (Vector3f e : edges) {
 			minX = Math.min(minX, e.x);
 			maxX = Math.max(maxX, e.x);
 			minY = Math.min(minY, e.y);
@@ -50,8 +52,8 @@ public class VisibleSceneGraphRenderer extends SceneGraphRenderer {
 		}
 		//otherwise check if big enough
 		float area = (maxX - minX) * (maxY - minY);
-		
-		return (area >= MIN_SCREEN_AREA);
+
+		return area >= MIN_SCREEN_AREA;
 	}
-	
+
 }

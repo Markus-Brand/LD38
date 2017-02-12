@@ -9,7 +9,6 @@ import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glViewport;
 
-
 import mbeb.opengldefault.camera.FirstPersonCamera;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
@@ -32,30 +31,29 @@ import static org.lwjgl.opengl.GL11.glDisable;
 public class BunnyGame implements IGame {
 	/** Class Name Tag */
 	private static final String TAG = "BunnyGame";
-	
+
 	Scene bunnyScene;
-	
+
 	SceneObject cubeObj, bunnyObj, bunnyObj2;
 
 	@Override
 	public void init() {
 		bunnyScene = new Scene(new FirstPersonCamera(new Vector3f(0, 0, 0), new Vector3f(0, 0, 1)));
-		
+
 		IRenderable bunny = new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
 		IRenderable cube = new TexturedRenderable(new ObjectLoader().loadFromFile("cube.obj"), new Texture("bunny_2d.png"));
-		
+
 		cubeObj = new SceneObject(cube, null, null);
 		bunnyObj = new SceneObject(bunny, Transformation.fromPosition(new Vector3f(1, 1, 1)), null);
 		bunnyObj2 = new SceneObject(bunny, Transformation.fromPosition(new Vector3f(1, -1, 1)), null);
-		
+
 		cubeObj.addSubObject(bunnyObj);
 		bunnyScene.getSceneGraph().addSubObject(bunnyObj2);
 		bunnyScene.getSceneGraph().addSubObject(cubeObj);
-		
+
 		Shader defaultShader = new Shader("basic.vert", "phong.frag");
 		defaultShader.addUniformBlockIndex(1, "Matrices");
 		bunnyScene.getSceneGraph().setShader(defaultShader);
-		bunnyScene.getSceneGraph().getTransformation().asMatrix().scale(0.01f);
 
 		glDisable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
@@ -71,10 +69,10 @@ public class BunnyGame implements IGame {
 
 		glViewport(0, 0, OpenGLContext.getWidth(), OpenGLContext.getHeight());
 		GLErrors.checkForError(TAG, "glViewport");
-		
-		cubeObj.getTransformation().asMatrix().rotate((float)deltaTime, new Vector3f(1, 1, 0));
-		bunnyObj.getTransformation().asMatrix().rotate((float)deltaTime * 3, new Vector3f(0, 1, 0));
-		
+
+		cubeObj.getTransformation().asMatrix().rotate((float) deltaTime, new Vector3f(1, 1, 0));
+		bunnyObj.getTransformation().asMatrix().rotate((float) deltaTime * 3, new Vector3f(0, 1, 0));
+
 	}
 
 	@Override
