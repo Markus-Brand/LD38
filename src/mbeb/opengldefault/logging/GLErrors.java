@@ -9,8 +9,8 @@ public class GLErrors {
 	private static final String TAG = "GLErrors";
 
 	/**
-	 * Checks if a error occurred between this moment and the last error check.
-	 * This method should be called every time a OpenGL method is called.
+	 * Checks if an error occurred between this moment and the last error check.
+	 * This method should be called every time an OpenGL method is called.
 	 *
 	 * @param classTag
 	 *            Name of the class the method was called from
@@ -29,7 +29,7 @@ public class GLErrors {
 			return true;
 		}
 	}
-	
+
 	/**
 	 * a small class to format gl-errors nicely
 	 */
@@ -38,9 +38,9 @@ public class GLErrors {
 		public GLException(String classTag, String method, int error) {
 			super(format(classTag, method, error));
 		}
-		
+
 		private static String format(String classTag, String method, int error) {
-			String errorMessage = classTag + ">" + method + ": caused error code " + error + " (";
+			String errorMessage = classTag + ">>" + method + ": caused error code " + error + " (";
 			switch (error) {
 				case GL_INVALID_ENUM:
 					errorMessage += "GL_INVALID_ENUM";
@@ -57,10 +57,11 @@ public class GLErrors {
 				case GL_OUT_OF_MEMORY:
 					errorMessage += "GL_OUT_OF_MEMORY";
 					break;
+				default:
+					errorMessage += "UNKNOWN_EXCEPTION"; 
 			}
 			errorMessage += ")";
 			return errorMessage;
 		}
-		
 	}
 }
