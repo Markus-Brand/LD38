@@ -23,6 +23,7 @@ import mbeb.opengldefault.scene.SceneObject;
 import mbeb.opengldefault.scene.Transformation;
 
 import org.joml.Vector3f;
+import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.glDisable;
 
 /**

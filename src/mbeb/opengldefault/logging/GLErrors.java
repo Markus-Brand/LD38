@@ -22,7 +22,29 @@ public class GLErrors {
 		if (error == GL_NO_ERROR) {
 			return false;
 		} else {
-			String errorMessage = message + ": caused error code " + error + " (";
+			GLException ex = new GLException(classTag, message, error);
+			new Thread() {
+				{ setName("ErrorThrower"); }
+				public void run() {
+					throw ex;
+				}
+			}.start();
+			Log.error(classTag, ex.getMessage());
+			return true;
+		}
+	}
+	
+	/**
+	 * a small class to format gl-errors nicely
+	 */
+	private static final class GLException extends RuntimeException {
+
+		public GLException(String classTag, String method, int error) {
+			super(format(classTag, method, error));
+		}
+		
+		private static String format(String classTag, String method, int error) {
+			String errorMessage = classTag + ">" + method + ": caused error code " + error + " (";
 			switch (error) {
 				case GL_INVALID_ENUM:
 					errorMessage += "GL_INVALID_ENUM";
@@ -39,11 +61,10 @@ public class GLErrors {
 				case GL_OUT_OF_MEMORY:
 					errorMessage += "GL_OUT_OF_MEMORY";
 					break;
-
 			}
 			errorMessage += ")";
-			Log.error(classTag, errorMessage);
-			return true;
+			return errorMessage;
 		}
+		
 	}
 }
