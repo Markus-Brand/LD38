@@ -66,17 +66,15 @@ public class SceneGraphRenderer {
 	/**
 	 * render the IRenderable of an object
 	 *
-	 * @param object
-	 *            the object which should be rendered
-	 * @param transform
-	 *            the modle-Transformation for this Renderable
+	 * @param object the object which should be rendered
+	 * @param transform the modle-Transformation for this Renderable
 	 */
 	public void renderSelf(SceneObject object, Transformation transform) {
 		Shader shader = object.getShader();
 		shader.use();
 		if (object.hasOwnShader()) {
 			//update camera on first object with this shader only
-			int viewPosUniform = shader.getUniform(ViewPosUniformName);
+			int viewPosUniform = shader.getUniform(ViewPosUniformName, false);
 			if (viewPosUniform >= 0) {
 				Vector3f pos = cam.getPosition();
 				GL20.glUniform3f(viewPosUniform, pos.x, pos.y, pos.z);
@@ -87,7 +85,7 @@ public class SceneGraphRenderer {
 		if (renderable == null) {
 			return;
 		}
-		int modelUniform = shader.getUniform(ModelMatrixUniformName);
+		int modelUniform = shader.getUniform(ModelMatrixUniformName, false);
 		if (modelUniform >= 0) {
 			//only if shader wants the model matrix
 			Matrix4f model = transform.asMatrix();
