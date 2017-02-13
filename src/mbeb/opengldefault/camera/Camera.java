@@ -1,8 +1,12 @@
 package mbeb.opengldefault.camera;
 
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.opengl.GL31.*;
+import static org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW;
+import static org.lwjgl.opengl.GL15.glBindBuffer;
+import static org.lwjgl.opengl.GL15.glBufferData;
+import static org.lwjgl.opengl.GL15.glBufferSubData;
+import static org.lwjgl.opengl.GL15.glGenBuffers;
+import static org.lwjgl.opengl.GL30.glBindBufferBase;
+import static org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER;
 
 import java.nio.FloatBuffer;
 
@@ -20,34 +24,22 @@ public abstract class Camera implements ICamera {
 	 */
 	private static final String TAG = "Camera";
 
-	/**
-	 * Cameras View Matrix
-	 */
+	/** Cameras View Matrix */
 	protected Matrix4f view;
 
-	/**
-	 * Cameras projection Matrix
-	 */
+	/** Cameras projection Matrix */
 	protected Matrix4f projection;
 
-	/**
-	 * Cameras projectionView Matrix
-	 */
+	/** Cameras projectionView Matrix */
 	protected Matrix4f projectionView;
 
-	/**
-	 * Uniform Buffer containing the Matrix data
-	 */
+	/** Uniform Buffer containing the Matrix data */
 	private int UBO = -1;
 
-	/**
-	 * Position of the Camera
-	 */
+	/** Position of the Camera */
 	protected Vector3f position;
 
-	/**
-	 * View Direction of the Camera
-	 */
+	/** View Direction of the Camera */
 	protected Vector3f viewDirection;
 
 	/**
@@ -136,8 +128,8 @@ public abstract class Camera implements ICamera {
 	}
 
 	@Override
-	public void setPosition(Vector3f newPosition) {
-		this.position = newPosition;
+	public void setPosition(Vector3f position) {
+		this.position = position;
 	}
 
 	@Override

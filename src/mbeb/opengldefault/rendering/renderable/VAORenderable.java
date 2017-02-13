@@ -1,19 +1,29 @@
 package mbeb.opengldefault.rendering.renderable;
 
+import static org.lwjgl.opengl.GL11.GL_FLOAT;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
+import static org.lwjgl.opengl.GL11.glDrawElements;
+import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
+import static org.lwjgl.opengl.GL15.glBindBuffer;
+import static org.lwjgl.opengl.GL15.glBufferData;
+import static org.lwjgl.opengl.GL15.glDeleteBuffers;
+import static org.lwjgl.opengl.GL15.glGenBuffers;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL30.glGenVertexArrays;
+
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.Arrays;
 
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.rendering.shader.Shader;
 import mbeb.opengldefault.scene.BoundingBox;
 
 import org.lwjgl.BufferUtils;
-
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
 
 /**
  * Leaf Renderable - an actual OpenGL-VAO that can be rendered
@@ -95,7 +105,7 @@ public class VAORenderable implements IRenderable {
 	}
 
 	/**
-	 * unbind the Renderable
+	 * unbinds the Renderable
 	 */
 	public void unbind() {
 		glBindVertexArray(0);
@@ -214,7 +224,7 @@ public class VAORenderable implements IRenderable {
 
 		int stride = 0;
 		for (int dataSize : dataSizes) {
-			stride += 4 * dataSize;
+			stride += 4 * dataSize; //size of float
 		}
 
 		int offset = 0;

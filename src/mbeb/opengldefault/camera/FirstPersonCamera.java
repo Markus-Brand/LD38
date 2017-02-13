@@ -13,14 +13,14 @@ public class FirstPersonCamera extends Camera {
 
 	/** Class Name Tag */
 	private static final String TAG = "FirstPersonCamera";
-
+	/** (0,1,0) */
 	private Vector3f worldUp;
-
+	/** mouse position at last update time */
 	private Vector2f lastMousePos;
-
+	/** current orientation */
 	private float pitch, yaw;
 
-	private float speed, rotationSpeed;
+	private float movementSpeed, rotationSpeed;
 
 	private float distanceTravelled;
 
@@ -28,6 +28,11 @@ public class FirstPersonCamera extends Camera {
 
 	private float viewBobbingDistance;
 
+	/**
+	 * 
+	 * @param position
+	 * @param direction
+	 */
 	public FirstPersonCamera(Vector3f position, Vector3f direction) {
 		lastMousePos = new Vector2f(Mouse.getPos());
 		projection = new Matrix4f();
@@ -37,7 +42,7 @@ public class FirstPersonCamera extends Camera {
 		this.viewDirection = direction;
 		this.worldUp = new Vector3f(0, 1, 0);
 
-		speed = 0.1f;
+		movementSpeed = 0.1f;
 		rotationSpeed = 0.01f;
 
 		viewBobbingAltitude = 0.0f;
@@ -69,7 +74,7 @@ public class FirstPersonCamera extends Camera {
 
 	@Override
 	public void setPosition(Vector3f position) {
-		this.position = position;
+		super.setPosition(position);
 		updateView();
 	}
 
@@ -98,7 +103,7 @@ public class FirstPersonCamera extends Camera {
 			return;
 		}
 		delta.normalize();
-		delta.mul(speed);
+		delta.mul(movementSpeed);
 		position.add(delta);
 
 		distanceTravelled += delta.length();
@@ -129,10 +134,4 @@ public class FirstPersonCamera extends Camera {
 
 		viewDirection.normalize();
 	}
-
-	@Override
-	public Vector3f getPosition() {
-		return position;
-	}
-
 }

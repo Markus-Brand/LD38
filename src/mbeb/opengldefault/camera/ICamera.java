@@ -16,10 +16,10 @@ public interface ICamera {
 	/**
 	 * sets a new camera position
 	 *
-	 * @param newPosition
+	 * @param position
 	 *            the new camera position
 	 */
-	void setPosition(Vector3f newPosition);
+	void setPosition(Vector3f position);
 
 	/**
 	 * get the cameras view direction

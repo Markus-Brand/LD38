@@ -12,7 +12,7 @@ public class TexturedRenderable implements IRenderable {
 	/** Class Name Tag */
 	private static final String TAG = "TexturedRenderable";
 
-	/** a reanderable to be wrapped and rendered */
+	/** a renderable to be wrapped and rendered */
 	private IRenderable renderable;
 	/** a texture to bind before rendering */
 	private Texture texture;
