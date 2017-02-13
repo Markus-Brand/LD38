@@ -19,12 +19,31 @@ public class GLErrors {
 	 * @return whether an error occurred
 	 */
 	public static boolean checkForError(String classTag, String message) {
+		return checkForError(classTag, message, false);
+	}
+
+	/**
+	 * Checks if an error occurred between this moment and the last error check.
+	 * This method should be called every time an OpenGL method is called.
+	 *
+	 * @param classTag
+	 *            Name of the class the method was called from
+	 * @param message
+	 *            additional information. Should be the name of the OpenGL that was called and could have caused the error
+	 * @param abortProgram abort the current thread by throwing an exception
+	 * @return whether an error occurred
+	 */
+	public static boolean checkForError(String classTag, String message, boolean abortProgram) {
 		int error = glGetError();
 		if (error == GL_NO_ERROR) {
 			return false;
 		} else {
 			GLException ex = new GLException(classTag, message, error);
-			ex.printStackTrace();
+			if (abortProgram) {
+				throw ex;
+			} else {
+				ex.printStackTrace();
+			}
 			Log.error(classTag, ex.getMessage());
 			return true;
 		}

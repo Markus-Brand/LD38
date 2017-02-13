@@ -230,9 +230,19 @@ public class Shader {
 	 * @return the uniforms location
 	 */
 	public int getUniform(String name) {
+		return getUniform(name, true);
+	}
+	
+	/**
+	 * get the location of a Uniform with given name
+	 * @param name name of the uniform
+	 * @param logAnError log an error if not found
+	 * @return the uniforms location
+	 */
+	public int getUniform(String name, boolean logAnError) {
 		int loc = glGetUniformLocation(shaderProgram, name);
 		GLErrors.checkForError(TAG, "glGetUniformLocation");
-		if (loc < 0) {
+		if (logAnError && loc < 0) {
 			Log.error(TAG, "GetUniform failed: " + name);
 		}
 		return loc;
