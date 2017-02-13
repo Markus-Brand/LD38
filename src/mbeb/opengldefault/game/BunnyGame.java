@@ -42,7 +42,7 @@ public class BunnyGame implements IGame {
 
 	@Override
 	public void init() {
-		ArrayList<Vector3f> controlPoints = new ArrayList<>();
+		final ArrayList<Vector3f> controlPoints = new ArrayList<>();
 
 		controlPoints.add(new Vector3f(2, 2, 0));
 		controlPoints.add(new Vector3f(0, 2, 2));
@@ -51,12 +51,12 @@ public class BunnyGame implements IGame {
 
 		cam = new FirstPersonCamera(new Vector3f(), new Vector3f());//(new BezierCurve(controlPoints, ControlPointInputMode.CameraPointsCircular, true));
 
-		Skybox skybox = new Skybox("skybox/mountain");
+		final Skybox skybox = new Skybox("skybox/mountain");
 
 		bunnyScene = new Scene(cam, skybox);
 
-		IRenderable bunny = new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
-		IRenderable cube = new TexturedRenderable(new ObjectLoader().loadFromFile("cube.obj"), new Texture("bunny_2d.png"));
+		final IRenderable bunny = new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
+		final IRenderable cube = new TexturedRenderable(new ObjectLoader().loadFromFile("cube.obj"), new Texture("bunny_2d.png"));
 
 		cubeObj = new SceneObject(cube, null, null);
 		bunnyObj = new SceneObject(bunny, Transformation.fromPosition(new Vector3f(1, 1, 1)), null);
@@ -66,7 +66,7 @@ public class BunnyGame implements IGame {
 		bunnyScene.getSceneGraph().addSubObject(bunnyObj2);
 		bunnyScene.getSceneGraph().addSubObject(cubeObj);
 
-		Shader defaultShader = new Shader("basic.vert", "phong.frag");
+		final Shader defaultShader = new Shader("basic.vert", "phong.frag");
 		defaultShader.addUniformBlockIndex(1, "Matrices");
 		bunnyScene.getSceneGraph().setShader(defaultShader);
 
@@ -75,7 +75,7 @@ public class BunnyGame implements IGame {
 	}
 
 	@Override
-	public void update(double deltaTime) {
+	public void update(final double deltaTime) {
 
 		glClearColor(0.05f, 0.075f, 0.075f, 1);
 		GLErrors.checkForError(TAG, "glClearColor");

@@ -36,7 +36,7 @@ import org.lwjgl.opengl.GL20;
 
 /**
  * Shader Object used for rendering a {@link mbeb.opengldefault.rendering.renderable.IRenderable}
- * 
+ *
  * @author Markus
  *
  */
@@ -48,9 +48,9 @@ public class Shader {
 	/** OpenGL shader program */
 	private int shaderProgram;
 	/** Vertex Shaders source code */
-	private String vertexSource;
+	private final String vertexSource;
 	/** Fragment Shaders source code */
-	private String fragmentSource;
+	private final String fragmentSource;
 	/** Geometry Shaders source code */
 	private String geometrySource;
 	/** Tessellation Control Shaders source code */
@@ -59,9 +59,9 @@ public class Shader {
 	private String tesEvalSource;
 
 	/** Static parameters that can be changed by recompiling the shaders. They will be written into the shader via preprocessors #define */
-	private Map<String, Object> parameters;
+	private final Map<String, Object> parameters;
 	/** Uniform Blocks used in the shader. Will hold data like projection and view matrices that are available to multiple shaders */
-	private Map<Integer, String> uniformBlocks;
+	private final Map<Integer, String> uniformBlocks;
 
 	/**
 	 * constructor of a shader object.
@@ -71,7 +71,7 @@ public class Shader {
 	 * @param fragmentPath
 	 *            path of a fragment Shader
 	 */
-	public Shader(String vertexPath, String fragmentPath) {
+	public Shader(final String vertexPath, final String fragmentPath) {
 		this(vertexPath, fragmentPath, null, null, null, new HashMap<>());
 	}
 
@@ -85,7 +85,7 @@ public class Shader {
 	 * @param parameters
 	 *            a map containing initial values for shader parameters
 	 */
-	public Shader(String vertexPath, String fragmentPath, Map<String, Object> parameters) {
+	public Shader(final String vertexPath, final String fragmentPath, final Map<String, Object> parameters) {
 		this(vertexPath, fragmentPath, null, null, null, parameters);
 	}
 
@@ -100,7 +100,7 @@ public class Shader {
 	 *            path of a geometry Shader
 	 */
 
-	public Shader(String vertexPath, String fragmentPath, String geometryPath) {
+	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath) {
 		this(vertexPath, fragmentPath, geometryPath, null, null, new HashMap<>());
 	}
 
@@ -116,7 +116,7 @@ public class Shader {
 	 * @param parameters
 	 *            a map containing initial values for shader parameters
 	 */
-	public Shader(String vertexPath, String fragmentPath, String geometryPath, Map<String, Object> parameters) {
+	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath, final Map<String, Object> parameters) {
 		this(vertexPath, fragmentPath, geometryPath, null, null, parameters);
 	}
 
@@ -134,7 +134,7 @@ public class Shader {
 	 * @param tesEvalPath
 	 *            path of a tessellation evaluation Shader
 	 */
-	public Shader(String vertexPath, String fragmentPath, String geometryPath, String tesControlPath, String tesEvalPath) {
+	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath, final String tesControlPath, final String tesEvalPath) {
 		this(vertexPath, fragmentPath, geometryPath, tesControlPath, tesEvalPath, new HashMap<>());
 	}
 
@@ -154,7 +154,7 @@ public class Shader {
 	 * @param parameters
 	 *            a map containing initial values for shader parameters
 	 */
-	public Shader(String vertexPath, String fragmentPath, String geometryPath, String tesControlPath, String tesEvalPath, Map<String, Object> parameters) {
+	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath, final String tesControlPath, final String tesEvalPath, final Map<String, Object> parameters) {
 		this.parameters = parameters;
 		this.vertexSource = getSource(vertexPath);
 		this.fragmentSource = getSource(fragmentPath);
@@ -178,14 +178,14 @@ public class Shader {
 	 * @param path
 	 * @return
 	 */
-	public static String getSource(String path) {
+	public static String getSource(final String path) {
 		try {
-			URL shaderURL = ClassLoader.getSystemResource("mbeb/opengldefault/shader/" + path).toURI().toURL();
-			Scanner sc = new Scanner(shaderURL.openStream(), "UTF-8");
-			String val = sc.useDelimiter("\\A").next();
+			final URL shaderURL = ClassLoader.getSystemResource("mbeb/opengldefault/shader/" + path).toURI().toURL();
+			final Scanner sc = new Scanner(shaderURL.openStream(), "UTF-8");
+			final String val = sc.useDelimiter("\\A").next();
 			sc.close();
 			return val;
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			Log.error(TAG, "Loading shader source failed:" + path + "\n" + ex.getMessage());
 			return "";
 		}
@@ -197,7 +197,7 @@ public class Shader {
 	 * @param index
 	 * @param name
 	 */
-	public void addUniformBlockIndex(int index, String name) {
+	public void addUniformBlockIndex(final int index, final String name) {
 		uniformBlocks.put(index, name);
 		setUniformBlockIndex(index, name);
 	}
@@ -208,8 +208,8 @@ public class Shader {
 	 * @param index
 	 * @param name
 	 */
-	private void setUniformBlockIndex(int index, String name) {
-		int uniformBlockIndex = glGetUniformBlockIndex(shaderProgram, name);
+	private void setUniformBlockIndex(final int index, final String name) {
+		final int uniformBlockIndex = glGetUniformBlockIndex(shaderProgram, name);
 		glUniformBlockBinding(shaderProgram, uniformBlockIndex, index);
 		GLErrors.checkForError(TAG, "glUniformBlockBinding");
 	}
@@ -229,18 +229,21 @@ public class Shader {
 	 *            name of the uniform
 	 * @return the uniforms location
 	 */
-	public int getUniform(String name) {
+	public int getUniform(final String name) {
 		return getUniform(name, true);
 	}
-	
+
 	/**
-	 * get the location of a Uniform with given name
-	 * @param name name of the uniform
-	 * @param logAnError log an error if not found
+	 * get the location of an Uniform with given name
+	 * 
+	 * @param name
+	 *            name of the uniform
+	 * @param logAnError
+	 *            log an error if not found
 	 * @return the uniforms location
 	 */
-	public int getUniform(String name, boolean logAnError) {
-		int loc = glGetUniformLocation(shaderProgram, name);
+	public int getUniform(final String name, final boolean logAnError) {
+		final int loc = glGetUniformLocation(shaderProgram, name);
 		GLErrors.checkForError(TAG, "glGetUniformLocation");
 		if (logAnError && loc < 0) {
 			Log.error(TAG, "GetUniform failed: " + name);
@@ -248,8 +251,8 @@ public class Shader {
 		return loc;
 	}
 
-	public String getParameter(String name) {
-		Object obj = parameters.get(name);
+	public String getParameter(final String name) {
+		final Object obj = parameters.get(name);
 		return obj == null ? "" : obj.toString();
 	}
 
@@ -264,7 +267,7 @@ public class Shader {
 	 *            whether to directly re-compile the shader after (when false is
 	 *            passed, call shader.compile() to view the results)
 	 */
-	public void updateParameter(String name, Object value, boolean update) {
+	public void updateParameter(final String name, final Object value, final boolean update) {
 		parameters.put(name, value);
 		if (update) {
 			compile();
@@ -277,7 +280,7 @@ public class Shader {
 	 * @param name
 	 * @param value
 	 */
-	public void updateParameter(String name, Object value) {
+	public void updateParameter(final String name, final Object value) {
 		updateParameter(name, value, true);
 	}
 
@@ -287,20 +290,20 @@ public class Shader {
 	public void compile() {
 		// generating parameters precompiler actions
 		String paramString = "#version 330 core " + System.getProperty("line.separator");
-		for (String key : parameters.keySet()) {
-			String value = getParameter(key);
+		for (final String key : parameters.keySet()) {
+			final String value = getParameter(key);
 			paramString += "#define " + key + " " + value + System.getProperty("line.separator");
 		}
 
-		int vertexShader = compileVertexShader(paramString);
-		int fragmentShader = compileFragmentShader(paramString);
-		int geomShader = compileGeometryShader(paramString);
-		int tesControlShader = compileTesControlShader(paramString);
-		int tesEvalShader = compileTesEvalShader(paramString);
+		final int vertexShader = compileVertexShader(paramString);
+		final int fragmentShader = compileFragmentShader(paramString);
+		final int geomShader = compileGeometryShader(paramString);
+		final int tesControlShader = compileTesControlShader(paramString);
+		final int tesEvalShader = compileTesEvalShader(paramString);
 
 		linkShader(vertexShader, fragmentShader, geomShader, tesControlShader, tesEvalShader);
 
-		for (int key : uniformBlocks.keySet()) {
+		for (final int key : uniformBlocks.keySet()) {
 			setUniformBlockIndex(key, uniformBlocks.get(key));
 			GLErrors.checkForError(TAG, "setUniformBlockIndex");
 		}
@@ -313,11 +316,11 @@ public class Shader {
 	 *            Shader Header
 	 * @return vertex shader object
 	 */
-	private int compileVertexShader(String paramString) {
-		int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	private int compileVertexShader(final String paramString) {
+		final int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 		glShaderSource(vertexShader, paramString + vertexSource);
 		glCompileShader(vertexShader);
-		int compileSuccess = glGetShaderi(vertexShader, GL_COMPILE_STATUS);
+		final int compileSuccess = glGetShaderi(vertexShader, GL_COMPILE_STATUS);
 		if (compileSuccess != 1) {
 			Log.error(TAG, "Error compiling vertex shader: " + compileSuccess);
 			Log.error(TAG, "Vertex log:\n" + glGetShaderInfoLog(vertexShader, 512));
@@ -332,11 +335,11 @@ public class Shader {
 	 *            Shader Header
 	 * @return fragment shader object
 	 */
-	private int compileFragmentShader(String paramString) {
-		int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	private int compileFragmentShader(final String paramString) {
+		final int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 		glShaderSource(fragmentShader, paramString + fragmentSource);
 		glCompileShader(fragmentShader);
-		int compileSuccess = glGetShaderi(fragmentShader, GL_COMPILE_STATUS);
+		final int compileSuccess = glGetShaderi(fragmentShader, GL_COMPILE_STATUS);
 		if (compileSuccess != 1) {
 			Log.error(TAG, "Error compiling fragment shader: " + compileSuccess);
 			Log.error(TAG, "Fragment log:\n" + glGetShaderInfoLog(fragmentShader, 512));
@@ -351,14 +354,14 @@ public class Shader {
 	 *            Shader Header
 	 * @return geometry shader object
 	 */
-	private int compileGeometryShader(String paramString) {
+	private int compileGeometryShader(final String paramString) {
 		if (geometrySource == null) {
 			return -1;
 		}
-		int geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
+		final int geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
 		glShaderSource(geometryShader, paramString + geometrySource);
 		glCompileShader(geometryShader);
-		int compileSuccess = glGetShaderi(geometryShader, GL_COMPILE_STATUS);
+		final int compileSuccess = glGetShaderi(geometryShader, GL_COMPILE_STATUS);
 		if (compileSuccess != 1) {
 			Log.error(TAG, "Error compiling geometry shader: " + compileSuccess);
 			Log.error(TAG, "Geometry log:\n" + glGetShaderInfoLog(geometryShader, 512));
@@ -367,45 +370,45 @@ public class Shader {
 	}
 
 	/**
-	 * Compiles Tesselation Control Shader
+	 * Compiles Tessellation Control Shader
 	 *
 	 * @param paramString
 	 *            Shader Header
-	 * @return tesselation control shader object
+	 * @return tessellation control shader object
 	 */
-	private int compileTesControlShader(String paramString) {
+	private int compileTesControlShader(final String paramString) {
 		if (tesControlSource == null) {
 			return -1;
 		}
-		int tesControlShader = glCreateShader(GL_TESS_CONTROL_SHADER);
+		final int tesControlShader = glCreateShader(GL_TESS_CONTROL_SHADER);
 		glShaderSource(tesControlShader, paramString + tesControlSource);
 		glCompileShader(tesControlShader);
-		int compileSuccess = glGetShaderi(tesControlShader, GL_COMPILE_STATUS);
+		final int compileSuccess = glGetShaderi(tesControlShader, GL_COMPILE_STATUS);
 		if (compileSuccess != 1) {
-			Log.error(TAG, "Error compiling tesselation control shader: " + compileSuccess);
-			Log.error(TAG, "Tesselation Control log:\n" + glGetShaderInfoLog(tesControlShader, 512));
+			Log.error(TAG, "Error compiling tessellation control shader: " + compileSuccess);
+			Log.error(TAG, "Tessellation Control log:\n" + glGetShaderInfoLog(tesControlShader, 512));
 		}
 		return tesControlShader;
 	}
 
 	/**
-	 * Compiles Tesselation Evaluation Shader
+	 * Compiles Tessellation Evaluation Shader
 	 *
 	 * @param paramString
 	 *            Shader Header
-	 * @return tesselation evaluation shader object
+	 * @return tessellation evaluation shader object
 	 */
-	private int compileTesEvalShader(String paramString) {
+	private int compileTesEvalShader(final String paramString) {
 		if (tesEvalSource == null) {
 			return -1;
 		}
-		int tesEvalShader = glCreateShader(GL_TESS_EVALUATION_SHADER);
+		final int tesEvalShader = glCreateShader(GL_TESS_EVALUATION_SHADER);
 		glShaderSource(tesEvalShader, paramString + tesEvalSource);
 		glCompileShader(tesEvalShader);
-		int compileSuccess = glGetShaderi(tesEvalShader, GL_COMPILE_STATUS);
+		final int compileSuccess = glGetShaderi(tesEvalShader, GL_COMPILE_STATUS);
 		if (compileSuccess != 1) {
-			Log.error(TAG, "Error compiling tesselation evaluation shader: " + compileSuccess);
-			Log.error(TAG, "Tesselation Evaluation log:\n" + glGetShaderInfoLog(tesEvalShader, 512));
+			Log.error(TAG, "Error compiling tessellation evaluation shader: " + compileSuccess);
+			Log.error(TAG, "Tessellation Evaluation log:\n" + glGetShaderInfoLog(tesEvalShader, 512));
 		}
 		return tesEvalShader;
 	}
@@ -421,7 +424,7 @@ public class Shader {
 	 * @param tesEvalShader
 	 * @param geomShader
 	 */
-	private void linkShader(int vertexShader, int fragmentShader, int geomShader, int tesControlShader, int tesEvalShader) {
+	private void linkShader(final int vertexShader, final int fragmentShader, final int geomShader, final int tesControlShader, final int tesEvalShader) {
 		shaderProgram = glCreateProgram();
 		glAttachShader(shaderProgram, vertexShader);
 		glAttachShader(shaderProgram, fragmentShader);
@@ -435,7 +438,7 @@ public class Shader {
 			glAttachShader(shaderProgram, tesEvalShader);
 		}
 		glLinkProgram(shaderProgram);
-		IntBuffer buffer = BufferUtils.createIntBuffer(1);
+		final IntBuffer buffer = BufferUtils.createIntBuffer(1);
 		GL20.glGetProgramiv(shaderProgram, GL_LINK_STATUS, buffer);
 		if (buffer.get(0) != 1) {
 			Log.error(TAG, "Error linking shader program: " + buffer.get(0));

@@ -28,11 +28,11 @@ public class SceneGraphRenderer {
 
 	/**
 	 * create a new renderer for the given SceneGraph and Camera
-	 * 
+	 *
 	 * @param root
 	 * @param cam
 	 */
-	public SceneGraphRenderer(SceneObject root, ICamera cam) {
+	public SceneGraphRenderer(final SceneObject root, final ICamera cam) {
 		this.root = root;
 		this.cam = cam;
 	}
@@ -52,12 +52,12 @@ public class SceneGraphRenderer {
 	 * @param parentTransform
 	 *            the parent transformation for this graph
 	 */
-	public void renderObject(SceneObject object, Transformation parentTransform) {
-		Transformation transform = parentTransform.and(object.getTransformation());
+	public void renderObject(final SceneObject object, final Transformation parentTransform) {
+		final Transformation transform = parentTransform.and(object.getTransformation());
 		renderSelf(object, transform);
-		Collection<SceneObject> subObjects = object.getSubObjects();
+		final Collection<SceneObject> subObjects = object.getSubObjects();
 		if (subObjects != null) {
-			for (SceneObject subObject : subObjects) {
+			for (final SceneObject subObject : subObjects) {
 				renderObject(subObject, transform);
 			}
 		}
@@ -66,30 +66,32 @@ public class SceneGraphRenderer {
 	/**
 	 * render the IRenderable of an object
 	 *
-	 * @param object the object which should be rendered
-	 * @param transform the modle-Transformation for this Renderable
+	 * @param object
+	 *            the object which should be rendered
+	 * @param transform
+	 *            the model-Transformation for this Renderable
 	 */
-	public void renderSelf(SceneObject object, Transformation transform) {
-		Shader shader = object.getShader();
+	public void renderSelf(final SceneObject object, final Transformation transform) {
+		final Shader shader = object.getShader();
 		shader.use();
 		if (object.hasOwnShader()) {
 			//update camera on first object with this shader only
-			int viewPosUniform = shader.getUniform(ViewPosUniformName, false);
+			final int viewPosUniform = shader.getUniform(ViewPosUniformName, false);
 			if (viewPosUniform >= 0) {
-				Vector3f pos = cam.getPosition();
+				final Vector3f pos = cam.getPosition();
 				GL20.glUniform3f(viewPosUniform, pos.x, pos.y, pos.z);
 				GLErrors.checkForError(TAG, "glUniform3f");
 			}
 		}
-		IRenderable renderable = object.getRenderable();
+		final IRenderable renderable = object.getRenderable();
 		if (renderable == null) {
 			return;
 		}
-		int modelUniform = shader.getUniform(ModelMatrixUniformName, false);
+		final int modelUniform = shader.getUniform(ModelMatrixUniformName, false);
 		if (modelUniform >= 0) {
 			//only if shader wants the model matrix
-			Matrix4f model = transform.asMatrix();
-			FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
+			final Matrix4f model = transform.asMatrix();
+			final FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
 			GL20.glUniformMatrix4fv(modelUniform, false, model.get(buffer));
 			GLErrors.checkForError(TAG, "glUniformMatrix4fv");
 		}
