@@ -20,9 +20,9 @@ vec4 progressVector(const in float progress){
 }
 
 void main(){ 
-	float stepSize = 1.0f / float(SAMPLES - 1)
+	float stepSize = 1.0f / float(SAMPLES - 1);
 	for(int i = 0; i < SAMPLES; i++){
-		pos = vec3(bezier * progressVector(mix(gs_in[0].progress, gs_in[1].progress, float(i) * stepSize)));
+		vec3 pos = vec3(bezier * progressVector(mix(gs_in[0].progress, gs_in[1].progress, float(i) * stepSize)));
 		gl_Position = projectionView * vec4(pos, 1);
    		EmitVertex();
 	}

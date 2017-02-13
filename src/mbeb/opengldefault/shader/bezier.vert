@@ -5,5 +5,5 @@ out VS_OUT {
 } vs_out;
 
 void main(){ 
-	v_progress = progress;
+	vs_out.progress = progress;
 }
