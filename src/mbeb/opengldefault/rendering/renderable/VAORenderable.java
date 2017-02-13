@@ -27,7 +27,7 @@ public class VAORenderable implements IRenderable {
 	/** amount of indices */
 	private int indexSize;
 	/** the boundingBox of all my vertices */
-	private BoundingBox boundingBox;
+	private final BoundingBox boundingBox;
 
 	/**
 	 * Constructor for Renderable
@@ -62,7 +62,8 @@ public class VAORenderable implements IRenderable {
 	 * @param dataSizes
 	 *            size of the components in the data array in amount of floats. a RGB color would be represented by a 3
 	 */
-	public VAORenderable(FloatBuffer vertexBuffer, IntBuffer indexBuffer, int[] dataSizes) {
+	public VAORenderable(FloatBuffer vertexBuffer, IntBuffer indexBuffer, int[] dataSizes, BoundingBox boundingBox) {
+		this.boundingBox = boundingBox;
 		this.indexSize = indexBuffer.capacity();
 		this.VAO = generateVAO(vertexBuffer, indexBuffer, dataSizes);
 	}
@@ -103,7 +104,7 @@ public class VAORenderable implements IRenderable {
 
 	/**
 	 * render the Renderable with a simple call to glDrawElements
-	 * 
+	 *
 	 * @param shader
 	 */
 	@Override

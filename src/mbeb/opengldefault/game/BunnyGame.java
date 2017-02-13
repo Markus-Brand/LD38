@@ -11,11 +11,14 @@ import static org.lwjgl.opengl.GL11.glViewport;
 
 import java.util.ArrayList;
 
-import mbeb.opengldefault.camera.FirstPersonCamera;
+import mbeb.opengldefault.camera.BezierCamera;
 import mbeb.opengldefault.camera.ICamera;
+import mbeb.opengldefault.curves.BezierCurve;
+import mbeb.opengldefault.curves.BezierCurve.ControlPointInputMode;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
 import mbeb.opengldefault.rendering.io.ObjectLoader;
+import mbeb.opengldefault.rendering.renderable.BezierCurveRenderable;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.Skybox;
 import mbeb.opengldefault.rendering.renderable.TexturedRenderable;
@@ -38,7 +41,9 @@ public class BunnyGame implements IGame {
 	protected ICamera cam;
 	Scene bunnyScene;
 
-	SceneObject cubeObj, bunnyObj, bunnyObj2;
+	BezierCurve curve;
+
+	SceneObject cubeObj, bunnyObj, bunnyObj2, curveObj;
 
 	@Override
 	public void init() {
@@ -49,7 +54,9 @@ public class BunnyGame implements IGame {
 		controlPoints.add(new Vector3f(-2, 2, 0));
 		controlPoints.add(new Vector3f(0, 2, -2));
 
-		cam = new FirstPersonCamera(new Vector3f(), new Vector3f());//(new BezierCurve(controlPoints, ControlPointInputMode.CameraPointsCircular, true));
+		curve = new BezierCurve(controlPoints, ControlPointInputMode.CameraPointsCircular, true);
+
+		cam = new BezierCamera(curve);
 
 		Skybox skybox = new Skybox("skybox/mountain");
 
@@ -61,10 +68,13 @@ public class BunnyGame implements IGame {
 		cubeObj = new SceneObject(cube, null, null);
 		bunnyObj = new SceneObject(bunny, Transformation.fromPosition(new Vector3f(1, 1, 1)), null);
 		bunnyObj2 = new SceneObject(bunny, Transformation.fromPosition(new Vector3f(1, -1, 1)), null);
+		curveObj = new SceneObject(new BezierCurveRenderable(curve), Transformation.fromPosition(new Vector3f(0, 0, 0)), null);
+		curveObj.setShader(new Shader("bezier.vert", "bezier.frag", "bezier.geom"));
 
 		cubeObj.addSubObject(bunnyObj);
 		bunnyScene.getSceneGraph().addSubObject(bunnyObj2);
 		bunnyScene.getSceneGraph().addSubObject(cubeObj);
+		bunnyScene.getSceneGraph().addSubObject(curveObj);
 
 		Shader defaultShader = new Shader("basic.vert", "phong.frag");
 		defaultShader.addUniformBlockIndex(1, "Matrices");
