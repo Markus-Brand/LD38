@@ -2,7 +2,6 @@ package mbeb.opengldefault.rendering.renderable;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.Arrays;
 
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.rendering.shader.Shader;
@@ -32,14 +31,15 @@ public class VAORenderable implements IRenderable {
 
 	/**
 	 * Constructor for Renderable
-	 * 
+	 *
 	 * @param data
 	 *            vertex data. Contains vertex position, texture coordinates, normals, color and maybe other data
 	 * @param indices
 	 *            index data. The order in which the vertex data is read
 	 * @param dataSizes
 	 *            size of the components in the data array in amount of floats. a RGB color would be represented by a 3
-	 * @param boundingBox the bounding box of the vertex data
+	 * @param boundingBox
+	 *            the bounding box of the vertex data
 	 */
 	public VAORenderable(float[] data, int[] indices, int[] dataSizes, BoundingBox boundingBox) {
 		this.indexSize = indices.length;
@@ -54,7 +54,7 @@ public class VAORenderable implements IRenderable {
 
 	/**
 	 * Constructor for Renderable
-	 * 
+	 *
 	 * @param vertexBuffer
 	 *            vertex data in a FloatBuffer. Contains vertex position, texture coordinates, normals, color and maybe other data
 	 * @param indexBuffer
@@ -69,7 +69,7 @@ public class VAORenderable implements IRenderable {
 
 	/**
 	 * sets VAO
-	 * 
+	 *
 	 * @param VAO
 	 *            new VAO
 	 */
@@ -79,7 +79,7 @@ public class VAORenderable implements IRenderable {
 
 	/**
 	 * get VAO
-	 * 
+	 *
 	 * @return VAO
 	 */
 	public int getVAO() {
@@ -103,6 +103,7 @@ public class VAORenderable implements IRenderable {
 
 	/**
 	 * render the Renderable with a simple call to glDrawElements
+	 * 
 	 * @param shader
 	 */
 	@Override
@@ -115,7 +116,7 @@ public class VAORenderable implements IRenderable {
 
 	/**
 	 * Static method for generating a VAO
-	 * 
+	 *
 	 * @param data
 	 *            vertex data. Contains vertex position, texture coordinates, normals, color and maybe other data
 	 * @param indices
@@ -143,7 +144,7 @@ public class VAORenderable implements IRenderable {
 
 	/**
 	 * Static method for generating a VAO
-	 * 
+	 *
 	 * @param vertexBuffer
 	 *            vertex data in a FloatBuffer. Contains vertex position, texture coordinates, normals, color and maybe other data
 	 * @param indexBuffer
@@ -177,7 +178,7 @@ public class VAORenderable implements IRenderable {
 
 	/**
 	 * Static method for generating a EBO
-	 * 
+	 *
 	 * @param indexBuffer
 	 *            index data in a IntBuffer. The order in which the vertex data is read
 	 * @return generated EBO
@@ -195,7 +196,7 @@ public class VAORenderable implements IRenderable {
 
 	/**
 	 * Static method for generating a VBO
-	 * 
+	 *
 	 * @param vertexBuffer
 	 *            vertex data in a FloatBuffer. Contains vertex position, texture coordinates, normals, color and maybe other data
 	 * @param dataSizes

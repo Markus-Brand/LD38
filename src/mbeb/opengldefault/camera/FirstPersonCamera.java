@@ -31,7 +31,7 @@ public class FirstPersonCamera extends Camera {
 	public FirstPersonCamera(Vector3f position, Vector3f direction) {
 		lastMousePos = new Vector2f(Mouse.getPos());
 		projection = new Matrix4f();
-		projection.perspective((float) Math.PI / 2, OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f, 100);
+		projection.perspective((float) Math.PI / 2.5f, OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f, 100);
 
 		this.position = position;
 		this.viewDirection = direction;
@@ -62,7 +62,8 @@ public class FirstPersonCamera extends Camera {
 		updateUniformBlock();
 	}
 
-	public void setDirection(Vector3f direction) {
+	@Override
+	public void setViewDirection(Vector3f direction) {
 		direction.normalize(this.viewDirection);
 		updateView();
 	}
@@ -74,7 +75,7 @@ public class FirstPersonCamera extends Camera {
 	}
 
 	@Override
-	public void update() {
+	public void update(double deltaTime) {
 		updateDirection();
 		updatePosition();
 		updateView();
@@ -128,11 +129,6 @@ public class FirstPersonCamera extends Camera {
 		viewDirection.z = (float) (Math.cos(pitch) * Math.sin(yaw));
 
 		viewDirection.normalize();
-	}
-
-	@Override
-	public Vector3f getPosition() {
-		return position;
 	}
 
 }
