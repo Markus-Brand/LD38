@@ -1,6 +1,7 @@
 package mbeb.opengldefault.scene;
 
 import mbeb.opengldefault.camera.ICamera;
+import mbeb.opengldefault.rendering.renderable.Skybox;
 
 /**
  * A scene is an object in which objects live and the camera moves. There should
@@ -10,10 +11,16 @@ public class Scene {
 
 	private SceneGraphRenderer renderer;
 	private final SceneObject sceneGraph;
-	private ICamera cam;
+	private ICamera camera;
+	private Skybox skybox;
 
 	public Scene(ICamera cam) {
-		this.cam = cam;
+		this(cam, null);
+	}
+
+	public Scene(ICamera cam, Skybox skybox) {
+		this.camera = cam;
+		this.skybox = skybox;
 		this.sceneGraph = new SceneObject(null, null, null);
 		renderer = new VisibleSceneGraphRenderer(sceneGraph, cam);
 	}
@@ -23,10 +30,17 @@ public class Scene {
 	}
 
 	public void update(double deltaTime) {
-		cam.update(deltaTime);
+		camera.update(deltaTime);
+	}
+
+	public void setSkybox(Skybox skybox) {
+		this.skybox = skybox;
 	}
 
 	public void render() {
 		renderer.render();
+		if (skybox != null) {
+			skybox.render(camera);
+		}
 	}
 }

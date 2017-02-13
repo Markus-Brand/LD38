@@ -83,6 +83,13 @@ public interface ICamera {
 	Matrix4f getProjectionView();
 
 	/**
+	 * get skybox view matrix. Should be something like mat4(mat3(view))
+	 * 
+	 * @return skybox view matrix
+	 */
+	Matrix4f getSkyboxView();
+
+	/**
 	 * get UBO that stores the view and projection as well as a viewProjection matrix
 	 *
 	 * @return the UBO

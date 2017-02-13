@@ -9,6 +9,7 @@ import java.nio.FloatBuffer;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
 
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
@@ -99,12 +100,17 @@ public abstract class Camera implements ICamera {
 	}
 
 	@Override
+	public Matrix4f getSkyboxView() {
+		return new Matrix4f(new Matrix3f(getView()));
+	}
+
+	@Override
 	public int getUBO() {
 		if (UBO == -1) {
 			UBO = glGenBuffers();
 			glBindBuffer(GL_UNIFORM_BUFFER, UBO);
 			GLErrors.checkForError(TAG, "glBindBuffer");
-			glBufferData(GL_UNIFORM_BUFFER, 192, GL_DYNAMIC_DRAW);
+			glBufferData(GL_UNIFORM_BUFFER, 256, GL_DYNAMIC_DRAW);
 			GLErrors.checkForError(TAG, "glBufferData");
 			glBindBufferBase(GL_UNIFORM_BUFFER, 1, UBO);
 			GLErrors.checkForError(TAG, "glBindBufferBase");
@@ -126,6 +132,9 @@ public abstract class Camera implements ICamera {
 
 		FloatBuffer projectionViewBuffer = BufferUtils.createFloatBuffer(16);
 		glBufferSubData(GL_UNIFORM_BUFFER, 128, getProjectionView().get(projectionViewBuffer));
+
+		FloatBuffer skyboxViewBuffer = BufferUtils.createFloatBuffer(16);
+		glBufferSubData(GL_UNIFORM_BUFFER, 192, getSkyboxView().get(skyboxViewBuffer));
 		GLErrors.checkForError(TAG, "glBufferSubData");
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}

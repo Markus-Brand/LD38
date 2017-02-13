@@ -31,7 +31,7 @@ public class FirstPersonCamera extends Camera {
 	public FirstPersonCamera(Vector3f position, Vector3f direction) {
 		lastMousePos = new Vector2f(Mouse.getPos());
 		projection = new Matrix4f();
-		projection.perspective((float) Math.PI / 2, OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f, 100);
+		projection.perspective((float) Math.PI / 2.5f, OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f, 100);
 
 		this.position = position;
 		this.viewDirection = direction;

@@ -33,6 +33,11 @@ public class BezierCamera extends Camera {
 		updateView(0);
 	}
 
+	/**
+	 * Updates the view matrix
+	 * 
+	 * @param deltaTime
+	 */
 	private void updateView(double deltaTime) {
 
 		distanceTraveled += deltaTime * speed;
@@ -45,7 +50,6 @@ public class BezierCamera extends Camera {
 
 		Vector3f center = new Vector3f();
 		view = new Matrix4f();
-		//position.add(viewDirection, center);
 
 		view.lookAt(position, center, worldUp);
 		projectionView = null;

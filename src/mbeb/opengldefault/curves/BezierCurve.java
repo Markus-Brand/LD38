@@ -6,12 +6,25 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
+/**
+ * A Bezier Curve that can be used as a path for a camera or an entity
+ *
+ */
 public class BezierCurve {
 
 	public static enum ControlPointInputMode {
-		ControlPoints, //Directly use the given Input Points as ControlPoints
-		CameraPoints, //Generate path, that contains all of the Input Positions
-		CameraPointsCircular //Generate circluar path, that contains all of the Input Positions
+		/**
+		 * Directly use the given Input Points as ControlPoints
+		 */
+		ControlPoints,
+		/**
+		 * Generate path, that contains all of the Input Positions
+		 */
+		CameraPoints,
+		/**
+		 * Generate circluar path, that contains all of the Input Positions
+		 */
+		CameraPointsCircular
 	}
 
 	/** Control Points for the Curve */
@@ -35,7 +48,7 @@ public class BezierCurve {
 
 	/**
 	 * Constructor for a BezierCurve
-	 * 
+	 *
 	 * @param controlPoints
 	 *            Input Control Points
 	 * @param mode
@@ -47,7 +60,7 @@ public class BezierCurve {
 
 	/**
 	 * Constructor for a BezierCurve
-	 * 
+	 *
 	 * @param controlPoints
 	 *            Input Control Points
 	 * @param mode
@@ -63,7 +76,7 @@ public class BezierCurve {
 
 	/**
 	 * Constructor for a BezierCurve
-	 * 
+	 *
 	 * @param controlPoints
 	 *            Input Control Points
 	 * @param segmentLengths
@@ -75,7 +88,7 @@ public class BezierCurve {
 
 	/**
 	 * Constructor for a BezierCurve
-	 * 
+	 *
 	 * @param controlPoints
 	 *            Input Control Points
 	 * @param mode
@@ -205,13 +218,10 @@ public class BezierCurve {
 			float tangentLength = Math.min(lengthNext, lengthPrevious);
 
 			if (camPosID == 0) {
-				System.out.println("First " + camPosID);
 				generateFirstControlPoint(cameraPositions, tangent, tangentLength);
 			} else if (camPosID == cameraPositions.size()) {
-				System.out.println("Last " + camPosID);
 				generateLastControlPoint(cameraPositions, tangent, tangentLength, true);
 			} else {
-				System.out.println("Mid " + camPosID);
 				tangent.mul(tangentLength * 0.5f);
 				generateMidControlPoint(cameraPositions, camPosID, tangent);
 			}

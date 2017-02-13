@@ -3,8 +3,9 @@ package mbeb.opengldefault.rendering.textures;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL30.*;
-
+import static org.lwjgl.opengl.GL12.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -62,19 +63,32 @@ public class TextureCache {
 		String key = path + interpolate + wrapS + wrapT;
 		Integer texture = cachedImages.get(key);
 		if (texture == null) {
-			try {
-				Log.log(TAG, "loaded Image: " + path);
-				URL url = ClassLoader.getSystemResource("textures/" + path);
-				BufferedImage img = ImageIO.read(url);
-				texture = loadTexture(img, interpolate, wrapS, wrapT);
-				cachedImages.put(key, texture);
-				return texture;
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				return 0;
-			}
+			Log.log(TAG, "loaded Image: " + path);
+			BufferedImage img = loadBufferedImage(path);
+			texture = loadTexture(img, interpolate, wrapS, wrapT);
+			cachedImages.put(key, texture);
+			return texture;
 		}
 		return texture.intValue();
+	}
+
+	/**
+	 * Loads a BufferedImage from specified path within the textures folder
+	 *
+	 * @param path
+	 *            Path of the Image
+	 * @return loaded BufferedImage
+	 */
+	private static BufferedImage loadBufferedImage(String path) {
+		URL url = ClassLoader.getSystemResource("textures/" + path);
+		BufferedImage img = null;
+		try {
+			img = ImageIO.read(url);
+		} catch (IOException e) {
+			Log.error(TAG, "Unable to Load Texture: " + path);
+			e.printStackTrace();
+		}
+		return img;
 	}
 
 	/**
@@ -116,9 +130,84 @@ public class TextureCache {
 	}
 
 	/**
+	 * Load Cube Map with given path
+	 *
+	 * @param path
+	 *            Path in the texture folder
+	 * @param interpolate
+	 *            toggles interpolation
+	 * @param wrapS
+	 *            sets WrapMode in x direction
+	 * @param wrapT
+	 *            sets WrapMode in y direction
+	 * @return OpenGL texture handle
+	 */
+	public static int loadCubeMap(String path) {
+		String key = path;
+		Integer texture = cachedImages.get(key);
+		if (texture == null) {
+			Log.log(TAG, "loaded Cube Map: " + path);
+			String imageFormat = ".jpg";
+			BufferedImage[] img = new BufferedImage[6];
+			img[0] = loadBufferedImage(path + "_r" + imageFormat);
+			img[1] = loadBufferedImage(path + "_l" + imageFormat);
+			img[2] = loadBufferedImage(path + "_top" + imageFormat);
+			img[3] = loadBufferedImage(path + "_bot" + imageFormat);
+			img[4] = loadBufferedImage(path + "_b" + imageFormat);
+			img[5] = loadBufferedImage(path + "_f" + imageFormat);
+			texture = loadCubeMap(img);
+			cachedImages.put(key, texture);
+			return texture;
+		}
+		return texture.intValue();
+	}
+
+	/**
+	 * Generate OpenGL CubeMap from BufferedImage Array with given interpolation method
+	 *
+	 * @param image
+	 *            input BufferedImage Array
+	 * @param interpolate
+	 *            interpolation method
+	 * @param wrapS
+	 *            sets WrapMode in x direction
+	 * @param wrapT
+	 *            sets WrapMode in y direction
+	 * @return openGl texture
+	 */
+	public static int loadCubeMap(BufferedImage[] images) {
+
+		int texture = glGenTextures();
+		GLErrors.checkForError(TAG, "glGenTextures");
+
+		glActiveTexture(GL_TEXTURE0 + texture);
+		GLErrors.checkForError(TAG, "glActiveTexture");
+
+		glBindTexture(GL_TEXTURE_CUBE_MAP, texture);
+		GLErrors.checkForError(TAG, "glBindTexture");
+
+		for (int i = 0; i < images.length; i++) {
+			ByteBuffer buffer = generateBuffer(images[i]);
+
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, images[i].getWidth(), images[i].getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+			GLErrors.checkForError(TAG, "glTexImage2D");
+		}
+
+		setTexParameterCubemap();
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		return texture;
+	}
+
+	/**
 	 * set Texture Parameter
 	 *
 	 * @param interpolate
+	 *            interpolation method
+	 * @param wrapS
+	 *            sets WrapMode in x direction
+	 * @param wrapT
+	 *            sets WrapMode in y direction
 	 */
 	private static void setTexParameter(boolean interpolate, int wrapS, int wrapT) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapS);
@@ -130,6 +219,29 @@ public class TextureCache {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		}
+		GLErrors.checkForError(TAG, "glTexParameteri");
+	}
+
+	/**
+	 * set Texture Parameter
+	 *
+	 * @param interpolate
+	 *            interpolation method
+	 * @param wrapS
+	 *            sets WrapMode in x direction
+	 * @param wrapT
+	 *            sets WrapMode in y direction
+	 */
+	private static void setTexParameterCubemap() {
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_BASE_LEVEL, 0);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, 0);
+
 		GLErrors.checkForError(TAG, "glTexParameteri");
 	}
 
