@@ -2,10 +2,12 @@ package mbeb.opengldefault.scene;
 
 import java.nio.FloatBuffer;
 import java.util.Collection;
-import mbeb.opengldefault.camera.Camera;
+
+import mbeb.opengldefault.camera.ICamera;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.shader.Shader;
+
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
@@ -15,21 +17,22 @@ import org.lwjgl.opengl.GL20;
  * A "visitor" of the scenegraph to render it
  */
 public class SceneGraphRenderer {
-	
+
 	public static final String ViewPosUniformName = "viewPos";
 	public static final String ModelMatrixUniformName = "model";
 
 	private static final String TAG = "SceneGraphRenderer";
 
 	protected final SceneObject root;
-	protected final Camera cam;
+	protected final ICamera cam;
 
 	/**
 	 * create a new renderer for the given SceneGraph and Camera
+	 * 
 	 * @param root
-	 * @param cam 
+	 * @param cam
 	 */
-	public SceneGraphRenderer(SceneObject root, Camera cam) {
+	public SceneGraphRenderer(SceneObject root, ICamera cam) {
 		this.root = root;
 		this.cam = cam;
 	}
@@ -44,8 +47,10 @@ public class SceneGraphRenderer {
 	/**
 	 * renders a given sub-graph with a parent-transformation
 	 *
-	 * @param object the sub-scenegraph to render
-	 * @param parentTransform the parent transformation for this graph
+	 * @param object
+	 *            the sub-scenegraph to render
+	 * @param parentTransform
+	 *            the parent transformation for this graph
 	 */
 	public void renderObject(SceneObject object, Transformation parentTransform) {
 		Transformation transform = parentTransform.and(object.getTransformation());
@@ -61,8 +66,10 @@ public class SceneGraphRenderer {
 	/**
 	 * render the IRenderable of an object
 	 *
-	 * @param object the object which should be rendered
-	 * @param transform the modle-Transformation for this Renderable
+	 * @param object
+	 *            the object which should be rendered
+	 * @param transform
+	 *            the modle-Transformation for this Renderable
 	 */
 	public void renderSelf(SceneObject object, Transformation transform) {
 		Shader shader = object.getShader();

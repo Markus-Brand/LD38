@@ -7,6 +7,15 @@ import org.joml.Vector4f;
 public interface ICamera {
 
 	/**
+	 * updates the camera
+	 *
+	 * @param deltaTime
+	 *            time, that passed since the last update
+	 */
+	default void update(double deltaTime) {
+	}
+
+	/**
 	 * get the cameras position
 	 *
 	 * @return current position of the camera
@@ -74,6 +83,13 @@ public interface ICamera {
 	Matrix4f getProjectionView();
 
 	/**
+	 * get skybox view matrix. Should be something like mat4(mat3(view))
+	 * 
+	 * @return skybox view matrix
+	 */
+	Matrix4f getSkyboxView();
+
+	/**
 	 * get UBO that stores the view and projection as well as a viewProjection matrix
 	 *
 	 * @return the UBO
@@ -86,14 +102,8 @@ public interface ICamera {
 	void updateUniformBlock();
 
 	/**
-	 * call this once per update cycle.
-	 */
-	default void update() {
-	}
-
-	/**
 	 * convert the given world space coordinates to screen space
-	 * 
+	 *
 	 * @param pos
 	 * @return
 	 */
@@ -103,7 +113,7 @@ public interface ICamera {
 
 	/**
 	 * convert the given world space coordinates to screen space
-	 * 
+	 *
 	 * @param pos
 	 * @return
 	 */

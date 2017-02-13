@@ -34,6 +34,12 @@ import mbeb.opengldefault.logging.Log;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
 
+/**
+ * Shader Object used for rendering a {@link mbeb.opengldefault.rendering.renderable.IRenderable}
+ * 
+ * @author Markus
+ *
+ */
 public class Shader {
 
 	/** Class Name Tag */
