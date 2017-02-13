@@ -1,4 +1,4 @@
-#define SAMPLES 100
+#define SAMPLES 42
 layout (lines) in;
 layout (line_strip, max_vertices = SAMPLES) out;
 

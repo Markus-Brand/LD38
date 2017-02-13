@@ -11,6 +11,7 @@ import org.lwjgl.opengl.GL20;
 
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.logging.Log;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.opengl.GL40.*;
@@ -18,7 +19,7 @@ import static org.lwjgl.opengl.GL20.*;
 
 /**
  * Shader Object used for rendering a {@link mbeb.opengldefault.rendering.renderable.IRenderable}
- * 
+ *
  * @author Markus
  *
  */
@@ -39,6 +40,8 @@ public class Shader {
 	private String tesControlSource;
 	/** Tesselation Evaluation Shaders source code */
 	private String tesEvalSource;
+	/** Drawmode for the Renderables that get rendered by this shader */
+	private int drawMode;
 
 	/** Static parameters that can be changed by recompiling the shaders. They will be written into the shader via preprocessors #define */
 	private Map<String, Object> parameters;
@@ -214,11 +217,14 @@ public class Shader {
 	public int getUniform(String name) {
 		return getUniform(name, true);
 	}
-	
+
 	/**
 	 * get the location of a Uniform with given name
-	 * @param name name of the uniform
-	 * @param logAnError log an error if not found
+	 *
+	 * @param name
+	 *            name of the uniform
+	 * @param logAnError
+	 *            log an error if not found
 	 * @return the uniforms location
 	 */
 	public int getUniform(String name, boolean logAnError) {
@@ -426,5 +432,27 @@ public class Shader {
 
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
+	}
+
+	/**
+	 * Setter for the drawMode
+	 * 
+	 * @param drawMode
+	 *            new drawMode
+	 */
+	public void setDrawMode(int drawMode) {
+		this.drawMode = drawMode;
+	}
+
+	/**
+	 * Getter for the drawMode
+	 * 
+	 * @return current drawmode. Most likly GL_TRIANGLES
+	 */
+	public int getDrawMode() {
+		if (drawMode <= 0) {
+			drawMode = GL_TRIANGLES;
+		}
+		return drawMode;
 	}
 }

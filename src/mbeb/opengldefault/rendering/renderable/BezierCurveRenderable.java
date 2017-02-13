@@ -5,6 +5,7 @@ import java.nio.FloatBuffer;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 import mbeb.opengldefault.curves.BezierCurve;
@@ -51,7 +52,7 @@ public class BezierCurveRenderable implements IRenderable {
 	@Override
 	public void render(Shader shader) {
 		shader.use();
-
+		GL11.glLineWidth(10);
 		for (Matrix4f bezierMatrix : curve.getBezierMatrices()) {
 			int modelUniform = shader.getUniform("bezier");
 
@@ -61,7 +62,7 @@ public class BezierCurveRenderable implements IRenderable {
 
 			renderable.render(shader);
 		}
-
+		GL11.glLineWidth(1);
 	}
 
 	@Override

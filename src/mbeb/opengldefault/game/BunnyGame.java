@@ -1,17 +1,10 @@
 package mbeb.opengldefault.game;
 
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL11.*;
 
 import java.util.ArrayList;
 
-import mbeb.opengldefault.camera.BezierCamera;
+import mbeb.opengldefault.camera.FirstPersonCamera;
 import mbeb.opengldefault.camera.ICamera;
 import mbeb.opengldefault.curves.BezierCurve;
 import mbeb.opengldefault.curves.BezierCurve.ControlPointInputMode;
@@ -49,14 +42,14 @@ public class BunnyGame implements IGame {
 	public void init() {
 		ArrayList<Vector3f> controlPoints = new ArrayList<>();
 
-		controlPoints.add(new Vector3f(2, 2, 0));
-		controlPoints.add(new Vector3f(0, 2, 2));
-		controlPoints.add(new Vector3f(-2, 2, 0));
-		controlPoints.add(new Vector3f(0, 2, -2));
+		controlPoints.add(new Vector3f(20, 5, 0));
+		controlPoints.add(new Vector3f(0, -10, 20));
+		controlPoints.add(new Vector3f(-20, 10, 0));
+		controlPoints.add(new Vector3f(0, 15, -20));
 
 		curve = new BezierCurve(controlPoints, ControlPointInputMode.CameraPointsCircular, true);
 
-		cam = new BezierCamera(curve);
+		cam = new FirstPersonCamera(new Vector3f(), new Vector3f(1, 0, 0));
 
 		Skybox skybox = new Skybox("skybox/mountain");
 
@@ -68,8 +61,13 @@ public class BunnyGame implements IGame {
 		cubeObj = new SceneObject(cube, null, null);
 		bunnyObj = new SceneObject(bunny, Transformation.fromPosition(new Vector3f(1, 1, 1)), null);
 		bunnyObj2 = new SceneObject(bunny, Transformation.fromPosition(new Vector3f(1, -1, 1)), null);
-		curveObj = new SceneObject(new BezierCurveRenderable(curve), Transformation.fromPosition(new Vector3f(0, 0, 0)), null);
-		curveObj.setShader(new Shader("bezier.vert", "bezier.frag", "bezier.geom"));
+		curveObj = new SceneObject(new BezierCurveRenderable(curve), null, null);
+
+		Shader curveShader = new Shader("bezier.vert", "bezier.frag", "bezier.geom");
+		curveShader.addUniformBlockIndex(1, "Matrices");
+		curveShader.setDrawMode(GL_LINES);
+
+		curveObj.setShader(curveShader);
 
 		cubeObj.addSubObject(bunnyObj);
 		bunnyScene.getSceneGraph().addSubObject(bunnyObj2);
