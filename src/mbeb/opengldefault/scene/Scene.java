@@ -40,7 +40,7 @@ public class Scene {
 	public void render() {
 		renderer.render();
 		if (skybox != null) {
-			skybox.render(camera);
+			skybox.render();
 		}
 	}
 }

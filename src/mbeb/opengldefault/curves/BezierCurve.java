@@ -2,6 +2,8 @@ package mbeb.opengldefault.curves;
 
 import java.util.ArrayList;
 
+import mbeb.opengldefault.logging.Log;
+
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -12,6 +14,8 @@ import org.joml.Vector4f;
  *
  */
 public class BezierCurve {
+
+	private static final String TAG = "BezierCurve";
 
 	public static enum ControlPointInputMode {
 		/**
@@ -121,7 +125,7 @@ public class BezierCurve {
 				setControlPoints(inputControlPoints);
 				break;
 			default:
-				System.out.println("Unknown ControlPointMode");
+				Log.error(TAG, "Unknown ControlPointMode");
 				break;
 		}
 	}
@@ -135,7 +139,7 @@ public class BezierCurve {
 	 *            id of the segment
 	 * @return
 	 */
-	Vector3f calculateSegmentDirection(ArrayList<Vector3f> cameraPositions, int segment) {
+	private Vector3f calculateSegmentDirection(ArrayList<Vector3f> cameraPositions, int segment) {
 		Vector3f start = cameraPositions.get(segment % cameraPositions.size());
 		Vector3f end = cameraPositions.get((segment + 1) % cameraPositions.size());
 
@@ -311,6 +315,7 @@ public class BezierCurve {
 			for (int i = 0; i < controlPoints.size() - 1; i += 3) {
 				float thisSegmentsLength = 0;
 				Vector3f lastPos = calculateSegmentPosition(i / 3, 0);
+				//TODO: Dynamic Sample Size?
 				int sampleSize = 10;
 				for (int o = 1; o <= sampleSize; o++) {
 					Vector3f nextPos = calculateSegmentPosition(i / 3, o / (float) sampleSize);

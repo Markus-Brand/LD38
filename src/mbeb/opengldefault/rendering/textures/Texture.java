@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL20.glUniform1i;
 
 /**
- * A Texture that can binded to a uniform
+ * A Texture that can bind itself to a uniform for a given {@link Shader}
  */
 public class Texture {
 

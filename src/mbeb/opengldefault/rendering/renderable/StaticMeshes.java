@@ -4,10 +4,16 @@ import mbeb.opengldefault.scene.BoundingBox;
 
 import org.joml.Vector3f;
 
+/**
+ * Provides static Meshes
+ * 
+ * @author Markus
+ *
+ */
 public class StaticMeshes {
 
 	private static IRenderable screenAlignedQuad;
-	private static IRenderable skyBox;
+	private static IRenderable uniformCube;
 
 	/**
 	 * Get A Renderable containing vertexData of a ScreenAlignedQuad
@@ -30,12 +36,12 @@ public class StaticMeshes {
 	}
 
 	/**
-	 * Get A Renderable containing vertexData of a SkyBox
+	 * Get A Renderable containing vertexData of a uniform Cube. Used in {@link Skybox}
 	 *
-	 * @return SkyBox Renderable
+	 * @return Cube Renderable
 	 */
-	public static IRenderable getSkybox() {
-		if (skyBox == null) {
+	public static IRenderable getCube() {
+		if (uniformCube == null) {
 
 			/* @formatter:off */
 			float[] vertexData = {
@@ -67,9 +73,9 @@ public class StaticMeshes {
 			/* @formatter:on */
 			int[] dataSizes = { 3 };
 
-			skyBox = new VAORenderable(vertexData, indexData, dataSizes, new BoundingBox(new Vector3f(-1, -1, -1), new Vector3f(2, 2, 2)));
+			uniformCube = new VAORenderable(vertexData, indexData, dataSizes, new BoundingBox(new Vector3f(-1, -1, -1), new Vector3f(2, 2, 2)));
 
 		}
-		return skyBox;
+		return uniformCube;
 	}
 }

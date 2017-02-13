@@ -6,6 +6,12 @@ import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.rendering.shader.Shader;
 import static org.lwjgl.opengl.GL13.*;
 
+/**
+ * Subclass of {@link Texture}, that stores a GL_TEXTURE_CUBE_MAP instead of a GL_TEXTURE_2D
+ * 
+ * @author Markus
+ *
+ */
 public class CubeMap extends Texture {
 
 	private static final String TAG = "CubeMap";
@@ -30,14 +36,6 @@ public class CubeMap extends Texture {
 		bind(shader, "u_cubeMap");
 	}
 
-	/**
-	 * bind this objects texture to the specified uniform
-	 *
-	 * @param shader
-	 *            the shader to alter
-	 * @param uniformName
-	 *            the name of the uniform to adjust
-	 */
 	@Override
 	public void bind(Shader shader, String uniformName) {
 		glBindTexture(GL_TEXTURE_CUBE_MAP, getTextureHandle());

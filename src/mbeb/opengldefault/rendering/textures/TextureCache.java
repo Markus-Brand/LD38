@@ -19,7 +19,8 @@ import mbeb.opengldefault.logging.Log;
 import org.lwjgl.BufferUtils;
 
 /**
- * static methods for creating / using textures
+ * static methods for creating / using textures.
+ * Used by {@link Texture} and {@link CubeMap}
  */
 public class TextureCache {
 
