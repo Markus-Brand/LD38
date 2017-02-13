@@ -192,7 +192,7 @@ public class Shader {
 	}
 
 	/**
-	 * Adds an Uniform Buffer Block to the Shader
+	 * Adds a Uniform Buffer Block to the Shader
 	 *
 	 * @param index
 	 * @param name
@@ -223,7 +223,7 @@ public class Shader {
 	}
 
 	/**
-	 * get the location of an Uniform with given name
+	 * get the location of a Uniform with given name
 	 *
 	 * @param name
 	 *            name of the uniform
@@ -234,7 +234,7 @@ public class Shader {
 	}
 
 	/**
-	 * get the location of an Uniform with given name
+	 * get the location of a Uniform with given name
 	 * 
 	 * @param name
 	 *            name of the uniform
