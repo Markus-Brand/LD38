@@ -22,6 +22,6 @@ public class Scene {
 	
 	public void render() {
 		cam.update();
-		new VisibleSceneGraphRenderer(sceneGraph, cam).render();
+		new SceneGraphRenderer(sceneGraph, cam).render();
 	}
 }

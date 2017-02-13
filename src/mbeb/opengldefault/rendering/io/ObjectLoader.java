@@ -8,7 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mbeb.opengldefault.animation.AnimatedMesh;
+import mbeb.opengldefault.animation.Animation;
 import mbeb.opengldefault.animation.Bone;
+import mbeb.opengldefault.animation.KeyFrame;
+import mbeb.opengldefault.animation.Pose;
 
 import mbeb.opengldefault.logging.Log;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
@@ -16,12 +19,18 @@ import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.VAORenderable;
 import org.lwjgl.assimp.AIBone;
 import mbeb.opengldefault.scene.BoundingBox;
+import mbeb.opengldefault.animation.BoneTransformation;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.lwjgl.assimp.AIAnimation;
 
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AINode;
+import org.lwjgl.assimp.AINodeAnim;
+import org.lwjgl.assimp.AIQuatKey;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIVector3D;
+import org.lwjgl.assimp.AIVectorKey;
 import org.lwjgl.assimp.AIVertexWeight;
 import org.lwjgl.assimp.Assimp;
 
@@ -112,9 +121,9 @@ public class ObjectLoader {
 		int dataPointer = 0;
 		int[] indices = new int[vertexCount];
 		int indicesPointer = 0;
-		
+
 		BoundingBox box = new BoundingBox.Empty();
-		boolean isAnimated = DataFragment.needsBoneData(format);//todo
+		boolean isAnimated = DataFragment.needsBoneData(format);
 		// vertex-id  3elements     bone-id  weight
 		Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights = null;
 		Bone skeleton = null;
@@ -135,20 +144,25 @@ public class ObjectLoader {
 			indicesPointer++;
 		}
 		VAORenderable vaomesh = new VAORenderable(data, indices, format, box);
-		
+
 		if (isAnimated) {
-			return loadAnimatedMesh(mesh, vaomesh, skeleton);
+			AnimatedMesh animMesh = loadAnimatedMesh(mesh, vaomesh, skeleton);
+
+			loadAnimations(animMesh, scene);
+
+			return animMesh;
 		} else {
 			return vaomesh;
 		}
 	}
-	
+
 	/**
 	 * load the per-vertex weights on the bones ()
+	 *
 	 * @param mesh
 	 * @param skeleton
 	 * @param weightsAmount how many bones per vertex
-	 * @return 
+	 * @return
 	 */
 	private Map<Integer, List<Map.Entry<Integer, Float>>> loadVertexWeights(AIMesh mesh, Bone skeleton, int weightsAmount) {
 		//calculate weights here
@@ -192,12 +206,13 @@ public class ObjectLoader {
 		System.err.println("vertexBoneWeights = " + vertexBoneWeights.size());
 		return vertexBoneWeights;
 	}
-	
+
 	/**
 	 * extract a skeleton from the scene structure and adjust the bones indices
+	 *
 	 * @param mesh the mesh that containts bones
 	 * @param sceneStructure the total scene structure
-	 * @return 
+	 * @return
 	 */
 	private Bone parseSkeleton(AIMesh mesh, Bone sceneStructure) {
 		Bone rootBone = null;
@@ -220,23 +235,9 @@ public class ObjectLoader {
 	 * @param vaomesh the VAORenderable (raw mesh data)
 	 * @return a new AnimatedRenderable
 	 */
-	private AnimatedMesh loadAnimatedMesh(AIMesh mesh, VAORenderable vaomesh, Bone sceneStructure) {
-		//load bones
-		Bone rootBone = null;
+	private AnimatedMesh loadAnimatedMesh(AIMesh mesh, VAORenderable vaomesh, Bone skeleton) {
 
-		for (int b = 0; b < mesh.mNumBones(); b++) {
-			AIBone bone = AIBone.create(mesh.mBones().get(b));
-			String boneName = bone.mName().dataString();
-			System.err.println("boneName = " + boneName);
-
-			if (rootBone == null) {
-				rootBone = new Bone(boneName, b);
-			} else {
-				//todo bone hierachy?
-
-			}
-		}
-		return new AnimatedMesh(vaomesh);
+		return new AnimatedMesh(vaomesh, skeleton);
 	}
 
 	/**
@@ -249,25 +250,73 @@ public class ObjectLoader {
 	private Bone parseScene(AIScene scene) {
 		AINode rootNode = scene.mRootNode();
 		Bone rootBone = new Bone(rootNode.mName().dataString(), -1);
+		rootBone.setOriginalTransform(new BoneTransformation(rootNode.mTransformation()));
 
 		parseBoneChildren(rootBone, rootNode);
-
 		return rootBone;
 	}
 
 	/**
-	 * sub-routine for #parseScene(AIScene) that recursively converts
-	 * AINodes to Bones.
+	 * sub-routine for #parseScene(AIScene) that recursively converts AINodes to
+	 * Bones.
+	 *
 	 * @param bone
-	 * @param node 
+	 * @param node
 	 */
 	private void parseBoneChildren(Bone bone, AINode node) {
 		for (int c = 0; c < node.mNumChildren(); c++) {
 			AINode childNode = AINode.create(node.mChildren().get(c));
 			Bone childBone = new Bone(childNode.mName().dataString(), -1);
+			childBone.setOriginalTransform(new BoneTransformation(childNode.mTransformation()));
 			parseBoneChildren(childBone, childNode);
 			bone.getChildren().add(childBone);
 		}
+	}
+
+	/**
+	 * load all the animations in a scene for the given animatedMesh
+	 * @param animMesh the mesh to load animations for
+	 * @param scene the aiScene to load from
+	 */
+	private void loadAnimations(AnimatedMesh animMesh, AIScene scene) {
+		for (int a = 0; a < scene.mNumAnimations(); a++) {
+			AIAnimation aianim = AIAnimation.create(scene.mAnimations().get(a));
+			Animation anim = Animation.copySettingsFromAI(aianim);
+			
+			System.out.println(aianim.mName().dataString());
+			System.out.println(aianim.mDuration());
+			System.out.println(aianim.mTicksPerSecond());
+			System.out.println(aianim.mNumChannels());
+			System.out.println(aianim.mNumMeshChannels());
+
+			for (int channel = 0; channel < aianim.mNumChannels(); channel++) {
+				AINodeAnim node = AINodeAnim.create(aianim.mChannels().get(channel));
+				String boneName = node.mNodeName().dataString();
+				
+				assert node.mNumPositionKeys() == node.mNumRotationKeys();
+				assert node.mNumScalingKeys() == node.mNumRotationKeys();
+				
+				for (int key = 0; key < node.mNumPositionKeys(); key++) {
+					
+					AIVectorKey pos = node.mPositionKeys().get(key);
+					AIQuatKey rot = node.mRotationKeys().get(key);
+					AIVectorKey scale = node.mScalingKeys().get(key);
+					
+					BoneTransformation transform = new BoneTransformation(
+							new Vector3f(pos.mValue().x(), pos.mValue().y(), pos.mValue().z()),
+							new Quaternionf(rot.mValue().x(), rot.mValue().y(), rot.mValue().z(), rot.mValue().w()),
+							new Vector3f(scale.mValue().x(), scale.mValue().y(), scale.mValue().z()));
+					KeyFrame keyFrame = new KeyFrame(pos.mTime(), new Pose(animMesh.getSkeleton()).put(boneName, transform));
+					anim.mergeKeyFrame(keyFrame);
+				}
+			}
+			System.out.println(anim.getKeyFrames().get(2));
+			
+			
+			
+			animMesh.addAnimation(anim);
+		}
+
 	}
 
 }

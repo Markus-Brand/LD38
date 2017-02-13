@@ -12,6 +12,9 @@ public class Bone {
 	
 	private String name;
 	private int index;
+	
+	private BoneTransformation originalTransform;
+	
 	private List<Bone> children;
 
 	public Bone(String name, int index) {
@@ -32,6 +35,21 @@ public class Bone {
 
 	public String getName() {
 		return name;
+	}
+
+	public BoneTransformation getOriginalTransform() {
+		if (originalTransform == null) {
+			originalTransform = BoneTransformation.identity();
+		}
+		return originalTransform;
+	}
+
+	public void setOriginalTransform(BoneTransformation originalTransform) {
+		this.originalTransform = originalTransform;
+	}
+
+	public int getIndex() {
+		return index;
 	}
 	
 	/**
@@ -55,9 +73,5 @@ public class Bone {
 		}
 		
 		return null;
-	}
-
-	public int getIndex() {
-		return index;
 	}
 }

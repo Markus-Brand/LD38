@@ -20,7 +20,7 @@ import mbeb.opengldefault.rendering.textures.Texture;
 import mbeb.opengldefault.rendering.textures.TextureCache;
 import mbeb.opengldefault.scene.Scene;
 import mbeb.opengldefault.scene.SceneObject;
-import mbeb.opengldefault.scene.Transformation;
+import org.joml.Matrix4f;
 
 import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL11.glDisable;
@@ -38,7 +38,7 @@ public class BunnyGame implements IGame {
 
 	@Override
 	public void init() {
-		String bunnyObjectName = /*/"bunny.obj"/*/"riggedStanfordBunny.dae"/**/;
+		String bunnyObjectName = /**/"thinmatrix.dae"/*/"riggedStanfordBunny.dae"/**/;
 		bunnyScene = new Scene(new FirstPersonCamera(new Vector3f(0, 0, 0), new Vector3f(0, 0, 1)));
 		IRenderable bunny = new ObjectLoader().loadFromFileAnim(bunnyObjectName);
 		IRenderable cube = new TexturedRenderable(new ObjectLoader().loadFromFile("cube.obj"), new Texture("bunny_2d.png"));
@@ -47,13 +47,13 @@ public class BunnyGame implements IGame {
 		Shader debugShader = new Shader("boneAnimation.vert", "debugging.frag");
 		
 		cubeObj = new SceneObject(cube, null, null);
-		bunnyObj = new SceneObject(bunny, Transformation.fromPosition(new Vector3f(1, 1, 1)), null);
+		bunnyObj = new SceneObject(bunny, new Matrix4f().translate(1, 1, 1), null);
 		bunnyObj.setShader(debugShader);
-		bunnyObj2 = new SceneObject(bunny, Transformation.fromPosition(new Vector3f(1, -1, 1)), null);
+		bunnyObj2 = new SceneObject(bunny, new Matrix4f().translate(1, -1, -1), null);
 		bunnyObj2.setShader(debugShader);
 
 		cubeObj.addSubObject(bunnyObj);
-		cubeObj.getTransformation().asMatrix().scale(0.3f);
+		//cubeObj.getTransformation().scale(0.3f);
 		bunnyScene.getSceneGraph().addSubObject(bunnyObj2);
 		bunnyScene.getSceneGraph().addSubObject(cubeObj);
 
@@ -63,6 +63,8 @@ public class BunnyGame implements IGame {
 
 		glDisable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
+		
+		bunnyObj.playAnimation("", true, false);
 	}
 
 	@Override
@@ -76,8 +78,8 @@ public class BunnyGame implements IGame {
 		glViewport(0, 0, OpenGLContext.getWidth(), OpenGLContext.getHeight());
 		GLErrors.checkForError(TAG, "glViewport");
 
-		cubeObj.getTransformation().asMatrix().rotate((float) deltaTime, new Vector3f(1, 1, 0));
-		bunnyObj.getTransformation().asMatrix().rotate((float) deltaTime * 3, new Vector3f(0, 1, 0));
+		cubeObj.getTransformation().rotate((float) deltaTime, new Vector3f(1, 1, 0));
+		bunnyObj.getTransformation().rotate((float) deltaTime * 3, new Vector3f(0, 1, 0));
 
 	}
 

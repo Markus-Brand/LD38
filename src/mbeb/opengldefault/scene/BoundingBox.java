@@ -1,6 +1,8 @@
 package mbeb.opengldefault.scene;
 
 import mbeb.opengldefault.camera.ICamera;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 /**
@@ -14,10 +16,10 @@ public class BoundingBox {
 	public static class Empty extends BoundingBox {
 
 		public Empty() {
-			this(Transformation.identity());
+			this(new Matrix4f());
 		}
 
-		public Empty(Transformation localToWorld) {
+		public Empty(Matrix4f localToWorld) {
 			super(null, null, localToWorld);
 		}
 
@@ -29,7 +31,7 @@ public class BoundingBox {
 		@Override
 		public BoundingBox unionWith(BoundingBox other) {
 			BoundingBox result = other.duplicate();
-			result.setModelTransform(modelTransform.and(result.modelTransform));
+			result.setModelTransform(modelTransform.mul(result.modelTransform, new Matrix4f()));
 			return result;
 		}
 
@@ -49,13 +51,13 @@ public class BoundingBox {
 	/**
 	 * just the transformation for this object
 	 */
-	protected Transformation modelTransform;
+	protected Matrix4f modelTransform;
 
 	public BoundingBox(Vector3f localStart, Vector3f localSize) {
-		this(localStart, localSize, Transformation.identity());
+		this(localStart, localSize, new Matrix4f());
 	}
 
-	public BoundingBox(Vector3f localStart, Vector3f localSize, Transformation localToWorld) {
+	public BoundingBox(Vector3f localStart, Vector3f localSize, Matrix4f localToWorld) {
 		this.localStart = localStart;
 		this.localSize = localSize;
 		this.modelTransform = localToWorld;
@@ -91,11 +93,11 @@ public class BoundingBox {
 		return this;
 	}
 
-	public Transformation getModelTransform() {
+	public Matrix4f getModelTransform() {
 		return modelTransform;
 	}
 
-	public void setModelTransform(Transformation transform) {
+	public void setModelTransform(Matrix4f transform) {
 		this.modelTransform = transform;
 	}
 
@@ -150,7 +152,7 @@ public class BoundingBox {
 	private Vector3f[] getGlobalEdges() {
 		Vector3f[] edges = getLocalEdges();
 		for (int e = 0; e < edges.length; e++) {
-			edges[e] = getModelTransform().applyTo3(edges[e]);
+			edges[e] = edges[e].mul(new Matrix3f(getModelTransform()));
 		}
 		return edges;
 	}
@@ -164,11 +166,11 @@ public class BoundingBox {
 	 *            the camera to look from
 	 * @return screen-space positions
 	 */
-	public Vector3f[] getEdgesOnScreen(Transformation parentTransform, ICamera camera) {
+	public Vector3f[] getEdgesOnScreen(Matrix4f parentTransform, ICamera camera) {
 		//apply to edges
 		Vector3f[] edges = getGlobalEdges();
 		for (int e = 0; e < edges.length; e++) {
-			edges[e] = camera.getPosOnScreen(parentTransform.applyTo3(edges[e]));
+			edges[e] = camera.getPosOnScreen(edges[e].mul(new Matrix3f(parentTransform)));
 		}
 		return edges;
 	}

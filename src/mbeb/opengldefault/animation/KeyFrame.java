@@ -5,8 +5,31 @@ package mbeb.opengldefault.animation;
  */
 public class KeyFrame {
 
-	private float timeStamp;
+	private double timeStamp;
 	private Pose pose;
+
+	public KeyFrame(double timeStamp, Pose pose) {
+		this.timeStamp = timeStamp;
+		this.pose = pose;
+	}
+
+	public double getTimeStamp() {
+		return timeStamp;
+	}
+
+	public Pose getPose() {
+		return pose;
+	}
+
+	public void mergeWith(KeyFrame newOne) {
+		getPose().mergeWith(newOne.getPose());
+	}
+
+	@Override
+	public String toString() {
+		return "KeyFrame(" + timeStamp + ", " + pose + ")";
+	}
+	
 	
 	
 }
