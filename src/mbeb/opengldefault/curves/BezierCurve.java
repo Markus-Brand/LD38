@@ -7,7 +7,8 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 /**
- * A Bezier Curve that can be used as a path for a camera or an entity
+ * A Bezier Curve that can be used as a path for a camera or an entity.
+ * Example usage in {@link mbeb.opengldefault.camera.BezierCamera}
  *
  */
 public class BezierCurve {

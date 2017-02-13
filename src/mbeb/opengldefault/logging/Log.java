@@ -178,7 +178,6 @@ public class Log {
 	 *            the object (mostly Strings) being logged
 	 */
 	public static void assertIfNotEquals(String tag, Object o1, Object o2, Object obj) {
-		String message = obj.toString();
 		if (logMode == LogMode.NONE || o1.equals(o2)) {
 			return;
 		}

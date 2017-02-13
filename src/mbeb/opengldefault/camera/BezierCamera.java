@@ -6,6 +6,12 @@ import mbeb.opengldefault.openglcontext.OpenGLContext;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+/**
+ * A Camera that follows a path defined by a {@link BezierCurve}
+ *
+ * @author Markus
+ *
+ */
 public class BezierCamera extends Camera {
 	/** Class Name Tag */
 	private static final String TAG = "BezierCamera";
@@ -35,7 +41,7 @@ public class BezierCamera extends Camera {
 
 	/**
 	 * Updates the view matrix
-	 * 
+	 *
 	 * @param deltaTime
 	 */
 	private void updateView(double deltaTime) {
