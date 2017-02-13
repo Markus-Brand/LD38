@@ -9,11 +9,15 @@ import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glViewport;
 
+import java.util.ArrayList;
+
 import mbeb.opengldefault.camera.FirstPersonCamera;
+import mbeb.opengldefault.camera.ICamera;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
 import mbeb.opengldefault.rendering.io.ObjectLoader;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
+import mbeb.opengldefault.rendering.renderable.Skybox;
 import mbeb.opengldefault.rendering.renderable.TexturedRenderable;
 import mbeb.opengldefault.rendering.shader.Shader;
 import mbeb.opengldefault.rendering.textures.Texture;
@@ -23,7 +27,6 @@ import mbeb.opengldefault.scene.SceneObject;
 import org.joml.Matrix4f;
 
 import org.joml.Vector3f;
-import static org.lwjgl.opengl.GL11.glDisable;
 
 /**
  * Object to characterize a whole game
@@ -32,6 +35,7 @@ public class BunnyGame implements IGame {
 	/** Class Name Tag */
 	private static final String TAG = "BunnyGame";
 
+	protected ICamera cam;
 	Scene bunnyScene;
 
 	SceneObject cubeObj, bunnyObj, bunnyObj2;
@@ -39,7 +43,19 @@ public class BunnyGame implements IGame {
 	@Override
 	public void init() {
 		String bunnyObjectName = /**/"thinmatrix.dae"/*/"riggedStanfordBunny.dae"/**/;
-		bunnyScene = new Scene(new FirstPersonCamera(new Vector3f(0, 0, 0), new Vector3f(0, 0, 1)));
+		ArrayList<Vector3f> controlPoints = new ArrayList<>();
+
+		controlPoints.add(new Vector3f(2, 2, 0));
+		controlPoints.add(new Vector3f(0, 2, 2));
+		controlPoints.add(new Vector3f(-2, 2, 0));
+		controlPoints.add(new Vector3f(0, 2, -2));
+
+		cam = new FirstPersonCamera(new Vector3f(), new Vector3f());//(new BezierCurve(controlPoints, ControlPointInputMode.CameraPointsCircular, true));
+
+		Skybox skybox = new Skybox("skybox/mountain");
+
+		bunnyScene = new Scene(cam, skybox);
+
 		IRenderable bunny = new ObjectLoader().loadFromFileAnim(bunnyObjectName);
 		IRenderable cube = new TexturedRenderable(new ObjectLoader().loadFromFile("cube.obj"), new Texture("bunny_2d.png"));
 		System.gc();
@@ -61,7 +77,7 @@ public class BunnyGame implements IGame {
 		defaultShader.addUniformBlockIndex(1, "Matrices");
 		bunnyScene.getSceneGraph().setShader(defaultShader);
 
-		glDisable(GL_CULL_FACE);
+		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		
 		bunnyObj.playAnimation("", true, false);
@@ -81,6 +97,7 @@ public class BunnyGame implements IGame {
 		cubeObj.getTransformation().rotate((float) deltaTime, new Vector3f(1, 1, 0));
 		bunnyObj.getTransformation().rotate((float) deltaTime * 3, new Vector3f(0, 1, 0));
 
+		bunnyScene.update(deltaTime);
 	}
 
 	@Override

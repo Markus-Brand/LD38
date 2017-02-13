@@ -16,6 +16,12 @@ import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.opengl.GL40.*;
 import static org.lwjgl.opengl.GL20.*;
 
+/**
+ * Shader Object used for rendering a {@link mbeb.opengldefault.rendering.renderable.IRenderable}
+ * 
+ * @author Markus
+ *
+ */
 public class Shader {
 
 	/** Class Name Tag */

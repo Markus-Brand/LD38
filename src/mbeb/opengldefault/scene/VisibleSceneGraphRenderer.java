@@ -1,7 +1,7 @@
 package mbeb.opengldefault.scene;
 
-import mbeb.opengldefault.camera.Camera;
 import org.joml.Matrix4f;
+import mbeb.opengldefault.camera.ICamera;
 import org.joml.Vector3f;
 
 /**
@@ -11,7 +11,7 @@ public class VisibleSceneGraphRenderer extends SceneGraphRenderer {
 
 	private static final float MIN_SCREEN_AREA = 0.00001f;
 
-	public VisibleSceneGraphRenderer(SceneObject root, Camera cam) {
+	public VisibleSceneGraphRenderer(SceneObject root, ICamera cam) {
 		super(root, cam);
 	}
 
