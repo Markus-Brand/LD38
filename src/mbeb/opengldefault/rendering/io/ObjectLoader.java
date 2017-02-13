@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mbeb.opengldefault.animation.AnimatedMesh;
+import mbeb.opengldefault.animation.AnimatedRenderable;
 import mbeb.opengldefault.animation.Animation;
 import mbeb.opengldefault.animation.Bone;
 import mbeb.opengldefault.animation.KeyFrame;
@@ -20,6 +21,7 @@ import mbeb.opengldefault.rendering.renderable.VAORenderable;
 import org.lwjgl.assimp.AIBone;
 import mbeb.opengldefault.scene.BoundingBox;
 import mbeb.opengldefault.animation.BoneTransformation;
+import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.lwjgl.assimp.AIAnimation;
@@ -150,7 +152,7 @@ public class ObjectLoader {
 
 			loadAnimations(animMesh, scene);
 
-			return animMesh;
+			return new AnimatedRenderable(animMesh);
 		} else {
 			return vaomesh;
 		}
@@ -236,7 +238,7 @@ public class ObjectLoader {
 	 * @return a new AnimatedRenderable
 	 */
 	private AnimatedMesh loadAnimatedMesh(AIMesh mesh, VAORenderable vaomesh, Bone skeleton) {
-
+		skeleton.updateInverseBindTransform(new Matrix4f());
 		return new AnimatedMesh(vaomesh, skeleton);
 	}
 
@@ -250,7 +252,7 @@ public class ObjectLoader {
 	private Bone parseScene(AIScene scene) {
 		AINode rootNode = scene.mRootNode();
 		Bone rootBone = new Bone(rootNode.mName().dataString(), -1);
-		rootBone.setOriginalTransform(new BoneTransformation(rootNode.mTransformation()));
+		rootBone.setLocalBindTransform(BoneTransformation.matFromAI(rootNode.mTransformation()));
 
 		parseBoneChildren(rootBone, rootNode);
 		return rootBone;
@@ -267,7 +269,7 @@ public class ObjectLoader {
 		for (int c = 0; c < node.mNumChildren(); c++) {
 			AINode childNode = AINode.create(node.mChildren().get(c));
 			Bone childBone = new Bone(childNode.mName().dataString(), -1);
-			childBone.setOriginalTransform(new BoneTransformation(childNode.mTransformation()));
+			childBone.setLocalBindTransform(BoneTransformation.matFromAI(childNode.mTransformation()));
 			parseBoneChildren(childBone, childNode);
 			bone.getChildren().add(childBone);
 		}

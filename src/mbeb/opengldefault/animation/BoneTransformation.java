@@ -15,11 +15,15 @@ public class BoneTransformation {
 		return new BoneTransformation(null, null, null);
 	}
 	
-	private static Matrix4f matFromAI(AIMatrix4x4 aimat) {
-		return new Matrix4f(aimat.a1(), aimat.a2(), aimat.a3(), aimat.a4(), 
+	public static final Matrix4f matFromAI(AIMatrix4x4 aimat) {
+		/*return new Matrix4f(aimat.a1(), aimat.a2(), aimat.a3(), aimat.a4(), 
 				aimat.b1(), aimat.b2(), aimat.b3(), aimat.b4(),
 				aimat.c1(), aimat.c2(), aimat.c3(), aimat.c4(),
-				aimat.d1(), aimat.d2(), aimat.d3(), aimat.d4());
+				aimat.d1(), aimat.d2(), aimat.d3(), aimat.d4());/**/
+		return new Matrix4f(aimat.a1(), aimat.b1(), aimat.c1(), aimat.d1(), 
+				aimat.a2(), aimat.b2(), aimat.c2(), aimat.d2(),
+				aimat.a3(), aimat.b3(), aimat.c3(), aimat.d3(),
+				aimat.a4(), aimat.b4(), aimat.c4(), aimat.d4());
 	}
 	
 	private static Vector3f lerpVec3(Vector3f a, Vector3f b, double factor) {

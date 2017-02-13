@@ -20,6 +20,8 @@ public class AnimatedMesh implements IRenderable {
 		this.mesh = mesh;
 		this.skeleton = skeleton;
 	}
+	
+	
 
 	@Override
 	public BoundingBox getBoundingBox() {
@@ -31,7 +33,7 @@ public class AnimatedMesh implements IRenderable {
 		mesh.render(shader);
 	}
 
-	private List<Animation> getAnimations() {
+	public List<Animation> getAnimations() {
 		if (animations == null) {
 			animations = new ArrayList<>();
 		}

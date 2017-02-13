@@ -10,6 +10,7 @@ import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glViewport;
 
 import java.util.ArrayList;
+import mbeb.opengldefault.animation.AnimatedRenderable;
 
 import mbeb.opengldefault.camera.FirstPersonCamera;
 import mbeb.opengldefault.camera.ICamera;
@@ -38,7 +39,7 @@ public class BunnyGame implements IGame {
 	protected ICamera cam;
 	Scene bunnyScene;
 
-	SceneObject cubeObj, bunnyObj, bunnyObj2;
+	SceneObject bunnyObj2;
 
 	@Override
 	public void init() {
@@ -57,30 +58,22 @@ public class BunnyGame implements IGame {
 		bunnyScene = new Scene(cam, skybox);
 
 		IRenderable bunny = new ObjectLoader().loadFromFileAnim(bunnyObjectName);
-		IRenderable cube = new TexturedRenderable(new ObjectLoader().loadFromFile("cube.obj"), new Texture("bunny_2d.png"));
 		System.gc();
 		
 		Shader debugShader = new Shader("boneAnimation.vert", "debugging.frag");
+		debugShader.addUniformBlockIndex(1, "Matrices");
+		debugShader.use();
 		
-		cubeObj = new SceneObject(cube, null, null);
-		bunnyObj = new SceneObject(bunny, new Matrix4f().translate(1, 1, 1), null);
-		bunnyObj.setShader(debugShader);
 		bunnyObj2 = new SceneObject(bunny, new Matrix4f().translate(1, -1, -1), null);
 		bunnyObj2.setShader(debugShader);
 
-		cubeObj.addSubObject(bunnyObj);
 		//cubeObj.getTransformation().scale(0.3f);
 		bunnyScene.getSceneGraph().addSubObject(bunnyObj2);
-		bunnyScene.getSceneGraph().addSubObject(cubeObj);
 
-		Shader defaultShader = new Shader("basic.vert", "phong.frag");
-		defaultShader.addUniformBlockIndex(1, "Matrices");
-		bunnyScene.getSceneGraph().setShader(defaultShader);
-
+		bunnyScene.getSceneGraph().setShader(debugShader);
+		
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
-		
-		bunnyObj.playAnimation("", true, false);
 	}
 
 	@Override
@@ -93,9 +86,6 @@ public class BunnyGame implements IGame {
 
 		glViewport(0, 0, OpenGLContext.getWidth(), OpenGLContext.getHeight());
 		GLErrors.checkForError(TAG, "glViewport");
-
-		cubeObj.getTransformation().rotate((float) deltaTime, new Vector3f(1, 1, 0));
-		bunnyObj.getTransformation().rotate((float) deltaTime * 3, new Vector3f(0, 1, 0));
 
 		bunnyScene.update(deltaTime);
 	}

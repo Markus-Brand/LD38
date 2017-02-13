@@ -25,7 +25,7 @@ public class Animator {
 	}
 	
 	public void update(double deltaTime) {
-		currentTime += deltaTime;
+		currentTime += deltaTime * 0.2f;
 	}
 
 	public Animation getAnimation() {
@@ -42,10 +42,12 @@ public class Animator {
 		//edge-case handling
 		if (looping) {
 			if (beforeAfter[0] == null) {
-				beforeAfter[0] = beforeAfter[1];
+				currentTime += animation.getDuration();
+				return getCurrentPose();
 			}
 			if (beforeAfter[1] == null) {
-				beforeAfter[1] = beforeAfter[0];
+				currentTime -= animation.getDuration();
+				return getCurrentPose();
 			}
 		} else {
 			if (beforeAfter[0] == null) {
@@ -57,6 +59,7 @@ public class Animator {
 		
 		double lerpFactor = (currentTime - beforeAfter[0].getTimeStamp()) / 
 				(beforeAfter[1].getTimeStamp() - beforeAfter[0].getTimeStamp());
+		
 		
 		return Pose.lerp(beforeAfter[0].getPose(), beforeAfter[1].getPose(), lerpFactor);
 	}

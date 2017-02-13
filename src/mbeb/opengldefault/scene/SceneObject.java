@@ -2,7 +2,6 @@ package mbeb.opengldefault.scene;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 import mbeb.opengldefault.animation.AnimatedMesh;
 import mbeb.opengldefault.animation.Animation;
 import mbeb.opengldefault.animation.Animator;
@@ -30,8 +29,6 @@ public class SceneObject {
 	private List<SceneObject> subObjects;
 	/** the parent in the Scene-graph */
 	private SceneObject parent;
-	
-	private List<Animator> currentAnimations;
 
 	/**
 	 * Create a new sceneObject. All parameters are optional
@@ -132,43 +129,14 @@ public class SceneObject {
 	public boolean hasOwnShader() {
 		return shader != null;
 	}
-
-	public List<Animator> getCurrentAnimations() {
-		if (currentAnimations == null) {
-			currentAnimations = new ArrayList<>();
-		}
-		return currentAnimations;
-	}
-	
-	/**
-	 * return the Animation-object from this mesh with the given name
-	 * @param name the name to search for
-	 * @return null if no such animation was found
-	 */
-	public Animation getAnimationByName(String name) {
-		if (getRenderable() instanceof AnimatedMesh) {
-			AnimatedMesh animatedMesh = (AnimatedMesh) getRenderable();
-			return animatedMesh.getAnimationByName(name);
-		} else {
-			Log.log(TAG, "cant play animation \"" + name + "\" for non-boned mesh.");
-			return null;
-		}
-	}
-	
-	public void playAnimation(Animator animator) {
-		getCurrentAnimations().add(animator);
-		//todo update animations maybe?
-	}
-	
-	public void playAnimation(String name, boolean looping, boolean flipping) {
-		Animator anim = new Animator(getAnimationByName(name));
-		//todo apply animation-flags
-		playAnimation(anim);
-	}
 	
 	public void update(double deltaTime) {
-		getCurrentAnimations().forEach((Animator anim) -> anim.update(deltaTime));
+		if (getRenderable() != null) {
+			getRenderable().update(deltaTime);
+		}
 		getSubObjects().forEach((SceneObject obj) -> obj.update(deltaTime));
+		
+		
 	}
 
 //<editor-fold defaultstate="collapsed" desc="BoundingBox">

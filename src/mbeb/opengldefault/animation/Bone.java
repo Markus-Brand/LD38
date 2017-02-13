@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import org.joml.Matrix4f;
 
 /**
  * a bone inside a mesh
@@ -13,7 +14,9 @@ public class Bone {
 	private String name;
 	private int index;
 	
-	private BoneTransformation originalTransform;
+	private Matrix4f localBindTransform;
+	
+	private Matrix4f inverseBindTransform = new Matrix4f();
 	
 	private List<Bone> children;
 
@@ -37,15 +40,13 @@ public class Bone {
 		return name;
 	}
 
-	public BoneTransformation getOriginalTransform() {
-		if (originalTransform == null) {
-			originalTransform = BoneTransformation.identity();
-		}
-		return originalTransform;
+	public Matrix4f getLocalBindTransform() {
+		return localBindTransform;
 	}
 
-	public void setOriginalTransform(BoneTransformation originalTransform) {
-		this.originalTransform = originalTransform;
+	public void setLocalBindTransform(Matrix4f originalTransform) {
+		//System.err.println(getName() + " = " + originalTransform);
+		this.localBindTransform = originalTransform;
 	}
 
 	public int getIndex() {
@@ -73,5 +74,21 @@ public class Bone {
 		}
 		
 		return null;
+	}
+
+	public Matrix4f getInverseBindTransform() {
+		return inverseBindTransform;
+	}
+	
+	public void updateInverseBindTransform(Matrix4f parentBindTransform) {
+		Matrix4f bindTransform = parentBindTransform.mul(getLocalBindTransform(), new Matrix4f());
+		for (Bone child : getChildren()) {
+			child.updateInverseBindTransform(bindTransform);
+		}
+		bindTransform.invert(inverseBindTransform);
+	}
+
+	public int boneCount() {
+		return 1 + getChildren().stream().map((Bone b) -> b.boneCount()).reduce(0, Integer::sum);
 	}
 }

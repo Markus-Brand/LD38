@@ -32,6 +32,12 @@ public class Animation {
 		return anim;
 	}
 
+	public double getDuration() {
+		return duration;
+	}
+	
+	
+
 	public void setSkeleton(Bone skeleton) {
 		this.skeleton = skeleton;
 	}
