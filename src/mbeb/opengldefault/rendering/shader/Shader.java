@@ -205,7 +205,7 @@ public class Shader {
 	}
 
 	/**
-	 * get the location of a Uniform with given name
+	 * get the location of an Uniform with given name
 	 *
 	 * @param name
 	 *            name of the uniform
@@ -216,7 +216,7 @@ public class Shader {
 	}
 	
 	/**
-	 * get the location of a Uniform with given name
+	 * get the location of an Uniform with given name
 	 * @param name name of the uniform
 	 * @param logAnError log an error if not found
 	 * @return the uniforms location
@@ -243,7 +243,7 @@ public class Shader {
 	 * @param value
 	 *            the value of the parameter
 	 * @param update
-	 *            wether to directly re-compile the shader after (when false is
+	 *            whether to directly re-compile the shader after (when false is
 	 *            passed, call shader.compile() to view the results)
 	 */
 	public void updateParameter(String name, Object value, boolean update) {
@@ -349,11 +349,11 @@ public class Shader {
 	}
 
 	/**
-	 * Compiles Tesselation Control Shader
+	 * Compiles Tessellation Control Shader
 	 *
 	 * @param paramString
 	 *            Shader Header
-	 * @return tesselation control shader object
+	 * @return tessellation control shader object
 	 */
 	private int compileTesControlShader(String paramString) {
 		if (tesControlSource == null) {
@@ -371,11 +371,11 @@ public class Shader {
 	}
 
 	/**
-	 * Compiles Tesselation Evaluation Shader
+	 * Compiles Tessellation Evaluation Shader
 	 *
 	 * @param paramString
 	 *            Shader Header
-	 * @return tesselation evaluation shader object
+	 * @return tessellation evaluation shader object
 	 */
 	private int compileTesEvalShader(String paramString) {
 		if (tesEvalSource == null) {
