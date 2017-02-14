@@ -6,7 +6,7 @@ import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.shader.*;
 
 /**
- * A Texture that can bind itself to an uniform for a given {@link Shader}
+ * A Texture that can bind itself to a uniform for a given {@link Shader}
  */
 public class Texture {
 
