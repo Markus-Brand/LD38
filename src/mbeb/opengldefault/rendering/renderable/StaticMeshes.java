@@ -37,7 +37,7 @@ public class StaticMeshes {
 	}
 
 	/**
-	 * Get A Renderable containing vertexData of an uniform Cube. Used in {@link Skybox}
+	 * Get A Renderable containing vertexData of a uniform Cube. Used in {@link Skybox}
 	 *
 	 * @return Cube Renderable
 	 */
