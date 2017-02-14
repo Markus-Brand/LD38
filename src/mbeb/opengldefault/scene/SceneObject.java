@@ -1,9 +1,9 @@
 package mbeb.opengldefault.scene;
 
-import java.util.ArrayList;
-import java.util.List;
-import mbeb.opengldefault.rendering.renderable.IRenderable;
-import mbeb.opengldefault.rendering.shader.Shader;
+import java.util.*;
+
+import mbeb.opengldefault.rendering.renderable.*;
+import mbeb.opengldefault.rendering.shader.*;
 
 /**
  * A (potentially) complex object inside a scene, with transformations
@@ -44,7 +44,7 @@ public class SceneObject {
 	 * @return this objects current Tranformation
 	 */
 	public Transformation getTransformation() {
-		if (myTransformation == null) {
+		if(myTransformation == null) {
 			myTransformation = Transformation.identity();
 		}
 		return myTransformation;
@@ -56,7 +56,7 @@ public class SceneObject {
 	 * @return all the Objects that share this objects transformation
 	 */
 	public List<SceneObject> getSubObjects() {
-		if (subObjects == null) {
+		if(subObjects == null) {
 			subObjects = new ArrayList<>();
 		}
 		return subObjects;
@@ -101,7 +101,7 @@ public class SceneObject {
 	 * @return
 	 */
 	public Shader getShader() {
-		if (!hasOwnShader() && parent != null) {
+		if(!hasOwnShader() && parent != null) {
 			return parent.getShader();
 		}
 		return shader;
@@ -123,7 +123,7 @@ public class SceneObject {
 		return shader != null;
 	}
 
-//<editor-fold defaultstate="collapsed" desc="BoundingBox">
+	//<editor-fold defaultstate="collapsed" desc="BoundingBox">
 
 	/**
 	 * @return a boundingBox so that each sub-Object lies within
@@ -139,7 +139,7 @@ public class SceneObject {
 	 * calculate the boundingBox of just the renderable
 	 */
 	private BoundingBox getRenderableBoundingBox() {
-		if (renderable == null) {
+		if(renderable == null) {
 			return new BoundingBox.Empty(getTransformation());
 		}
 		return renderable.getBoundingBox();
@@ -152,7 +152,7 @@ public class SceneObject {
 	 */
 	public BoundingBox reCalculateBoundingBox() {
 		box = getRenderableBoundingBox();
-		for (SceneObject o : getSubObjects()) {
+		for(SceneObject o : getSubObjects()) {
 			adjustBoundingBoxFor(o);
 		}
 		return box;
@@ -164,10 +164,10 @@ public class SceneObject {
 	 * @param object
 	 */
 	private void adjustBoundingBoxFor(SceneObject object) {
-		if (box == null) {
+		if(box == null) {
 			box = new BoundingBox.Empty(getTransformation());
 		}
 		box = box.unionWith(object.getBoundingBox());
 	}
-//</editor-fold>
+	//</editor-fold>
 }

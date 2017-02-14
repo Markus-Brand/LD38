@@ -15,7 +15,8 @@ public class GLErrors {
 	 * @param classTag
 	 *            Name of the class the method was called from
 	 * @param message
-	 *            additional information. Should be the name of the OpenGL that was called and could have caused the error
+	 *            additional information. Should be the name of the OpenGL that was called and could have caused the
+	 *            error
 	 * @return whether an error occurred
 	 */
 	public static boolean checkForError(String classTag, String message) {
@@ -29,17 +30,19 @@ public class GLErrors {
 	 * @param classTag
 	 *            Name of the class the method was called from
 	 * @param message
-	 *            additional information. Should be the name of the OpenGL that was called and could have caused the error
-	 * @param abortProgram abort the current thread by throwing an exception
+	 *            additional information. Should be the name of the OpenGL that was called and could have caused the
+	 *            error
+	 * @param abortProgram
+	 *            abort the current thread by throwing an exception
 	 * @return whether an error occurred
 	 */
 	public static boolean checkForError(String classTag, String message, boolean abortProgram) {
 		int error = glGetError();
-		if (error == GL_NO_ERROR) {
+		if(error == GL_NO_ERROR) {
 			return false;
 		} else {
 			GLException ex = new GLException(classTag, message, error);
-			if (abortProgram) {
+			if(abortProgram) {
 				throw ex;
 			} else {
 				ex.printStackTrace();
@@ -60,24 +63,24 @@ public class GLErrors {
 
 		private static String format(String classTag, String method, int error) {
 			String errorMessage = classTag + ">>" + method + ": caused error code " + error + " (";
-			switch (error) {
+			switch(error) {
 				case GL_INVALID_ENUM:
 					errorMessage += "GL_INVALID_ENUM";
-					break;
+				break;
 				case GL_INVALID_VALUE:
 					errorMessage += "GL_INVALID_VALUE";
-					break;
+				break;
 				case GL_INVALID_OPERATION:
 					errorMessage += "GL_INVALID_OPERATION";
-					break;
+				break;
 				case GL_INVALID_FRAMEBUFFER_OPERATION:
 					errorMessage += "GL_INVALID_FRAMEBUFFER_OPERATION";
-					break;
+				break;
 				case GL_OUT_OF_MEMORY:
 					errorMessage += "GL_OUT_OF_MEMORY";
-					break;
+				break;
 				default:
-					errorMessage += "UNKNOWN_EXCEPTION"; 
+					errorMessage += "UNKNOWN_EXCEPTION";
 			}
 			errorMessage += ")";
 			return errorMessage;

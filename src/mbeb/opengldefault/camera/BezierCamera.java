@@ -1,16 +1,14 @@
 package mbeb.opengldefault.camera;
 
-import mbeb.opengldefault.curves.BezierCurve;
-import mbeb.opengldefault.openglcontext.OpenGLContext;
+import mbeb.opengldefault.curves.*;
+import mbeb.opengldefault.openglcontext.*;
 
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
+import org.joml.*;
 
 /**
  * A Camera that follows a path defined by a {@link BezierCurve}
  *
  * @author Markus
- *
  */
 public class BezierCamera extends Camera {
 	/** Class Name Tag */
@@ -20,20 +18,21 @@ public class BezierCamera extends Camera {
 
 	private BezierCurve path;
 
-	private float distanceTraveled;
+	private float distanceTravelled;
 
 	private float speed;
 
 	public BezierCamera(BezierCurve path) {
 		projection = new Matrix4f();
-		projection.perspective((float) Math.PI / 2, OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f, 100);
+		projection.perspective((float) java.lang.Math.PI / 2, OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f,
+				100);
 
 		this.viewDirection = new Vector3f(1, 0, 0);
 		this.worldUp = new Vector3f(0, 1, 0);
 
 		this.path = path;
 
-		this.distanceTraveled = 0;
+		this.distanceTravelled = 0;
 		this.speed = 3.4f;
 
 		updateView(0);
@@ -46,13 +45,13 @@ public class BezierCamera extends Camera {
 	 */
 	private void updateView(double deltaTime) {
 
-		distanceTraveled += deltaTime * speed;
+		distanceTravelled += deltaTime * speed;
 
-		if (distanceTraveled > path.getMaxLength()) {
-			distanceTraveled -= path.getMaxLength();
+		if(distanceTravelled > path.getMaxLength()) {
+			distanceTravelled -= path.getMaxLength();
 		}
 
-		position = path.getPosition(distanceTraveled);
+		position = path.getPosition(distanceTravelled);
 
 		Vector3f center = new Vector3f();
 		view = new Matrix4f();

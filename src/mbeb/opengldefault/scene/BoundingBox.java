@@ -1,7 +1,8 @@
 package mbeb.opengldefault.scene;
 
-import mbeb.opengldefault.camera.ICamera;
-import org.joml.Vector3f;
+import mbeb.opengldefault.camera.*;
+
+import org.joml.*;
 
 /**
  * A simple struct defining a box-like area in the world
@@ -17,7 +18,7 @@ public class BoundingBox {
 			this(Transformation.identity());
 		}
 
-		public Empty(Transformation localToWorld) {
+		public Empty(final Transformation localToWorld) {
 			super(null, null, localToWorld);
 		}
 
@@ -27,14 +28,14 @@ public class BoundingBox {
 		}
 
 		@Override
-		public BoundingBox unionWith(BoundingBox other) {
-			BoundingBox result = other.duplicate();
+		public BoundingBox unionWith(final BoundingBox other) {
+			final BoundingBox result = other.duplicate();
 			result.setModelTransform(modelTransform.and(result.modelTransform));
 			return result;
 		}
 
 		@Override
-		public BoundingBox extendTo(Vector3f localVertex) {
+		public BoundingBox extendTo(final Vector3f localVertex) {
 			return new BoundingBox(localVertex, new Vector3f(0), modelTransform);
 		}
 
@@ -51,11 +52,11 @@ public class BoundingBox {
 	 */
 	protected Transformation modelTransform;
 
-	public BoundingBox(Vector3f localStart, Vector3f localSize) {
+	public BoundingBox(final Vector3f localStart, final Vector3f localSize) {
 		this(localStart, localSize, Transformation.identity());
 	}
 
-	public BoundingBox(Vector3f localStart, Vector3f localSize, Transformation localToWorld) {
+	public BoundingBox(final Vector3f localStart, final Vector3f localSize, final Transformation localToWorld) {
 		this.localStart = localStart;
 		this.localSize = localSize;
 		this.modelTransform = localToWorld;
@@ -75,16 +76,16 @@ public class BoundingBox {
 	 *            a new vertex to include in this box
 	 * @return a possibly new BoundingBox-object
 	 */
-	public BoundingBox extendTo(Vector3f localVertex) {
-		Vector3f localEnd = new Vector3f(localStart).add(localSize);
+	public BoundingBox extendTo(final Vector3f localVertex) {
+		final Vector3f localEnd = new Vector3f(localStart).add(localSize);
 
-		localStart.x = Math.min(localStart.x, localVertex.x);
-		localStart.y = Math.min(localStart.y, localVertex.y);
-		localStart.z = Math.min(localStart.z, localVertex.z);
+		localStart.x = java.lang.Math.min(localStart.x, localVertex.x);
+		localStart.y = java.lang.Math.min(localStart.y, localVertex.y);
+		localStart.z = java.lang.Math.min(localStart.z, localVertex.z);
 
-		localEnd.x = Math.max(localEnd.x, localVertex.x);
-		localEnd.y = Math.max(localEnd.y, localVertex.y);
-		localEnd.z = Math.max(localEnd.z, localVertex.z);
+		localEnd.x = java.lang.Math.max(localEnd.x, localVertex.x);
+		localEnd.y = java.lang.Math.max(localEnd.y, localVertex.y);
+		localEnd.z = java.lang.Math.max(localEnd.z, localVertex.z);
 
 		localEnd.sub(localStart, localSize);
 
@@ -95,7 +96,7 @@ public class BoundingBox {
 		return modelTransform;
 	}
 
-	public void setModelTransform(Transformation transform) {
+	public void setModelTransform(final Transformation transform) {
 		this.modelTransform = transform;
 	}
 
@@ -112,11 +113,11 @@ public class BoundingBox {
 	 *            - its translation is seen as relative to this ones
 	 * @return a new boundingBox
 	 */
-	public BoundingBox unionWith(BoundingBox childBox) {
+	public BoundingBox unionWith(final BoundingBox childBox) {
 		//We also need to check for updates in the child BB, because the BB could potentially grow, if the children have transformations on their own
-		Vector3f[] childEdges = childBox.getGlobalEdges();
+		final Vector3f[] childEdges = childBox.getGlobalEdges();
 		BoundingBox bigger = this.duplicate();
-		for (Vector3f edge : childEdges) {
+		for(final Vector3f edge : childEdges) {
 			bigger = bigger.extendTo(edge);
 		}
 		return bigger;
@@ -128,11 +129,11 @@ public class BoundingBox {
 	 * @return
 	 */
 	private Vector3f[] getLocalEdges() {
-		Vector3f[] rawEdges = new Vector3f[8];
-		for (int x = 0; x <= 1; x++) {
-			for (int y = 0; y <= 1; y++) {
-				for (int z = 0; z <= 1; z++) {
-					Vector3f res = new Vector3f(localSize);
+		final Vector3f[] rawEdges = new Vector3f[8];
+		for(int x = 0; x <= 1; x++) {
+			for(int y = 0; y <= 1; y++) {
+				for(int z = 0; z <= 1; z++) {
+					final Vector3f res = new Vector3f(localSize);
 					res.mul(x, y, z);
 					res.add(localStart);
 					rawEdges[x * 4 + y * 2 + z] = res;
@@ -148,8 +149,8 @@ public class BoundingBox {
 	 * @return
 	 */
 	private Vector3f[] getGlobalEdges() {
-		Vector3f[] edges = getLocalEdges();
-		for (int e = 0; e < edges.length; e++) {
+		final Vector3f[] edges = getLocalEdges();
+		for(int e = 0; e < edges.length; e++) {
 			edges[e] = getModelTransform().applyTo3(edges[e]);
 		}
 		return edges;
@@ -164,10 +165,10 @@ public class BoundingBox {
 	 *            the camera to look from
 	 * @return screen-space positions
 	 */
-	public Vector3f[] getEdgesOnScreen(Transformation parentTransform, ICamera camera) {
+	public Vector3f[] getEdgesOnScreen(final Transformation parentTransform, final ICamera camera) {
 		//apply to edges
-		Vector3f[] edges = getGlobalEdges();
-		for (int e = 0; e < edges.length; e++) {
+		final Vector3f[] edges = getGlobalEdges();
+		for(int e = 0; e < edges.length; e++) {
 			edges[e] = camera.getPosOnScreen(parentTransform.applyTo3(edges[e]));
 		}
 		return edges;

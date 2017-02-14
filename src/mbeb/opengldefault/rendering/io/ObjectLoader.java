@@ -1,20 +1,15 @@
 package mbeb.opengldefault.rendering.io;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
+import java.io.*;
+import java.nio.file.*;
 
-import mbeb.opengldefault.logging.Log;
-import mbeb.opengldefault.openglcontext.OpenGLContext;
-import mbeb.opengldefault.rendering.renderable.IRenderable;
-import mbeb.opengldefault.rendering.renderable.VAORenderable;
-import mbeb.opengldefault.scene.BoundingBox;
-import org.joml.Vector3f;
+import mbeb.opengldefault.logging.*;
+import mbeb.opengldefault.openglcontext.*;
+import mbeb.opengldefault.rendering.renderable.*;
+import mbeb.opengldefault.scene.*;
 
-import org.lwjgl.assimp.AIMesh;
-import org.lwjgl.assimp.AIScene;
-import org.lwjgl.assimp.AIVector3D;
-import org.lwjgl.assimp.Assimp;
+import org.joml.*;
+import org.lwjgl.assimp.*;
 
 /**
  * Contains logic to create Renderables from Files
@@ -33,7 +28,7 @@ public class ObjectLoader {
 	 */
 	public IRenderable loadFromFile(String path) {
 
-		return loadFromFile(path, new DataFragment[] { DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV });
+		return loadFromFile(path, new DataFragment[] {DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV});
 	}
 
 	/**
@@ -50,7 +45,7 @@ public class ObjectLoader {
 		String realPath = getExtractedPath(path);
 		AIScene scene = Assimp.aiImportFile(realPath, Assimp.aiProcess_Triangulate);
 
-		for (int meshID = 0; meshID < scene.mNumMeshes(); meshID++) {
+		for(int meshID = 0; meshID < scene.mNumMeshes(); meshID++) {
 			IRenderable mesh = loadMesh(scene, meshID, format);
 			//todo not return just the first mesh, rather combine meshes
 			return mesh;
@@ -60,14 +55,16 @@ public class ObjectLoader {
 
 	private String getExtractedPath(String rawPath) {
 		File res = new File("res");
-		if (!res.exists()) {
+		if(!res.exists()) {
 			res.mkdirs();
 		}
 		File export = new File(res, rawPath);
-		if (!export.exists()) {
+		if(!export.exists()) {
 			try {
-				Files.copy(OpenGLContext.class.getResourceAsStream("/mbeb/opengldefault/resources/" + rawPath), export.toPath());
-			} catch (IOException ex) {
+				Files.copy(OpenGLContext.class.getResourceAsStream("/mbeb/opengldefault/resources/" + rawPath),
+						export.toPath());
+			}
+			catch(IOException ex) {
 				Log.log(TAG, ex.getMessage() + " at extracting resource " + rawPath);
 			}
 		}
@@ -95,13 +92,13 @@ public class ObjectLoader {
 		int dataPointer = 0;
 		int[] indices = new int[vertexCount];
 		int indicesPointer = 0;
-		
+
 		BoundingBox box = new BoundingBox.Empty();
 
-		for (int v = 0; v < vertexCount; v++) {
+		for(int v = 0; v < vertexCount; v++) {
 			AIVector3D position = mesh.mVertices().get(v);
 			box = box.extendTo(new Vector3f(position.x(), position.y(), position.z()));
-			for (DataFragment dataFormat : format) {
+			for(DataFragment dataFormat : format) {
 				dataFormat.addTo(mesh, v, data, dataPointer);
 				dataPointer += dataFormat.size();
 			}

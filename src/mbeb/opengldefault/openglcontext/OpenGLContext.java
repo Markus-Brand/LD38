@@ -1,24 +1,19 @@
 package mbeb.opengldefault.openglcontext;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Comparator;
-
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.system.MemoryUtil.NULL;
-import mbeb.opengldefault.controls.KeyBoard;
-import mbeb.opengldefault.controls.Mouse;
-import mbeb.opengldefault.game.IGame;
-import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.logging.Log;
-import mbeb.opengldefault.logging.LogMode;
+import static org.lwjgl.system.MemoryUtil.*;
 
-import org.lwjgl.Version;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.opengl.GL;
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
+
+import mbeb.opengldefault.controls.*;
+import mbeb.opengldefault.game.*;
+import mbeb.opengldefault.logging.*;
+
+import org.lwjgl.*;
+import org.lwjgl.glfw.*;
+import org.lwjgl.opengl.*;
 
 public class OpenGLContext {
 
@@ -72,14 +67,14 @@ public class OpenGLContext {
 	 */
 	private void loop() {
 		double lastTime = glfwGetTime();
-		while (!glfwWindowShouldClose(window)) {
+		while(!glfwWindowShouldClose(window)) {
 
 			glfwSwapBuffers(window); // swap the color buffers
 			// Poll for window events. The key callback above will only be
 			// invoked during this call.
 			glfwPollEvents();
 
-			if (KeyBoard.isKeyDown(GLFW_KEY_ESCAPE)) {
+			if(KeyBoard.isKeyDown(GLFW_KEY_ESCAPE)) {
 				glfwSetWindowShouldClose(window, true); // We will detect this in our rendering loop
 			}
 
@@ -103,8 +98,10 @@ public class OpenGLContext {
 		glfwSetErrorCallback(null).free();
 		Log.closeLogFile();
 		try {
-			Files.walk(new File("res").toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
-		} catch (IOException ex) {
+			Files.walk(new File("res").toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile)
+					.forEach(File::delete);
+		}
+		catch(IOException ex) {
 			Log.log(TAG, ex.getMessage() + " - unable to delete old res-directory");
 		}
 	}
@@ -123,22 +120,22 @@ public class OpenGLContext {
 	 */
 	private void createWindow(String title, boolean fullscreen, int width, int height) {
 		// Create the window
-		if (fullscreen) {
+		if(fullscreen) {
 			window = glfwCreateWindow(width, height, title, glfwGetPrimaryMonitor(), NULL);
 		} else {
 			window = glfwCreateWindow(width, height, title, NULL, NULL);
 		}
 
-		if (window == NULL) {
+		if(window == NULL) {
 			throw new RuntimeException("Failed to create the GLFW window");
 		}
 
 		// Setup a key callback. It will be called every time a key is pressed, repeated or released.
 		glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-			if (action == GLFW_PRESS) {
+			if(action == GLFW_PRESS) {
 				KeyBoard.keyDown(key);
 			}
-			if (action == GLFW_RELEASE) {
+			if(action == GLFW_RELEASE) {
 				KeyBoard.keyUp(key);
 			}
 		});
@@ -150,10 +147,10 @@ public class OpenGLContext {
 		});
 
 		glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
-			if (action == GLFW_PRESS) {
+			if(action == GLFW_PRESS) {
 				Mouse.buttonDown(button);
 			}
-			if (action == GLFW_RELEASE) {
+			if(action == GLFW_RELEASE) {
 				Mouse.buttonUp(button);
 			}
 		});
@@ -187,7 +184,7 @@ public class OpenGLContext {
 		GLFWErrorCallback.createPrint(System.err).set();
 
 		// Initialize GLFW. Most GLFW functions will not work before doing this.
-		if (!glfwInit()) {
+		if(!glfwInit()) {
 			throw new IllegalStateException("Unable to initialize GLFW");
 		}
 
@@ -219,11 +216,11 @@ public class OpenGLContext {
 	 *            command line arguments
 	 */
 	private static void evaluateCommandLineArguments(String[] args) {
-		if (args.length < 2) {
+		if(args.length < 2) {
 			Log.initDebug(LogMode.CONSOLE);
-		} else if (args[1].equals("console")) {
+		} else if(args[1].equals("console")) {
 			Log.initDebug(LogMode.CONSOLE);
-		} else if (args[1].equals("logfile")) {
+		} else if(args[1].equals("logfile")) {
 			Log.initDebug(LogMode.LOGFILE);
 		} else {
 			Log.initDebug(LogMode.NONE);

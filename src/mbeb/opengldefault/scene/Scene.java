@@ -1,7 +1,7 @@
 package mbeb.opengldefault.scene;
 
-import mbeb.opengldefault.camera.ICamera;
-import mbeb.opengldefault.rendering.renderable.Skybox;
+import mbeb.opengldefault.camera.*;
+import mbeb.opengldefault.rendering.renderable.*;
 
 /**
  * A scene is an object in which objects live and the camera moves. There should
@@ -39,7 +39,7 @@ public class Scene {
 
 	public void render() {
 		renderer.render();
-		if (skybox != null) {
+		if(skybox != null) {
 			skybox.render();
 		}
 	}

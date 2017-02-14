@@ -1,22 +1,16 @@
 package mbeb.opengldefault.camera;
 
-import static org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW;
-import static org.lwjgl.opengl.GL15.glBindBuffer;
-import static org.lwjgl.opengl.GL15.glBufferData;
-import static org.lwjgl.opengl.GL15.glBufferSubData;
-import static org.lwjgl.opengl.GL15.glGenBuffers;
-import static org.lwjgl.opengl.GL30.glBindBufferBase;
-import static org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL31.*;
 
-import java.nio.FloatBuffer;
+import java.nio.*;
 
-import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.openglcontext.OpenGLContext;
+import mbeb.opengldefault.logging.*;
+import mbeb.opengldefault.openglcontext.*;
 
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.lwjgl.BufferUtils;
+import org.joml.*;
+import org.lwjgl.*;
 
 public abstract class Camera implements ICamera {
 
@@ -52,7 +46,8 @@ public abstract class Camera implements ICamera {
 		projection = new Matrix4f();
 		view = new Matrix4f();
 		projectionView = new Matrix4f();
-		projection.perspective((float) (Math.PI / 2), OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f, 100);
+		projection.perspective((float) (java.lang.Math.PI / 2),
+				OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f, 100);
 
 		view.lookAlong(new Vector3f(0, 0, 1), new Vector3f(0, 1, 0));
 
@@ -66,7 +61,7 @@ public abstract class Camera implements ICamera {
 	}
 
 	@Override
-	public void setView(Matrix4f view) {
+	public void setView(final Matrix4f view) {
 		this.view = view;
 		updateUniformBlock();
 	}
@@ -77,14 +72,14 @@ public abstract class Camera implements ICamera {
 	}
 
 	@Override
-	public void setProjection(Matrix4f projection) {
+	public void setProjection(final Matrix4f projection) {
 		this.projection = projection;
 		updateUniformBlock();
 	}
 
 	@Override
 	public Matrix4f getProjectionView() {
-		if (projectionView == null) {
+		if(projectionView == null) {
 			projectionView = new Matrix4f();
 			getProjection().mul(getView(), projectionView);
 		}
@@ -98,7 +93,7 @@ public abstract class Camera implements ICamera {
 
 	@Override
 	public int getUBO() {
-		if (UBO == -1) {
+		if(UBO == -1) {
 			UBO = glGenBuffers();
 			glBindBuffer(GL_UNIFORM_BUFFER, UBO);
 			GLErrors.checkForError(TAG, "glBindBuffer");
@@ -116,16 +111,16 @@ public abstract class Camera implements ICamera {
 	public void updateUniformBlock() {
 		glBindBuffer(GL_UNIFORM_BUFFER, getUBO());
 		GLErrors.checkForError(TAG, "glBindBuffer");
-		FloatBuffer projectionBuffer = BufferUtils.createFloatBuffer(16);
+		final FloatBuffer projectionBuffer = BufferUtils.createFloatBuffer(16);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, getProjection().get(projectionBuffer));
 
-		FloatBuffer viewBuffer = BufferUtils.createFloatBuffer(16);
+		final FloatBuffer viewBuffer = BufferUtils.createFloatBuffer(16);
 		glBufferSubData(GL_UNIFORM_BUFFER, 64, getView().get(viewBuffer));
 
-		FloatBuffer projectionViewBuffer = BufferUtils.createFloatBuffer(16);
+		final FloatBuffer projectionViewBuffer = BufferUtils.createFloatBuffer(16);
 		glBufferSubData(GL_UNIFORM_BUFFER, 128, getProjectionView().get(projectionViewBuffer));
 
-		FloatBuffer skyboxViewBuffer = BufferUtils.createFloatBuffer(16);
+		final FloatBuffer skyboxViewBuffer = BufferUtils.createFloatBuffer(16);
 		glBufferSubData(GL_UNIFORM_BUFFER, 192, getSkyboxView().get(skyboxViewBuffer));
 		GLErrors.checkForError(TAG, "glBufferSubData");
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
@@ -137,7 +132,7 @@ public abstract class Camera implements ICamera {
 	}
 
 	@Override
-	public void setPosition(Vector3f position) {
+	public void setPosition(final Vector3f position) {
 		this.position = position;
 	}
 
@@ -147,7 +142,7 @@ public abstract class Camera implements ICamera {
 	}
 
 	@Override
-	public void setViewDirection(Vector3f newViewDirection) {
+	public void setViewDirection(final Vector3f newViewDirection) {
 		this.viewDirection = newViewDirection;
 	}
 }

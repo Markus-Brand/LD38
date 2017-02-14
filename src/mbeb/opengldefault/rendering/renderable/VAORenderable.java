@@ -1,29 +1,17 @@
 package mbeb.opengldefault.rendering.renderable;
 
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
-import static org.lwjgl.opengl.GL11.glDrawElements;
-import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
-import static org.lwjgl.opengl.GL15.glBindBuffer;
-import static org.lwjgl.opengl.GL15.glBufferData;
-import static org.lwjgl.opengl.GL15.glDeleteBuffers;
-import static org.lwjgl.opengl.GL15.glGenBuffers;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL30.glGenVertexArrays;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
 
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.nio.*;
 
-import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.rendering.shader.Shader;
-import mbeb.opengldefault.scene.BoundingBox;
+import mbeb.opengldefault.logging.*;
+import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.scene.*;
 
-import org.lwjgl.BufferUtils;
+import org.lwjgl.*;
 
 /**
  * Leaf Renderable - an actual OpenGL-VAO that can be rendered
@@ -67,7 +55,8 @@ public class VAORenderable implements IRenderable {
 	 * Constructor for Renderable
 	 *
 	 * @param vertexBuffer
-	 *            vertex data in a FloatBuffer. Contains vertex position, texture coordinates, normals, color and maybe other data
+	 *            vertex data in a FloatBuffer. Contains vertex position, texture coordinates, normals, color and maybe
+	 *            other data
 	 * @param indexBuffer
 	 *            index data in a IntBuffer. The order in which the vertex data is read
 	 * @param dataSizes
@@ -157,7 +146,8 @@ public class VAORenderable implements IRenderable {
 	 * Static method for generating a VAO
 	 *
 	 * @param vertexBuffer
-	 *            vertex data in a FloatBuffer. Contains vertex position, texture coordinates, normals, color and maybe other data
+	 *            vertex data in a FloatBuffer. Contains vertex position, texture coordinates, normals, color and maybe
+	 *            other data
 	 * @param indexBuffer
 	 *            index data in a IntBuffer. The order in which the vertex data is read
 	 * @param dataSizes
@@ -209,7 +199,8 @@ public class VAORenderable implements IRenderable {
 	 * Static method for generating a VBO
 	 *
 	 * @param vertexBuffer
-	 *            vertex data in a FloatBuffer. Contains vertex position, texture coordinates, normals, color and maybe other data
+	 *            vertex data in a FloatBuffer. Contains vertex position, texture coordinates, normals, color and maybe
+	 *            other data
 	 * @param dataSizes
 	 *            size of the components in the data array in amount of floats. a RGB color would be represented by a 3
 	 * @return generated VBO
@@ -225,12 +216,12 @@ public class VAORenderable implements IRenderable {
 		GLErrors.checkForError(TAG, "glBufferData VBO");
 
 		int stride = 0;
-		for (int dataSize : dataSizes) {
+		for(int dataSize : dataSizes) {
 			stride += 4 * dataSize; //size of float
 		}
 
 		int offset = 0;
-		for (int i = 0; i < dataSizes.length; i++) {
+		for(int i = 0; i < dataSizes.length; i++) {
 			glVertexAttribPointer(i, dataSizes[i], GL_FLOAT, false, stride, offset);
 			GLErrors.checkForError(TAG, "glVertexAttribPointer VBO");
 			glEnableVertexAttribArray(i);

@@ -1,17 +1,16 @@
 package mbeb.opengldefault.scene;
 
-import java.nio.FloatBuffer;
-import java.util.Collection;
+import java.nio.*;
+import java.util.*;
 
-import mbeb.opengldefault.camera.ICamera;
-import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.rendering.renderable.IRenderable;
-import mbeb.opengldefault.rendering.shader.Shader;
+import mbeb.opengldefault.camera.*;
+import mbeb.opengldefault.logging.*;
+import mbeb.opengldefault.rendering.renderable.*;
+import mbeb.opengldefault.rendering.shader.*;
 
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL20;
+import org.joml.*;
+import org.lwjgl.*;
+import org.lwjgl.opengl.*;
 
 /**
  * A "visitor" of the scenegraph to render it
@@ -56,8 +55,8 @@ public class SceneGraphRenderer {
 		final Transformation transform = parentTransform.and(object.getTransformation());
 		renderSelf(object, transform);
 		final Collection<SceneObject> subObjects = object.getSubObjects();
-		if (subObjects != null) {
-			for (final SceneObject subObject : subObjects) {
+		if(subObjects != null) {
+			for(final SceneObject subObject : subObjects) {
 				renderObject(subObject, transform);
 			}
 		}
@@ -74,21 +73,21 @@ public class SceneGraphRenderer {
 	public void renderSelf(final SceneObject object, final Transformation transform) {
 		final Shader shader = object.getShader();
 		shader.use();
-		if (object.hasOwnShader()) {
+		if(object.hasOwnShader()) {
 			//update camera on first object with this shader only
 			final int viewPosUniform = shader.getUniform(ViewPosUniformName, false);
-			if (viewPosUniform >= 0) {
+			if(viewPosUniform >= 0) {
 				final Vector3f pos = cam.getPosition();
 				GL20.glUniform3f(viewPosUniform, pos.x, pos.y, pos.z);
 				GLErrors.checkForError(TAG, "glUniform3f");
 			}
 		}
 		final IRenderable renderable = object.getRenderable();
-		if (renderable == null) {
+		if(renderable == null) {
 			return;
 		}
 		final int modelUniform = shader.getUniform(ModelMatrixUniformName, false);
-		if (modelUniform >= 0) {
+		if(modelUniform >= 0) {
 			//only if shader wants the model matrix
 			final Matrix4f model = transform.asMatrix();
 			final FloatBuffer buffer = BufferUtils.createFloatBuffer(16);

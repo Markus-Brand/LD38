@@ -1,32 +1,19 @@
 package mbeb.opengldefault.game;
 
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL11.*;
 
-import java.util.ArrayList;
+import java.util.*;
 
-import mbeb.opengldefault.camera.FirstPersonCamera;
-import mbeb.opengldefault.camera.ICamera;
-import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.openglcontext.OpenGLContext;
-import mbeb.opengldefault.rendering.io.ObjectLoader;
-import mbeb.opengldefault.rendering.renderable.IRenderable;
-import mbeb.opengldefault.rendering.renderable.Skybox;
-import mbeb.opengldefault.rendering.renderable.TexturedRenderable;
-import mbeb.opengldefault.rendering.shader.Shader;
-import mbeb.opengldefault.rendering.textures.Texture;
-import mbeb.opengldefault.rendering.textures.TextureCache;
-import mbeb.opengldefault.scene.Scene;
-import mbeb.opengldefault.scene.SceneObject;
-import mbeb.opengldefault.scene.Transformation;
+import mbeb.opengldefault.camera.*;
+import mbeb.opengldefault.logging.*;
+import mbeb.opengldefault.openglcontext.*;
+import mbeb.opengldefault.rendering.io.*;
+import mbeb.opengldefault.rendering.renderable.*;
+import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.rendering.textures.*;
+import mbeb.opengldefault.scene.*;
 
-import org.joml.Vector3f;
+import org.joml.*;
 
 /**
  * Object to characterize a whole game
@@ -55,8 +42,10 @@ public class BunnyGame implements IGame {
 
 		bunnyScene = new Scene(cam, skybox);
 
-		final IRenderable bunny = new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
-		final IRenderable cube = new TexturedRenderable(new ObjectLoader().loadFromFile("cube.obj"), new Texture("bunny_2d.png"));
+		final IRenderable bunny =
+				new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
+		final IRenderable cube =
+				new TexturedRenderable(new ObjectLoader().loadFromFile("cube.obj"), new Texture("bunny_2d.png"));
 
 		cubeObj = new SceneObject(cube, null, null);
 		bunnyObj = new SceneObject(bunny, Transformation.fromPosition(new Vector3f(1, 1, 1)), null);

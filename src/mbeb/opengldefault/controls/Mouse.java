@@ -1,6 +1,6 @@
 package mbeb.opengldefault.controls;
 
-import org.joml.Vector2f;
+import org.joml.*;
 
 public class Mouse {
 
@@ -17,8 +17,9 @@ public class Mouse {
 
 	/**
 	 * update the cursors position
+	 * 
 	 * @param xPos
-	 * @param yPos 
+	 * @param yPos
 	 */
 	public static void setPos(double xPos, double yPos) {
 		cursorPos.x = (float) xPos;
@@ -27,7 +28,9 @@ public class Mouse {
 
 	/**
 	 * save a buttonDown-event
-	 * @param button the mouseButton-id
+	 * 
+	 * @param button
+	 *            the mouseButton-id
 	 */
 	public static void buttonDown(int button) {
 		mouseDown[button] = true;
@@ -35,7 +38,9 @@ public class Mouse {
 
 	/**
 	 * save a buttonUp-event
-	 * @param button the mouseButton-id
+	 * 
+	 * @param button
+	 *            the mouseButton-id
 	 */
 	public static void buttonUp(int button) {
 		mouseDown[button] = false;
@@ -47,7 +52,7 @@ public class Mouse {
 	public static Vector2f getPos() {
 		return cursorPos;
 	}
-	
+
 	/**
 	 * @param button
 	 * @return true when mouseButton with given id is down currently
