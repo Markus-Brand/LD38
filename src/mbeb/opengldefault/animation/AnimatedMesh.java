@@ -19,9 +19,8 @@ public class AnimatedMesh implements IRenderable {
 	public AnimatedMesh(VAORenderable mesh, Bone skeleton) {
 		this.mesh = mesh;
 		this.skeleton = skeleton;
+		System.out.println("skeleton = " + skeleton);
 	}
-	
-	
 
 	@Override
 	public BoundingBox getBoundingBox() {

@@ -105,9 +105,8 @@ public enum DataFragment {
 
 		@Override
 		public boolean isFloat() {
-			return false;
+			return true;
 		}
-		
 		
 		@Override
 		public void addTo(AIMesh mesh, int v, float[] data, int dataPointer, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {

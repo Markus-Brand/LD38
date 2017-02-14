@@ -28,6 +28,7 @@ import mbeb.opengldefault.scene.SceneObject;
 import org.joml.Matrix4f;
 
 import org.joml.Vector3f;
+import static org.lwjgl.opengl.GL11.glDisable;
 
 /**
  * Object to characterize a whole game
@@ -43,7 +44,7 @@ public class BunnyGame implements IGame {
 
 	@Override
 	public void init() {
-		String bunnyObjectName = /**/"thinmatrix.dae"/*/"riggedStanfordBunny.dae"/**/;
+		String bunnyObjectName = /**/"oneBone.dae"/*/"stick2.dae"/**/;
 		ArrayList<Vector3f> controlPoints = new ArrayList<>();
 
 		controlPoints.add(new Vector3f(2, 2, 0));
@@ -64,7 +65,7 @@ public class BunnyGame implements IGame {
 		debugShader.addUniformBlockIndex(1, "Matrices");
 		debugShader.use();
 		
-		bunnyObj2 = new SceneObject(bunny, new Matrix4f().translate(1, -1, -1), null);
+		bunnyObj2 = new SceneObject(bunny, new Matrix4f(), null);
 		bunnyObj2.setShader(debugShader);
 
 		//cubeObj.getTransformation().scale(0.3f);
@@ -72,7 +73,7 @@ public class BunnyGame implements IGame {
 
 		bunnyScene.getSceneGraph().setShader(debugShader);
 		
-		glEnable(GL_CULL_FACE);
+		glDisable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 	}
 

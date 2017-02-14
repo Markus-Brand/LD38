@@ -5,8 +5,8 @@ package mbeb.opengldefault.animation;
  */
 public class KeyFrame {
 
-	private double timeStamp;
-	private Pose pose;
+	private final double timeStamp;
+	private final Pose pose;
 
 	public KeyFrame(double timeStamp, Pose pose) {
 		this.timeStamp = timeStamp;

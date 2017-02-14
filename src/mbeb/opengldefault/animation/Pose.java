@@ -7,7 +7,6 @@ import java.util.Map;
 import mbeb.opengldefault.rendering.shader.Shader;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL20;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 
 /**
@@ -34,7 +33,13 @@ public class Pose {
 	}
 
 	public void mergeWith(Pose other) {
-		boneTransforms.putAll(other.boneTransforms);
+		for (Map.Entry<String, BoneTransformation> transform : other.boneTransforms.entrySet()) {
+			if (this.boneTransforms.containsKey(transform.getKey())) {
+				 System.err.println("Double key! " + transform.getKey());
+			} else {
+				this.boneTransforms.put(transform.getKey(), transform.getValue());
+			}
+		}
 	}
 
 	@Override
@@ -68,7 +73,7 @@ public class Pose {
 			result.put(name, resTrans);
 		}
 		
-		return result;//todo lerp
+		return result;
 	}
 
 	public BoneTransformation get(String boneName) {
@@ -82,29 +87,43 @@ public class Pose {
 	 */
 	public void setUniformData(Shader shader, String uniformName) {
 		float[] data = new float[16 * skeleton.boneCount()];
-		setUniformData(shader, uniformName, new Matrix4f(), skeleton, data);
+		setUniformData(shader, uniformName, new Matrix4f(
+				1, 0, 0, 0,
+				0, 0, -1, 0,
+				0, 1, 0, 0,
+				0, 0, 0, 1), skeleton, data);
 		
 		
-		String thisUniform = uniformName + "[0]";
-		glUniformMatrix4fv(shader.getUniform(thisUniform), false, data);
-		System.err.println("data = " + Arrays.toString(data));
+		FloatBuffer buf = BufferUtils.createFloatBuffer(data.length);
+		buf.put(data);
+		buf.flip();
+		
+		String thisUniform = uniformName;
+		//TODO: Check if marix should be transposed
+		glUniformMatrix4fv(shader.getUniform(thisUniform), false,  buf);
+		System.err.println();
+		
+		//System.exit(0);
 	}
 	
 	public void setUniformData(Shader shader, String uniformName, Matrix4f parent, Bone bone, float[] data) {
 		Matrix4f currentLocalBoneTransform = boneTransforms.get(bone.getName()).asMatrix();
 		Matrix4f currentBoneTransform = currentLocalBoneTransform.mul(parent, new Matrix4f());
 		for (Bone child : bone.getChildren()) {
-			setUniformData(shader, uniformName, new Matrix4f(currentBoneTransform), child, data);
+			setUniformData(shader, uniformName, currentBoneTransform, child, data);
 		}
 		
 		Matrix4f combined = currentBoneTransform.mul(bone.getInverseBindTransform(), new Matrix4f());
-		System.err.println("combined = " + combined);
 		
-		float[] mat = combined.get(new float[16]);
+		
+		/*System.err.println(bone.getName() + " bind = " + bone.getBindTransform());
+		System.err.println(bone.getName() + " currentLocalBoneTransform = " + currentLocalBoneTransform);
+		System.err.println(bone.getName() + " currentBoneTransform = " + currentBoneTransform);
+		System.err.println(bone.getName() + " combined = " + combined);/**/
+		
+		
 		int offset = 16 * bone.getIndex();
-		for (int i = 0; i < mat.length; i++) {
-			data[i + offset] = mat[i];
-		}
+		combined.get(data, offset);
 	}
 	
 	

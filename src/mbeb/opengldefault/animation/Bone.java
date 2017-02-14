@@ -15,8 +15,8 @@ public class Bone {
 	private int index;
 	
 	private Matrix4f localBindTransform;
-	
-	private Matrix4f inverseBindTransform = new Matrix4f();
+	private Matrix4f bindTransform;
+	private Matrix4f inverseBindTransform;
 	
 	private List<Bone> children;
 
@@ -52,6 +52,13 @@ public class Bone {
 	public int getIndex() {
 		return index;
 	}
+
+	@Override
+	public String toString() {
+		return getName() + " - " + getIndex() + "(+" + getChildren().size() + ")";
+	}
+	
+	
 	
 	/**
 	 * breadth-first search for a bone with this name
@@ -79,16 +86,21 @@ public class Bone {
 	public Matrix4f getInverseBindTransform() {
 		return inverseBindTransform;
 	}
+
+	public Matrix4f getBindTransform() {
+		return bindTransform;
+	}
 	
 	public void updateInverseBindTransform(Matrix4f parentBindTransform) {
-		Matrix4f bindTransform = parentBindTransform.mul(getLocalBindTransform(), new Matrix4f());
+		bindTransform = parentBindTransform.mul(getLocalBindTransform(), new Matrix4f());
+		System.err.println(getName() + "bindTransform = " + bindTransform);
 		for (Bone child : getChildren()) {
 			child.updateInverseBindTransform(bindTransform);
 		}
-		bindTransform.invert(inverseBindTransform);
+		inverseBindTransform = bindTransform.invertAffine(new Matrix4f());
 	}
 
 	public int boneCount() {
-		return 1 + getChildren().stream().map((Bone b) -> b.boneCount()).reduce(0, Integer::sum);
+		return 1 + getChildren().stream().map(Bone::boneCount).reduce(0, Integer::sum);
 	}
 }

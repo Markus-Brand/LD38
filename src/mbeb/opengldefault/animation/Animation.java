@@ -36,7 +36,16 @@ public class Animation {
 		return duration;
 	}
 	
-	
+	/**
+	 * like #getDuration, but with respect to the actual keyFrame data
+	 * @return 
+	 */
+	public double getKeyFrameDistance() {
+		if (getKeyFrames().isEmpty()) {
+			return 0;
+		}
+		return getKeyFrames().get(getKeyFrames().size() - 1).getTimeStamp() - getKeyFrames().get(0).getTimeStamp();
+	}
 
 	public void setSkeleton(Bone skeleton) {
 		this.skeleton = skeleton;

@@ -1,5 +1,7 @@
 package mbeb.opengldefault.animation;
 
+import java.util.Arrays;
+
 /**
  * a running animation and logic for sampling
  */
@@ -25,7 +27,7 @@ public class Animator {
 	}
 	
 	public void update(double deltaTime) {
-		currentTime += deltaTime * 0.2f;
+		currentTime += deltaTime * 0.4f;
 	}
 
 	public Animation getAnimation() {
@@ -42,11 +44,11 @@ public class Animator {
 		//edge-case handling
 		if (looping) {
 			if (beforeAfter[0] == null) {
-				currentTime += animation.getDuration();
+				currentTime += animation.getKeyFrameDistance();
 				return getCurrentPose();
 			}
 			if (beforeAfter[1] == null) {
-				currentTime -= animation.getDuration();
+				currentTime -= animation.getKeyFrameDistance();
 				return getCurrentPose();
 			}
 		} else {

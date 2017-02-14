@@ -14,41 +14,43 @@ public class BoneTransformation {
 	public static BoneTransformation identity() {
 		return new BoneTransformation(null, null, null);
 	}
-	
-	public static final Matrix4f matFromAI(AIMatrix4x4 aimat) {
+
+	public static final Matrix4f matFromAI(AIMatrix4x4 aimat, boolean flip) {
 		/*return new Matrix4f(aimat.a1(), aimat.a2(), aimat.a3(), aimat.a4(), 
-				aimat.b1(), aimat.b2(), aimat.b3(), aimat.b4(),
-				aimat.c1(), aimat.c2(), aimat.c3(), aimat.c4(),
-				aimat.d1(), aimat.d2(), aimat.d3(), aimat.d4());/**/
-		return new Matrix4f(aimat.a1(), aimat.b1(), aimat.c1(), aimat.d1(), 
+		 aimat.b1(), aimat.b2(), aimat.b3(), aimat.b4(),
+		 aimat.c1(), aimat.c2(), aimat.c3(), aimat.c4(),
+		 aimat.d1(), aimat.d2(), aimat.d3(), aimat.d4());/**/
+		Matrix4f mat = new Matrix4f(aimat.a1(), aimat.b1(), aimat.c1(), aimat.d1(),
 				aimat.a2(), aimat.b2(), aimat.c2(), aimat.d2(),
 				aimat.a3(), aimat.b3(), aimat.c3(), aimat.d3(),
 				aimat.a4(), aimat.b4(), aimat.c4(), aimat.d4());
+		return mat;
 	}
-	
+
 	private static Vector3f lerpVec3(Vector3f a, Vector3f b, double factor) {
-		return a.lerp(b, (float)factor, new Vector3f());
+		return a.lerp(b, (float) factor, new Vector3f());
 	}
+
 	private static Quaternionf lerpQuaternion(Quaternionf a, Quaternionf b, double factor) {
-		return a.slerp(b, (float)factor, new Quaternionf());
+		return a.slerp(b, (float) factor, new Quaternionf());
 	}
 
 	/**
 	 * lerp between two transformations
+	 *
 	 * @param t1
 	 * @param t2
 	 * @param factor
-	 * @return 
+	 * @return
 	 */
 	public static BoneTransformation lerp(BoneTransformation t1, BoneTransformation t2, double factor) {
 		return new BoneTransformation(
-				lerpVec3(t1.getPosition(), t2.getPosition(), factor), 
-				lerpQuaternion(t1.getRotation(), t2.getRotation(), factor), 
+				lerpVec3(t1.getPosition(), t2.getPosition(), factor),
+				lerpQuaternion(t1.getRotation(), t2.getRotation(), factor),
 				lerpVec3(t1.getScale(), t2.getScale(), factor));
 	}
-	
+
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
 	private Vector3f position;
 	private Quaternionf rotation;
 	private Vector3f scale;
@@ -56,9 +58,11 @@ public class BoneTransformation {
 	public BoneTransformation(Vector3f position) {
 		this(position, null);
 	}
+
 	public BoneTransformation(Vector3f position, Quaternionf rotation) {
 		this(position, rotation, null);
 	}
+
 	public BoneTransformation(Vector3f position, Quaternionf rotation, Vector3f scale) {
 		this.position = (position != null) ? position : new Vector3f(0);
 		this.rotation = (rotation != null) ? rotation : new Quaternionf();
@@ -66,20 +70,16 @@ public class BoneTransformation {
 	}
 
 	public BoneTransformation(Matrix4f mat) {
-		this(mat.getTranslation(new Vector3f()), 
+		this(mat.getTranslation(new Vector3f()),
 				mat.getNormalizedRotation(new Quaternionf()),
 				mat.getScale(new Vector3f()));
-	}
 
-	public BoneTransformation(AIMatrix4x4 aimat) {
-		this(matFromAI(aimat));
 	}
 
 	/**
 	 * combine two transformations
 	 *
-	 * @param other
-	 *            the other transformation to perform "after" this one
+	 * @param other the other transformation to perform "after" this one
 	 * @return a new combined transformation
 	 */
 	public BoneTransformation and(BoneTransformation other) {
@@ -93,11 +93,10 @@ public class BoneTransformation {
 	 * @return a matrix representing this transformation
 	 */
 	public Matrix4f asMatrix() {
-		Matrix4f mat = new Matrix4f();
-		mat.translate(getPosition());
-		mat.rotate(getRotation());
-		mat.scale(getScale());
-		return mat;
+		return new Matrix4f()
+			.translate(getPosition())
+			.scale(getScale())
+			.rotate(getRotation().normalize());
 	}
 
 	/**

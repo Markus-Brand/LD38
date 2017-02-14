@@ -1,7 +1,7 @@
 layout (location = 0) in vec3 position; 
 layout (location = 1) in vec3 normalVec; 
 layout (location = 2) in vec2 texCoord; 
-layout (location = 3) in ivec3 boneIDs;
+layout (location = 3) in vec3 boneIDs;
 layout (location = 4) in vec3 boneWeights;
 
 const int MAX_JOINTS = 50;//max joints allowed in a skeleton//todo remove this
@@ -28,17 +28,22 @@ uniform mat4 model;
 void main() {
 	vec4 totalLocalPos = vec4(0.0);
 	vec4 totalNormal = vec4(0.0);
+	float weightSum = 0.f;
 	
-	/**/for(int i = 3; i < 4; i++) {
-		mat4 boneTransform = boneTransforms[boneIDs[i]];
+	/**/for(int i = 0; i < MAX_WEIGHTS; i++) {
+		int id = max(int(boneIDs[i]), 0);
+		mat4 boneTransform = boneTransforms[id];
 		vec4 posePosition = boneTransform * vec4(position, 1.0);
 		totalLocalPos += posePosition * boneWeights[i];
+		weightSum += boneWeights[i];
 		
 		vec4 worldNormal = boneTransform * vec4(normalVec, 0.0);
 		totalNormal += worldNormal * boneWeights[i];
 
 
-	}  /*/
+	}
+	//totalLocalPos /= weightSum;
+	  /*/
 
 
 		mat4 boneTransform1 = boneTransforms[boneIDs.x];
@@ -67,8 +72,8 @@ void main() {
 
 	pos = vec3(model * totalLocalPos);
 	gl_Position = projectionView * vec4(pos, 1.0);
-	normal = mat3(model) * totalNormal.xyz;
+	normal = mat3(model) * normalize(totalNormal.xyz);
 	tex = texCoord;
 
-	color = vec4(boneWeights, 1);
+	color = vec4((normal * 0.5f) + vec3(0.5), 1.0);
 }

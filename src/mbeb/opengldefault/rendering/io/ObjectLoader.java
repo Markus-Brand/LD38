@@ -42,7 +42,7 @@ import org.lwjgl.assimp.Assimp;
 public class ObjectLoader {
 
 	public static final DataFragment[] PosNormUv = new DataFragment[]{DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV};
-	public static final DataFragment[] PosNormUvAnim3 = new DataFragment[]{DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV, DataFragment.BONE_INDICES_3, DataFragment.BONE_WEIGHTS_3};
+	public static final DataFragment[] PosNormUvAnim3 = new DataFragment[]{DataFragment.POSITION, DataFragment.NORMAL, DataFragment.MOCK_UV, DataFragment.BONE_INDICES_3, DataFragment.BONE_WEIGHTS_3};
 
 	private static final String TAG = "ObjectLoader";
 
@@ -119,7 +119,8 @@ public class ObjectLoader {
 
 		int vertexCount = mesh.mNumVertices();
 
-		float[] data = new float[vertexCount * DataFragment.getTotalSize(format)];
+		final int vertexFloatCount = DataFragment.getTotalSize(format);
+		float[] data = new float[vertexCount * vertexFloatCount];
 		int dataPointer = 0;
 		int[] indices = new int[vertexCount];
 		int indicesPointer = 0;
@@ -203,6 +204,12 @@ public class ObjectLoader {
 			while (list.size() > weightsAmount) {
 				list.remove(list.size() - 1);
 			}
+			//adjuts weights
+			float sum = list.stream().map(Map.Entry::getValue).reduce(0f, Float::sum);
+			for (Map.Entry<Integer, Float> entry : list) {
+				entry.setValue(entry.getValue() / sum);
+			}
+			
 			vertexBoneWeights.put(v, list);
 		}
 		System.err.println("vertexBoneWeights = " + vertexBoneWeights.size());
@@ -238,7 +245,7 @@ public class ObjectLoader {
 	 * @return a new AnimatedRenderable
 	 */
 	private AnimatedMesh loadAnimatedMesh(AIMesh mesh, VAORenderable vaomesh, Bone skeleton) {
-		skeleton.updateInverseBindTransform(new Matrix4f());
+		skeleton.updateInverseBindTransform(new Matrix4f());/**/
 		return new AnimatedMesh(vaomesh, skeleton);
 	}
 
@@ -252,7 +259,7 @@ public class ObjectLoader {
 	private Bone parseScene(AIScene scene) {
 		AINode rootNode = scene.mRootNode();
 		Bone rootBone = new Bone(rootNode.mName().dataString(), -1);
-		rootBone.setLocalBindTransform(BoneTransformation.matFromAI(rootNode.mTransformation()));
+		rootBone.setLocalBindTransform(BoneTransformation.matFromAI(rootNode.mTransformation(), false));
 
 		parseBoneChildren(rootBone, rootNode);
 		return rootBone;
@@ -269,7 +276,7 @@ public class ObjectLoader {
 		for (int c = 0; c < node.mNumChildren(); c++) {
 			AINode childNode = AINode.create(node.mChildren().get(c));
 			Bone childBone = new Bone(childNode.mName().dataString(), -1);
-			childBone.setLocalBindTransform(BoneTransformation.matFromAI(childNode.mTransformation()));
+			childBone.setLocalBindTransform(BoneTransformation.matFromAI(childNode.mTransformation(), false));
 			parseBoneChildren(childBone, childNode);
 			bone.getChildren().add(childBone);
 		}
@@ -284,12 +291,6 @@ public class ObjectLoader {
 		for (int a = 0; a < scene.mNumAnimations(); a++) {
 			AIAnimation aianim = AIAnimation.create(scene.mAnimations().get(a));
 			Animation anim = Animation.copySettingsFromAI(aianim);
-			
-			System.out.println(aianim.mName().dataString());
-			System.out.println(aianim.mDuration());
-			System.out.println(aianim.mTicksPerSecond());
-			System.out.println(aianim.mNumChannels());
-			System.out.println(aianim.mNumMeshChannels());
 
 			for (int channel = 0; channel < aianim.mNumChannels(); channel++) {
 				AINodeAnim node = AINodeAnim.create(aianim.mChannels().get(channel));
@@ -312,13 +313,9 @@ public class ObjectLoader {
 					anim.mergeKeyFrame(keyFrame);
 				}
 			}
-			System.out.println(anim.getKeyFrames().get(2));
-			
-			
 			
 			animMesh.addAnimation(anim);
 		}
-
 	}
 
 }
