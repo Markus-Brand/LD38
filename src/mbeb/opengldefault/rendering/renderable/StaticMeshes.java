@@ -1,5 +1,6 @@
 package mbeb.opengldefault.rendering.renderable;
 
+import mbeb.opengldefault.rendering.io.DataFragment;
 import mbeb.opengldefault.scene.*;
 
 import org.joml.*;
@@ -26,11 +27,7 @@ public class StaticMeshes {
 
 			int[] indexData = {0, 1, 2, 1, 3, 2};
 
-			int[] dataSizes = {2};
-
-			screenAlignedQuad =
-					new VAORenderable(vertexData, indexData, dataSizes, new BoundingBox(new Vector3f(-1, -1, 0),
-							new Vector3f(2, 2, 0)));
+			screenAlignedQuad = new VAORenderable(vertexData, indexData, new DataFragment[]{DataFragment.POSITION2D}, new BoundingBox(new Vector3f(-1, -1, 0), new Vector3f(2, 2, 0)));
 
 		}
 		return screenAlignedQuad;
@@ -72,11 +69,8 @@ public class StaticMeshes {
 					2, 3, 6, 6, 3, 7};
 
 			/* @formatter:on */
-			int[] dataSizes = {3};
 
-			uniformCube =
-					new VAORenderable(vertexData, indexData, dataSizes, new BoundingBox(new Vector3f(-1, -1, -1),
-							new Vector3f(2, 2, 2)));
+			uniformCube = new VAORenderable(vertexData, indexData, new DataFragment[]{DataFragment.POSITION}, new BoundingBox(new Vector3f(-1, -1, -1), new Vector3f(2, 2, 2)));
 
 		}
 		return uniformCube;

@@ -25,10 +25,11 @@ public class BunnyGame implements IGame {
 	protected ICamera cam;
 	Scene bunnyScene;
 
-	SceneObject cubeObj, bunnyObj, bunnyObj2;
+	SceneObject bunnyObj2;
 
 	@Override
 	public void init() {
+		final String bunnyObjectName = /*/"thinmatrix.dae"/*/"bunny.obj"/**/;
 		final ArrayList<Vector3f> controlPoints = new ArrayList<>();
 
 		controlPoints.add(new Vector3f(2, 2, 0));
@@ -42,24 +43,21 @@ public class BunnyGame implements IGame {
 
 		bunnyScene = new Scene(cam, skybox);
 
-		final IRenderable bunny =
-				new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
-		final IRenderable cube =
-				new TexturedRenderable(new ObjectLoader().loadFromFile("cube.obj"), new Texture("bunny_2d.png"));
+		IRenderable tm = new ObjectLoader().loadFromFileAnim("thinmatrix.dae");
+		tm = new TexturedRenderable(tm, new Texture("bunny_2d.png"));
+		//IRenderable bunny = new TexturedRenderable(new ObjectLoader().loadFromFile(bunnyObjectName), new Texture("bunny_2d.png"));
+		
+		Shader phongShader = new Shader("boneAnimation.vert", "phong.frag");
+		phongShader.addUniformBlockIndex(1, "Matrices");
+		phongShader.use();
+		
+		bunnyObj2 = new SceneObject(tm, new Matrix4f(), null);
+		bunnyObj2.setShader(phongShader);
 
-		cubeObj = new SceneObject(cube, null, null);
-		bunnyObj = new SceneObject(bunny, Transformation.fromPosition(new Vector3f(1, 1, 1)), null);
-		bunnyObj2 = new SceneObject(bunny, Transformation.fromPosition(new Vector3f(1, -1, 1)), null);
-
-		cubeObj.addSubObject(bunnyObj);
 		bunnyScene.getSceneGraph().addSubObject(bunnyObj2);
-		bunnyScene.getSceneGraph().addSubObject(cubeObj);
-
-		final Shader defaultShader = new Shader("basic.vert", "phong.frag");
-		defaultShader.addUniformBlockIndex(1, "Matrices");
-		bunnyScene.getSceneGraph().setShader(defaultShader);
-
-		glEnable(GL_CULL_FACE);
+		bunnyScene.getSceneGraph().setShader(phongShader);
+		
+		glDisable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 	}
 
@@ -73,9 +71,6 @@ public class BunnyGame implements IGame {
 
 		glViewport(0, 0, OpenGLContext.getWidth(), OpenGLContext.getHeight());
 		GLErrors.checkForError(TAG, "glViewport");
-
-		cubeObj.getTransformation().asMatrix().rotate((float) deltaTime, new Vector3f(1, 1, 0));
-		bunnyObj.getTransformation().asMatrix().rotate((float) deltaTime * 3, new Vector3f(0, 1, 0));
 
 		bunnyScene.update(deltaTime);
 	}
