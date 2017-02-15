@@ -1,19 +1,18 @@
 package mbeb.opengldefault.rendering.renderable;
 
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-
-import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.rendering.shader.Shader;
-import mbeb.opengldefault.scene.BoundingBox;
-import mbeb.opengldefault.rendering.io.DataFragment;
-
-import org.lwjgl.BufferUtils;
-
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
+
+import java.nio.*;
+
+import mbeb.opengldefault.logging.*;
+import mbeb.opengldefault.rendering.io.*;
+import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.scene.*;
+
+import org.lwjgl.*;
 
 /**
  * Leaf Renderable - an actual OpenGL-VAO that can be rendered
@@ -57,7 +56,8 @@ public class VAORenderable implements IRenderable {
 	 * Constructor for Renderable
 	 *
 	 * @param vertexBuffer
-	 *            vertex data in a FloatBuffer. Contains vertex position, texture coordinates, normals, color and maybe other data
+	 *            vertex data in a FloatBuffer. Contains vertex position, texture coordinates, normals, color and maybe
+	 *            other data
 	 * @param indexBuffer
 	 *            index data in a IntBuffer. The order in which the vertex data is read
 	 * @param dataFormat
@@ -96,7 +96,7 @@ public class VAORenderable implements IRenderable {
 	}
 
 	/**
-	 * unbind the Renderable
+	 * unbinds the Renderable
 	 */
 	public void unbind() {
 		glBindVertexArray(0);
@@ -147,7 +147,8 @@ public class VAORenderable implements IRenderable {
 	 * Static method for generating a VAO
 	 *
 	 * @param vertexBuffer
-	 *            vertex data in a FloatBuffer. Contains vertex position, texture coordinates, normals, color and maybe other data
+	 *            vertex data in a FloatBuffer. Contains vertex position, texture coordinates, normals, color and maybe
+	 *            other data
 	 * @param indexBuffer
 	 *            index data in a IntBuffer. The order in which the vertex data is read
 	 * @param dataFormat
@@ -199,8 +200,14 @@ public class VAORenderable implements IRenderable {
 	 * Static method for generating a VBO
 	 *
 	 * @param vertexBuffer
+<<<<<<< HEAD
 	 *            vertex data in a FloatBuffer. Contains vertex position, texture coordinates, normals, color and maybe other data
 	 * @param dataFormat
+=======
+	 *            vertex data in a FloatBuffer. Contains vertex position, texture coordinates, normals, color and maybe
+	 *            other data
+	 * @param dataSizes
+>>>>>>> master
 	 *            size of the components in the data array in amount of floats. a RGB color would be represented by a 3
 	 * @return generated VBO
 	 */
@@ -216,7 +223,7 @@ public class VAORenderable implements IRenderable {
 
 		int stride = 0;
 		for (DataFragment dataFragemt : dataFormat) {
-			stride += 4 * dataFragemt.size();
+			stride += 4 * dataFragemt.size(); //size of float
 		}
 
 		int offset = 0;

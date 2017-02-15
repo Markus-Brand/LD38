@@ -1,17 +1,16 @@
 package mbeb.opengldefault.scene;
 
-import java.nio.FloatBuffer;
-import java.util.Collection;
+import java.nio.*;
+import java.util.*;
 
-import mbeb.opengldefault.camera.ICamera;
-import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.rendering.renderable.IRenderable;
-import mbeb.opengldefault.rendering.shader.Shader;
+import mbeb.opengldefault.camera.*;
+import mbeb.opengldefault.logging.*;
+import mbeb.opengldefault.rendering.renderable.*;
+import mbeb.opengldefault.rendering.shader.*;
 
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL20;
+import org.joml.*;
+import org.lwjgl.*;
+import org.lwjgl.opengl.*;
 
 /**
  * A "visitor" of the scenegraph to render it
@@ -28,11 +27,11 @@ public class SceneGraphRenderer {
 
 	/**
 	 * create a new renderer for the given SceneGraph and Camera
-	 * 
+	 *
 	 * @param root
 	 * @param cam
 	 */
-	public SceneGraphRenderer(SceneObject root, ICamera cam) {
+	public SceneGraphRenderer(final SceneObject root, final ICamera cam) {
 		this.root = root;
 		this.cam = cam;
 	}
@@ -52,12 +51,12 @@ public class SceneGraphRenderer {
 	 * @param parentTransform
 	 *            the parent transformation for this graph
 	 */
-	public void renderObject(SceneObject object, Matrix4f parentTransform) {
-		Matrix4f transform = parentTransform.mul(object.getTransformation(), new Matrix4f());
+	public void renderObject(final SceneObject object, final Matrix4f parentTransform) {
+		final Matrix4f transform = parentTransform.mul(object.getTransformation(), new Matrix4f());
 		renderSelf(object, transform);
-		Collection<SceneObject> subObjects = object.getSubObjects();
+		final Collection<SceneObject> subObjects = object.getSubObjects();
 		if (subObjects != null) {
-			for (SceneObject subObject : subObjects) {
+			for (final SceneObject subObject : subObjects) {
 				renderObject(subObject, transform);
 			}
 		}
@@ -66,30 +65,32 @@ public class SceneGraphRenderer {
 	/**
 	 * render the IRenderable of an object
 	 *
-	 * @param object the object which should be rendered
-	 * @param transform the modle-Transformation for this Renderable
+	 * @param object
+	 *            the object which should be rendered
+	 * @param transform
+	 *            the model-Transformation for this Renderable
 	 */
-	public void renderSelf(SceneObject object, Matrix4f transform) {
-		Shader shader = object.getShader();
+	public void renderSelf(final SceneObject object, final Matrix4f transform) {
+		final Shader shader = object.getShader();
 		shader.use();
 		if (object.hasOwnShader()) {
 			//update camera on first object with this shader only
-			int viewPosUniform = shader.getUniform(ViewPosUniformName, false);
+			final int viewPosUniform = shader.getUniform(ViewPosUniformName, false);
 			if (viewPosUniform >= 0) {
-				Vector3f pos = cam.getPosition();
+				final Vector3f pos = cam.getPosition();
 				GL20.glUniform3f(viewPosUniform, pos.x, pos.y, pos.z);
 				GLErrors.checkForError(TAG, "glUniform3f");
 			}
 		}
-		IRenderable renderable = object.getRenderable();
+		final IRenderable renderable = object.getRenderable();
 		if (renderable == null) {
 			return;
 		}
-		int modelUniform = shader.getUniform(ModelMatrixUniformName, false);
+		final int modelUniform = shader.getUniform(ModelMatrixUniformName, false);
 		if (modelUniform >= 0) {
 			//only if shader wants the model matrix
-			Matrix4f model = transform;
-			FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
+			final Matrix4f model = transform;
+			final FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
 			GL20.glUniformMatrix4fv(modelUniform, false, model.get(buffer));
 			GLErrors.checkForError(TAG, "glUniformMatrix4fv");
 		}

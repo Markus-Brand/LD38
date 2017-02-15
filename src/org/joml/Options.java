@@ -29,39 +29,40 @@ package org.joml;
  */
 class Options {
 
-    /**
-     * Whether certain debugging checks should be made, such as that only direct NIO Buffers are used when Unsafe is active,
-     * and a proxy should be created on calls to toImmutable().
-     */
-    static final boolean DEBUG = hasOption("joml.debug");
+	/**
+	 * Whether certain debugging checks should be made, such as that only direct NIO Buffers are used when Unsafe is
+	 * active,
+	 * and a proxy should be created on calls to toImmutable().
+	 */
+	static final boolean DEBUG = hasOption("joml.debug");
 
-    /**
-     * Whether <i>not</i> to use sun.misc.Unsafe when copying memory with MemUtil.
-     */
-    static final boolean NO_UNSAFE = Options.hasOption("joml.nounsafe");
+	/**
+	 * Whether <i>not</i> to use sun.misc.Unsafe when copying memory with MemUtil.
+	 */
+	static final boolean NO_UNSAFE = Options.hasOption("joml.nounsafe");
 
-    /**
-     * Whether fast approximations of some java.lang.Math operations should be used.
-     */
-    static final boolean FASTMATH = Options.hasOption("joml.fastmath");
+	/**
+	 * Whether fast approximations of some java.lang.Math operations should be used.
+	 */
+	static final boolean FASTMATH = Options.hasOption("joml.fastmath");
 
-    /**
-     * When {@link #FASTMATH} is <code>true</code>, whether to use a lookup table for sin/cos.
-     */
-    static final boolean SIN_LOOKUP = Options.hasOption("joml.sinLookup");
+	/**
+	 * When {@link #FASTMATH} is <code>true</code>, whether to use a lookup table for sin/cos.
+	 */
+	static final boolean SIN_LOOKUP = Options.hasOption("joml.sinLookup");
 
-    /**
-     * When {@link #SIN_LOOKUP} is <code>true</code>, this determines the table size.
-     */
-    static final int SIN_LOOKUP_BITS = Integer.parseInt(System.getProperty("joml.sinLookup.bits", "14"));
+	/**
+	 * When {@link #SIN_LOOKUP} is <code>true</code>, this determines the table size.
+	 */
+	static final int SIN_LOOKUP_BITS = Integer.parseInt(System.getProperty("joml.sinLookup.bits", "14"));
 
-    static boolean hasOption(String option) {
-        String v = System.getProperty(option);
-        if (v == null)
-            return false;
-        if (v.trim().length() == 0)
-            return true;
-        return Boolean.valueOf(v).booleanValue();
-    }
+	static boolean hasOption(String option) {
+		String v = System.getProperty(option);
+		if (v == null)
+			return false;
+		if (v.trim().length() == 0)
+			return true;
+		return Boolean.valueOf(v).booleanValue();
+	}
 
 }

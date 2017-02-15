@@ -1,14 +1,11 @@
 package mbeb.opengldefault.scene;
 
-import java.util.ArrayList;
-import java.util.List;
-import mbeb.opengldefault.animation.AnimatedMesh;
-import mbeb.opengldefault.animation.Animation;
-import mbeb.opengldefault.animation.Animator;
-import mbeb.opengldefault.logging.Log;
-import mbeb.opengldefault.rendering.renderable.IRenderable;
-import mbeb.opengldefault.rendering.shader.Shader;
-import org.joml.Matrix4f;
+
+import java.util.*;
+
+import mbeb.opengldefault.rendering.renderable.*;
+import mbeb.opengldefault.rendering.shader.*;
+import org.joml.*;
 
 /**
  * A (potentially) complex object inside a scene, with transformations
@@ -139,7 +136,7 @@ public class SceneObject {
 		
 	}
 
-//<editor-fold defaultstate="collapsed" desc="BoundingBox">
+	//<editor-fold defaultstate="collapsed" desc="BoundingBox">
 
 	/**
 	 * @return a boundingBox so that each sub-Object lies within
@@ -185,5 +182,5 @@ public class SceneObject {
 		}
 		box = box.unionWith(object.getBoundingBox());
 	}
-//</editor-fold>
+	//</editor-fold>
 }

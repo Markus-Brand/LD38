@@ -1,15 +1,14 @@
 package mbeb.opengldefault.rendering.renderable;
 
 import mbeb.opengldefault.rendering.io.DataFragment;
-import mbeb.opengldefault.scene.BoundingBox;
+import mbeb.opengldefault.scene.*;
 
-import org.joml.Vector3f;
+import org.joml.*;
 
 /**
  * Provides static Meshes
  * 
  * @author Markus
- *
  */
 public class StaticMeshes {
 
@@ -24,9 +23,9 @@ public class StaticMeshes {
 	public static IRenderable getScreenAlignedQuad() {
 		if (screenAlignedQuad == null) {
 
-			float[] vertexData = { -1, -1, 1, -1, -1, 1, 1, 1 };
+			float[] vertexData = {-1, -1, 1, -1, -1, 1, 1, 1};
 
-			int[] indexData = { 0, 1, 2, 1, 3, 2 };
+			int[] indexData = {0, 1, 2, 1, 3, 2};
 
 			screenAlignedQuad = new VAORenderable(vertexData, indexData, new DataFragment[]{DataFragment.POSITION2D}, new BoundingBox(new Vector3f(-1, -1, 0), new Vector3f(2, 2, 0)));
 

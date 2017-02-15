@@ -1,16 +1,14 @@
 package mbeb.opengldefault.rendering.io;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import org.lwjgl.assimp.AIMesh;
-import org.lwjgl.assimp.AIVector3D;
+
+import java.util.*;
+import org.lwjgl.assimp.*;
 
 /**
  * for parsing files: specify information wanted from the mesh
  */
 public enum DataFragment {
-	
+
 	POSITION {
 
 		@Override
@@ -25,7 +23,8 @@ public enum DataFragment {
 			data[dataPointer++] = vec.y();
 			data[dataPointer++] = vec.z();
 		}
-	}, POSITION2D {
+	},
+	POSITION2D {
 
 		@Override
 		public int size() {
@@ -38,7 +37,8 @@ public enum DataFragment {
 			data[dataPointer++] = vec.x();
 			data[dataPointer++] = vec.y();
 		}
-	}, NORMAL {
+	},
+	NORMAL {
 
 		@Override
 		public int size() {
@@ -52,7 +52,8 @@ public enum DataFragment {
 			data[dataPointer++] = vec.y();
 			data[dataPointer++] = vec.z();
 		}
-	}, MOCK_NORMAL {
+	},
+	MOCK_NORMAL {
 
 		@Override
 		public int size() {
@@ -66,7 +67,8 @@ public enum DataFragment {
 			data[dataPointer++] = 0;
 			data[dataPointer++] = 0;
 		}
-	}, UV {
+	},
+	UV {
 
 		@Override
 		public int size() {
@@ -79,7 +81,8 @@ public enum DataFragment {
 			data[dataPointer++] = vec.x();
 			data[dataPointer++] = vec.y();
 		}
-	}, MOCK_UV {
+	},
+	MOCK_UV {
 
 		@Override
 		public int size() {
@@ -172,6 +175,7 @@ public enum DataFragment {
 	
 	////////////////////////////////////////////////////////////////////////
 	
+
 	/**
 	 * @param dataFormat
 	 * @return the combined size of all a format
@@ -183,7 +187,7 @@ public enum DataFragment {
 		}
 		return sum;
 	}
-	
+
 	/**
 	 * @param format
 	 * @return the format array mapped to the sizes of the DataFragments

@@ -1,40 +1,17 @@
 package mbeb.opengldefault.rendering.io;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import mbeb.opengldefault.animation.AnimatedMesh;
-import mbeb.opengldefault.animation.AnimatedRenderable;
-import mbeb.opengldefault.animation.Animation;
-import mbeb.opengldefault.animation.Bone;
-import mbeb.opengldefault.animation.KeyFrame;
-import mbeb.opengldefault.animation.Pose;
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
+import mbeb.opengldefault.animation.*;
 
-import mbeb.opengldefault.logging.Log;
-import mbeb.opengldefault.openglcontext.OpenGLContext;
-import mbeb.opengldefault.rendering.renderable.IRenderable;
-import mbeb.opengldefault.rendering.renderable.VAORenderable;
-import org.lwjgl.assimp.AIBone;
-import mbeb.opengldefault.scene.BoundingBox;
-import mbeb.opengldefault.animation.BoneTransformation;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
-import org.lwjgl.assimp.AIAnimation;
+import mbeb.opengldefault.logging.*;
+import mbeb.opengldefault.openglcontext.*;
+import mbeb.opengldefault.rendering.renderable.*;
+import mbeb.opengldefault.scene.*;
 
-import org.lwjgl.assimp.AIMesh;
-import org.lwjgl.assimp.AINode;
-import org.lwjgl.assimp.AINodeAnim;
-import org.lwjgl.assimp.AIQuatKey;
-import org.lwjgl.assimp.AIScene;
-import org.lwjgl.assimp.AIVector3D;
-import org.lwjgl.assimp.AIVectorKey;
-import org.lwjgl.assimp.AIVertexWeight;
-import org.lwjgl.assimp.Assimp;
+import org.joml.*;
+import org.lwjgl.assimp.*;
 
 /**
  * Contains logic to create Renderables from Files
@@ -97,8 +74,9 @@ public class ObjectLoader {
 		File export = new File(res, rawPath);
 		if (!export.exists()) {
 			try {
-				Files.copy(OpenGLContext.class.getResourceAsStream("/mbeb/opengldefault/resources/" + rawPath), export.toPath());
-			} catch (IOException ex) {
+				Files.copy(OpenGLContext.class.getResourceAsStream("/mbeb/opengldefault/resources/" + rawPath),
+						export.toPath());
+			} catch(IOException ex) {
 				Log.log(TAG, ex.getMessage() + " at extracting resource " + rawPath);
 			}
 		}

@@ -42,7 +42,7 @@ abstract class MemUtil {
 		MemUtil accessor;
 		try {
 			accessor = new MemUtilNIO();
-		} catch (Throwable e) {
+		} catch(Throwable e) {
 			accessor = new MemUtilNIO();
 		}
 		return accessor;

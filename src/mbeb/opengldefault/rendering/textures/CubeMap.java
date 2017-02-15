@@ -1,16 +1,15 @@
 package mbeb.opengldefault.rendering.textures;
 
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL20.glUniform1i;
-import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.rendering.shader.Shader;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
+import static org.lwjgl.opengl.GL20.*;
+import mbeb.opengldefault.logging.*;
+import mbeb.opengldefault.rendering.shader.*;
 
 /**
  * Subclass of {@link Texture}, that stores a GL_TEXTURE_CUBE_MAP instead of a GL_TEXTURE_2D
  * 
  * @author Markus
- *
  */
 public class CubeMap extends Texture {
 
