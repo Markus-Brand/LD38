@@ -32,6 +32,11 @@ public class BezierCurveRenderable implements IRenderable {
 		renderable = new VAORenderable(vertexData, indexData, dataSizes, bb);
 	}
 
+	/**
+	 * Generates the Bounding Box for the curve by calculating the min and max off all controlPoints.
+	 * 
+	 * @return the calculated 3D AABB
+	 */
 	private BoundingBox generateBoundingBox() {
 		Vector3f curveStart = curve.getControlPoints().get(0);
 		float minX = curveStart.x, minY = curveStart.y, minZ = curveStart.z, maxX = curveStart.x, maxY = curveStart.y, maxZ = curveStart.z;
@@ -52,9 +57,16 @@ public class BezierCurveRenderable implements IRenderable {
 	@Override
 	public void render(Shader shader) {
 		shader.use();
-		GL11.glLineWidth(10);
+		GL11.glLineWidth(3);
+
+		int modelUniform = shader.getUniform("bernstein");
+
+		FloatBuffer bernsteinBuffer = BufferUtils.createFloatBuffer(16);
+		GL20.glUniformMatrix4fv(modelUniform, false, curve.bernstein().get(bernsteinBuffer));
+		GLErrors.checkForError(TAG, "glUniformMatrix4fv");
+
 		for (Matrix4f bezierMatrix : curve.getBezierMatrices()) {
-			int modelUniform = shader.getUniform("bezier");
+			modelUniform = shader.getUniform("bezier");
 
 			FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
 			GL20.glUniformMatrix4fv(modelUniform, false, bezierMatrix.get(buffer));

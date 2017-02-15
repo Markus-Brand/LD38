@@ -46,10 +46,11 @@ public class BunnyGame implements IGame {
 		controlPoints.add(new Vector3f(0, -10, 20));
 		controlPoints.add(new Vector3f(-20, 10, 0));
 		controlPoints.add(new Vector3f(0, 15, -20));
+		controlPoints.add(new Vector3f(0, 0, 0));
 
 		curve = new BezierCurve(controlPoints, ControlPointInputMode.CameraPointsCircular, true);
 
-		cam = new FirstPersonCamera(new Vector3f(), new Vector3f(1, 0, 0));
+		cam = new FirstPersonCamera(new Vector3f(), new Vector3f());
 
 		Skybox skybox = new Skybox("skybox/mountain");
 

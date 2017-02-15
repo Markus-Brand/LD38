@@ -133,6 +133,9 @@ public class BezierCurve {
 		generateMatrices();
 	}
 
+	/**
+	 * Generates the Bezier Matrices
+	 */
 	private void generateMatrices() {
 		bezierMatrices = new ArrayList<>();
 		for (int segmentID = 0; segmentID < controlPoints.size() / 3; segmentID++) {
@@ -140,8 +143,13 @@ public class BezierCurve {
 			Vector4f v1 = new Vector4f(controlPoints.get(segmentID * 3 + 1), 1);
 			Vector4f v2 = new Vector4f(controlPoints.get(segmentID * 3 + 2), 1);
 			Vector4f v3 = new Vector4f(controlPoints.get(segmentID * 3 + 3), 1);
+			System.out.println(v0);
+			System.out.println(v1);
+			System.out.println(v2);
+			System.out.println(v3);
+			System.out.println();
 
-			bezierMatrices.add(new Matrix4f(v0, v1, v2, v3).mul(bernstein()));
+			bezierMatrices.add(new Matrix4f(v0, v1, v2, v3));
 		}
 
 	}
@@ -394,7 +402,7 @@ public class BezierCurve {
 	 *            the progress in the current Curve segment
 	 * @return berstein Vector. ControlPointMatrix * bernsteinVector = resulting position
 	 */
-	private Matrix4f bernstein() {
+	public Matrix4f bernstein() {
 		/* @formatter:off */
 		return new Matrix4f(
 				-1,  3, -3,  1,
@@ -426,15 +434,25 @@ public class BezierCurve {
 	 * @return reuslting position. ControlPointMatrix * bernsteinVector = resulting position
 	 */
 	private Vector3f calculateSegmentPosition(int segmentID, float progressInFragment) {
-		Vector4f result = progressVector(progressInFragment).mul(bezierMatrices.get(segmentID));
+		Vector4f result = progressVector(progressInFragment).mul(bernstein()).mul(bezierMatrices.get(segmentID));
 
 		return new Vector3f(result.x, result.y, result.z);
 	}
 
+	/**
+	 * Getter for the Bezier Matrices. They contain the four control points in their collumns
+	 * 
+	 * @return the Bezier Matrices
+	 */
 	public ArrayList<Matrix4f> getBezierMatrices() {
 		return bezierMatrices;
 	}
 
+	/**
+	 * Getter for the control points
+	 * 
+	 * @return control points
+	 */
 	public ArrayList<Vector3f> getControlPoints() {
 		return controlPoints;
 	}
