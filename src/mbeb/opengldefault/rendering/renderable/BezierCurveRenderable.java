@@ -38,7 +38,7 @@ public class BezierCurveRenderable implements IRenderable {
 	}
 
 	/**
-	 * Generates the Bounding Box for the curve by calculating the min and max off all controlPoints.
+	 * Generates the Bounding Box for the curve by calculating the min and max of all controlPoints.
 	 *
 	 * @return the calculated 3D AABB
 	 */
@@ -56,9 +56,7 @@ public class BezierCurveRenderable implements IRenderable {
 			maxY = Math.max(maxY, curvePoint.y);
 			maxZ = Math.max(maxZ, curvePoint.z);
 		}
-		BoundingBox bb =
-				new BoundingBox(new Vector3f(minX, minY, minZ), new Vector3f(maxX - minX, maxY - minY, maxZ - minZ));
-		return bb;
+		return new BoundingBox(new Vector3f(minX, minY, minZ), new Vector3f(maxX - minX, maxY - minY, maxZ - minZ));
 	}
 
 	@Override
