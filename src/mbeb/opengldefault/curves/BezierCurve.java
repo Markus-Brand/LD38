@@ -24,19 +24,19 @@ public class BezierCurve {
 		 */
 		CameraPoints,
 		/**
-		 * Generate circluar path, that contains all of the Input Positions
+		 * Generate circular path, that contains all of the Input Positions
 		 */
 		CameraPointsCircular
 	}
 
 	/**
-	 * Matrices that can be multiplied with a progress Vector (u^3, u^2, u, 1) to determine a position on a segment wit
+	 * Matrices that can be multiplied with a progress Vector (u^3, u^2, u, 1) to determine a position on a segment with
 	 * given progress
 	 */
 	private ArrayList<Matrix4f> bezierMatrices;
 	/** Control Points for the Curve */
 	private ArrayList<Vector3f> controlPoints;
-	/** The segments legths */
+	/** The segments lengths */
 	private ArrayList<Float> segmentLengths;
 	/** Total length of all segments */
 	private float maxLength;
