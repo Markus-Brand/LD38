@@ -1,10 +1,9 @@
 package mbeb.opengldefault.rendering.textures;
 
-import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.rendering.shader.Shader;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL20.glUniform1i;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.*;
+import mbeb.opengldefault.logging.*;
+import mbeb.opengldefault.rendering.shader.*;
 
 /**
  * A Texture that can bind itself to a uniform for a given {@link Shader}

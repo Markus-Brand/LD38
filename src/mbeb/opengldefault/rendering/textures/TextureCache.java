@@ -1,22 +1,21 @@
 package mbeb.opengldefault.rendering.textures;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.opengl.GL12.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.Map;
 
-import javax.imageio.ImageIO;
+import java.awt.image.*;
+import java.io.*;
+import java.net.*;
+import java.nio.*;
+import java.util.*;
 
-import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.logging.Log;
+import javax.imageio.*;
 
-import org.lwjgl.BufferUtils;
+import mbeb.opengldefault.logging.*;
+
+import org.lwjgl.*;
 
 /**
  * static methods for creating / using textures.
@@ -85,7 +84,7 @@ public class TextureCache {
 		BufferedImage img = null;
 		try {
 			img = ImageIO.read(url);
-		} catch (IOException e) {
+		} catch(IOException e) {
 			Log.error(TAG, "Unable to Load Texture: " + path);
 			e.printStackTrace();
 		}
@@ -117,7 +116,8 @@ public class TextureCache {
 		setTexParameter(interpolate, wrapS, wrapT);
 		GLErrors.checkForError(TAG, "setTexParameter");
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
+				buffer);
 		GLErrors.checkForError(TAG, "glTexImage2D");
 
 		if (interpolate) {
@@ -190,7 +190,8 @@ public class TextureCache {
 		for (int i = 0; i < images.length; i++) {
 			ByteBuffer buffer = generateBuffer(images[i]);
 
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, images[i].getWidth(), images[i].getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, images[i].getWidth(), images[i].getHeight(),
+					0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 			GLErrors.checkForError(TAG, "glTexImage2D");
 		}
 
@@ -259,7 +260,9 @@ public class TextureCache {
 		image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
 
 		// create the openGL Buffer object
-		ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * (image.getType() == BufferedImage.TYPE_INT_ARGB ? 4 : 4));
+		ByteBuffer buffer =
+				BufferUtils.createByteBuffer(image.getWidth() * image.getHeight()
+						* (image.getType() == BufferedImage.TYPE_INT_ARGB ? 4 : 4));
 
 		// copy data to the buffer
 		for (int y = 0; y < image.getHeight(); y++) {
