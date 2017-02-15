@@ -22,7 +22,7 @@ public class Scene {
 		this.camera = cam;
 		this.skybox = skybox;
 		this.sceneGraph = new SceneObject(null, null, null);
-		renderer = new SceneGraphRenderer(sceneGraph, cam);
+		renderer = new VisibleSceneGraphRenderer(sceneGraph, cam);
 	}
 
 	public SceneObject getSceneGraph() {
