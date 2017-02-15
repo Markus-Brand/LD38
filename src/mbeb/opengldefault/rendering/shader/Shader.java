@@ -456,7 +456,7 @@ public class Shader {
 	/**
 	 * Getter for the drawMode
 	 *
-	 * @return current drawmode. Most likly GL_TRIANGLES
+	 * @return current drawmode. Most likely GL_TRIANGLES
 	 */
 	public int getDrawMode() {
 		if (drawMode <= 0) {
