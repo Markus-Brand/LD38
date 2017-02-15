@@ -281,7 +281,7 @@ public class BezierCurve {
 	}
 
 	/**
-	 * Adds a middle control Point and its predecessor and succesor to the List of control Points
+	 * Adds a middle control Point and its predecessor and successor to the List of control Points
 	 *
 	 * @param cameraPositions
 	 *            input Control Points
@@ -395,11 +395,11 @@ public class BezierCurve {
 	}
 
 	/**
-	 * Returns berstein Matrix
+	 * Returns bernstein Matrix
 	 *
 	 * @param progressInFragment
 	 *            the progress in the current Curve segment
-	 * @return berstein Vector. ControlPointMatrix * bernsteinVector = resulting position
+	 * @return bernstein Vector. ControlPointMatrix * bernsteinVector = resulting position
 	 */
 	public Matrix4f bernstein() {
 		/* @formatter:off */
@@ -419,10 +419,8 @@ public class BezierCurve {
 	 * @return progess Vector.
 	 */
 	private Vector4f progressVector(double progressInFragment) {
-		Vector4f uVector =
-				new Vector4f((float) java.lang.Math.pow(progressInFragment, 3), (float) java.lang.Math.pow(
+		return new Vector4f((float) java.lang.Math.pow(progressInFragment, 3), (float) java.lang.Math.pow(
 						progressInFragment, 2), (float) progressInFragment, 1);
-		return uVector;
 	}
 
 	/**
@@ -432,7 +430,7 @@ public class BezierCurve {
 	 *            current Curve segment
 	 * @param progressInFragment
 	 *            the progress in the current Curve segment
-	 * @return reuslting position. ControlPointMatrix * bernsteinVector = resulting position
+	 * @return resulting position. ControlPointMatrix * bernsteinVector = resulting position
 	 */
 
 	private Vector3f calculateSegmentPosition(int segmentID, float progressInFragment) {
@@ -442,7 +440,7 @@ public class BezierCurve {
 	}
 
 	/**
-	 * Getter for the Bezier Matrices. They contain the four control points in their collumns
+	 * Getter for the Bezier Matrices. They contain the four control points in their columns
 	 *
 	 * @return the Bezier Matrices
 	 */
