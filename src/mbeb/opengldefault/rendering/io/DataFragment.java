@@ -88,8 +88,7 @@ public enum DataFragment {
 
 		@Override
 		protected void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
-			data[dataPointer++] = 0;
-			data[dataPointer++] = 0;
+			POSITION2D.addTo(mesh, v, data, dataPointer);
 		}
 	}, BONE_INDICES_3 {
 		

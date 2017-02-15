@@ -17,16 +17,21 @@ public class AnimatedRenderable implements IRenderable {
 
 	public AnimatedRenderable(AnimatedMesh mesh) {
 		this.mesh = mesh;
-		currentAnimations.add(new Animator(mesh.getAnimations().get(0)));
+		if (mesh.getAnimations().size() > 0) {
+			currentAnimations.add(new Animator(mesh.getAnimations().get(0)));
+		}
 	}
 
 	@Override
 	public void render(Shader shader) {
 		//update pose uniforms
-		Pose p = currentAnimations.get(0).getCurrentPose();
 		
-		p.setUniformData(shader, "boneTransforms");
-		
+		for (Animator anim : getCurrentAnimations()) {
+			Pose p = anim.getCurrentPose();
+			p.setUniformData(shader, "boneTransforms");
+		}
+
+
 		mesh.render(shader);
 	}
 
@@ -41,12 +46,12 @@ public class AnimatedRenderable implements IRenderable {
 		}
 		return currentAnimations;
 	}
-	
+
 	public void playAnimation(Animator animator) {
 		getCurrentAnimations().add(animator);
 		//todo update animations maybe?
 	}
-	
+
 	public void playAnimation(String name, boolean looping, boolean flipping) {
 		Animator anim = new Animator(mesh.getAnimationByName(name));
 		//todo apply animation-flags

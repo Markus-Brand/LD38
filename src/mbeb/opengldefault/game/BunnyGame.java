@@ -44,7 +44,7 @@ public class BunnyGame implements IGame {
 
 	@Override
 	public void init() {
-		String bunnyObjectName = /**/"oneBone.dae"/*/"stick2.dae"/**/;
+		String bunnyObjectName = /*/"thinmatrix.dae"/*/"bunny.obj"/**/;
 		ArrayList<Vector3f> controlPoints = new ArrayList<>();
 
 		controlPoints.add(new Vector3f(2, 2, 0));
@@ -58,20 +58,21 @@ public class BunnyGame implements IGame {
 
 		bunnyScene = new Scene(cam, skybox);
 
-		IRenderable bunny = new ObjectLoader().loadFromFileAnim(bunnyObjectName);
-		System.gc();
+		IRenderable tm = new ObjectLoader().loadFromFileAnim("thinmatrix.dae");
+		tm = new TexturedRenderable(tm, new Texture("bunny_2d.png"));
+		//IRenderable bunny = new TexturedRenderable(new ObjectLoader().loadFromFile(bunnyObjectName), new Texture("bunny_2d.png"));
 		
-		Shader debugShader = new Shader("boneAnimation.vert", "debugging.frag");
-		debugShader.addUniformBlockIndex(1, "Matrices");
-		debugShader.use();
+		Shader phongShader = new Shader("boneAnimation.vert", "phong.frag");
+		phongShader.addUniformBlockIndex(1, "Matrices");
+		phongShader.use();
 		
-		bunnyObj2 = new SceneObject(bunny, new Matrix4f(), null);
-		bunnyObj2.setShader(debugShader);
+		bunnyObj2 = new SceneObject(tm, new Matrix4f(), null);
+		bunnyObj2.setShader(phongShader);
 
 		//cubeObj.getTransformation().scale(0.3f);
 		bunnyScene.getSceneGraph().addSubObject(bunnyObj2);
 
-		bunnyScene.getSceneGraph().setShader(debugShader);
+		bunnyScene.getSceneGraph().setShader(phongShader);
 		
 		glDisable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);

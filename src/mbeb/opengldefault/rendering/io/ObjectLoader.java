@@ -78,7 +78,7 @@ public class ObjectLoader {
 
 		String realPath = getExtractedPath(path);
 		AIScene scene = Assimp.aiImportFile(realPath, Assimp.aiProcess_Triangulate);
-
+		
 		Bone sceneStructure = parseScene(scene);
 
 		for (int meshID = 0; meshID < scene.mNumMeshes(); meshID++) {
@@ -114,8 +114,7 @@ public class ObjectLoader {
 	 * @return
 	 */
 	private IRenderable loadMesh(AIScene scene, int meshID, DataFragment[] format, Bone sceneStructure) {
-		long addr1 = scene.mMeshes().get(meshID);
-		AIMesh mesh = AIMesh.create(addr1);
+		AIMesh mesh = AIMesh.create(scene.mMeshes().get(meshID));
 
 		int vertexCount = mesh.mNumVertices();
 
@@ -149,7 +148,8 @@ public class ObjectLoader {
 		VAORenderable vaomesh = new VAORenderable(data, indices, format, box);
 
 		if (isAnimated) {
-			AnimatedMesh animMesh = loadAnimatedMesh(mesh, vaomesh, skeleton);
+			Matrix4f sceneTransform = BoneTransformation.matFromAI(scene.mRootNode().mTransformation());
+			AnimatedMesh animMesh = loadAnimatedMesh(mesh, vaomesh, skeleton, sceneTransform);
 
 			loadAnimations(animMesh, scene);
 
@@ -173,7 +173,7 @@ public class ObjectLoader {
 		Map<Integer, Map<Integer, Float>> rawVertexBoneWeights = new HashMap<>(2 * mesh.mNumVertices());
 		for (int b = 0; b < mesh.mNumBones(); b++) {
 			AIBone bone = AIBone.create(mesh.mBones().get(b));
-			System.err.println("mNumWeights = " + bone.mNumWeights());
+			//System.err.println("mNumWeights = " + bone.mNumWeights());
 			for (int w = 0; w < bone.mNumWeights(); w++) {
 				AIVertexWeight aiWeight = bone.mWeights().get(w);
 				int vertex = aiWeight.mVertexId();
@@ -187,7 +187,6 @@ public class ObjectLoader {
 				vertexMapping.put(boneID, aiWeight.mWeight());
 			}
 		}
-		System.err.println("rawVertexBoneWeights = " + rawVertexBoneWeights.size());
 		//normalize weights
 		for (int v = 0; v < mesh.mNumVertices(); v++) {
 			Map<Integer, Float> weights = rawVertexBoneWeights.get(v);
@@ -212,7 +211,6 @@ public class ObjectLoader {
 			
 			vertexBoneWeights.put(v, list);
 		}
-		System.err.println("vertexBoneWeights = " + vertexBoneWeights.size());
 		return vertexBoneWeights;
 	}
 
@@ -244,8 +242,8 @@ public class ObjectLoader {
 	 * @param vaomesh the VAORenderable (raw mesh data)
 	 * @return a new AnimatedRenderable
 	 */
-	private AnimatedMesh loadAnimatedMesh(AIMesh mesh, VAORenderable vaomesh, Bone skeleton) {
-		skeleton.updateInverseBindTransform(new Matrix4f());/**/
+	private AnimatedMesh loadAnimatedMesh(AIMesh mesh, VAORenderable vaomesh, Bone skeleton, Matrix4f sceneTransform) {
+		skeleton.updateInverseBindTransform(sceneTransform);/**/
 		return new AnimatedMesh(vaomesh, skeleton);
 	}
 
@@ -259,7 +257,7 @@ public class ObjectLoader {
 	private Bone parseScene(AIScene scene) {
 		AINode rootNode = scene.mRootNode();
 		Bone rootBone = new Bone(rootNode.mName().dataString(), -1);
-		rootBone.setLocalBindTransform(BoneTransformation.matFromAI(rootNode.mTransformation(), false));
+		rootBone.setLocalBindTransform(BoneTransformation.matFromAI(rootNode.mTransformation()));
 
 		parseBoneChildren(rootBone, rootNode);
 		return rootBone;
@@ -276,7 +274,7 @@ public class ObjectLoader {
 		for (int c = 0; c < node.mNumChildren(); c++) {
 			AINode childNode = AINode.create(node.mChildren().get(c));
 			Bone childBone = new Bone(childNode.mName().dataString(), -1);
-			childBone.setLocalBindTransform(BoneTransformation.matFromAI(childNode.mTransformation(), false));
+			childBone.setLocalBindTransform(BoneTransformation.matFromAI(childNode.mTransformation()));
 			parseBoneChildren(childBone, childNode);
 			bone.getChildren().add(childBone);
 		}

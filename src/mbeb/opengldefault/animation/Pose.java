@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import mbeb.opengldefault.rendering.shader.Shader;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 
@@ -87,11 +88,7 @@ public class Pose {
 	 */
 	public void setUniformData(Shader shader, String uniformName) {
 		float[] data = new float[16 * skeleton.boneCount()];
-		setUniformData(shader, uniformName, new Matrix4f(
-				1, 0, 0, 0,
-				0, 0, -1, 0,
-				0, 1, 0, 0,
-				0, 0, 0, 1), skeleton, data);
+		setUniformData(shader, uniformName, new Matrix4f(), skeleton, data);
 		
 		
 		FloatBuffer buf = BufferUtils.createFloatBuffer(data.length);
@@ -99,16 +96,14 @@ public class Pose {
 		buf.flip();
 		
 		String thisUniform = uniformName;
-		//TODO: Check if marix should be transposed
 		glUniformMatrix4fv(shader.getUniform(thisUniform), false,  buf);
-		System.err.println();
 		
 		//System.exit(0);
 	}
 	
 	public void setUniformData(Shader shader, String uniformName, Matrix4f parent, Bone bone, float[] data) {
 		Matrix4f currentLocalBoneTransform = boneTransforms.get(bone.getName()).asMatrix();
-		Matrix4f currentBoneTransform = currentLocalBoneTransform.mul(parent, new Matrix4f());
+		Matrix4f currentBoneTransform = parent.mul(currentLocalBoneTransform, new Matrix4f());
 		for (Bone child : bone.getChildren()) {
 			setUniformData(shader, uniformName, currentBoneTransform, child, data);
 		}
@@ -116,14 +111,19 @@ public class Pose {
 		Matrix4f combined = currentBoneTransform.mul(bone.getInverseBindTransform(), new Matrix4f());
 		
 		
-		/*System.err.println(bone.getName() + " bind = " + bone.getBindTransform());
-		System.err.println(bone.getName() + " currentLocalBoneTransform = " + currentLocalBoneTransform);
-		System.err.println(bone.getName() + " currentBoneTransform = " + currentBoneTransform);
-		System.err.println(bone.getName() + " combined = " + combined);/**/
+		mout(bone.getName() + " parent", parent);
+		mout(bone.getName() + " bind", bone.getBindTransform());
+		mout(bone.getName() + " currentLocalBoneTransform", currentLocalBoneTransform);
+		mout(bone.getName() + " currentBoneTransform", currentBoneTransform);
+		mout(bone.getName() + " combined", combined);/**/
 		
 		
 		int offset = 16 * bone.getIndex();
 		combined.get(data, offset);
+	}
+	
+	private static void mout(String name, Matrix4f mat) {
+		//System.out.println(name + ": \n" + mat);
 	}
 	
 	

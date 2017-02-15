@@ -93,11 +93,10 @@ public class Bone {
 	
 	public void updateInverseBindTransform(Matrix4f parentBindTransform) {
 		bindTransform = parentBindTransform.mul(getLocalBindTransform(), new Matrix4f());
-		System.err.println(getName() + "bindTransform = " + bindTransform);
 		for (Bone child : getChildren()) {
 			child.updateInverseBindTransform(bindTransform);
 		}
-		inverseBindTransform = bindTransform.invertAffine(new Matrix4f());
+		inverseBindTransform = bindTransform.invert(new Matrix4f());
 	}
 
 	public int boneCount() {

@@ -30,7 +30,17 @@ void main() {
 	vec4 totalNormal = vec4(0.0);
 	float weightSum = 0.f;
 	
-	/**/for(int i = 0; i < MAX_WEIGHTS; i++) {
+
+
+    mat4 BoneTransform = boneTransforms[max(int(boneIDs[0]), 0)] * boneWeights[0];
+    BoneTransform += boneTransforms[max(int(boneIDs[1]), 0)] * boneWeights[1];
+    BoneTransform += boneTransforms[max(int(boneIDs[2]), 0)] * boneWeights[2];
+
+	totalLocalPos = BoneTransform * vec4(position, 1.0);
+	totalLocalPos.w = 1;
+	totalNormal = BoneTransform * vec4(normalVec, 0.0);
+
+	/*/for(int i = 0; i < MAX_WEIGHTS; i++) {
 		int id = max(int(boneIDs[i]), 0);
 		mat4 boneTransform = boneTransforms[id];
 		vec4 posePosition = boneTransform * vec4(position, 1.0);
@@ -41,34 +51,10 @@ void main() {
 		totalNormal += worldNormal * boneWeights[i];
 
 
-	}
+	}/**/
 	//totalLocalPos /= weightSum;
-	  /*/
 
-
-		mat4 boneTransform1 = boneTransforms[boneIDs.x];
-		vec4 posePosition1 = boneTransform1 * vec4(position, 1.0);
-		totalLocalPos += posePosition1 * boneWeights.x;
-		
-		vec4 worldNormal1 = boneTransform1 * vec4(normalVec, 0.0);
-		totalNormal += worldNormal1 * boneWeights.x;
-
-		mat4 boneTransform2 = boneTransforms[boneIDs.y];
-		vec4 posePosition2 = boneTransform2 * vec4(position, 1.0);
-		totalLocalPos += posePosition2 * boneWeights.y;
-		
-		vec4 worldNormal2 = boneTransform2 * vec4(normalVec, 0.0);
-		totalNormal += worldNormal2 * boneWeights.y;
-
-		mat4 boneTransform3 = boneTransforms[boneIDs.z];
-		vec4 posePosition3 = boneTransform3 * vec4(position, 1.0);
-		totalLocalPos += posePosition3 * boneWeights.z;
-		
-		vec4 worldNormal3 = boneTransform3 * vec4(normalVec, 0.0);
-		totalNormal += worldNormal3 * boneWeights.z;/**/
 	
-	totalLocalPos.w = 1;
-	totalNormal.w = 1;
 
 	pos = vec3(model * totalLocalPos);
 	gl_Position = projectionView * vec4(pos, 1.0);

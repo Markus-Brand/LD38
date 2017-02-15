@@ -15,7 +15,7 @@ public class BoneTransformation {
 		return new BoneTransformation(null, null, null);
 	}
 
-	public static final Matrix4f matFromAI(AIMatrix4x4 aimat, boolean flip) {
+	public static final Matrix4f matFromAI(AIMatrix4x4 aimat) {
 		/*return new Matrix4f(aimat.a1(), aimat.a2(), aimat.a3(), aimat.a4(), 
 		 aimat.b1(), aimat.b2(), aimat.b3(), aimat.b4(),
 		 aimat.c1(), aimat.c2(), aimat.c3(), aimat.c4(),
