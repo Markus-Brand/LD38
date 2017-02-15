@@ -145,12 +145,6 @@ public class BezierCurve {
 			Vector4f v1 = new Vector4f(controlPoints.get(segmentID * 3 + 1), 1);
 			Vector4f v2 = new Vector4f(controlPoints.get(segmentID * 3 + 2), 1);
 			Vector4f v3 = new Vector4f(controlPoints.get(segmentID * 3 + 3), 1);
-			System.out.println(v0);
-			System.out.println(v1);
-			System.out.println(v2);
-			System.out.println(v3);
-			System.out.println();
-
 			bezierMatrices.add(new Matrix4f(v0, v1, v2, v3));
 		}
 

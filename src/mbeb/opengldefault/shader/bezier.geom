@@ -36,13 +36,13 @@ void main(){
     EndPrimitive();
     
 	in_color = vec4(0.1, 0.1, 0.1, 1);
-    gl_Position = projectionView * bezier[0];
-   	EmitVertex();
-    gl_Position = projectionView * bezier[1];
-   	EmitVertex();
-    gl_Position = projectionView * bezier[2];
-   	EmitVertex();
-    gl_Position = projectionView * bezier[3];
-   	EmitVertex();
-    EndPrimitive();
+	gl_Position = projectionView * bezier[0];
+	EmitVertex();
+	gl_Position = projectionView * bezier[1];
+	EmitVertex();
+	gl_Position = projectionView * bezier[2];
+	EmitVertex();
+	gl_Position = projectionView * bezier[3];
+	EmitVertex();
+	EndPrimitive();
 }

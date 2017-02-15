@@ -18,11 +18,8 @@ import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.opengl.GL40.*;
 
 /**
- * Shader Object used for rendering a {@link mbeb.opengldefault.rendering.renderable.IRenderable} <<<<<<< HEAD
+ * Shader Object used for rendering a {@link mbeb.opengldefault.rendering.renderable.IRenderable}
  *
- * @author Markus
- *         =======
- *         >>>>>>> refs/heads/master
  * @author Markus
  */
 public class Shader {
@@ -231,12 +228,7 @@ public class Shader {
 
 	/**
 	 * get the location of a Uniform with given name
-	 * <<<<<<< HEAD
 	 *
-	 =======
-	 * 
-	 >>>>>>> refs/heads/master
-	 * 
 	 * @param name
 	 *            name of the uniform
 	 * @param logAnError
