@@ -1,13 +1,8 @@
 package mbeb.opengldefault.logging;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.io.*;
+import java.text.*;
+import java.util.*;
 
 public class Log {
 
@@ -39,12 +34,12 @@ public class Log {
 			logFile = new File("log/" + log + ".log");
 			try {
 				writer = new PrintWriter(logFile);
-			} catch (FileNotFoundException e1) {
+			} catch(FileNotFoundException e1) {
 				e1.printStackTrace();
 			}
 			try {
 				logFile.createNewFile();
-			} catch (IOException e) {
+			} catch(IOException e) {
 				e.printStackTrace();
 			}
 		}

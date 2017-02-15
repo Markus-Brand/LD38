@@ -1,7 +1,7 @@
 package mbeb.opengldefault.examples;
 
-import mbeb.opengldefault.game.BunnyGame;
-import mbeb.opengldefault.openglcontext.OpenGLContext;
+import mbeb.opengldefault.game.*;
+import mbeb.opengldefault.openglcontext.*;
 
 /**
  * Test the application by showing a bunny

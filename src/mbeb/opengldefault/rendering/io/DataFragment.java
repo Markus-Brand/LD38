@@ -1,13 +1,14 @@
 package mbeb.opengldefault.rendering.io;
 
-import org.lwjgl.assimp.AIMesh;
-import org.lwjgl.assimp.AIVector3D;
+
+import java.util.*;
+import org.lwjgl.assimp.*;
 
 /**
  * for parsing files: specify information wanted from the mesh
  */
 public enum DataFragment {
-	
+
 	POSITION {
 
 		@Override
@@ -16,13 +17,28 @@ public enum DataFragment {
 		}
 
 		@Override
-		public void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
+		protected void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
 			AIVector3D vec = mesh.mVertices().get(v);
 			data[dataPointer++] = vec.x();
 			data[dataPointer++] = vec.y();
 			data[dataPointer++] = vec.z();
 		}
-	}, NORMAL {
+	},
+	POSITION2D {
+
+		@Override
+		public int size() {
+			return 2;
+		}
+
+		@Override
+		protected void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
+			AIVector3D vec = mesh.mVertices().get(v);
+			data[dataPointer++] = vec.x();
+			data[dataPointer++] = vec.y();
+		}
+	},
+	NORMAL {
 
 		@Override
 		public int size() {
@@ -30,13 +46,14 @@ public enum DataFragment {
 		}
 
 		@Override
-		public void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
+		protected void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
 			AIVector3D vec = mesh.mNormals().get(v);
 			data[dataPointer++] = vec.x();
 			data[dataPointer++] = vec.y();
 			data[dataPointer++] = vec.z();
 		}
-	}, MOCK_NORMAL {
+	},
+	MOCK_NORMAL {
 
 		@Override
 		public int size() {
@@ -44,13 +61,14 @@ public enum DataFragment {
 		}
 
 		@Override
-		public void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
+		protected void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
 			//todo calculate normals here
 			data[dataPointer++] = 1;
 			data[dataPointer++] = 0;
 			data[dataPointer++] = 0;
 		}
-	}, UV {
+	},
+	UV {
 
 		@Override
 		public int size() {
@@ -58,12 +76,13 @@ public enum DataFragment {
 		}
 
 		@Override
-		public void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
+		protected void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
 			AIVector3D vec = mesh.mTextureCoords(0).get(v);
 			data[dataPointer++] = vec.x();
 			data[dataPointer++] = vec.y();
 		}
-	}, MOCK_UV {
+	},
+	MOCK_UV {
 
 		@Override
 		public int size() {
@@ -71,9 +90,46 @@ public enum DataFragment {
 		}
 
 		@Override
-		public void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
-			data[dataPointer++] = 0;
-			data[dataPointer++] = 0;
+		protected void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
+			POSITION2D.addTo(mesh, v, data, dataPointer);
+		}
+	}, BONE_INDICES_3 {
+		
+		@Override
+		public boolean needsBoneData() {
+			return true;
+		}
+
+		@Override
+		public int size() {
+			return 3;
+		}
+
+		@Override
+		public boolean isFloat() {
+			return true;
+		}
+		
+		@Override
+		public void addTo(AIMesh mesh, int v, float[] data, int dataPointer, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
+			List<Map.Entry<Integer, Float>> weightsData = vertexBoneWeights.get(v);
+			for (Map.Entry<Integer, Float> e: weightsData) {
+				data[dataPointer++] = e.getKey();
+			}
+		}
+	}, BONE_WEIGHTS_3 {
+
+		@Override
+		public int size() {
+			return 3;
+		}
+		
+		@Override
+		public void addTo(AIMesh mesh, int v, float[] data, int dataPointer, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
+			List<Map.Entry<Integer, Float>> weightsData = vertexBoneWeights.get(v);
+			for (Map.Entry<Integer, Float> e: weightsData) {
+				data[dataPointer++] = e.getValue();
+			}
 		}
 	};
 
@@ -85,12 +141,41 @@ public enum DataFragment {
 	/**
 	 * add your data to the buffer
 	 * @param mesh the mesh to read from
-	 * @param v the currently processed vertex
+	 * @param v the currently processed vertex index
 	 * @param data the data array to store in
 	 * @param dataPointer current array offset
 	 */
-	public abstract void addTo(AIMesh mesh, int v, float[] data, int dataPointer);
+	protected void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
+		System.err.println("addTo not implemented!");
+	}
 	
+	/**
+	 * add your data to the buffer, passing vertexWeights aswell
+	 * @param mesh
+	 * @param v
+	 * @param data
+	 * @param dataPointer
+	 * @param vertexBoneWeights 
+	 */
+	public void addTo(AIMesh mesh, int v, float[] data, int dataPointer, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
+		addTo(mesh, v, data, dataPointer);
+	}
+
+	/**
+	 * 
+	 * @return true if this fragment needs animation information
+	 */
+	public boolean needsBoneData() {
+		return false;
+	}
+	
+	public boolean isFloat() {
+		return true;
+	}
+	
+	////////////////////////////////////////////////////////////////////////
+	
+
 	/**
 	 * @param dataFormat
 	 * @return the combined size of all a format
@@ -102,7 +187,7 @@ public enum DataFragment {
 		}
 		return sum;
 	}
-	
+
 	/**
 	 * @param format
 	 * @return the format array mapped to the sizes of the DataFragments
@@ -113,5 +198,19 @@ public enum DataFragment {
 			res[i] = format[i].size();
 		}
 		return res;
+	}
+	
+	/**
+	 * 
+	 * @param format
+	 * @return true if this format needs animation information
+	 */
+	public static boolean needsBoneData(DataFragment[] format) {
+		for (DataFragment frag: format) {
+			if (frag.needsBoneData()) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

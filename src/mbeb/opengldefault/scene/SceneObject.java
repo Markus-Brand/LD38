@@ -1,14 +1,18 @@
 package mbeb.opengldefault.scene;
 
-import java.util.ArrayList;
-import java.util.List;
-import mbeb.opengldefault.rendering.renderable.IRenderable;
-import mbeb.opengldefault.rendering.shader.Shader;
+
+import java.util.*;
+
+import mbeb.opengldefault.rendering.renderable.*;
+import mbeb.opengldefault.rendering.shader.*;
+import org.joml.*;
 
 /**
  * A (potentially) complex object inside a scene, with transformations
  */
 public class SceneObject {
+	
+	private static final String TAG = "SceneObject";
 
 	/** the renderable for this object, or null */
 	private Shader shader;
@@ -17,7 +21,7 @@ public class SceneObject {
 	/** the combined boundingBox for this object(renderable+subObjects) */
 	private BoundingBox box;
 	/** this objects Transformation */
-	private Transformation myTransformation;
+	private Matrix4f myTransformation;
 	/** all subObjects (which inherit transformations) */
 	private List<SceneObject> subObjects;
 	/** the parent in the Scene-graph */
@@ -33,7 +37,7 @@ public class SceneObject {
 	 * @param subObjects
 	 *            empty collection
 	 */
-	public SceneObject(IRenderable renderable, Transformation myTransformation, List<SceneObject> subObjects) {
+	public SceneObject(IRenderable renderable, Matrix4f myTransformation, List<SceneObject> subObjects) {
 		this.myTransformation = myTransformation;
 		this.subObjects = subObjects;
 		this.renderable = renderable;
@@ -43,9 +47,9 @@ public class SceneObject {
 	/**
 	 * @return this objects current Tranformation
 	 */
-	public Transformation getTransformation() {
+	public Matrix4f getTransformation() {
 		if (myTransformation == null) {
-			myTransformation = Transformation.identity();
+			myTransformation = new Matrix4f();
 		}
 		return myTransformation;
 	}
@@ -122,8 +126,17 @@ public class SceneObject {
 	public boolean hasOwnShader() {
 		return shader != null;
 	}
+	
+	public void update(double deltaTime) {
+		if (getRenderable() != null) {
+			getRenderable().update(deltaTime);
+		}
+		getSubObjects().forEach((SceneObject obj) -> obj.update(deltaTime));
+		
+		
+	}
 
-//<editor-fold defaultstate="collapsed" desc="BoundingBox">
+	//<editor-fold defaultstate="collapsed" desc="BoundingBox">
 
 	/**
 	 * @return a boundingBox so that each sub-Object lies within
@@ -169,5 +182,5 @@ public class SceneObject {
 		}
 		box = box.unionWith(object.getBoundingBox());
 	}
-//</editor-fold>
+	//</editor-fold>
 }

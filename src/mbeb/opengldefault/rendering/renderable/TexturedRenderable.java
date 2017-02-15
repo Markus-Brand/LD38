@@ -1,8 +1,8 @@
 package mbeb.opengldefault.rendering.renderable;
 
-import mbeb.opengldefault.rendering.shader.Shader;
-import mbeb.opengldefault.rendering.textures.Texture;
-import mbeb.opengldefault.scene.BoundingBox;
+import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.rendering.textures.*;
+import mbeb.opengldefault.scene.*;
 
 /**
  * A renderable with its own texture
@@ -12,7 +12,7 @@ public class TexturedRenderable implements IRenderable {
 	/** Class Name Tag */
 	private static final String TAG = "TexturedRenderable";
 
-	/** a reanderable to be wrapped and rendered */
+	/** a renderable to be wrapped and rendered */
 	private IRenderable renderable;
 	/** a texture to bind before rendering */
 	private Texture texture;
@@ -40,5 +40,12 @@ public class TexturedRenderable implements IRenderable {
 	public BoundingBox getBoundingBox() {
 		return renderable.getBoundingBox();
 	}
+
+	@Override
+	public void update(double deltaTime) {
+		renderable.update(deltaTime);
+	}
+	
+	
 
 }

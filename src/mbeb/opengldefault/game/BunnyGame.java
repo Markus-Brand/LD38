@@ -1,32 +1,19 @@
 package mbeb.opengldefault.game;
 
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL11.*;
 
-import java.util.ArrayList;
+import java.util.*;
 
-import mbeb.opengldefault.camera.FirstPersonCamera;
-import mbeb.opengldefault.camera.ICamera;
-import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.openglcontext.OpenGLContext;
-import mbeb.opengldefault.rendering.io.ObjectLoader;
-import mbeb.opengldefault.rendering.renderable.IRenderable;
-import mbeb.opengldefault.rendering.renderable.Skybox;
-import mbeb.opengldefault.rendering.renderable.TexturedRenderable;
-import mbeb.opengldefault.rendering.shader.Shader;
-import mbeb.opengldefault.rendering.textures.Texture;
-import mbeb.opengldefault.rendering.textures.TextureCache;
-import mbeb.opengldefault.scene.Scene;
-import mbeb.opengldefault.scene.SceneObject;
-import mbeb.opengldefault.scene.Transformation;
+import mbeb.opengldefault.camera.*;
+import mbeb.opengldefault.logging.*;
+import mbeb.opengldefault.openglcontext.*;
+import mbeb.opengldefault.rendering.io.*;
+import mbeb.opengldefault.rendering.renderable.*;
+import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.rendering.textures.*;
+import mbeb.opengldefault.scene.*;
 
-import org.joml.Vector3f;
+import org.joml.*;
 
 /**
  * Object to characterize a whole game
@@ -38,11 +25,12 @@ public class BunnyGame implements IGame {
 	protected ICamera cam;
 	Scene bunnyScene;
 
-	SceneObject cubeObj, bunnyObj, bunnyObj2;
+	SceneObject bunnyObj2;
 
 	@Override
 	public void init() {
-		ArrayList<Vector3f> controlPoints = new ArrayList<>();
+		final String bunnyObjectName = /*/"thinmatrix.dae"/*/"bunny.obj"/**/;
+		final ArrayList<Vector3f> controlPoints = new ArrayList<>();
 
 		controlPoints.add(new Vector3f(2, 2, 0));
 		controlPoints.add(new Vector3f(0, 2, 2));
@@ -51,31 +39,30 @@ public class BunnyGame implements IGame {
 
 		cam = new FirstPersonCamera(new Vector3f(), new Vector3f());//(new BezierCurve(controlPoints, ControlPointInputMode.CameraPointsCircular, true));
 
-		Skybox skybox = new Skybox("skybox/mountain");
+		final Skybox skybox = new Skybox("skybox/mountain");
 
 		bunnyScene = new Scene(cam, skybox);
 
-		IRenderable bunny = new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
-		IRenderable cube = new TexturedRenderable(new ObjectLoader().loadFromFile("cube.obj"), new Texture("bunny_2d.png"));
+		IRenderable tm = new ObjectLoader().loadFromFileAnim("thinmatrix.dae");
+		tm = new TexturedRenderable(tm, new Texture("bunny_2d.png"));
+		//IRenderable bunny = new TexturedRenderable(new ObjectLoader().loadFromFile(bunnyObjectName), new Texture("bunny_2d.png"));
+		
+		Shader phongShader = new Shader("boneAnimation.vert", "phong.frag");
+		phongShader.addUniformBlockIndex(1, "Matrices");
+		phongShader.use();
+		
+		bunnyObj2 = new SceneObject(tm, new Matrix4f(), null);
+		bunnyObj2.setShader(phongShader);
 
-		cubeObj = new SceneObject(cube, null, null);
-		bunnyObj = new SceneObject(bunny, Transformation.fromPosition(new Vector3f(1, 1, 1)), null);
-		bunnyObj2 = new SceneObject(bunny, Transformation.fromPosition(new Vector3f(1, -1, 1)), null);
-
-		cubeObj.addSubObject(bunnyObj);
 		bunnyScene.getSceneGraph().addSubObject(bunnyObj2);
-		bunnyScene.getSceneGraph().addSubObject(cubeObj);
-
-		Shader defaultShader = new Shader("basic.vert", "phong.frag");
-		defaultShader.addUniformBlockIndex(1, "Matrices");
-		bunnyScene.getSceneGraph().setShader(defaultShader);
-
-		glEnable(GL_CULL_FACE);
+		bunnyScene.getSceneGraph().setShader(phongShader);
+		
+		glDisable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 	}
 
 	@Override
-	public void update(double deltaTime) {
+	public void update(final double deltaTime) {
 
 		glClearColor(0.05f, 0.075f, 0.075f, 1);
 		GLErrors.checkForError(TAG, "glClearColor");
@@ -84,9 +71,6 @@ public class BunnyGame implements IGame {
 
 		glViewport(0, 0, OpenGLContext.getWidth(), OpenGLContext.getHeight());
 		GLErrors.checkForError(TAG, "glViewport");
-
-		cubeObj.getTransformation().asMatrix().rotate((float) deltaTime, new Vector3f(1, 1, 0));
-		bunnyObj.getTransformation().asMatrix().rotate((float) deltaTime * 3, new Vector3f(0, 1, 0));
 
 		bunnyScene.update(deltaTime);
 	}

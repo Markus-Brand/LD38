@@ -1,8 +1,6 @@
 package mbeb.opengldefault.camera;
 
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import org.joml.*;
 
 public interface ICamera {
 
@@ -25,10 +23,10 @@ public interface ICamera {
 	/**
 	 * sets a new camera position
 	 *
-	 * @param newPosition
+	 * @param position
 	 *            the new camera position
 	 */
-	void setPosition(Vector3f newPosition);
+	void setPosition(Vector3f position);
 
 	/**
 	 * get the cameras view direction

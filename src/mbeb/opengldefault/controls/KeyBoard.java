@@ -43,7 +43,8 @@ public class KeyBoard {
 	}
 
 	/**
-	 * returns true if the keyCode key is pressed at the moment and false if the key is not pressed or if the keyCode is outside of the Array
+	 * returns true if the keyCode key is pressed at the moment and false if the key is not pressed or if the keyCode is
+	 * outside of the Array
 	 *
 	 * @param keyCode
 	 *            GLWF keyCode of the key
