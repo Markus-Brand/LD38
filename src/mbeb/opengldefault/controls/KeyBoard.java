@@ -22,7 +22,7 @@ public class KeyBoard {
 	 *            GLWF keyCode of the key
 	 */
 	public static void keyDown(int keyCode) {
-		if(keyCode < 0 || keyCode >= keys.length) {
+		if (keyCode < 0 || keyCode >= keys.length) {
 			return;
 		}
 		keys[keyCode] = true;
@@ -36,7 +36,7 @@ public class KeyBoard {
 	 *            GLWF keyCode of the key
 	 */
 	public static void keyUp(int keyCode) {
-		if(keyCode < 0 || keyCode >= keys.length) {
+		if (keyCode < 0 || keyCode >= keys.length) {
 			return;
 		}
 		keys[keyCode] = false;
@@ -51,7 +51,7 @@ public class KeyBoard {
 	 * @return
 	 */
 	public static boolean isKeyDown(int keyCode) {
-		if(keyCode < 0 || keyCode >= keys.length) {
+		if (keyCode < 0 || keyCode >= keys.length) {
 			return false;
 		}
 		return keys[keyCode];

@@ -105,7 +105,7 @@ public enum DataFragment {
 	 */
 	public static int getTotalSize(DataFragment[] dataFormat) {
 		int sum = 0;
-		for(DataFragment d : dataFormat) {
+		for (DataFragment d : dataFormat) {
 			sum += d.size();
 		}
 		return sum;
@@ -117,7 +117,7 @@ public enum DataFragment {
 	 */
 	public static int[] mapFormat(DataFragment[] format) {
 		int[] res = new int[format.length];
-		for(int i = 0; i < format.length; i++) {
+		for (int i = 0; i < format.length; i++) {
 			res[i] = format[i].size();
 		}
 		return res;

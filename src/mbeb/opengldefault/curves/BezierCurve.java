@@ -116,16 +116,16 @@ public class BezierCurve {
 		switch(mode) {
 			case CameraPoints:
 				generatePath(inputControlPoints);
-			break;
+				break;
 			case CameraPointsCircular:
 				generateCircularPath(inputControlPoints);
-			break;
+				break;
 			case ControlPoints:
 				setControlPoints(inputControlPoints);
-			break;
+				break;
 			default:
 				Log.error(TAG, "Unknown ControlPointMode");
-			break;
+				break;
 		}
 	}
 
@@ -175,7 +175,7 @@ public class BezierCurve {
 
 		generateFirstControlPoint(cameraPositions, dirPrevious, lengthPrevious);
 
-		for(int camPosID = 1; camPosID < cameraPositions.size() - 1; camPosID++) {
+		for (int camPosID = 1; camPosID < cameraPositions.size() - 1; camPosID++) {
 			dirNext = calculateSegmentDirection(cameraPositions, camPosID);
 			lengthNext = dirNext.length();
 			dirNext.normalize();
@@ -211,7 +211,7 @@ public class BezierCurve {
 		Vector3f dirNext;
 		float lengthNext;
 
-		for(int camPosID = 0; camPosID <= cameraPositions.size(); camPosID++) {
+		for (int camPosID = 0; camPosID <= cameraPositions.size(); camPosID++) {
 			dirNext = calculateSegmentDirection(cameraPositions, camPosID);
 			lengthNext = dirNext.length();
 			dirNext.normalize();
@@ -221,9 +221,9 @@ public class BezierCurve {
 			tangent.normalize();
 			final float tangentLength = java.lang.Math.min(lengthNext, lengthPrevious);
 
-			if(camPosID == 0) {
+			if (camPosID == 0) {
 				generateFirstControlPoint(cameraPositions, tangent, tangentLength);
-			} else if(camPosID == cameraPositions.size()) {
+			} else if (camPosID == cameraPositions.size()) {
 				generateLastControlPoint(cameraPositions, tangent, tangentLength, true);
 			} else {
 				tangent.mul(tangentLength * 0.5f);
@@ -313,13 +313,13 @@ public class BezierCurve {
 	 */
 	public void generateSegmentLength(final boolean adaptiveSegmentLength) {
 		segmentLengths = new ArrayList<>();
-		if(adaptiveSegmentLength) {
-			for(int i = 0; i < controlPoints.size() - 1; i += 3) {
+		if (adaptiveSegmentLength) {
+			for (int i = 0; i < controlPoints.size() - 1; i += 3) {
 				float thisSegmentsLength = 0;
 				Vector3f lastPos = calculateSegmentPosition(i / 3, 0);
 				//TODO: Dynamic Sample Size?
 				final int sampleSize = 10;
-				for(int o = 1; o <= sampleSize; o++) {
+				for (int o = 1; o <= sampleSize; o++) {
 					final Vector3f nextPos = calculateSegmentPosition(i / 3, o / (float) sampleSize);
 					thisSegmentsLength += nextPos.distance(lastPos);
 					lastPos = nextPos;
@@ -328,7 +328,7 @@ public class BezierCurve {
 				maxLength += thisSegmentsLength;
 			}
 		} else {
-			for(int i = 0; i < controlPoints.size() - 1; i += 3) {
+			for (int i = 0; i < controlPoints.size() - 1; i += 3) {
 				segmentLengths.add(new Float(1));
 			}
 			maxLength = segmentLengths.size();
@@ -344,7 +344,7 @@ public class BezierCurve {
 	public void setSegmentLengths(final ArrayList<Float> segmentLengths) {
 		this.segmentLengths = segmentLengths;
 		maxLength = 0;
-		for(final float length : segmentLengths) {
+		for (final float length : segmentLengths) {
 			maxLength += length;
 		}
 	}
@@ -360,9 +360,9 @@ public class BezierCurve {
 		int segmentID = 0;
 		float progressInFragment = 0;
 		float aggregatedSegmentLength = 0;
-		for(int i = 0; i < segmentLengths.size(); i++) {
+		for (int i = 0; i < segmentLengths.size(); i++) {
 			final float lengthOfThisFragment = segmentLengths.get(i);
-			if(aggregatedSegmentLength + lengthOfThisFragment > progress) {
+			if (aggregatedSegmentLength + lengthOfThisFragment > progress) {
 				segmentID = i;
 				progressInFragment = (progress - aggregatedSegmentLength) / lengthOfThisFragment;
 				break;

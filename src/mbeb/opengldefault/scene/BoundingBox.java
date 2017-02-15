@@ -117,7 +117,7 @@ public class BoundingBox {
 		//We also need to check for updates in the child BB, because the BB could potentially grow, if the children have transformations on their own
 		final Vector3f[] childEdges = childBox.getGlobalEdges();
 		BoundingBox bigger = this.duplicate();
-		for(final Vector3f edge : childEdges) {
+		for (final Vector3f edge : childEdges) {
 			bigger = bigger.extendTo(edge);
 		}
 		return bigger;
@@ -130,9 +130,9 @@ public class BoundingBox {
 	 */
 	private Vector3f[] getLocalEdges() {
 		final Vector3f[] rawEdges = new Vector3f[8];
-		for(int x = 0; x <= 1; x++) {
-			for(int y = 0; y <= 1; y++) {
-				for(int z = 0; z <= 1; z++) {
+		for (int x = 0; x <= 1; x++) {
+			for (int y = 0; y <= 1; y++) {
+				for (int z = 0; z <= 1; z++) {
 					final Vector3f res = new Vector3f(localSize);
 					res.mul(x, y, z);
 					res.add(localStart);
@@ -150,7 +150,7 @@ public class BoundingBox {
 	 */
 	private Vector3f[] getGlobalEdges() {
 		final Vector3f[] edges = getLocalEdges();
-		for(int e = 0; e < edges.length; e++) {
+		for (int e = 0; e < edges.length; e++) {
 			edges[e] = getModelTransform().applyTo3(edges[e]);
 		}
 		return edges;
@@ -168,7 +168,7 @@ public class BoundingBox {
 	public Vector3f[] getEdgesOnScreen(final Transformation parentTransform, final ICamera camera) {
 		//apply to edges
 		final Vector3f[] edges = getGlobalEdges();
-		for(int e = 0; e < edges.length; e++) {
+		for (int e = 0; e < edges.length; e++) {
 			edges[e] = camera.getPosOnScreen(parentTransform.applyTo3(edges[e]));
 		}
 		return edges;

@@ -28,13 +28,13 @@ package org.joml.sampling;
  * @author Kai Burjack
  */
 public interface Callback2d {
-    /**
-     * Will be called whenever a new sample with the given coordinates <tt>(x, y)</tt> is generated.
-     * 
-     * @param x
-     *            the x coordinate of the new sample point
-     * @param y
-     *            the y coordinate of the new sample point
-     */
-    void onNewSample(float x, float y);
+	/**
+	 * Will be called whenever a new sample with the given coordinates <tt>(x, y)</tt> is generated.
+	 * 
+	 * @param x
+	 *            the x coordinate of the new sample point
+	 * @param y
+	 *            the y coordinate of the new sample point
+	 */
+	void onNewSample(float x, float y);
 }

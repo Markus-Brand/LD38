@@ -24,8 +24,8 @@ public class BezierCamera extends Camera {
 
 	public BezierCamera(BezierCurve path) {
 		projection = new Matrix4f();
-		projection.perspective((float) java.lang.Math.PI / 2, OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f,
-				100);
+		projection.perspective((float) java.lang.Math.PI / 2,
+				OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f, 100);
 
 		this.viewDirection = new Vector3f(1, 0, 0);
 		this.worldUp = new Vector3f(0, 1, 0);
@@ -47,7 +47,7 @@ public class BezierCamera extends Camera {
 
 		distanceTravelled += deltaTime * speed;
 
-		if(distanceTravelled > path.getMaxLength()) {
+		if (distanceTravelled > path.getMaxLength()) {
 			distanceTravelled -= path.getMaxLength();
 		}
 

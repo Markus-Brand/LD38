@@ -20,7 +20,7 @@ public class StaticMeshes {
 	 * @return ScreenAlignedQuad Renderable
 	 */
 	public static IRenderable getScreenAlignedQuad() {
-		if(screenAlignedQuad == null) {
+		if (screenAlignedQuad == null) {
 
 			float[] vertexData = {-1, -1, 1, -1, -1, 1, 1, 1};
 
@@ -42,7 +42,7 @@ public class StaticMeshes {
 	 * @return Cube Renderable
 	 */
 	public static IRenderable getCube() {
-		if(uniformCube == null) {
+		if (uniformCube == null) {
 
 			/* @formatter:off */
 			float[] vertexData = {

@@ -62,7 +62,7 @@ public class TextureCache {
 	public static int loadTexture(String path, boolean interpolate, int wrapS, int wrapT) {
 		String key = path + interpolate + wrapS + wrapT;
 		Integer texture = cachedImages.get(key);
-		if(texture == null) {
+		if (texture == null) {
 			Log.log(TAG, "loaded Image: " + path);
 			BufferedImage img = loadBufferedImage(path);
 			texture = loadTexture(img, interpolate, wrapS, wrapT);
@@ -84,8 +84,7 @@ public class TextureCache {
 		BufferedImage img = null;
 		try {
 			img = ImageIO.read(url);
-		}
-		catch(IOException e) {
+		} catch(IOException e) {
 			Log.error(TAG, "Unable to Load Texture: " + path);
 			e.printStackTrace();
 		}
@@ -121,7 +120,7 @@ public class TextureCache {
 				buffer);
 		GLErrors.checkForError(TAG, "glTexImage2D");
 
-		if(interpolate) {
+		if (interpolate) {
 			glGenerateMipmap(GL_TEXTURE_2D);
 			GLErrors.checkForError(TAG, "glGenerateMipmap");
 		}
@@ -147,7 +146,7 @@ public class TextureCache {
 	public static int loadCubeMap(String path) {
 		String key = path;
 		Integer texture = cachedImages.get(key);
-		if(texture == null) {
+		if (texture == null) {
 			Log.log(TAG, "loaded Cube Map: " + path);
 			String imageFormat = ".jpg";
 			BufferedImage[] img = new BufferedImage[6];
@@ -188,7 +187,7 @@ public class TextureCache {
 		glBindTexture(GL_TEXTURE_CUBE_MAP, texture);
 		GLErrors.checkForError(TAG, "glBindTexture");
 
-		for(int i = 0; i < images.length; i++) {
+		for (int i = 0; i < images.length; i++) {
 			ByteBuffer buffer = generateBuffer(images[i]);
 
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, images[i].getWidth(), images[i].getHeight(),
@@ -215,7 +214,7 @@ public class TextureCache {
 	private static void setTexParameter(boolean interpolate, int wrapS, int wrapT) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapS);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapT);
-		if(interpolate) {
+		if (interpolate) {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		} else {
@@ -266,8 +265,8 @@ public class TextureCache {
 						* (image.getType() == BufferedImage.TYPE_INT_ARGB ? 4 : 4));
 
 		// copy data to the buffer
-		for(int y = 0; y < image.getHeight(); y++) {
-			for(int x = 0; x < image.getWidth(); x++) {
+		for (int y = 0; y < image.getHeight(); y++) {
+			for (int x = 0; x < image.getWidth(); x++) {
 				int pixel = pixels[y * image.getWidth() + x];
 				buffer.put((byte) (pixel >> 16 & 0xFF)); // Red component
 				buffer.put((byte) (pixel >> 8 & 0xFF)); // Green component
@@ -284,7 +283,7 @@ public class TextureCache {
 	 * Deletes all OpenGL textures and clears the cache
 	 */
 	public static void clearCache() {
-		for(int value : cachedImages.values()) {
+		for (int value : cachedImages.values()) {
 			glDeleteTextures(value);
 			GLErrors.checkForError(TAG, "glDeleteTextures");
 		}

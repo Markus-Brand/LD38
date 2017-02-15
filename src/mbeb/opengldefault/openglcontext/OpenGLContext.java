@@ -74,7 +74,7 @@ public class OpenGLContext {
 			// invoked during this call.
 			glfwPollEvents();
 
-			if(KeyBoard.isKeyDown(GLFW_KEY_ESCAPE)) {
+			if (KeyBoard.isKeyDown(GLFW_KEY_ESCAPE)) {
 				glfwSetWindowShouldClose(window, true); // We will detect this in our rendering loop
 			}
 
@@ -100,8 +100,7 @@ public class OpenGLContext {
 		try {
 			Files.walk(new File("res").toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile)
 					.forEach(File::delete);
-		}
-		catch(IOException ex) {
+		} catch(IOException ex) {
 			Log.log(TAG, ex.getMessage() + " - unable to delete old res-directory");
 		}
 	}
@@ -120,22 +119,22 @@ public class OpenGLContext {
 	 */
 	private void createWindow(String title, boolean fullscreen, int width, int height) {
 		// Create the window
-		if(fullscreen) {
+		if (fullscreen) {
 			window = glfwCreateWindow(width, height, title, glfwGetPrimaryMonitor(), NULL);
 		} else {
 			window = glfwCreateWindow(width, height, title, NULL, NULL);
 		}
 
-		if(window == NULL) {
+		if (window == NULL) {
 			throw new RuntimeException("Failed to create the GLFW window");
 		}
 
 		// Setup a key callback. It will be called every time a key is pressed, repeated or released.
 		glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-			if(action == GLFW_PRESS) {
+			if (action == GLFW_PRESS) {
 				KeyBoard.keyDown(key);
 			}
-			if(action == GLFW_RELEASE) {
+			if (action == GLFW_RELEASE) {
 				KeyBoard.keyUp(key);
 			}
 		});
@@ -147,10 +146,10 @@ public class OpenGLContext {
 		});
 
 		glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
-			if(action == GLFW_PRESS) {
+			if (action == GLFW_PRESS) {
 				Mouse.buttonDown(button);
 			}
-			if(action == GLFW_RELEASE) {
+			if (action == GLFW_RELEASE) {
 				Mouse.buttonUp(button);
 			}
 		});
@@ -184,7 +183,7 @@ public class OpenGLContext {
 		GLFWErrorCallback.createPrint(System.err).set();
 
 		// Initialize GLFW. Most GLFW functions will not work before doing this.
-		if(!glfwInit()) {
+		if (!glfwInit()) {
 			throw new IllegalStateException("Unable to initialize GLFW");
 		}
 
@@ -216,11 +215,11 @@ public class OpenGLContext {
 	 *            command line arguments
 	 */
 	private static void evaluateCommandLineArguments(String[] args) {
-		if(args.length < 2) {
+		if (args.length < 2) {
 			Log.initDebug(LogMode.CONSOLE);
-		} else if(args[1].equals("console")) {
+		} else if (args[1].equals("console")) {
 			Log.initDebug(LogMode.CONSOLE);
-		} else if(args[1].equals("logfile")) {
+		} else if (args[1].equals("logfile")) {
 			Log.initDebug(LogMode.LOGFILE);
 		} else {
 			Log.initDebug(LogMode.NONE);

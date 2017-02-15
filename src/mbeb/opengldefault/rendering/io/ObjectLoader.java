@@ -45,7 +45,7 @@ public class ObjectLoader {
 		String realPath = getExtractedPath(path);
 		AIScene scene = Assimp.aiImportFile(realPath, Assimp.aiProcess_Triangulate);
 
-		for(int meshID = 0; meshID < scene.mNumMeshes(); meshID++) {
+		for (int meshID = 0; meshID < scene.mNumMeshes(); meshID++) {
 			IRenderable mesh = loadMesh(scene, meshID, format);
 			//todo not return just the first mesh, rather combine meshes
 			return mesh;
@@ -55,16 +55,15 @@ public class ObjectLoader {
 
 	private String getExtractedPath(String rawPath) {
 		File res = new File("res");
-		if(!res.exists()) {
+		if (!res.exists()) {
 			res.mkdirs();
 		}
 		File export = new File(res, rawPath);
-		if(!export.exists()) {
+		if (!export.exists()) {
 			try {
 				Files.copy(OpenGLContext.class.getResourceAsStream("/mbeb/opengldefault/resources/" + rawPath),
 						export.toPath());
-			}
-			catch(IOException ex) {
+			} catch(IOException ex) {
 				Log.log(TAG, ex.getMessage() + " at extracting resource " + rawPath);
 			}
 		}
@@ -95,10 +94,10 @@ public class ObjectLoader {
 
 		BoundingBox box = new BoundingBox.Empty();
 
-		for(int v = 0; v < vertexCount; v++) {
+		for (int v = 0; v < vertexCount; v++) {
 			AIVector3D position = mesh.mVertices().get(v);
 			box = box.extendTo(new Vector3f(position.x(), position.y(), position.z()));
-			for(DataFragment dataFormat : format) {
+			for (DataFragment dataFormat : format) {
 				dataFormat.addTo(mesh, v, data, dataPointer);
 				dataPointer += dataFormat.size();
 			}

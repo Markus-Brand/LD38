@@ -38,11 +38,11 @@ public class GLErrors {
 	 */
 	public static boolean checkForError(String classTag, String message, boolean abortProgram) {
 		int error = glGetError();
-		if(error == GL_NO_ERROR) {
+		if (error == GL_NO_ERROR) {
 			return false;
 		} else {
 			GLException ex = new GLException(classTag, message, error);
-			if(abortProgram) {
+			if (abortProgram) {
 				throw ex;
 			} else {
 				ex.printStackTrace();
@@ -66,19 +66,19 @@ public class GLErrors {
 			switch(error) {
 				case GL_INVALID_ENUM:
 					errorMessage += "GL_INVALID_ENUM";
-				break;
+					break;
 				case GL_INVALID_VALUE:
 					errorMessage += "GL_INVALID_VALUE";
-				break;
+					break;
 				case GL_INVALID_OPERATION:
 					errorMessage += "GL_INVALID_OPERATION";
-				break;
+					break;
 				case GL_INVALID_FRAMEBUFFER_OPERATION:
 					errorMessage += "GL_INVALID_FRAMEBUFFER_OPERATION";
-				break;
+					break;
 				case GL_OUT_OF_MEMORY:
 					errorMessage += "GL_OUT_OF_MEMORY";
-				break;
+					break;
 				default:
 					errorMessage += "UNKNOWN_EXCEPTION";
 			}

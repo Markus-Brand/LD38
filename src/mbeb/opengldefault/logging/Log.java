@@ -20,11 +20,11 @@ public class Log {
 	 */
 	public static void initDebug(LogMode mode) {
 		logMode = mode;
-		if(logMode == LogMode.LOGFILE) {
+		if (logMode == LogMode.LOGFILE) {
 
 			// if the directory does not exist, create it
 			File theDir = new File("log");
-			if(!theDir.exists()) {
+			if (!theDir.exists()) {
 				theDir.mkdir();
 			}
 
@@ -34,14 +34,12 @@ public class Log {
 			logFile = new File("log/" + log + ".log");
 			try {
 				writer = new PrintWriter(logFile);
-			}
-			catch(FileNotFoundException e1) {
+			} catch(FileNotFoundException e1) {
 				e1.printStackTrace();
 			}
 			try {
 				logFile.createNewFile();
-			}
-			catch(IOException e) {
+			} catch(IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -51,7 +49,7 @@ public class Log {
 	 * closes log file when closing window.
 	 */
 	public static void closeLogFile() {
-		if(logMode == LogMode.LOGFILE) {
+		if (logMode == LogMode.LOGFILE) {
 			writer.close();
 		}
 	}
@@ -63,11 +61,11 @@ public class Log {
 	 *            the object (mostly Strings) being logged
 	 */
 	public static void log(String tag, Object obj) {
-		if(logMode == LogMode.NONE) {
+		if (logMode == LogMode.NONE) {
 			return;
 		}
 		String log = constructErrorMessage(obj, "LOG: ", tag);
-		if(logMode == LogMode.CONSOLE) {
+		if (logMode == LogMode.CONSOLE) {
 			System.out.println(log);
 		} else {
 			writer.println(log);
@@ -82,11 +80,11 @@ public class Log {
 	 *            the object (mostly Strings) being logged
 	 */
 	public static void error(String tag, Object obj) {
-		if(logMode == LogMode.NONE) {
+		if (logMode == LogMode.NONE) {
 			return;
 		}
 		String log = constructErrorMessage(obj, "ERR: ", tag);
-		if(logMode == LogMode.CONSOLE) {
+		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
 		} else {
 			writer.println(log);
@@ -113,11 +111,11 @@ public class Log {
 	 *            the object (mostly Strings) being logged
 	 */
 	public static void assertIfTrue(String tag, boolean condition, Object obj) {
-		if(logMode == LogMode.NONE || !condition) {
+		if (logMode == LogMode.NONE || !condition) {
 			return;
 		}
 		String log = constructErrorMessage(obj, "ASSERTION: ", tag);
-		if(logMode == LogMode.CONSOLE) {
+		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
 		} else {
 			writer.println(log);
@@ -133,11 +131,11 @@ public class Log {
 	 *            the object (mostly Strings) being logged
 	 */
 	public static void assertIfFalse(String tag, boolean condition, Object obj) {
-		if(logMode == LogMode.NONE || condition) {
+		if (logMode == LogMode.NONE || condition) {
 			return;
 		}
 		String log = constructErrorMessage(obj, "ASSERTION: ", tag);
-		if(logMode == LogMode.CONSOLE) {
+		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
 		} else {
 			writer.println(log);
@@ -154,11 +152,11 @@ public class Log {
 	 *            the object (mostly Strings) being logged
 	 */
 	public static void assertIfEquals(String tag, Object o1, Object o2, Object obj) {
-		if(logMode == LogMode.NONE || !o1.equals(o2)) {
+		if (logMode == LogMode.NONE || !o1.equals(o2)) {
 			return;
 		}
 		String log = constructErrorMessage(obj, "ASSERTION: ", tag);
-		if(logMode == LogMode.CONSOLE) {
+		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
 		} else {
 			writer.println(log);
@@ -175,11 +173,11 @@ public class Log {
 	 *            the object (mostly Strings) being logged
 	 */
 	public static void assertIfNotEquals(String tag, Object o1, Object o2, Object obj) {
-		if(logMode == LogMode.NONE || o1.equals(o2)) {
+		if (logMode == LogMode.NONE || o1.equals(o2)) {
 			return;
 		}
 		String log = constructErrorMessage(obj, "ASSERTION: ", tag);
-		if(logMode == LogMode.CONSOLE) {
+		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
 		} else {
 			writer.println(log);

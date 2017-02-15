@@ -17,7 +17,7 @@ public class VisibleSceneGraphRenderer extends SceneGraphRenderer {
 
 	@Override
 	public void renderObject(final SceneObject object, final Transformation parentTransform) {
-		if(isVisible(object, parentTransform)) {
+		if (isVisible(object, parentTransform)) {
 			super.renderObject(object, parentTransform);
 		}
 	}
@@ -40,7 +40,7 @@ public class VisibleSceneGraphRenderer extends SceneGraphRenderer {
 
 		float maxZ = edges[0].z;
 
-		for(final Vector3f e : edges) {
+		for (final Vector3f e : edges) {
 			minX = java.lang.Math.min(minX, e.x);
 			maxX = java.lang.Math.max(maxX, e.x);
 			minY = java.lang.Math.min(minY, e.y);
@@ -48,7 +48,7 @@ public class VisibleSceneGraphRenderer extends SceneGraphRenderer {
 			maxZ = java.lang.Math.max(maxZ, e.z);
 		}
 		final boolean intersect = minX < 1 && maxX > -1 && minY < 1 && maxY > -1;
-		if(!intersect || maxZ < 0) {
+		if (!intersect || maxZ < 0) {
 			return false;
 		}
 		//otherwise check if big enough

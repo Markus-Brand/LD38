@@ -216,12 +216,12 @@ public class VAORenderable implements IRenderable {
 		GLErrors.checkForError(TAG, "glBufferData VBO");
 
 		int stride = 0;
-		for(int dataSize : dataSizes) {
+		for (int dataSize : dataSizes) {
 			stride += 4 * dataSize; //size of float
 		}
 
 		int offset = 0;
-		for(int i = 0; i < dataSizes.length; i++) {
+		for (int i = 0; i < dataSizes.length; i++) {
 			glVertexAttribPointer(i, dataSizes[i], GL_FLOAT, false, stride, offset);
 			GLErrors.checkForError(TAG, "glVertexAttribPointer VBO");
 			glEnableVertexAttribArray(i);

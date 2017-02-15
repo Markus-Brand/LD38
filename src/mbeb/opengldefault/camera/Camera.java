@@ -79,7 +79,7 @@ public abstract class Camera implements ICamera {
 
 	@Override
 	public Matrix4f getProjectionView() {
-		if(projectionView == null) {
+		if (projectionView == null) {
 			projectionView = new Matrix4f();
 			getProjection().mul(getView(), projectionView);
 		}
@@ -93,7 +93,7 @@ public abstract class Camera implements ICamera {
 
 	@Override
 	public int getUBO() {
-		if(UBO == -1) {
+		if (UBO == -1) {
 			UBO = glGenBuffers();
 			glBindBuffer(GL_UNIFORM_BUFFER, UBO);
 			GLErrors.checkForError(TAG, "glBindBuffer");

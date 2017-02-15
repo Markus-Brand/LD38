@@ -86,19 +86,19 @@ public class FirstPersonCamera extends Camera {
 
 	private void updatePosition() {
 		final Vector3f delta = new Vector3f();
-		if(KeyBoard.isKeyDown(GLFW.GLFW_KEY_A)) {
+		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_A)) {
 			worldUp.cross(viewDirection, delta);
 		}
-		if(KeyBoard.isKeyDown(GLFW.GLFW_KEY_D)) {
+		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_D)) {
 			viewDirection.cross(worldUp, delta);
 		}
-		if(KeyBoard.isKeyDown(GLFW.GLFW_KEY_W)) {
+		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_W)) {
 			delta.add(viewDirection);
 		}
-		if(KeyBoard.isKeyDown(GLFW.GLFW_KEY_S)) {
+		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_S)) {
 			delta.sub(viewDirection);
 		}
-		if(delta.length() == 0) {
+		if (delta.length() == 0) {
 			return;
 		}
 		delta.normalize();
@@ -120,10 +120,10 @@ public class FirstPersonCamera extends Camera {
 		pitch += delta.y;
 		yaw += -delta.x;
 
-		if(pitch >= 0.45f * java.lang.Math.PI) {
+		if (pitch >= 0.45f * java.lang.Math.PI) {
 			pitch = 0.45f * (float) java.lang.Math.PI;
 		}
-		if(pitch <= -0.45f * java.lang.Math.PI) {
+		if (pitch <= -0.45f * java.lang.Math.PI) {
 			pitch = -0.45f * (float) java.lang.Math.PI;
 		}
 

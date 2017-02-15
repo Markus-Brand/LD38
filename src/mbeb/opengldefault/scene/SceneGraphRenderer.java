@@ -55,8 +55,8 @@ public class SceneGraphRenderer {
 		final Transformation transform = parentTransform.and(object.getTransformation());
 		renderSelf(object, transform);
 		final Collection<SceneObject> subObjects = object.getSubObjects();
-		if(subObjects != null) {
-			for(final SceneObject subObject : subObjects) {
+		if (subObjects != null) {
+			for (final SceneObject subObject : subObjects) {
 				renderObject(subObject, transform);
 			}
 		}
@@ -73,21 +73,21 @@ public class SceneGraphRenderer {
 	public void renderSelf(final SceneObject object, final Transformation transform) {
 		final Shader shader = object.getShader();
 		shader.use();
-		if(object.hasOwnShader()) {
+		if (object.hasOwnShader()) {
 			//update camera on first object with this shader only
 			final int viewPosUniform = shader.getUniform(ViewPosUniformName, false);
-			if(viewPosUniform >= 0) {
+			if (viewPosUniform >= 0) {
 				final Vector3f pos = cam.getPosition();
 				GL20.glUniform3f(viewPosUniform, pos.x, pos.y, pos.z);
 				GLErrors.checkForError(TAG, "glUniform3f");
 			}
 		}
 		final IRenderable renderable = object.getRenderable();
-		if(renderable == null) {
+		if (renderable == null) {
 			return;
 		}
 		final int modelUniform = shader.getUniform(ModelMatrixUniformName, false);
-		if(modelUniform >= 0) {
+		if (modelUniform >= 0) {
 			//only if shader wants the model matrix
 			final Matrix4f model = transform.asMatrix();
 			final FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
