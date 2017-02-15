@@ -1,43 +1,45 @@
 package mbeb.opengldefault.camera;
 
-import mbeb.opengldefault.controls.KeyBoard;
-import mbeb.opengldefault.controls.Mouse;
-import mbeb.opengldefault.openglcontext.OpenGLContext;
+import mbeb.opengldefault.controls.*;
+import mbeb.opengldefault.openglcontext.*;
 
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
+import org.joml.*;
+import org.lwjgl.glfw.*;
 
 public class FirstPersonCamera extends Camera {
 
 	/** Class Name Tag */
 	private static final String TAG = "FirstPersonCamera";
-
-	private Vector3f worldUp;
-
+	/** (0,1,0) */
+	private final Vector3f worldUp;
+	/** mouse position at last update time */
 	private Vector2f lastMousePos;
-
+	/** current orientation */
 	private float pitch, yaw;
 
-	private float speed, rotationSpeed;
+	private final float movementSpeed, rotationSpeed;
 
 	private float distanceTravelled;
 
-	private float viewBobbingAltitude;
+	private final float viewBobbingAltitude;
 
-	private float viewBobbingDistance;
+	private final float viewBobbingDistance;
 
-	public FirstPersonCamera(Vector3f position, Vector3f direction) {
+	/**
+	 * @param position
+	 * @param direction
+	 */
+	public FirstPersonCamera(final Vector3f position, final Vector3f direction) {
 		lastMousePos = new Vector2f(Mouse.getPos());
 		projection = new Matrix4f();
-		projection.perspective((float) Math.PI / 2.5f, OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f, 100);
+		projection.perspective((float) java.lang.Math.PI / 2.5f,
+				OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f, 100);
 
 		this.position = position;
 		this.viewDirection = direction;
 		this.worldUp = new Vector3f(0, 1, 0);
 
-		speed = 0.1f;
+		movementSpeed = 0.1f;
 		rotationSpeed = 0.01f;
 
 		viewBobbingAltitude = 0.0f;
@@ -49,11 +51,12 @@ public class FirstPersonCamera extends Camera {
 
 	private void updateView() {
 
-		float viewBobbing = (float) (Math.sin(distanceTravelled / viewBobbingDistance) * viewBobbingAltitude);
-		Vector3f cameraPos = new Vector3f(position);
+		final float viewBobbing =
+				(float) (java.lang.Math.sin(distanceTravelled / viewBobbingDistance) * viewBobbingAltitude);
+		final Vector3f cameraPos = new Vector3f(position);
 		cameraPos.y += viewBobbing;
 
-		Vector3f center = new Vector3f();
+		final Vector3f center = new Vector3f();
 		view = new Matrix4f();
 		cameraPos.add(viewDirection, center);
 
@@ -63,26 +66,26 @@ public class FirstPersonCamera extends Camera {
 	}
 
 	@Override
-	public void setViewDirection(Vector3f direction) {
+	public void setViewDirection(final Vector3f direction) {
 		direction.normalize(this.viewDirection);
 		updateView();
 	}
 
 	@Override
-	public void setPosition(Vector3f position) {
-		this.position = position;
+	public void setPosition(final Vector3f position) {
+		super.setPosition(position);
 		updateView();
 	}
 
 	@Override
-	public void update(double deltaTime) {
+	public void update(final double deltaTime) {
 		updateDirection();
 		updatePosition();
 		updateView();
 	}
 
 	private void updatePosition() {
-		Vector3f delta = new Vector3f();
+		final Vector3f delta = new Vector3f();
 		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_A)) {
 			worldUp.cross(viewDirection, delta);
 		}
@@ -99,14 +102,14 @@ public class FirstPersonCamera extends Camera {
 			return;
 		}
 		delta.normalize();
-		delta.mul(speed);
+		delta.mul(movementSpeed);
 		position.add(delta);
 
 		distanceTravelled += delta.length();
 	}
 
 	private void updateDirection() {
-		Vector2f delta = new Vector2f();
+		final Vector2f delta = new Vector2f();
 
 		lastMousePos.sub(Mouse.getPos(), delta);
 
@@ -117,18 +120,17 @@ public class FirstPersonCamera extends Camera {
 		pitch += delta.y;
 		yaw += -delta.x;
 
-		if (pitch >= 0.45f * Math.PI) {
-			pitch = 0.45f * (float) Math.PI;
+		if (pitch >= 0.45f * java.lang.Math.PI) {
+			pitch = 0.45f * (float) java.lang.Math.PI;
 		}
-		if (pitch <= -0.45f * Math.PI) {
-			pitch = -0.45f * (float) Math.PI;
+		if (pitch <= -0.45f * java.lang.Math.PI) {
+			pitch = -0.45f * (float) java.lang.Math.PI;
 		}
 
-		viewDirection.x = (float) (Math.cos(pitch) * Math.cos(yaw));
-		viewDirection.y = (float) Math.sin(pitch);
-		viewDirection.z = (float) (Math.cos(pitch) * Math.sin(yaw));
+		viewDirection.x = (float) (java.lang.Math.cos(pitch) * java.lang.Math.cos(yaw));
+		viewDirection.y = (float) java.lang.Math.sin(pitch);
+		viewDirection.z = (float) (java.lang.Math.cos(pitch) * java.lang.Math.sin(yaw));
 
 		viewDirection.normalize();
 	}
-
 }

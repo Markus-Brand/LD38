@@ -414,11 +414,13 @@ public class Vector3f implements Externalizable, Vector3fc {
 	}
 
 	/**
-	 * Create a new {@link Vector3f} and read this vector from the supplied {@link ByteBuffer} at the current buffer {@link ByteBuffer#position() position}.
+	 * Create a new {@link Vector3f} and read this vector from the supplied {@link ByteBuffer} at the current buffer
+	 * {@link ByteBuffer#position() position}.
 	 * <p>
 	 * This method will not increment the position of the given ByteBuffer.
 	 * <p>
-	 * In order to specify the offset into the ByteBuffer at which the vector is read, use {@link #Vector3f(int, ByteBuffer)}, taking the absolute position as parameter.
+	 * In order to specify the offset into the ByteBuffer at which the vector is read, use
+	 * {@link #Vector3f(int, ByteBuffer)}, taking the absolute position as parameter.
 	 *
 	 * @param buffer
 	 *            values will be read in <tt>x, y, z</tt> order
@@ -429,7 +431,8 @@ public class Vector3f implements Externalizable, Vector3fc {
 	}
 
 	/**
-	 * Create a new {@link Vector3f} and read this vector from the supplied {@link ByteBuffer} starting at the specified absolute buffer position/index.
+	 * Create a new {@link Vector3f} and read this vector from the supplied {@link ByteBuffer} starting at the specified
+	 * absolute buffer position/index.
 	 * <p>
 	 * This method will not increment the position of the given ByteBuffer.
 	 *
@@ -443,11 +446,13 @@ public class Vector3f implements Externalizable, Vector3fc {
 	}
 
 	/**
-	 * Create a new {@link Vector3f} and read this vector from the supplied {@link FloatBuffer} at the current buffer {@link FloatBuffer#position() position}.
+	 * Create a new {@link Vector3f} and read this vector from the supplied {@link FloatBuffer} at the current buffer
+	 * {@link FloatBuffer#position() position}.
 	 * <p>
 	 * This method will not increment the position of the given FloatBuffer.
 	 * <p>
-	 * In order to specify the offset into the FloatBuffer at which the vector is read, use {@link #Vector3f(int, FloatBuffer)}, taking the absolute position as parameter.
+	 * In order to specify the offset into the FloatBuffer at which the vector is read, use
+	 * {@link #Vector3f(int, FloatBuffer)}, taking the absolute position as parameter.
 	 *
 	 * @param buffer
 	 *            values will be read in <tt>x, y, z</tt> order
@@ -458,7 +463,8 @@ public class Vector3f implements Externalizable, Vector3fc {
 	}
 
 	/**
-	 * Create a new {@link Vector3f} and read this vector from the supplied {@link FloatBuffer} starting at the specified absolute buffer position/index.
+	 * Create a new {@link Vector3f} and read this vector from the supplied {@link FloatBuffer} starting at the
+	 * specified absolute buffer position/index.
 	 * <p>
 	 * This method will not increment the position of the given FloatBuffer.
 	 *
@@ -512,7 +518,8 @@ public class Vector3f implements Externalizable, Vector3fc {
 	/**
 	 * Set the x, y and z components to match the supplied vector.
 	 * <p>
-	 * Note that due to the given vector <code>v</code> storing the components in double-precision, there is the possibility to lose precision.
+	 * Note that due to the given vector <code>v</code> storing the components in double-precision, there is the
+	 * possibility to lose precision.
 	 *
 	 * @param v
 	 *            contains the values of x, y and z to set
@@ -576,7 +583,8 @@ public class Vector3f implements Externalizable, Vector3fc {
 	 * <p>
 	 * This method will not increment the position of the given ByteBuffer.
 	 * <p>
-	 * In order to specify the offset into the ByteBuffer at which the vector is read, use {@link #set(int, ByteBuffer)}, taking the absolute position as parameter.
+	 * In order to specify the offset into the ByteBuffer at which the vector is read, use {@link #set(int, ByteBuffer)}
+	 * , taking the absolute position as parameter.
 	 *
 	 * @param buffer
 	 *            values will be read in <tt>x, y, z</tt> order
@@ -610,7 +618,8 @@ public class Vector3f implements Externalizable, Vector3fc {
 	 * <p>
 	 * This method will not increment the position of the given FloatBuffer.
 	 * <p>
-	 * In order to specify the offset into the FloatBuffer at which the vector is read, use {@link #set(int, FloatBuffer)}, taking the absolute position as parameter.
+	 * In order to specify the offset into the FloatBuffer at which the vector is read, use
+	 * {@link #set(int, FloatBuffer)}, taking the absolute position as parameter.
 	 *
 	 * @param buffer
 	 *            values will be read in <tt>x, y, z</tt> order
@@ -650,7 +659,7 @@ public class Vector3f implements Externalizable, Vector3fc {
 	 *             if <code>component</code> is not within <tt>[0..2]</tt>
 	 */
 	public Vector3f setComponent(int component, float value) throws IllegalArgumentException {
-		switch (component) {
+		switch(component) {
 			case 0:
 				x = value;
 				break;
@@ -918,7 +927,9 @@ public class Vector3f implements Externalizable, Vector3fc {
 	@Override
 	public Vector3f mulProject(Matrix4fc mat, Vector3f dest) {
 		float invW = 1.0f / (mat.m03() * x + mat.m13() * y + mat.m23() * z + mat.m33());
-		dest.set((mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30()) * invW, (mat.m01() * x + mat.m11() * y + mat.m21() * z + mat.m31()) * invW, (mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32()) * invW);
+		dest.set((mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30()) * invW, (mat.m01() * x + mat.m11() * y
+				+ mat.m21() * z + mat.m31())
+				* invW, (mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32()) * invW);
 		return dest;
 	}
 
@@ -951,7 +962,8 @@ public class Vector3f implements Externalizable, Vector3fc {
 	 */
 	@Override
 	public Vector3f mul(Matrix3fc mat, Vector3f dest) {
-		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z, mat.m01() * x + mat.m11() * y + mat.m21() * z, mat.m02() * x + mat.m12() * y + mat.m22() * z);
+		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z, mat.m01() * x + mat.m11() * y + mat.m21() * z,
+				mat.m02() * x + mat.m12() * y + mat.m22() * z);
 		return dest;
 	}
 
@@ -971,7 +983,8 @@ public class Vector3f implements Externalizable, Vector3fc {
 	 */
 	@Override
 	public Vector3f mulTranspose(Matrix3fc mat, Vector3f dest) {
-		dest.set(mat.m00() * x + mat.m01() * y + mat.m02() * z, mat.m10() * x + mat.m11() * y + mat.m12() * z, mat.m20() * x + mat.m21() * y + mat.m22() * z);
+		dest.set(mat.m00() * x + mat.m01() * y + mat.m02() * z, mat.m10() * x + mat.m11() * y + mat.m12() * z,
+				mat.m20() * x + mat.m21() * y + mat.m22() * z);
 		return dest;
 	}
 
@@ -1006,7 +1019,8 @@ public class Vector3f implements Externalizable, Vector3fc {
 	 */
 	@Override
 	public Vector3f mulPosition(Matrix4fc mat, Vector3f dest) {
-		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30(), mat.m01() * x + mat.m11() * y + mat.m21() * z + mat.m31(), mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32());
+		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30(), mat.m01() * x + mat.m11() * y + mat.m21()
+				* z + mat.m31(), mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32());
 		return dest;
 	}
 
@@ -1015,7 +1029,8 @@ public class Vector3f implements Externalizable, Vector3fc {
 	 */
 	@Override
 	public Vector3f mulPosition(Matrix4x3fc mat, Vector3f dest) {
-		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30(), mat.m01() * x + mat.m11() * y + mat.m21() * z + mat.m31(), mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32());
+		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30(), mat.m01() * x + mat.m11() * y + mat.m21()
+				* z + mat.m31(), mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32());
 		return dest;
 	}
 
@@ -1037,7 +1052,8 @@ public class Vector3f implements Externalizable, Vector3fc {
 	 */
 	@Override
 	public Vector3f mulTransposePosition(Matrix4fc mat, Vector3f dest) {
-		dest.set(mat.m00() * x + mat.m01() * y + mat.m02() * z + mat.m03(), mat.m10() * x + mat.m11() * y + mat.m12() * z + mat.m13(), mat.m20() * x + mat.m21() * y + mat.m22() * z + mat.m23());
+		dest.set(mat.m00() * x + mat.m01() * y + mat.m02() * z + mat.m03(), mat.m10() * x + mat.m11() * y + mat.m12()
+				* z + mat.m13(), mat.m20() * x + mat.m21() * y + mat.m22() * z + mat.m23());
 		return dest;
 	}
 
@@ -1061,7 +1077,8 @@ public class Vector3f implements Externalizable, Vector3fc {
 	@Override
 	public float mulPositionW(Matrix4fc mat, Vector3f dest) {
 		float w = mat.m03() * x + mat.m13() * y + mat.m23() * z + mat.m33();
-		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30(), mat.m01() * x + mat.m11() * y + mat.m21() * z + mat.m31(), mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32());
+		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30(), mat.m01() * x + mat.m11() * y + mat.m21()
+				* z + mat.m31(), mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32());
 		return w;
 	}
 
@@ -1096,7 +1113,8 @@ public class Vector3f implements Externalizable, Vector3fc {
 	 */
 	@Override
 	public Vector3f mulDirection(Matrix4fc mat, Vector3f dest) {
-		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z, mat.m01() * x + mat.m11() * y + mat.m21() * z, mat.m02() * x + mat.m12() * y + mat.m22() * z);
+		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z, mat.m01() * x + mat.m11() * y + mat.m21() * z,
+				mat.m02() * x + mat.m12() * y + mat.m22() * z);
 		return dest;
 	}
 
@@ -1105,7 +1123,8 @@ public class Vector3f implements Externalizable, Vector3fc {
 	 */
 	@Override
 	public Vector3f mulDirection(Matrix4x3fc mat, Vector3f dest) {
-		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z, mat.m01() * x + mat.m11() * y + mat.m21() * z, mat.m02() * x + mat.m12() * y + mat.m22() * z);
+		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z, mat.m01() * x + mat.m11() * y + mat.m21() * z,
+				mat.m02() * x + mat.m12() * y + mat.m22() * z);
 		return dest;
 	}
 
@@ -1127,7 +1146,8 @@ public class Vector3f implements Externalizable, Vector3fc {
 	 */
 	@Override
 	public Vector3f mulTransposeDirection(Matrix4fc mat, Vector3f dest) {
-		dest.set(mat.m00() * x + mat.m01() * y + mat.m02() * z, mat.m10() * x + mat.m11() * y + mat.m12() * z, mat.m20() * x + mat.m21() * y + mat.m22() * z);
+		dest.set(mat.m00() * x + mat.m01() * y + mat.m02() * z, mat.m10() * x + mat.m11() * y + mat.m12() * z,
+				mat.m20() * x + mat.m21() * y + mat.m22() * z);
 		return dest;
 	}
 
@@ -1245,7 +1265,6 @@ public class Vector3f implements Externalizable, Vector3fc {
 	 * Rotate this vector by the given quaternion <code>quat</code> and store the result in <code>this</code>.
 	 *
 	 * @see Quaternionfc#transform(Vector3f)
-	 *
 	 * @param quat
 	 *            the quaternion to rotate this vector
 	 * @return this
@@ -1500,7 +1519,8 @@ public class Vector3f implements Externalizable, Vector3fc {
 	}
 
 	/**
-	 * Return a string representation of this vector by formatting the vector components with the given {@link NumberFormat}.
+	 * Return a string representation of this vector by formatting the vector components with the given
+	 * {@link NumberFormat}.
 	 *
 	 * @param formatter
 	 *            the {@link NumberFormat} used to format the vector components with
@@ -1701,16 +1721,24 @@ public class Vector3f implements Externalizable, Vector3fc {
 	public Vector3f hermite(Vector3fc t0, Vector3fc v1, Vector3fc t1, float t, Vector3f dest) {
 		float t2 = t * t;
 		float t3 = t2 * t;
-		dest.x = (x + x - v1.x() - v1.x() + t1.x() + t0.x()) * t3 + (3.0f * v1.x() - 3.0f * x - t0.x() - t0.x() - t1.x()) * t2 + x * t + x;
-		dest.y = (y + y - v1.y() - v1.y() + t1.y() + t0.y()) * t3 + (3.0f * v1.y() - 3.0f * y - t0.y() - t0.y() - t1.y()) * t2 + y * t + y;
-		dest.z = (z + z - v1.z() - v1.z() + t1.z() + t0.z()) * t3 + (3.0f * v1.z() - 3.0f * z - t0.z() - t0.z() - t1.z()) * t2 + z * t + z;
+		dest.x =
+				(x + x - v1.x() - v1.x() + t1.x() + t0.x()) * t3
+						+ (3.0f * v1.x() - 3.0f * x - t0.x() - t0.x() - t1.x()) * t2 + x * t + x;
+		dest.y =
+				(y + y - v1.y() - v1.y() + t1.y() + t0.y()) * t3
+						+ (3.0f * v1.y() - 3.0f * y - t0.y() - t0.y() - t1.y()) * t2 + y * t + y;
+		dest.z =
+				(z + z - v1.z() - v1.z() + t1.z() + t0.z()) * t3
+						+ (3.0f * v1.z() - 3.0f * z - t0.z() - t0.z() - t1.z()) * t2 + z * t + z;
 		return dest;
 	}
 
 	/**
-	 * Linearly interpolate <code>this</code> and <code>other</code> using the given interpolation factor <code>t</code> and store the result in <code>this</code>.
+	 * Linearly interpolate <code>this</code> and <code>other</code> using the given interpolation factor <code>t</code>
+	 * and store the result in <code>this</code>.
 	 * <p>
-	 * If <code>t</code> is <tt>0.0</tt> then the result is <code>this</code>. If the interpolation factor is <code>1.0</code> then the result is <code>other</code>.
+	 * If <code>t</code> is <tt>0.0</tt> then the result is <code>this</code>. If the interpolation factor is
+	 * <code>1.0</code> then the result is <code>other</code>.
 	 *
 	 * @param other
 	 *            the other vector
@@ -1738,7 +1766,7 @@ public class Vector3f implements Externalizable, Vector3fc {
 	 */
 	@Override
 	public float get(int component) throws IllegalArgumentException {
-		switch (component) {
+		switch(component) {
 			case 0:
 				return x;
 			case 1:
@@ -1803,7 +1831,8 @@ public class Vector3f implements Externalizable, Vector3fc {
 	}
 
 	/**
-	 * Transform <code>this</code> vector so that it is orthogonal to the given vector <code>v</code> and normalize the result.
+	 * Transform <code>this</code> vector so that it is orthogonal to the given vector <code>v</code> and normalize the
+	 * result.
 	 * <p>
 	 * Reference: <a href="https://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process">Gram–Schmidt process</a>
 	 *
@@ -1835,7 +1864,8 @@ public class Vector3f implements Externalizable, Vector3fc {
 	}
 
 	/**
-	 * Transform <code>this</code> vector so that it is orthogonal to the given unit vector <code>v</code> and normalize the result.
+	 * Transform <code>this</code> vector so that it is orthogonal to the given unit vector <code>v</code> and normalize
+	 * the result.
 	 * <p>
 	 * The vector <code>v</code> is assumed to be a {@link #normalize() unit} vector.
 	 * <p>
@@ -1852,7 +1882,8 @@ public class Vector3f implements Externalizable, Vector3fc {
 	/**
 	 * Create a new immutable view of this {@link Vector3f}.
 	 * <p>
-	 * The observable state of the returned object is the same as that of <code>this</code>, but casting the returned object to Vector3f will not be possible.
+	 * The observable state of the returned object is the same as that of <code>this</code>, but casting the returned
+	 * object to Vector3f will not be possible.
 	 * <p>
 	 * This method allocates a new instance of a class implementing Vector3fc on every call.
 	 *

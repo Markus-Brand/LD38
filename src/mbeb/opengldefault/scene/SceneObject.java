@@ -1,9 +1,9 @@
 package mbeb.opengldefault.scene;
 
-import java.util.ArrayList;
-import java.util.List;
-import mbeb.opengldefault.rendering.renderable.IRenderable;
-import mbeb.opengldefault.rendering.shader.Shader;
+import java.util.*;
+
+import mbeb.opengldefault.rendering.renderable.*;
+import mbeb.opengldefault.rendering.shader.*;
 
 /**
  * A (potentially) complex object inside a scene, with transformations
@@ -123,7 +123,7 @@ public class SceneObject {
 		return shader != null;
 	}
 
-//<editor-fold defaultstate="collapsed" desc="BoundingBox">
+	//<editor-fold defaultstate="collapsed" desc="BoundingBox">
 
 	/**
 	 * @return a boundingBox so that each sub-Object lies within
@@ -169,5 +169,5 @@ public class SceneObject {
 		}
 		box = box.unionWith(object.getBoundingBox());
 	}
-//</editor-fold>
+	//</editor-fold>
 }

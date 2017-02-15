@@ -1,13 +1,12 @@
 package mbeb.opengldefault.rendering.io;
 
-import org.lwjgl.assimp.AIMesh;
-import org.lwjgl.assimp.AIVector3D;
+import org.lwjgl.assimp.*;
 
 /**
  * for parsing files: specify information wanted from the mesh
  */
 public enum DataFragment {
-	
+
 	POSITION {
 
 		@Override
@@ -22,7 +21,8 @@ public enum DataFragment {
 			data[dataPointer++] = vec.y();
 			data[dataPointer++] = vec.z();
 		}
-	}, NORMAL {
+	},
+	NORMAL {
 
 		@Override
 		public int size() {
@@ -36,7 +36,8 @@ public enum DataFragment {
 			data[dataPointer++] = vec.y();
 			data[dataPointer++] = vec.z();
 		}
-	}, MOCK_NORMAL {
+	},
+	MOCK_NORMAL {
 
 		@Override
 		public int size() {
@@ -50,7 +51,8 @@ public enum DataFragment {
 			data[dataPointer++] = 0;
 			data[dataPointer++] = 0;
 		}
-	}, UV {
+	},
+	UV {
 
 		@Override
 		public int size() {
@@ -63,7 +65,8 @@ public enum DataFragment {
 			data[dataPointer++] = vec.x();
 			data[dataPointer++] = vec.y();
 		}
-	}, MOCK_UV {
+	},
+	MOCK_UV {
 
 		@Override
 		public int size() {
@@ -84,13 +87,18 @@ public enum DataFragment {
 
 	/**
 	 * add your data to the buffer
-	 * @param mesh the mesh to read from
-	 * @param v the currently processed vertex
-	 * @param data the data array to store in
-	 * @param dataPointer current array offset
+	 * 
+	 * @param mesh
+	 *            the mesh to read from
+	 * @param v
+	 *            the currently processed vertex
+	 * @param data
+	 *            the data array to store in
+	 * @param dataPointer
+	 *            current array offset
 	 */
 	public abstract void addTo(AIMesh mesh, int v, float[] data, int dataPointer);
-	
+
 	/**
 	 * @param dataFormat
 	 * @return the combined size of all a format
@@ -102,7 +110,7 @@ public enum DataFragment {
 		}
 		return sum;
 	}
-	
+
 	/**
 	 * @param format
 	 * @return the format array mapped to the sizes of the DataFragments

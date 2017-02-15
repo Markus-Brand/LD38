@@ -1,24 +1,19 @@
 package mbeb.opengldefault.openglcontext;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Comparator;
-
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.system.MemoryUtil.NULL;
-import mbeb.opengldefault.controls.KeyBoard;
-import mbeb.opengldefault.controls.Mouse;
-import mbeb.opengldefault.game.IGame;
-import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.logging.Log;
-import mbeb.opengldefault.logging.LogMode;
+import static org.lwjgl.system.MemoryUtil.*;
 
-import org.lwjgl.Version;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.opengl.GL;
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
+
+import mbeb.opengldefault.controls.*;
+import mbeb.opengldefault.game.*;
+import mbeb.opengldefault.logging.*;
+
+import org.lwjgl.*;
+import org.lwjgl.glfw.*;
+import org.lwjgl.opengl.*;
 
 public class OpenGLContext {
 
@@ -72,7 +67,7 @@ public class OpenGLContext {
 	 */
 	private void loop() {
 		double lastTime = glfwGetTime();
-		while (!glfwWindowShouldClose(window)) {
+		while(!glfwWindowShouldClose(window)) {
 
 			glfwSwapBuffers(window); // swap the color buffers
 			// Poll for window events. The key callback above will only be
@@ -103,8 +98,9 @@ public class OpenGLContext {
 		glfwSetErrorCallback(null).free();
 		Log.closeLogFile();
 		try {
-			Files.walk(new File("res").toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
-		} catch (IOException ex) {
+			Files.walk(new File("res").toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile)
+					.forEach(File::delete);
+		} catch(IOException ex) {
 			Log.log(TAG, ex.getMessage() + " - unable to delete old res-directory");
 		}
 	}
