@@ -10,12 +10,13 @@ import org.lwjgl.opengl.GL20;
 
 import mbeb.opengldefault.curves.BezierCurve;
 import mbeb.opengldefault.logging.GLErrors;
+import mbeb.opengldefault.rendering.io.DataFragment;
 import mbeb.opengldefault.rendering.shader.Shader;
 import mbeb.opengldefault.scene.BoundingBox;
 
 /**
  * Renders a {@link BezierCurve}
- * 
+ *
  * @author Markus
  */
 public class BezierCurveRenderable implements IRenderable {
@@ -30,11 +31,9 @@ public class BezierCurveRenderable implements IRenderable {
 
 		int[] indexData = {0, 1};
 
-		int[] dataSizes = {1};
-
 		BoundingBox bb = generateBoundingBox();
 
-		renderable = new VAORenderable(vertexData, indexData, dataSizes, bb);
+		renderable = new VAORenderable(vertexData, indexData, new DataFragment[] {DataFragment.FLOAT}, bb);
 	}
 
 	/**

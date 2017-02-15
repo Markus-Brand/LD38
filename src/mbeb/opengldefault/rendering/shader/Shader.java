@@ -216,7 +216,7 @@ public class Shader {
 	}
 
 	/**
-	 * get the location of a Uniform with given name
+	 * get the location of an Uniform with given name
 	 *
 	 * @param name
 	 *            name of the uniform

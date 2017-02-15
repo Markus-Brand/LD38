@@ -29,7 +29,7 @@ public class BunnyGame implements IGame {
 
 	BezierCurve curve;
 
-	SceneObject cubeObj, bunnyObj, bunnyObj2, curveObj;
+	SceneObject cubeObj, bunnyObj, cowboy, curveObj;
 
 	@Override
 	public void init() {
@@ -49,29 +49,39 @@ public class BunnyGame implements IGame {
 
 		bunnyScene = new Scene(cam, skybox);
 
-		final IRenderable bunny =
+		IRenderable tm =
+				new TexturedRenderable(new ObjectLoader().loadFromFileAnim("thinmatrix.dae"), new Texture(
+						"bunny_2d.png"));
+		IRenderable bunny =
 				new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
-		final IRenderable cube =
-				new TexturedRenderable(new ObjectLoader().loadFromFile("cube.obj"), new Texture("bunny_2d.png"));
+		IRenderable cube = new TexturedRenderable(StaticMeshes.getCube(), new Texture("AO.png"));
 
-		cubeObj = new SceneObject(cube, null, null);
-		bunnyObj = new SceneObject(bunny, Transformation.fromPosition(new Vector3f(1, 1, 1)), null);
-		bunnyObj2 = new SceneObject(bunny, Transformation.fromPosition(new Vector3f(1, -1, 1)), null);
-		curveObj = new SceneObject(new BezierCurveRenderable(curve), null, null);
+		Shader bonePhongShader = new Shader("boneAnimation.vert", "phong.frag");
+		bonePhongShader.addUniformBlockIndex(1, "Matrices");
 
 		Shader curveShader = new Shader("bezier.vert", "bezier.frag", "bezier.geom");
 		curveShader.addUniformBlockIndex(1, "Matrices");
 		curveShader.setDrawMode(GL_LINES);
 
+		final Shader defaultShader = new Shader("basic.vert", "phong.frag");
+		defaultShader.addUniformBlockIndex(1, "Matrices");
+
+		cowboy = new SceneObject(tm, new Matrix4f(), null);
+		cowboy.setShader(bonePhongShader);
+
+		cubeObj = new SceneObject(cube, null, null);
+
+		bunnyObj = new SceneObject(bunny, new Matrix4f().translate(1, 1, 1), null);
+
+		curveObj = new SceneObject(new BezierCurveRenderable(curve), null, null);
 		curveObj.setShader(curveShader);
 
 		cubeObj.addSubObject(bunnyObj);
-		bunnyScene.getSceneGraph().addSubObject(bunnyObj2);
+
+		bunnyScene.getSceneGraph().addSubObject(cowboy);
 		bunnyScene.getSceneGraph().addSubObject(cubeObj);
 		bunnyScene.getSceneGraph().addSubObject(curveObj);
 
-		final Shader defaultShader = new Shader("basic.vert", "phong.frag");
-		defaultShader.addUniformBlockIndex(1, "Matrices");
 		bunnyScene.getSceneGraph().setShader(defaultShader);
 
 		glEnable(GL_CULL_FACE);
@@ -88,9 +98,6 @@ public class BunnyGame implements IGame {
 
 		glViewport(0, 0, OpenGLContext.getWidth(), OpenGLContext.getHeight());
 		GLErrors.checkForError(TAG, "glViewport");
-
-		cubeObj.getTransformation().asMatrix().rotate((float) deltaTime, new Vector3f(1, 1, 0));
-		bunnyObj.getTransformation().asMatrix().rotate((float) deltaTime * 3, new Vector3f(0, 1, 0));
 
 		bunnyScene.update(deltaTime);
 	}

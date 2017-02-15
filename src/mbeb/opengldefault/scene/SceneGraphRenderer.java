@@ -40,7 +40,7 @@ public class SceneGraphRenderer {
 	 * render the whole scenegraph
 	 */
 	public void render() {
-		renderObject(root, Transformation.identity());
+		renderObject(root, new Matrix4f());
 	}
 
 	/**
@@ -51,8 +51,8 @@ public class SceneGraphRenderer {
 	 * @param parentTransform
 	 *            the parent transformation for this graph
 	 */
-	public void renderObject(final SceneObject object, final Transformation parentTransform) {
-		final Transformation transform = parentTransform.and(object.getTransformation());
+	public void renderObject(final SceneObject object, final Matrix4f parentTransform) {
+		final Matrix4f transform = parentTransform.mul(object.getTransformation(), new Matrix4f());
 		renderSelf(object, transform);
 		final Collection<SceneObject> subObjects = object.getSubObjects();
 		if (subObjects != null) {
@@ -70,7 +70,7 @@ public class SceneGraphRenderer {
 	 * @param transform
 	 *            the model-Transformation for this Renderable
 	 */
-	public void renderSelf(final SceneObject object, final Transformation transform) {
+	public void renderSelf(final SceneObject object, final Matrix4f transform) {
 		final Shader shader = object.getShader();
 		shader.use();
 		if (object.hasOwnShader()) {
@@ -89,7 +89,7 @@ public class SceneGraphRenderer {
 		final int modelUniform = shader.getUniform(ModelMatrixUniformName, false);
 		if (modelUniform >= 0) {
 			//only if shader wants the model matrix
-			final Matrix4f model = transform.asMatrix();
+			final Matrix4f model = transform;
 			final FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
 			GL20.glUniformMatrix4fv(modelUniform, false, model.get(buffer));
 			GLErrors.checkForError(TAG, "glUniformMatrix4fv");
