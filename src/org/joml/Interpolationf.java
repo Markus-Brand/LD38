@@ -58,8 +58,7 @@ public class Interpolationf {
 	 *            the y coordinate of the point to interpolate <i>f</i> at
 	 * @return the interpolated value of <i>f</i>
 	 */
-	public static float interpolateTriangle(float v0X, float v0Y, float f0, float v1X, float v1Y, float f1, float v2X,
-			float v2Y, float f2, float x, float y) {
+	public static float interpolateTriangle(float v0X, float v0Y, float f0, float v1X, float v1Y, float f1, float v2X, float v2Y, float f2, float x, float y) {
 		float v12Y = v1Y - v2Y;
 		float v21X = v2X - v1X;
 		float v02X = v0X - v2X;
@@ -110,8 +109,8 @@ public class Interpolationf {
 	 *            will hold the interpolation result
 	 * @return dest
 	 */
-	public static Vector2f interpolateTriangle(float v0X, float v0Y, float f0X, float f0Y, float v1X, float v1Y,
-			float f1X, float f1Y, float v2X, float v2Y, float f2X, float f2Y, float x, float y, Vector2f dest) {
+	public static Vector2f interpolateTriangle(float v0X, float v0Y, float f0X, float f0Y, float v1X, float v1Y, float f1X, float f1Y, float v2X, float v2Y, float f2X, float f2Y, float x, float y,
+			Vector2f dest) {
 		float v12Y = v1Y - v2Y;
 		float v21X = v2X - v1X;
 		float v02X = v0X - v2X;
@@ -162,8 +161,7 @@ public class Interpolationf {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public static Vector2f dFdxLinear(float v0X, float v0Y, float f0X, float f0Y, float v1X, float v1Y, float f1X,
-			float f1Y, float v2X, float v2Y, float f2X, float f2Y, Vector2f dest) {
+	public static Vector2f dFdxLinear(float v0X, float v0Y, float f0X, float f0Y, float v1X, float v1Y, float f1X, float f1Y, float v2X, float v2Y, float f2X, float f2Y, Vector2f dest) {
 		float v12Y = v1Y - v2Y;
 		float v02Y = v0Y - v2Y;
 		float den = v12Y * (v0X - v2X) + (v2X - v1X) * v02Y;
@@ -209,8 +207,7 @@ public class Interpolationf {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public static Vector2f dFdyLinear(float v0X, float v0Y, float f0X, float f0Y, float v1X, float v1Y, float f1X,
-			float f1Y, float v2X, float v2Y, float f2X, float f2Y, Vector2f dest) {
+	public static Vector2f dFdyLinear(float v0X, float v0Y, float f0X, float f0Y, float v1X, float v1Y, float f1X, float f1Y, float v2X, float v2Y, float f2X, float f2Y, Vector2f dest) {
 		float v21X = v2X - v1X;
 		float v02X = v0X - v2X;
 		float den = (v1Y - v2Y) * v02X + v21X * (v0Y - v2Y);
@@ -265,15 +262,13 @@ public class Interpolationf {
 	 *            will hold the interpolation result
 	 * @return dest
 	 */
-	public static Vector3f interpolateTriangle(float v0X, float v0Y, float f0X, float f0Y, float f0Z, float v1X,
-			float v1Y, float f1X, float f1Y, float f1Z, float v2X, float v2Y, float f2X, float f2Y, float f2Z, float x,
-			float y, Vector3f dest) {
+	public static Vector3f interpolateTriangle(float v0X, float v0Y, float f0X, float f0Y, float f0Z, float v1X, float v1Y, float f1X, float f1Y, float f1Z, float v2X, float v2Y, float f2X,
+			float f2Y, float f2Z, float x, float y, Vector3f dest) {
 		// compute interpolation factors
 		Vector3f t = dest;
 		interpolationFactorsTriangle(v0X, v0Y, v1X, v1Y, v2X, v2Y, x, y, t);
 		// interpolate using these factors
-		return dest.set(t.x * f0X + t.y * f1X + t.z * f2X, t.x * f0Y + t.y * f1Y + t.z * f2Y, t.x * f0Z + t.y * f1Z
-				+ t.z * f2Z);
+		return dest.set(t.x * f0X + t.y * f1X + t.z * f2X, t.x * f0Y + t.y * f1Y + t.z * f2Y, t.x * f0Z + t.y * f1Z + t.z * f2Z);
 	}
 
 	/**
@@ -305,8 +300,7 @@ public class Interpolationf {
 	 *            will hold the interpolation factors <tt>(t0, t1, t2)</tt>
 	 * @return dest
 	 */
-	public static Vector3f interpolationFactorsTriangle(float v0X, float v0Y, float v1X, float v1Y, float v2X,
-			float v2Y, float x, float y, Vector3f dest) {
+	public static Vector3f interpolationFactorsTriangle(float v0X, float v0Y, float v1X, float v1Y, float v2X, float v2Y, float x, float y, Vector3f dest) {
 		float v12Y = v1Y - v2Y;
 		float v21X = v2X - v1X;
 		float v02X = v0X - v2X;

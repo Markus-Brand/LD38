@@ -61,8 +61,7 @@ public class ObjectLoader {
 		File export = new File(res, rawPath);
 		if (!export.exists()) {
 			try {
-				Files.copy(OpenGLContext.class.getResourceAsStream("/mbeb/opengldefault/resources/" + rawPath),
-						export.toPath());
+				Files.copy(OpenGLContext.class.getResourceAsStream("/mbeb/opengldefault/resources/" + rawPath), export.toPath());
 			} catch(IOException ex) {
 				Log.log(TAG, ex.getMessage() + " at extracting resource " + rawPath);
 			}

@@ -140,8 +140,7 @@ public class GeometryUtils {
 	 * @param dest
 	 *            will hold the result
 	 */
-	public static void normal(float v0X, float v0Y, float v0Z, float v1X, float v1Y, float v1Z, float v2X, float v2Y,
-			float v2Z, Vector3f dest) {
+	public static void normal(float v0X, float v0Y, float v0Z, float v1X, float v1Y, float v1Z, float v2X, float v2Y, float v2Z, Vector3f dest) {
 		dest.x = ((v1Y - v0Y) * (v2Z - v0Z)) - ((v1Z - v0Z) * (v2Y - v0Y));
 		dest.y = ((v1Z - v0Z) * (v2X - v0X)) - ((v1X - v0X) * (v2Z - v0Z));
 		dest.z = ((v1X - v0X) * (v2Y - v0Y)) - ((v1Y - v0Y) * (v2X - v0X));
@@ -167,8 +166,7 @@ public class GeometryUtils {
 	 * @param dest
 	 *            the tangent will be stored here
 	 */
-	public static void tangent(Vector3fc v1, Vector2fc uv1, Vector3fc v2, Vector2fc uv2, Vector3fc v3, Vector2fc uv3,
-			Vector3f dest) {
+	public static void tangent(Vector3fc v1, Vector2fc uv1, Vector3fc v2, Vector2fc uv2, Vector3fc v3, Vector2fc uv3, Vector3f dest) {
 		float DeltaV1 = uv2.y() - uv1.y();
 		float DeltaV2 = uv3.y() - uv1.y();
 
@@ -199,8 +197,7 @@ public class GeometryUtils {
 	 * @param dest
 	 *            the binormal will be stored here
 	 */
-	public static void bitangent(Vector3fc v1, Vector2fc uv1, Vector3fc v2, Vector2fc uv2, Vector3fc v3, Vector2fc uv3,
-			Vector3f dest) {
+	public static void bitangent(Vector3fc v1, Vector2fc uv1, Vector3fc v2, Vector2fc uv2, Vector3fc v3, Vector2fc uv3, Vector3f dest) {
 		float DeltaU1 = uv2.x() - uv1.x();
 		float DeltaU2 = uv3.x() - uv1.x();
 
@@ -233,8 +230,7 @@ public class GeometryUtils {
 	 * @param destBitangent
 	 *            the bitangent will be stored here
 	 */
-	public static void tangentBitangent(Vector3fc v1, Vector2fc uv1, Vector3fc v2, Vector2fc uv2, Vector3fc v3,
-			Vector2fc uv3, Vector3f destTangent, Vector3f destBitangent) {
+	public static void tangentBitangent(Vector3fc v1, Vector2fc uv1, Vector3fc v2, Vector2fc uv2, Vector3fc v3, Vector2fc uv3, Vector3f destTangent, Vector3f destBitangent) {
 		float DeltaV1 = uv2.y() - uv1.y();
 		float DeltaV2 = uv3.y() - uv1.y();
 		float DeltaU1 = uv2.x() - uv1.x();

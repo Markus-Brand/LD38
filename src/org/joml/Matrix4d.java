@@ -22,15 +22,9 @@
  */
 package org.joml;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.io.*;
+import java.nio.*;
+import java.text.*;
 
 /**
  * Contains the definition of a 4x4 Matrix of doubles, and associated functions to transform
@@ -461,8 +455,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 			return delegate.scaleLocal(x, y, z, dest);
 		}
 
-		public Matrix4d
-				scaleAroundLocal(double sx, double sy, double sz, double ox, double oy, double oz, Matrix4d dest) {
+		public Matrix4d scaleAroundLocal(double sx, double sy, double sz, double ox, double oy, double oz, Matrix4d dest) {
 			return delegate.scaleAroundLocal(sx, sy, sz, ox, oy, oz, dest);
 		}
 
@@ -670,8 +663,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 			return delegate.unprojectInvRay(winCoords, viewport, originDest, dirDest);
 		}
 
-		public Matrix4d
-				unprojectInvRay(double winX, double winY, int[] viewport, Vector3d originDest, Vector3d dirDest) {
+		public Matrix4d unprojectInvRay(double winX, double winY, int[] viewport, Vector3d originDest, Vector3d dirDest) {
 			return delegate.unprojectInvRay(winX, winY, viewport, originDest, dirDest);
 		}
 
@@ -707,28 +699,23 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 			return delegate.reflect(normal, point, dest);
 		}
 
-		public Matrix4d ortho(double left, double right, double bottom, double top, double zNear, double zFar,
-				boolean zZeroToOne, Matrix4d dest) {
+		public Matrix4d ortho(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest) {
 			return delegate.ortho(left, right, bottom, top, zNear, zFar, zZeroToOne, dest);
 		}
 
-		public Matrix4d ortho(double left, double right, double bottom, double top, double zNear, double zFar,
-				Matrix4d dest) {
+		public Matrix4d ortho(double left, double right, double bottom, double top, double zNear, double zFar, Matrix4d dest) {
 			return delegate.ortho(left, right, bottom, top, zNear, zFar, dest);
 		}
 
-		public Matrix4d orthoLH(double left, double right, double bottom, double top, double zNear, double zFar,
-				boolean zZeroToOne, Matrix4d dest) {
+		public Matrix4d orthoLH(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest) {
 			return delegate.orthoLH(left, right, bottom, top, zNear, zFar, zZeroToOne, dest);
 		}
 
-		public Matrix4d orthoLH(double left, double right, double bottom, double top, double zNear, double zFar,
-				Matrix4d dest) {
+		public Matrix4d orthoLH(double left, double right, double bottom, double top, double zNear, double zFar, Matrix4d dest) {
 			return delegate.orthoLH(left, right, bottom, top, zNear, zFar, dest);
 		}
 
-		public Matrix4d orthoSymmetric(double width, double height, double zNear, double zFar, boolean zZeroToOne,
-				Matrix4d dest) {
+		public Matrix4d orthoSymmetric(double width, double height, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest) {
 			return delegate.orthoSymmetric(width, height, zNear, zFar, zZeroToOne, dest);
 		}
 
@@ -736,8 +723,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 			return delegate.orthoSymmetric(width, height, zNear, zFar, dest);
 		}
 
-		public Matrix4d orthoSymmetricLH(double width, double height, double zNear, double zFar, boolean zZeroToOne,
-				Matrix4d dest) {
+		public Matrix4d orthoSymmetricLH(double width, double height, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest) {
 			return delegate.orthoSymmetricLH(width, height, zNear, zFar, zZeroToOne, dest);
 		}
 
@@ -757,8 +743,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 			return delegate.lookAlong(dir, up, dest);
 		}
 
-		public Matrix4d lookAlong(double dirX, double dirY, double dirZ, double upX, double upY, double upZ,
-				Matrix4d dest) {
+		public Matrix4d lookAlong(double dirX, double dirY, double dirZ, double upX, double upY, double upZ, Matrix4d dest) {
 			return delegate.lookAlong(dirX, dirY, dirZ, upX, upY, upZ, dest);
 		}
 
@@ -766,13 +751,11 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 			return delegate.lookAt(eye, center, up, dest);
 		}
 
-		public Matrix4d lookAt(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ,
-				double upX, double upY, double upZ, Matrix4d dest) {
+		public Matrix4d lookAt(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ, Matrix4d dest) {
 			return delegate.lookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, dest);
 		}
 
-		public Matrix4d lookAtPerspective(double eyeX, double eyeY, double eyeZ, double centerX, double centerY,
-				double centerZ, double upX, double upY, double upZ, Matrix4d dest) {
+		public Matrix4d lookAtPerspective(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ, Matrix4d dest) {
 			return delegate.lookAtPerspective(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, dest);
 		}
 
@@ -780,18 +763,15 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 			return delegate.lookAtLH(eye, center, up, dest);
 		}
 
-		public Matrix4d lookAtLH(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ,
-				double upX, double upY, double upZ, Matrix4d dest) {
+		public Matrix4d lookAtLH(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ, Matrix4d dest) {
 			return delegate.lookAtLH(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, dest);
 		}
 
-		public Matrix4d lookAtPerspectiveLH(double eyeX, double eyeY, double eyeZ, double centerX, double centerY,
-				double centerZ, double upX, double upY, double upZ, Matrix4d dest) {
+		public Matrix4d lookAtPerspectiveLH(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ, Matrix4d dest) {
 			return delegate.lookAtPerspectiveLH(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, dest);
 		}
 
-		public Matrix4d perspective(double fovy, double aspect, double zNear, double zFar, boolean zZeroToOne,
-				Matrix4d dest) {
+		public Matrix4d perspective(double fovy, double aspect, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest) {
 			return delegate.perspective(fovy, aspect, zNear, zFar, zZeroToOne, dest);
 		}
 
@@ -799,8 +779,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 			return delegate.perspective(fovy, aspect, zNear, zFar, dest);
 		}
 
-		public Matrix4d perspectiveLH(double fovy, double aspect, double zNear, double zFar, boolean zZeroToOne,
-				Matrix4d dest) {
+		public Matrix4d perspectiveLH(double fovy, double aspect, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest) {
 			return delegate.perspectiveLH(fovy, aspect, zNear, zFar, zZeroToOne, dest);
 		}
 
@@ -808,23 +787,19 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 			return delegate.perspectiveLH(fovy, aspect, zNear, zFar, dest);
 		}
 
-		public Matrix4d frustum(double left, double right, double bottom, double top, double zNear, double zFar,
-				boolean zZeroToOne, Matrix4d dest) {
+		public Matrix4d frustum(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest) {
 			return delegate.frustum(left, right, bottom, top, zNear, zFar, zZeroToOne, dest);
 		}
 
-		public Matrix4d frustum(double left, double right, double bottom, double top, double zNear, double zFar,
-				Matrix4d dest) {
+		public Matrix4d frustum(double left, double right, double bottom, double top, double zNear, double zFar, Matrix4d dest) {
 			return delegate.frustum(left, right, bottom, top, zNear, zFar, dest);
 		}
 
-		public Matrix4d frustumLH(double left, double right, double bottom, double top, double zNear, double zFar,
-				boolean zZeroToOne, Matrix4d dest) {
+		public Matrix4d frustumLH(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest) {
 			return delegate.frustumLH(left, right, bottom, top, zNear, zFar, zZeroToOne, dest);
 		}
 
-		public Matrix4d frustumLH(double left, double right, double bottom, double top, double zNear, double zFar,
-				Matrix4d dest) {
+		public Matrix4d frustumLH(double left, double right, double bottom, double top, double zNear, double zFar, Matrix4d dest) {
 			return delegate.frustumLH(left, right, bottom, top, zNear, zFar, dest);
 		}
 
@@ -892,8 +867,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 			return delegate.shadow(light, a, b, c, d, dest);
 		}
 
-		public Matrix4d shadow(double lightX, double lightY, double lightZ, double lightW, double a, double b,
-				double c, double d, Matrix4d dest) {
+		public Matrix4d shadow(double lightX, double lightY, double lightZ, double lightW, double a, double b, double c, double d, Matrix4d dest) {
 			return delegate.shadow(lightX, lightY, lightZ, lightW, a, b, c, d, dest);
 		}
 
@@ -901,8 +875,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 			return delegate.shadow(light, planeTransform, dest);
 		}
 
-		public Matrix4d shadow(double lightX, double lightY, double lightZ, double lightW, Matrix4dc planeTransform,
-				Matrix4d dest) {
+		public Matrix4d shadow(double lightX, double lightY, double lightZ, double lightW, Matrix4dc planeTransform, Matrix4d dest) {
 			return delegate.shadow(lightX, lightY, lightZ, lightW, planeTransform, dest);
 		}
 
@@ -914,8 +887,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 			return delegate.isAffine();
 		}
 
-		public Matrix4d arcball(double radius, double centerX, double centerY, double centerZ, double angleX,
-				double angleY, Matrix4d dest) {
+		public Matrix4d arcball(double radius, double centerX, double centerY, double centerZ, double angleX, double angleY, Matrix4d dest) {
 			return delegate.arcball(radius, centerX, centerY, centerZ, angleX, angleY, dest);
 		}
 
@@ -935,8 +907,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 			return delegate.orthoCrop(view, dest);
 		}
 
-		public Matrix4d transformAab(double minX, double minY, double minZ, double maxX, double maxY, double maxZ,
-				Vector3d outMin, Vector3d outMax) {
+		public Matrix4d transformAab(double minX, double minY, double minZ, double maxX, double maxY, double maxZ, Vector3d outMin, Vector3d outMax) {
 			return delegate.transformAab(minX, minY, minZ, maxX, maxY, maxZ, outMin, outMax);
 		}
 
@@ -952,8 +923,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 			return delegate.rotateTowards(direction, up, dest);
 		}
 
-		public Matrix4d rotateTowards(double dirX, double dirY, double dirZ, double upX, double upY, double upZ,
-				Matrix4d dest) {
+		public Matrix4d rotateTowards(double dirX, double dirY, double dirZ, double upX, double upY, double upZ, Matrix4d dest) {
 			return delegate.rotateTowards(dirX, dirY, dirZ, upX, upY, upZ, dest);
 		}
 
@@ -1146,8 +1116,8 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 * @param m33
 	 *            the value of m33
 	 */
-	public Matrix4d(double m00, double m01, double m02, double m03, double m10, double m11, double m12, double m13,
-			double m20, double m21, double m22, double m23, double m30, double m31, double m32, double m33) {
+	public Matrix4d(double m00, double m01, double m02, double m03, double m10, double m11, double m12, double m13, double m20, double m21, double m22, double m23, double m30, double m31, double m32,
+			double m33) {
 		this.m00 = m00;
 		this.m01 = m01;
 		this.m02 = m02;
@@ -2862,8 +2832,8 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            the new value of m33
 	 * @return this
 	 */
-	public Matrix4d set(double m00, double m01, double m02, double m03, double m10, double m11, double m12, double m13,
-			double m20, double m21, double m22, double m23, double m30, double m31, double m32, double m33) {
+	public Matrix4d set(double m00, double m01, double m02, double m03, double m10, double m11, double m12, double m13, double m20, double m21, double m22, double m23, double m30, double m31,
+			double m32, double m33) {
 		this.m00 = m00;
 		this.m10 = m10;
 		this.m20 = m20;
@@ -3113,9 +3083,8 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	public double determinant() {
 		if ((properties & PROPERTY_AFFINE) != 0)
 			return determinantAffine();
-		return (m00 * m11 - m01 * m10) * (m22 * m33 - m23 * m32) + (m02 * m10 - m00 * m12) * (m21 * m33 - m23 * m31)
-				+ (m00 * m13 - m03 * m10) * (m21 * m32 - m22 * m31) + (m01 * m12 - m02 * m11) * (m20 * m33 - m23 * m30)
-				+ (m03 * m11 - m01 * m13) * (m20 * m32 - m22 * m30) + (m02 * m13 - m03 * m12) * (m20 * m31 - m21 * m30);
+		return (m00 * m11 - m01 * m10) * (m22 * m33 - m23 * m32) + (m02 * m10 - m00 * m12) * (m21 * m33 - m23 * m31) + (m00 * m13 - m03 * m10) * (m21 * m32 - m22 * m31) + (m01 * m12 - m02 * m11)
+				* (m20 * m33 - m23 * m30) + (m03 * m11 - m01 * m13) * (m20 * m32 - m22 * m30) + (m02 * m13 - m03 * m12) * (m20 * m31 - m21 * m30);
 	}
 
 	/* (non-Javadoc)
@@ -3245,8 +3214,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 		double invM11 = 1.0 / m11;
 		double invM23 = 1.0 / m23;
 		double invM32 = 1.0 / m32;
-		dest.set(invM00, 0, 0, 0, 0, invM11, 0, 0, 0, 0, 0, invM32, -m20 * invM00 * invM23, -m21 * invM11 * invM23,
-				invM23, -m22 * invM23 * invM32);
+		dest.set(invM00, 0, 0, 0, 0, invM11, 0, 0, 0, 0, 0, invM32, -m20 * invM00 * invM23, -m21 * invM11 * invM23, invM23, -m22 * invM23 * invM32);
 		dest.properties = 0;
 		return dest;
 	}
@@ -3308,9 +3276,8 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 		double vm30 = -view.m00() * view.m30() - view.m01() * view.m31() - view.m02() * view.m32();
 		double vm31 = -view.m10() * view.m30() - view.m11() * view.m31() - view.m12() * view.m32();
 		double vm32 = -view.m20() * view.m30() - view.m21() * view.m31() - view.m22() * view.m32();
-		dest.set(view.m00() * pm00, view.m10() * pm00, view.m20() * pm00, 0.0, view.m01() * pm11, view.m11() * pm11,
-				view.m21() * pm11, 0.0, vm30 * pm23, vm31 * pm23, vm32 * pm23, pm23, view.m02() * pm32 + vm30 * pm33,
-				view.m12() * pm32 + vm31 * pm33, view.m22() * pm32 + vm32 * pm33, pm33);
+		dest.set(view.m00() * pm00, view.m10() * pm00, view.m20() * pm00, 0.0, view.m01() * pm11, view.m11() * pm11, view.m21() * pm11, 0.0, vm30 * pm23, vm31 * pm23, vm32 * pm23, pm23, view.m02()
+				* pm32 + vm30 * pm33, view.m12() * pm32 + vm31 * pm33, view.m22() * pm32 + vm32 * pm33, pm33);
 		dest.properties = 0;
 		return dest;
 	}
@@ -3393,8 +3360,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 * @see org.joml.Matrix4dc#invertAffineUnitScale(org.joml.Matrix4d)
 	 */
 	public Matrix4d invertAffineUnitScale(Matrix4d dest) {
-		dest.set(m00, m10, m20, 0.0, m01, m11, m21, 0.0, m02, m12, m22, 0.0, -m00 * m30 - m01 * m31 - m02 * m32, -m10
-				* m30 - m11 * m31 - m12 * m32, -m20 * m30 - m21 * m31 - m22 * m32, 1.0);
+		dest.set(m00, m10, m20, 0.0, m01, m11, m21, 0.0, m02, m12, m22, 0.0, -m00 * m30 - m01 * m31 - m02 * m32, -m10 * m30 - m11 * m31 - m12 * m32, -m20 * m30 - m21 * m31 - m22 * m32, 1.0);
 		dest.properties = PROPERTY_AFFINE;
 		return dest;
 	}
@@ -4562,8 +4528,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 * @see org.joml.Matrix4dc#transform(double, double, double, double, org.joml.Vector4d)
 	 */
 	public Vector4d transform(double x, double y, double z, double w, Vector4d dest) {
-		dest.set(m00 * x + m10 * y + m20 * z + m30 * w, m01 * x + m11 * y + m21 * z + m31 * w, m02 * x + m12 * y + m22
-				* z + m32 * w, m03 * x + m13 * y + m23 * z + m33 * w);
+		dest.set(m00 * x + m10 * y + m20 * z + m30 * w, m01 * x + m11 * y + m21 * z + m31 * w, m02 * x + m12 * y + m22 * z + m32 * w, m03 * x + m13 * y + m23 * z + m33 * w);
 		return dest;
 	}
 
@@ -4586,9 +4551,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 */
 	public Vector4d transformProject(double x, double y, double z, double w, Vector4d dest) {
 		double invW = 1.0 / (m03 * x + m13 * y + m23 * z + m33 * w);
-		dest.set((m00 * x + m10 * y + m20 * z + m30 * w) * invW, (m01 * x + m11 * y + m21 * z + m31 * w) * invW, (m02
-				* x + m12 * y + m22 * z + m32 * w)
-				* invW, 1.0);
+		dest.set((m00 * x + m10 * y + m20 * z + m30 * w) * invW, (m01 * x + m11 * y + m21 * z + m31 * w) * invW, (m02 * x + m12 * y + m22 * z + m32 * w) * invW, 1.0);
 		return dest;
 	}
 
@@ -4611,9 +4574,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 */
 	public Vector3d transformProject(double x, double y, double z, Vector3d dest) {
 		double invW = 1.0 / (m03 * x + m13 * y + m23 * z + m33);
-		dest.set((m00 * x + m10 * y + m20 * z + m30) * invW, (m01 * x + m11 * y + m21 * z + m31) * invW, (m02 * x + m12
-				* y + m22 * z + m32)
-				* invW);
+		dest.set((m00 * x + m10 * y + m20 * z + m30) * invW, (m01 * x + m11 * y + m21 * z + m31) * invW, (m02 * x + m12 * y + m22 * z + m32) * invW);
 		return dest;
 	}
 
@@ -4621,8 +4582,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 * @see org.joml.Matrix4dc#transformPosition(org.joml.Vector3d)
 	 */
 	public Vector3d transformPosition(Vector3d v) {
-		v.set(m00 * v.x + m10 * v.y + m20 * v.z + m30, m01 * v.x + m11 * v.y + m21 * v.z + m31, m02 * v.x + m12 * v.y
-				+ m22 * v.z + m32);
+		v.set(m00 * v.x + m10 * v.y + m20 * v.z + m30, m01 * v.x + m11 * v.y + m21 * v.z + m31, m02 * v.x + m12 * v.y + m22 * v.z + m32);
 		return v;
 	}
 
@@ -4637,8 +4597,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 * @see org.joml.Matrix4dc#transformPosition(double, double, double, org.joml.Vector3d)
 	 */
 	public Vector3d transformPosition(double x, double y, double z, Vector3d dest) {
-		dest.set(m00 * x + m10 * y + m20 * z + m30, m01 * x + m11 * y + m21 * z + m31, m02 * x + m12 * y + m22 * z
-				+ m32);
+		dest.set(m00 * x + m10 * y + m20 * z + m30, m01 * x + m11 * y + m21 * z + m31, m02 * x + m12 * y + m22 * z + m32);
 		return dest;
 	}
 
@@ -4654,8 +4613,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 * @see org.joml.Matrix4dc#transformDirection(org.joml.Vector3dc, org.joml.Vector3d)
 	 */
 	public Vector3d transformDirection(Vector3dc v, Vector3d dest) {
-		dest.set(m00 * v.x() + m10 * v.y() + m20 * v.z(), m01 * v.x() + m11 * v.y() + m21 * v.z(), m02 * v.x() + m12
-				* v.y() + m22 * v.z());
+		dest.set(m00 * v.x() + m10 * v.y() + m20 * v.z(), m01 * v.x() + m11 * v.y() + m21 * v.z(), m02 * v.x() + m12 * v.y() + m22 * v.z());
 		return dest;
 	}
 
@@ -4671,8 +4629,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 * @see org.joml.Matrix4dc#transformAffine(org.joml.Vector4d)
 	 */
 	public Vector4d transformAffine(Vector4d v) {
-		v.set(m00 * v.x + m10 * v.y + m20 * v.z + m30 * v.w, m01 * v.x + m11 * v.y + m21 * v.z + m31 * v.w, m02 * v.x
-				+ m12 * v.y + m22 * v.z + m32 * v.w, v.w);
+		v.set(m00 * v.x + m10 * v.y + m20 * v.z + m30 * v.w, m01 * v.x + m11 * v.y + m21 * v.z + m31 * v.w, m02 * v.x + m12 * v.y + m22 * v.z + m32 * v.w, v.w);
 		return v;
 	}
 
@@ -4687,8 +4644,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 * @see org.joml.Matrix4dc#transformAffine(double, double, double, double, org.joml.Vector4d)
 	 */
 	public Vector4d transformAffine(double x, double y, double z, double w, Vector4d dest) {
-		dest.set(m00 * x + m10 * y + m20 * z + m30 * w, m01 * x + m11 * y + m21 * z + m31 * w, m02 * x + m12 * y + m22
-				* z + m32 * w, w);
+		dest.set(m00 * x + m10 * y + m20 * z + m30 * w, m01 * x + m11 * y + m21 * z + m31 * w, m02 * x + m12 * y + m22 * z + m32 * w, w);
 		return dest;
 	}
 
@@ -6917,8 +6873,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            the scaling factor for the z-axis
 	 * @return this
 	 */
-	public Matrix4d translationRotateScale(double tx, double ty, double tz, double qx, double qy, double qz, double qw,
-			double sx, double sy, double sz) {
+	public Matrix4d translationRotateScale(double tx, double ty, double tz, double qx, double qy, double qz, double qw, double sx, double sy, double sz) {
 		double dqx = qx + qx, dqy = qy + qy, dqz = qz + qz;
 		double q00 = dqx * qx;
 		double q11 = dqy * qy;
@@ -6975,8 +6930,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 * @return this
 	 */
 	public Matrix4d translationRotateScale(Vector3fc translation, Quaternionfc quat, Vector3fc scale) {
-		return translationRotateScale(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(), quat.z(),
-				quat.w(), scale.x(), scale.y(), scale.z());
+		return translationRotateScale(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(), quat.z(), quat.w(), scale.x(), scale.y(), scale.z());
 	}
 
 	/**
@@ -7006,8 +6960,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 * @return this
 	 */
 	public Matrix4d translationRotateScale(Vector3dc translation, Quaterniondc quat, Vector3dc scale) {
-		return translationRotateScale(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(), quat.z(),
-				quat.w(), scale.x(), scale.y(), scale.z());
+		return translationRotateScale(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(), quat.z(), quat.w(), scale.x(), scale.y(), scale.z());
 	}
 
 	/**
@@ -7046,8 +6999,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            the scaling factor for all three axes
 	 * @return this
 	 */
-	public Matrix4d translationRotateScale(double tx, double ty, double tz, double qx, double qy, double qz, double qw,
-			double scale) {
+	public Matrix4d translationRotateScale(double tx, double ty, double tz, double qx, double qy, double qz, double qw, double scale) {
 		return translationRotateScale(tx, ty, tz, qx, qy, qz, qw, scale, scale, scale);
 	}
 
@@ -7078,8 +7030,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 * @return this
 	 */
 	public Matrix4d translationRotateScale(Vector3dc translation, Quaterniondc quat, double scale) {
-		return translationRotateScale(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(), quat.z(),
-				quat.w(), scale, scale, scale);
+		return translationRotateScale(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(), quat.z(), quat.w(), scale, scale, scale);
 	}
 
 	/**
@@ -7109,8 +7060,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 * @return this
 	 */
 	public Matrix4d translationRotateScale(Vector3fc translation, Quaternionfc quat, double scale) {
-		return translationRotateScale(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(), quat.z(),
-				quat.w(), scale, scale, scale);
+		return translationRotateScale(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(), quat.z(), quat.w(), scale, scale, scale);
 	}
 
 	/**
@@ -7145,8 +7095,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            the scaling factor for the z-axis
 	 * @return this
 	 */
-	public Matrix4d translationRotateScaleInvert(double tx, double ty, double tz, double qx, double qy, double qz,
-			double qw, double sx, double sy, double sz) {
+	public Matrix4d translationRotateScaleInvert(double tx, double ty, double tz, double qx, double qy, double qz, double qw, double sx, double sy, double sz) {
 		double nqx = -qx, nqy = -qy, nqz = -qz;
 		double dqx = nqx + nqx;
 		double dqy = nqy + nqy;
@@ -7200,8 +7149,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 * @return this
 	 */
 	public Matrix4d translationRotateScaleInvert(Vector3dc translation, Quaterniondc quat, Vector3dc scale) {
-		return translationRotateScaleInvert(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(),
-				quat.z(), quat.w(), scale.x(), scale.y(), scale.z());
+		return translationRotateScaleInvert(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(), quat.z(), quat.w(), scale.x(), scale.y(), scale.z());
 	}
 
 	/**
@@ -7223,8 +7171,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 * @return this
 	 */
 	public Matrix4d translationRotateScaleInvert(Vector3fc translation, Quaternionfc quat, Vector3fc scale) {
-		return translationRotateScaleInvert(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(),
-				quat.z(), quat.w(), scale.x(), scale.y(), scale.z());
+		return translationRotateScaleInvert(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(), quat.z(), quat.w(), scale.x(), scale.y(), scale.z());
 	}
 
 	/**
@@ -7246,8 +7193,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 * @return this
 	 */
 	public Matrix4d translationRotateScaleInvert(Vector3dc translation, Quaterniondc quat, double scale) {
-		return translationRotateScaleInvert(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(),
-				quat.z(), quat.w(), scale, scale, scale);
+		return translationRotateScaleInvert(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(), quat.z(), quat.w(), scale, scale, scale);
 	}
 
 	/**
@@ -7269,8 +7215,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 * @return this
 	 */
 	public Matrix4d translationRotateScaleInvert(Vector3fc translation, Quaternionfc quat, double scale) {
-		return translationRotateScaleInvert(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(),
-				quat.z(), quat.w(), scale, scale, scale);
+		return translationRotateScaleInvert(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(), quat.z(), quat.w(), scale, scale, scale);
 	}
 
 	/**
@@ -7318,8 +7263,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            the {@link #isAffine() affine} matrix to multiply by
 	 * @return this
 	 */
-	public Matrix4d translationRotateScaleMulAffine(double tx, double ty, double tz, double qx, double qy, double qz,
-			double qw, double sx, double sy, double sz, Matrix4d m) {
+	public Matrix4d translationRotateScaleMulAffine(double tx, double ty, double tz, double qx, double qy, double qz, double qw, double sx, double sy, double sz, Matrix4d m) {
 		double dqx = qx + qx;
 		double dqy = qy + qy;
 		double dqz = qz + qz;
@@ -7396,10 +7340,8 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            the {@link #isAffine() affine} matrix to multiply by
 	 * @return this
 	 */
-	public Matrix4d translationRotateScaleMulAffine(Vector3dc translation, Quaterniondc quat, Vector3dc scale,
-			Matrix4d m) {
-		return translationRotateScaleMulAffine(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(),
-				quat.z(), quat.w(), scale.x(), scale.y(), scale.z(), m);
+	public Matrix4d translationRotateScaleMulAffine(Vector3dc translation, Quaterniondc quat, Vector3dc scale, Matrix4d m) {
+		return translationRotateScaleMulAffine(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(), quat.z(), quat.w(), scale.x(), scale.y(), scale.z(), m);
 	}
 
 	/**
@@ -9452,8 +9394,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix4d ortho(double left, double right, double bottom, double top, double zNear, double zFar,
-			boolean zZeroToOne, Matrix4d dest) {
+	public Matrix4d ortho(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest) {
 		// calculate right matrix elements
 		double rm00 = 2.0 / (right - left);
 		double rm11 = 2.0 / (top - bottom);
@@ -9515,8 +9456,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix4d
-			ortho(double left, double right, double bottom, double top, double zNear, double zFar, Matrix4d dest) {
+	public Matrix4d ortho(double left, double right, double bottom, double top, double zNear, double zFar, Matrix4d dest) {
 		return ortho(left, right, bottom, top, zNear, zFar, false, dest);
 	}
 
@@ -9551,8 +9491,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return this
 	 */
-	public Matrix4d ortho(double left, double right, double bottom, double top, double zNear, double zFar,
-			boolean zZeroToOne) {
+	public Matrix4d ortho(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne) {
 		return ortho(left, right, bottom, top, zNear, zFar, zZeroToOne, this);
 	}
 
@@ -9621,8 +9560,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix4d orthoLH(double left, double right, double bottom, double top, double zNear, double zFar,
-			boolean zZeroToOne, Matrix4d dest) {
+	public Matrix4d orthoLH(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest) {
 		// calculate right matrix elements
 		double rm00 = 2.0 / (right - left);
 		double rm11 = 2.0 / (top - bottom);
@@ -9684,8 +9622,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix4d orthoLH(double left, double right, double bottom, double top, double zNear, double zFar,
-			Matrix4d dest) {
+	public Matrix4d orthoLH(double left, double right, double bottom, double top, double zNear, double zFar, Matrix4d dest) {
 		return orthoLH(left, right, bottom, top, zNear, zFar, false, dest);
 	}
 
@@ -9720,8 +9657,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return this
 	 */
-	public Matrix4d orthoLH(double left, double right, double bottom, double top, double zNear, double zFar,
-			boolean zZeroToOne) {
+	public Matrix4d orthoLH(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne) {
 		return orthoLH(left, right, bottom, top, zNear, zFar, zZeroToOne, this);
 	}
 
@@ -9784,8 +9720,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return this
 	 */
-	public Matrix4d setOrtho(double left, double right, double bottom, double top, double zNear, double zFar,
-			boolean zZeroToOne) {
+	public Matrix4d setOrtho(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne) {
 		m00 = 2.0 / (right - left);
 		m01 = 0.0;
 		m02 = 0.0;
@@ -9861,8 +9796,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return this
 	 */
-	public Matrix4d setOrthoLH(double left, double right, double bottom, double top, double zNear, double zFar,
-			boolean zZeroToOne) {
+	public Matrix4d setOrthoLH(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne) {
 		m00 = 2.0 / (right - left);
 		m01 = 0.0;
 		m02 = 0.0;
@@ -9945,8 +9879,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return dest
 	 */
-	public Matrix4d orthoSymmetric(double width, double height, double zNear, double zFar, boolean zZeroToOne,
-			Matrix4d dest) {
+	public Matrix4d orthoSymmetric(double width, double height, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest) {
 		// calculate right matrix elements
 		double rm00 = 2.0 / width;
 		double rm11 = 2.0 / height;
@@ -10111,8 +10044,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return dest
 	 */
-	public Matrix4d orthoSymmetricLH(double width, double height, double zNear, double zFar, boolean zZeroToOne,
-			Matrix4d dest) {
+	public Matrix4d orthoSymmetricLH(double width, double height, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest) {
 		// calculate right matrix elements
 		double rm00 = 2.0f / width;
 		double rm11 = 2.0f / height;
@@ -10997,8 +10929,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            the z-coordinate of the up vector
 	 * @return this
 	 */
-	public Matrix4d setLookAt(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ,
-			double upX, double upY, double upZ) {
+	public Matrix4d setLookAt(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ) {
 		// Compute direction from position to lookAt
 		double dirX, dirY, dirZ;
 		dirX = eyeX - centerX;
@@ -11132,8 +11063,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix4d lookAt(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ,
-			double upX, double upY, double upZ, Matrix4d dest) {
+	public Matrix4d lookAt(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ, Matrix4d dest) {
 		if ((properties & PROPERTY_IDENTITY) != 0)
 			return dest.setLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
 		else if ((properties & PROPERTY_PERSPECTIVE) != 0)
@@ -11141,8 +11071,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 		return lookAtGeneric(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, dest);
 	}
 
-	private Matrix4d lookAtGeneric(double eyeX, double eyeY, double eyeZ, double centerX, double centerY,
-			double centerZ, double upX, double upY, double upZ, Matrix4d dest) {
+	private Matrix4d lookAtGeneric(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ, Matrix4d dest) {
 		// Compute direction from position to lookAt
 		double dirX, dirY, dirZ;
 		dirX = eyeX - centerX;
@@ -11248,8 +11177,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            the z-coordinate of the up vector
 	 * @return this
 	 */
-	public Matrix4d lookAt(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ,
-			double upX, double upY, double upZ) {
+	public Matrix4d lookAt(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ) {
 		return lookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, this);
 	}
 
@@ -11291,8 +11219,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix4d lookAtPerspective(double eyeX, double eyeY, double eyeZ, double centerX, double centerY,
-			double centerZ, double upX, double upY, double upZ, Matrix4d dest) {
+	public Matrix4d lookAtPerspective(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ, Matrix4d dest) {
 		// Compute direction from position to lookAt
 		double dirX, dirY, dirZ;
 		dirX = eyeX - centerX;
@@ -11424,8 +11351,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            the z-coordinate of the up vector
 	 * @return this
 	 */
-	public Matrix4d setLookAtLH(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ,
-			double upX, double upY, double upZ) {
+	public Matrix4d setLookAtLH(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ) {
 		// Compute direction from position to lookAt
 		double dirX, dirY, dirZ;
 		dirX = centerX - eyeX;
@@ -11558,8 +11484,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix4d lookAtLH(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ,
-			double upX, double upY, double upZ, Matrix4d dest) {
+	public Matrix4d lookAtLH(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ, Matrix4d dest) {
 		if ((properties & PROPERTY_IDENTITY) != 0)
 			return dest.setLookAtLH(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
 		else if ((properties & PROPERTY_PERSPECTIVE) != 0)
@@ -11567,8 +11492,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 		return lookAtLHGeneric(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, dest);
 	}
 
-	private Matrix4d lookAtLHGeneric(double eyeX, double eyeY, double eyeZ, double centerX, double centerY,
-			double centerZ, double upX, double upY, double upZ, Matrix4d dest) {
+	private Matrix4d lookAtLHGeneric(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ, Matrix4d dest) {
 		// Compute direction from position to lookAt
 		double dirX, dirY, dirZ;
 		dirX = centerX - eyeX;
@@ -11674,8 +11598,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            the z-coordinate of the up vector
 	 * @return this
 	 */
-	public Matrix4d lookAtLH(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ,
-			double upX, double upY, double upZ) {
+	public Matrix4d lookAtLH(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ) {
 		return lookAtLH(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, this);
 	}
 
@@ -11717,8 +11640,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix4d lookAtPerspectiveLH(double eyeX, double eyeY, double eyeZ, double centerX, double centerY,
-			double centerZ, double upX, double upY, double upZ, Matrix4d dest) {
+	public Matrix4d lookAtPerspectiveLH(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ, Matrix4d dest) {
 		// Compute direction from position to lookAt
 		double dirX, dirY, dirZ;
 		dirX = centerX - eyeX;
@@ -11826,15 +11748,13 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return dest
 	 */
-	public Matrix4d
-			perspective(double fovy, double aspect, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest) {
+	public Matrix4d perspective(double fovy, double aspect, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest) {
 		if ((properties & PROPERTY_IDENTITY) != 0)
 			return dest.setPerspective(fovy, aspect, zNear, zFar, zZeroToOne);
 		return perspectiveGeneric(fovy, aspect, zNear, zFar, zZeroToOne, dest);
 	}
 
-	private Matrix4d perspectiveGeneric(double fovy, double aspect, double zNear, double zFar, boolean zZeroToOne,
-			Matrix4d dest) {
+	private Matrix4d perspectiveGeneric(double fovy, double aspect, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest) {
 		double h = Math.tan(fovy * 0.5);
 		// calculate right matrix elements
 		double rm00 = 1.0 / (h * aspect);
@@ -12096,15 +12016,13 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix4d perspectiveLH(double fovy, double aspect, double zNear, double zFar, boolean zZeroToOne,
-			Matrix4d dest) {
+	public Matrix4d perspectiveLH(double fovy, double aspect, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest) {
 		if ((properties & PROPERTY_IDENTITY) != 0)
 			return dest.setPerspectiveLH(fovy, aspect, zNear, zFar, zZeroToOne);
 		return perspectiveLHGeneric(fovy, aspect, zNear, zFar, zZeroToOne, dest);
 	}
 
-	private Matrix4d perspectiveLHGeneric(double fovy, double aspect, double zNear, double zFar, boolean zZeroToOne,
-			Matrix4d dest) {
+	private Matrix4d perspectiveLHGeneric(double fovy, double aspect, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest) {
 		double h = Math.tan(fovy * 0.5);
 		// calculate right matrix elements
 		double rm00 = 1.0 / (h * aspect);
@@ -12371,8 +12289,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix4d frustum(double left, double right, double bottom, double top, double zNear, double zFar,
-			boolean zZeroToOne, Matrix4d dest) {
+	public Matrix4d frustum(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest) {
 		// calculate right matrix elements
 		double rm00 = (zNear + zNear) / (right - left);
 		double rm11 = (zNear + zNear) / (top - bottom);
@@ -12459,8 +12376,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix4d frustum(double left, double right, double bottom, double top, double zNear, double zFar,
-			Matrix4d dest) {
+	public Matrix4d frustum(double left, double right, double bottom, double top, double zNear, double zFar, Matrix4d dest) {
 		return frustum(left, right, bottom, top, zNear, zFar, false, dest);
 	}
 
@@ -12499,8 +12415,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return this
 	 */
-	public Matrix4d frustum(double left, double right, double bottom, double top, double zNear, double zFar,
-			boolean zZeroToOne) {
+	public Matrix4d frustum(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne) {
 		return frustum(left, right, bottom, top, zNear, zFar, zZeroToOne, this);
 	}
 
@@ -12572,8 +12487,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return this
 	 */
-	public Matrix4d setFrustum(double left, double right, double bottom, double top, double zNear, double zFar,
-			boolean zZeroToOne) {
+	public Matrix4d setFrustum(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne) {
 		m00 = (zNear + zNear) / (right - left);
 		m01 = 0.0;
 		m02 = 0.0;
@@ -12677,8 +12591,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix4d frustumLH(double left, double right, double bottom, double top, double zNear, double zFar,
-			boolean zZeroToOne, Matrix4d dest) {
+	public Matrix4d frustumLH(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest) {
 		// calculate right matrix elements
 		double rm00 = (zNear + zNear) / (right - left);
 		double rm11 = (zNear + zNear) / (top - bottom);
@@ -12765,8 +12678,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return this
 	 */
-	public Matrix4d frustumLH(double left, double right, double bottom, double top, double zNear, double zFar,
-			boolean zZeroToOne) {
+	public Matrix4d frustumLH(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne) {
 		return frustumLH(left, right, bottom, top, zNear, zFar, zZeroToOne, this);
 	}
 
@@ -12804,8 +12716,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix4d frustumLH(double left, double right, double bottom, double top, double zNear, double zFar,
-			Matrix4d dest) {
+	public Matrix4d frustumLH(double left, double right, double bottom, double top, double zNear, double zFar, Matrix4d dest) {
 		return frustumLH(left, right, bottom, top, zNear, zFar, false, dest);
 	}
 
@@ -12877,8 +12788,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return this
 	 */
-	public Matrix4d setFrustumLH(double left, double right, double bottom, double top, double zNear, double zFar,
-			boolean zZeroToOne) {
+	public Matrix4d setFrustumLH(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne) {
 		m00 = (zNear + zNear) / (right - left);
 		m01 = 0.0;
 		m02 = 0.0;
@@ -13393,16 +13303,14 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            the constant in the plane equation
 	 * @return this
 	 */
-	public Matrix4d shadow(double lightX, double lightY, double lightZ, double lightW, double a, double b, double c,
-			double d) {
+	public Matrix4d shadow(double lightX, double lightY, double lightZ, double lightW, double a, double b, double c, double d) {
 		return shadow(lightX, lightY, lightZ, lightW, a, b, c, d, this);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.joml.Matrix4dc#shadow(double, double, double, double, double, double, double, double, org.joml.Matrix4d)
 	 */
-	public Matrix4d shadow(double lightX, double lightY, double lightZ, double lightW, double a, double b, double c,
-			double d, Matrix4d dest) {
+	public Matrix4d shadow(double lightX, double lightY, double lightZ, double lightW, double a, double b, double c, double d, Matrix4d dest) {
 		// normalize plane
 		double invPlaneLen = 1.0 / Math.sqrt(a * a + b * b + c * c);
 		double an = a * invPlaneLen;
@@ -13503,8 +13411,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	/* (non-Javadoc)
 	 * @see org.joml.Matrix4dc#shadow(double, double, double, double, org.joml.Matrix4dc, org.joml.Matrix4d)
 	 */
-	public Matrix4d shadow(double lightX, double lightY, double lightZ, double lightW, Matrix4dc planeTransform,
-			Matrix4d dest) {
+	public Matrix4d shadow(double lightX, double lightY, double lightZ, double lightW, Matrix4dc planeTransform, Matrix4d dest) {
 		// compute plane equation by transforming (y = 0)
 		double a = planeTransform.m10();
 		double b = planeTransform.m11();
@@ -13923,8 +13830,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	/* (non-Javadoc)
 	 * @see org.joml.Matrix4dc#arcball(double, double, double, double, double, double, org.joml.Matrix4d)
 	 */
-	public Matrix4d arcball(double radius, double centerX, double centerY, double centerZ, double angleX,
-			double angleY, Matrix4d dest) {
+	public Matrix4d arcball(double radius, double centerX, double centerY, double centerZ, double angleX, double angleY, Matrix4d dest) {
 		double m30 = m20 * -radius + this.m30;
 		double m31 = m21 * -radius + this.m31;
 		double m32 = m22 * -radius + this.m32;
@@ -13997,8 +13903,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            the rotation angle around the Y axis in radians
 	 * @return dest
 	 */
-	public Matrix4d
-			arcball(double radius, double centerX, double centerY, double centerZ, double angleX, double angleY) {
+	public Matrix4d arcball(double radius, double centerX, double centerY, double centerZ, double angleX, double angleY) {
 		return arcball(radius, centerX, centerY, centerZ, angleX, angleY, this);
 	}
 
@@ -14226,8 +14131,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            the y coordinate of the left corner at the longer edge of the trapezoid
 	 * @return this
 	 */
-	public Matrix4d trapezoidCrop(double p0x, double p0y, double p1x, double p1y, double p2x, double p2y, double p3x,
-			double p3y) {
+	public Matrix4d trapezoidCrop(double p0x, double p0y, double p1x, double p1y, double p2x, double p2y, double p3x, double p3y) {
 		double aX = p1y - p0y, aY = p0x - p1x;
 		double m00 = aY;
 		double m10 = -aX;
@@ -14265,8 +14169,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	/* (non-Javadoc)
 	 * @see org.joml.Matrix4dc#transformAab(double, double, double, double, double, double, org.joml.Vector3d, org.joml.Vector3d)
 	 */
-	public Matrix4d transformAab(double minX, double minY, double minZ, double maxX, double maxY, double maxZ,
-			Vector3d outMin, Vector3d outMax) {
+	public Matrix4d transformAab(double minX, double minY, double minZ, double maxX, double maxY, double maxZ, Vector3d outMin, Vector3d outMax) {
 		double xax = m00 * minX, xay = m01 * minX, xaz = m02 * minX;
 		double xbx = m00 * maxX, xby = m01 * maxX, xbz = m02 * maxX;
 		double yax = m10 * minY, yay = m11 * minY, yaz = m12 * minY;
@@ -14514,8 +14417,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix4d rotateTowards(double dirX, double dirY, double dirZ, double upX, double upY, double upZ,
-			Matrix4d dest) {
+	public Matrix4d rotateTowards(double dirX, double dirY, double dirZ, double upX, double upY, double upZ, Matrix4d dest) {
 		// Normalize direction
 		double invDirLength = 1.0 / Math.sqrt(dirX * dirX + dirY * dirY + dirZ * dirZ);
 		double ndirX = dirX * invDirLength;
@@ -14710,8 +14612,7 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	 *            the z-coordinate of the up vector
 	 * @return this
 	 */
-	public Matrix4d translationRotateTowards(double posX, double posY, double posZ, double dirX, double dirY,
-			double dirZ, double upX, double upY, double upZ) {
+	public Matrix4d translationRotateTowards(double posX, double posY, double posZ, double dirX, double dirY, double dirZ, double upX, double upY, double upZ) {
 		// Normalize direction
 		double invDirLength = 1.0f / Math.sqrt(dirX * dirX + dirY * dirY + dirZ * dirZ);
 		double ndirX = dirX * invDirLength;

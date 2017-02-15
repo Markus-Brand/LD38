@@ -116,8 +116,7 @@ public class TextureCache {
 		setTexParameter(interpolate, wrapS, wrapT);
 		GLErrors.checkForError(TAG, "setTexParameter");
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
-				buffer);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 		GLErrors.checkForError(TAG, "glTexImage2D");
 
 		if (interpolate) {
@@ -190,8 +189,7 @@ public class TextureCache {
 		for (int i = 0; i < images.length; i++) {
 			ByteBuffer buffer = generateBuffer(images[i]);
 
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, images[i].getWidth(), images[i].getHeight(),
-					0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, images[i].getWidth(), images[i].getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 			GLErrors.checkForError(TAG, "glTexImage2D");
 		}
 
@@ -260,9 +258,7 @@ public class TextureCache {
 		image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
 
 		// create the openGL Buffer object
-		ByteBuffer buffer =
-				BufferUtils.createByteBuffer(image.getWidth() * image.getHeight()
-						* (image.getType() == BufferedImage.TYPE_INT_ARGB ? 4 : 4));
+		ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * (image.getType() == BufferedImage.TYPE_INT_ARGB ? 4 : 4));
 
 		// copy data to the buffer
 		for (int y = 0; y < image.getHeight(); y++) {

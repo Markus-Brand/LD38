@@ -70,8 +70,7 @@ public class BezierCurve {
 	 * @param adaptiveSegmentLength
 	 *            should the segment length be generated depending on the Curve lengths
 	 */
-	public BezierCurve(final ArrayList<Vector3f> controlPoints, final ControlPointInputMode mode,
-			final boolean adaptiveSegmentLength) {
+	public BezierCurve(final ArrayList<Vector3f> controlPoints, final ControlPointInputMode mode, final boolean adaptiveSegmentLength) {
 		this.mode = mode;
 		setInputPoints(controlPoints);
 		generateSegmentLength(adaptiveSegmentLength);
@@ -99,8 +98,7 @@ public class BezierCurve {
 	 * @param segmentLengths
 	 *            input segment length
 	 */
-	public BezierCurve(final ArrayList<Vector3f> controlPoints, final ControlPointInputMode mode,
-			final ArrayList<Float> segmentLengths) {
+	public BezierCurve(final ArrayList<Vector3f> controlPoints, final ControlPointInputMode mode, final ArrayList<Float> segmentLengths) {
 		this.mode = mode;
 		setInputPoints(controlPoints);
 		setSegmentLengths(segmentLengths);
@@ -246,8 +244,7 @@ public class BezierCurve {
 	 * @param length
 	 *            length of the "Tangent"
 	 */
-	private void generateFirstControlPoint(final ArrayList<Vector3f> cameraPositions, final Vector3f direction,
-			final float length) {
+	private void generateFirstControlPoint(final ArrayList<Vector3f> cameraPositions, final Vector3f direction, final float length) {
 		final Vector3f currentCameraPos = new Vector3f(cameraPositions.get(0));
 
 		final Vector3f tangent = new Vector3f();
@@ -269,8 +266,7 @@ public class BezierCurve {
 	 * @param tangent
 	 *            Tangent on this Point
 	 */
-	private void generateMidControlPoint(final ArrayList<Vector3f> cameraPositions, final int camPosID,
-			final Vector3f tangent) {
+	private void generateMidControlPoint(final ArrayList<Vector3f> cameraPositions, final int camPosID, final Vector3f tangent) {
 		final Vector3f currentCameraPos = new Vector3f(cameraPositions.get(camPosID));
 
 		final Vector3f prevControlPos = new Vector3f(currentCameraPos).sub(tangent);
@@ -291,8 +287,7 @@ public class BezierCurve {
 	 * @param length
 	 *            length of the "Tangent"
 	 */
-	private void generateLastControlPoint(final ArrayList<Vector3f> cameraPositions, final Vector3f direction,
-			final float length, final boolean circular) {
+	private void generateLastControlPoint(final ArrayList<Vector3f> cameraPositions, final Vector3f direction, final float length, final boolean circular) {
 		final Vector3f currentCameraPos = new Vector3f(cameraPositions.get(circular ? 0 : cameraPositions.size() - 1));
 
 		final Vector3f tangent = new Vector3f();
@@ -381,9 +376,7 @@ public class BezierCurve {
 	 * @return berstein Vector. ControlPointMatrix * bernsteinVector = resulting position
 	 */
 	private Vector4f bernstein(final double progressInFragment) {
-		final Vector4f uVector =
-				new Vector4f((float) java.lang.Math.pow(progressInFragment, 3), (float) java.lang.Math.pow(
-						progressInFragment, 2), (float) progressInFragment, 1);
+		final Vector4f uVector = new Vector4f((float) java.lang.Math.pow(progressInFragment, 3), (float) java.lang.Math.pow(progressInFragment, 2), (float) progressInFragment, 1);
 		/* @formatter:off */
 		final Matrix4f bernstein = new Matrix4f(
 				-1,  3, -3,  1,

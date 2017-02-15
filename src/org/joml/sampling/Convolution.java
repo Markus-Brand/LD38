@@ -22,7 +22,7 @@
  */
 package org.joml.sampling;
 
-import java.nio.FloatBuffer;
+import java.nio.*;
 
 import org.joml.Math;
 

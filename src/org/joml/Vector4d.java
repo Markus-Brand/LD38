@@ -22,14 +22,9 @@
  */
 package org.joml;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.io.*;
+import java.nio.*;
+import java.text.*;
 
 /**
  * Contains the definition of a Vector comprising 4 doubles and associated transformations.
@@ -961,10 +956,8 @@ public class Vector4d implements Externalizable, Vector4dc {
 	 * @see org.joml.Vector4dc#mul(org.joml.Matrix4dc, org.joml.Vector4d)
 	 */
 	public Vector4d mul(Matrix4dc mat, Vector4d dest) {
-		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30() * w,
-				mat.m01() * x + mat.m11() * y + mat.m21() * z + mat.m31() * w,
-				mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32() * w,
-				mat.m03() * x + mat.m13() * y + mat.m23() * z + mat.m33() * w);
+		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30() * w, mat.m01() * x + mat.m11() * y + mat.m21() * z + mat.m31() * w,
+				mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32() * w, mat.m03() * x + mat.m13() * y + mat.m23() * z + mat.m33() * w);
 		return dest;
 	}
 
@@ -983,8 +976,7 @@ public class Vector4d implements Externalizable, Vector4dc {
 	 * @see org.joml.Vector4dc#mul(org.joml.Matrix4x3dc, org.joml.Vector4d)
 	 */
 	public Vector4d mul(Matrix4x3dc mat, Vector4d dest) {
-		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30() * w,
-				mat.m01() * x + mat.m11() * y + mat.m21() * z + mat.m31() * w,
+		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30() * w, mat.m01() * x + mat.m11() * y + mat.m21() * z + mat.m31() * w,
 				mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32() * w, w);
 		return dest;
 	}
@@ -1004,8 +996,7 @@ public class Vector4d implements Externalizable, Vector4dc {
 	 * @see org.joml.Vector4dc#mul(org.joml.Matrix4x3fc, org.joml.Vector4d)
 	 */
 	public Vector4d mul(Matrix4x3fc mat, Vector4d dest) {
-		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30() * w,
-				mat.m01() * x + mat.m11() * y + mat.m21() * z + mat.m31() * w,
+		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30() * w, mat.m01() * x + mat.m11() * y + mat.m21() * z + mat.m31() * w,
 				mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32() * w, w);
 		return dest;
 	}
@@ -1025,10 +1016,8 @@ public class Vector4d implements Externalizable, Vector4dc {
 	 * @see org.joml.Vector4dc#mul(org.joml.Matrix4fc, org.joml.Vector4d)
 	 */
 	public Vector4d mul(Matrix4fc mat, Vector4d dest) {
-		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30() * w,
-				mat.m01() * x + mat.m11() * y + mat.m21() * z + mat.m31() * w,
-				mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32() * w,
-				mat.m03() * x + mat.m13() * y + mat.m23() * z + mat.m33() * w);
+		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30() * w, mat.m01() * x + mat.m11() * y + mat.m21() * z + mat.m31() * w,
+				mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32() * w, mat.m03() * x + mat.m13() * y + mat.m23() * z + mat.m33() * w);
 		return dest;
 	}
 
@@ -1037,9 +1026,8 @@ public class Vector4d implements Externalizable, Vector4dc {
 	 */
 	public Vector4d mulProject(Matrix4dc mat, Vector4d dest) {
 		double invW = 1.0 / (mat.m03() * x + mat.m13() * y + mat.m23() * z + mat.m33() * w);
-		dest.set((mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30() * w) * invW, (mat.m01() * x + mat.m11() * y
-				+ mat.m21() * z + mat.m31() * w)
-				* invW, (mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32() * w) * invW, 1.0);
+		dest.set((mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30() * w) * invW, (mat.m01() * x + mat.m11() * y + mat.m21() * z + mat.m31() * w) * invW,
+				(mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32() * w) * invW, 1.0);
 		return dest;
 	}
 
@@ -1375,18 +1363,10 @@ public class Vector4d implements Externalizable, Vector4dc {
 	public Vector4d hermite(Vector4dc t0, Vector4dc v1, Vector4dc t1, double t, Vector4d dest) {
 		double t2 = t * t;
 		double t3 = t2 * t;
-		dest.x =
-				(x + x - v1.x() - v1.x() + t1.x() + t0.x()) * t3 + (3.0 * v1.x() - 3.0 * x - t0.x() - t0.x() - t1.x())
-						* t2 + x * t + x;
-		dest.y =
-				(y + y - v1.y() - v1.y() + t1.y() + t0.y()) * t3 + (3.0 * v1.y() - 3.0 * y - t0.y() - t0.y() - t1.y())
-						* t2 + y * t + y;
-		dest.z =
-				(z + z - v1.z() - v1.z() + t1.z() + t0.z()) * t3 + (3.0 * v1.z() - 3.0 * z - t0.z() - t0.z() - t1.z())
-						* t2 + z * t + z;
-		dest.w =
-				(w + w - v1.w() - v1.w() + t1.w() + t0.w()) * t3 + (3.0 * v1.w() - 3.0 * w - t0.w() - t0.w() - t1.w())
-						* t2 + w * t + w;
+		dest.x = (x + x - v1.x() - v1.x() + t1.x() + t0.x()) * t3 + (3.0 * v1.x() - 3.0 * x - t0.x() - t0.x() - t1.x()) * t2 + x * t + x;
+		dest.y = (y + y - v1.y() - v1.y() + t1.y() + t0.y()) * t3 + (3.0 * v1.y() - 3.0 * y - t0.y() - t0.y() - t1.y()) * t2 + y * t + y;
+		dest.z = (z + z - v1.z() - v1.z() + t1.z() + t0.z()) * t3 + (3.0 * v1.z() - 3.0 * z - t0.z() - t0.z() - t1.z()) * t2 + z * t + z;
+		dest.w = (w + w - v1.w() - v1.w() + t1.w() + t0.w()) * t3 + (3.0 * v1.w() - 3.0 * w - t0.w() - t0.w() - t1.w()) * t2 + w * t + w;
 		return dest;
 	}
 
