@@ -54,7 +54,7 @@ public class BunnyGame implements IGame {
 						"bunny_2d.png"));
 		IRenderable bunny =
 				new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
-		IRenderable cube = new TexturedRenderable(StaticMeshes.getCube(), new Texture("AO.png"));
+		IRenderable cube = new TexturedRenderable(new ObjectLoader().loadFromFile("cube.obj"), new Texture("AO.png"));
 
 		Shader bonePhongShader = new Shader("boneAnimation.vert", "phong.frag");
 		bonePhongShader.addUniformBlockIndex(1, "Matrices");
