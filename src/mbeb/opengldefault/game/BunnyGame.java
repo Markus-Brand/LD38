@@ -69,11 +69,11 @@ public class BunnyGame implements IGame {
 		cowboy = new SceneObject(tm, new Matrix4f(), null);
 		cowboy.setShader(bonePhongShader);
 
-		cubeObj = new SceneObject(cube, null, null);
+		cubeObj = new SceneObject(cube);
 
 		bunnyObj = new SceneObject(bunny, new Matrix4f().translate(1, 1, 1), null);
 
-		curveObj = new SceneObject(new BezierCurveRenderable(curve), null, null);
+		curveObj = new SceneObject(new BezierCurveRenderable(curve));
 		curveObj.setShader(curveShader);
 
 		cubeObj.addSubObject(bunnyObj);

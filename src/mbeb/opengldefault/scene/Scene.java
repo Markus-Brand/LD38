@@ -21,7 +21,7 @@ public class Scene {
 	public Scene(ICamera cam, Skybox skybox) {
 		this.camera = cam;
 		this.skybox = skybox;
-		this.sceneGraph = new SceneObject(null, null, null);
+		this.sceneGraph = new SceneObject();
 		renderer = new VisibleSceneGraphRenderer(sceneGraph, cam);
 	}
 

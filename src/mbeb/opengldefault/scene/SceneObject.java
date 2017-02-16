@@ -1,17 +1,18 @@
 package mbeb.opengldefault.scene;
 
-
 import java.util.*;
 
+import mbeb.opengldefault.animation.BoneTransformation;
 import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.rendering.shader.*;
+
 import org.joml.*;
 
 /**
  * A (potentially) complex object inside a scene, with transformations
  */
 public class SceneObject {
-	
+
 	private static final String TAG = "SceneObject";
 
 	/** the renderable for this object, or null */
@@ -21,7 +22,7 @@ public class SceneObject {
 	/** the combined boundingBox for this object(renderable+subObjects) */
 	private BoundingBox box;
 	/** this objects Transformation */
-	private Matrix4f myTransformation;
+	private BoneTransformation myTransformation;
 	/** all subObjects (which inherit transformations) */
 	private List<SceneObject> subObjects;
 	/** the parent in the Scene-graph */
@@ -37,7 +38,69 @@ public class SceneObject {
 	 * @param subObjects
 	 *            empty collection
 	 */
+	public SceneObject() {
+		this(null, new Matrix4f(), null);
+	}
+
+	/**
+	 * Create a new sceneObject. All parameters are optional
+	 *
+	 * @param renderable
+	 *            Renderable that is drawn if the object is rendered
+	 */
+	public SceneObject(IRenderable renderable) {
+		this(renderable, new Matrix4f(), null);
+	}
+
+	/**
+	 * Create a new sceneObject. All parameters are optional
+	 *
+	 * @param renderable
+	 *            Renderable that is drawn if the object is rendered
+	 * @param myTransformation
+	 *            Local Transformation based on Parent
+	 */
+	public SceneObject(IRenderable renderable, Matrix4f myTransformation) {
+		this(renderable, myTransformation, null);
+	}
+
+	/**
+	 * Create a new sceneObject. All parameters are optional
+	 *
+	 * @param renderable
+	 *            Renderable that is drawn if the object is rendered
+	 * @param myTransformation
+	 *            Local Transformation based on Parent
+	 */
+	public SceneObject(IRenderable renderable, BoneTransformation myTransformation) {
+		this(renderable, myTransformation, null);
+	}
+
+	/**
+	 * Create a new sceneObject. All parameters are optional
+	 *
+	 * @param renderable
+	 *            Renderable that is drawn if the object is rendered
+	 * @param myTransformation
+	 *            Local Transformation based on Parent
+	 * @param subObjects
+	 *            Children Objects
+	 */
 	public SceneObject(IRenderable renderable, Matrix4f myTransformation, List<SceneObject> subObjects) {
+		this(renderable, new BoneTransformation(myTransformation), subObjects);
+	}
+
+	/**
+	 * Create a new sceneObject. All parameters are optional
+	 *
+	 * @param renderable
+	 *            Renderable that is drawn if the object is rendered
+	 * @param myTransformation
+	 *            Local Transformation based on Parent
+	 * @param subObjects
+	 *            Children Objects
+	 */
+	public SceneObject(IRenderable renderable, BoneTransformation myTransformation, List<SceneObject> subObjects) {
 		this.myTransformation = myTransformation;
 		this.subObjects = subObjects;
 		this.renderable = renderable;
@@ -47,9 +110,9 @@ public class SceneObject {
 	/**
 	 * @return this objects current Tranformation
 	 */
-	public Matrix4f getTransformation() {
+	public BoneTransformation getTransformation() {
 		if (myTransformation == null) {
-			myTransformation = new Matrix4f();
+			myTransformation = new BoneTransformation(new Matrix4f());
 		}
 		return myTransformation;
 	}
@@ -85,7 +148,7 @@ public class SceneObject {
 	 *            the new model to add
 	 */
 	public void addSubObject(IRenderable model) {
-		addSubObject(new SceneObject(model, null, null));
+		addSubObject(new SceneObject(model));
 	}
 
 	/**
@@ -126,14 +189,13 @@ public class SceneObject {
 	public boolean hasOwnShader() {
 		return shader != null;
 	}
-	
+
 	public void update(double deltaTime) {
 		if (getRenderable() != null) {
 			getRenderable().update(deltaTime);
 		}
 		getSubObjects().forEach((SceneObject obj) -> obj.update(deltaTime));
-		
-		
+
 	}
 
 	//<editor-fold defaultstate="collapsed" desc="BoundingBox">
@@ -144,7 +206,7 @@ public class SceneObject {
 	public BoundingBox getBoundingBox() {
 		//TODO: Only recalculate BB if needed
 		reCalculateBoundingBox();
-		box.setModelTransform(getTransformation());
+		box.setModelTransform(getTransformation().asMatrix());
 		return box;
 	}
 
@@ -153,7 +215,7 @@ public class SceneObject {
 	 */
 	private BoundingBox getRenderableBoundingBox() {
 		if (renderable == null) {
-			return new BoundingBox.Empty(getTransformation());
+			return new BoundingBox.Empty(getTransformation().asMatrix());
 		}
 		return renderable.getBoundingBox();
 	}
@@ -178,7 +240,7 @@ public class SceneObject {
 	 */
 	private void adjustBoundingBoxFor(SceneObject object) {
 		if (box == null) {
-			box = new BoundingBox.Empty(getTransformation());
+			box = new BoundingBox.Empty(getTransformation().asMatrix());
 		}
 		box = box.unionWith(object.getBoundingBox());
 	}
