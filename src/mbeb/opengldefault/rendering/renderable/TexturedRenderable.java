@@ -41,4 +41,9 @@ public class TexturedRenderable implements IRenderable {
 		return renderable.getBoundingBox();
 	}
 
+	@Override
+	public void update(double deltaTime) {
+		renderable.update(deltaTime);
+	}
+
 }

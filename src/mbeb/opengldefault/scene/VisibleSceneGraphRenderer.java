@@ -16,7 +16,7 @@ public class VisibleSceneGraphRenderer extends SceneGraphRenderer {
 	}
 
 	@Override
-	public void renderObject(final SceneObject object, final Transformation parentTransform) {
+	public void renderObject(final SceneObject object, final Matrix4f parentTransform) {
 		if (isVisible(object, parentTransform)) {
 			super.renderObject(object, parentTransform);
 		}
@@ -31,7 +31,7 @@ public class VisibleSceneGraphRenderer extends SceneGraphRenderer {
 	 *            the current transformation
 	 * @return false if this object would not be visible if rendered
 	 */
-	private boolean isVisible(final SceneObject object, final Transformation parentTransform) {
+	private boolean isVisible(final SceneObject object, final Matrix4f parentTransform) {
 		final Vector3f[] edges = object.getBoundingBox().getEdgesOnScreen(parentTransform, cam);
 		float minX = edges[0].x;
 		float minY = edges[0].y;

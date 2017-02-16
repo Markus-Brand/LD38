@@ -10,4 +10,7 @@ public interface IRenderable {
 	void render(Shader shader);
 
 	BoundingBox getBoundingBox();
+
+	default void update(double deltaTime) {
+	}
 }
