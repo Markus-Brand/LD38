@@ -1,18 +1,21 @@
 package mbeb.opengldefault.rendering.shader;
 
+import java.net.URL;
+import java.nio.IntBuffer;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL20;
+
+import mbeb.opengldefault.logging.GLErrors;
+import mbeb.opengldefault.logging.Log;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.opengl.GL40.*;
-
-import java.net.*;
-import java.nio.*;
-import java.util.*;
-
-import mbeb.opengldefault.logging.*;
-
-import org.lwjgl.*;
-import org.lwjgl.opengl.*;
 
 /**
  * Shader Object used for rendering a {@link mbeb.opengldefault.rendering.renderable.IRenderable}
@@ -36,6 +39,8 @@ public class Shader {
 	private String tesControlSource;
 	/** Tessellation Evaluation Shaders source code */
 	private String tesEvalSource;
+	/** Drawmode for the Renderables that get rendered by this shader */
+	private int drawMode;
 
 	/**
 	 * Static parameters that can be changed by recompiling the shaders. They will be written into the shader via
@@ -223,7 +228,7 @@ public class Shader {
 
 	/**
 	 * get the location of a Uniform with given name
-	 * 
+	 *
 	 * @param name
 	 *            name of the uniform
 	 * @param logAnError
@@ -436,5 +441,27 @@ public class Shader {
 
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
+	}
+
+	/**
+	 * Setter for the drawMode
+	 *
+	 * @param drawMode
+	 *            new drawMode
+	 */
+	public void setDrawMode(int drawMode) {
+		this.drawMode = drawMode;
+	}
+
+	/**
+	 * Getter for the drawMode
+	 *
+	 * @return current drawmode. Most likely GL_TRIANGLES
+	 */
+	public int getDrawMode() {
+		if (drawMode <= 0) {
+			drawMode = GL_TRIANGLES;
+		}
+		return drawMode;
 	}
 }
