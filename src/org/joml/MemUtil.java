@@ -22,10 +22,7 @@
  */
 package org.joml;
 
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.nio.*;
 
 /**
  * Helper class to do efficient memory operations on all JOML objects, NIO buffers and primitive arrays.

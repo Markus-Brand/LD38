@@ -75,8 +75,7 @@ public class BezierCurve {
 	 * @param adaptiveSegmentLength
 	 *            should the segment length be generated depending on the Curve lengths
 	 */
-	public BezierCurve(final ArrayList<Vector3f> controlPoints, final ControlPointInputMode mode,
-			final boolean adaptiveSegmentLength) {
+	public BezierCurve(final ArrayList<Vector3f> controlPoints, final ControlPointInputMode mode, final boolean adaptiveSegmentLength) {
 		this.mode = mode;
 		setInputPoints(controlPoints);
 		generateSegmentLength(adaptiveSegmentLength);
@@ -104,8 +103,7 @@ public class BezierCurve {
 	 * @param segmentLengths
 	 *            input segment length
 	 */
-	public BezierCurve(final ArrayList<Vector3f> controlPoints, final ControlPointInputMode mode,
-			final ArrayList<Float> segmentLengths) {
+	public BezierCurve(final ArrayList<Vector3f> controlPoints, final ControlPointInputMode mode, final ArrayList<Float> segmentLengths) {
 		this.mode = mode;
 		setInputPoints(controlPoints);
 		setSegmentLengths(segmentLengths);
@@ -141,10 +139,10 @@ public class BezierCurve {
 	private void generateMatrices() {
 		bezierMatrices = new ArrayList<>();
 		for (int segmentID = 0; segmentID < controlPoints.size() / 3; segmentID++) {
-			Vector4f v0 = new Vector4f(controlPoints.get(segmentID * 3 + 0), 1);
-			Vector4f v1 = new Vector4f(controlPoints.get(segmentID * 3 + 1), 1);
-			Vector4f v2 = new Vector4f(controlPoints.get(segmentID * 3 + 2), 1);
-			Vector4f v3 = new Vector4f(controlPoints.get(segmentID * 3 + 3), 1);
+			final Vector4f v0 = new Vector4f(controlPoints.get(segmentID * 3 + 0), 1);
+			final Vector4f v1 = new Vector4f(controlPoints.get(segmentID * 3 + 1), 1);
+			final Vector4f v2 = new Vector4f(controlPoints.get(segmentID * 3 + 2), 1);
+			final Vector4f v3 = new Vector4f(controlPoints.get(segmentID * 3 + 3), 1);
 			bezierMatrices.add(new Matrix4f(v0, v1, v2, v3));
 		}
 
@@ -267,8 +265,7 @@ public class BezierCurve {
 	 * @param length
 	 *            length of the "Tangent"
 	 */
-	private void generateFirstControlPoint(final ArrayList<Vector3f> cameraPositions, final Vector3f direction,
-			final float length) {
+	private void generateFirstControlPoint(final ArrayList<Vector3f> cameraPositions, final Vector3f direction, final float length) {
 		final Vector3f currentCameraPos = new Vector3f(cameraPositions.get(0));
 
 		final Vector3f tangent = new Vector3f();
@@ -290,8 +287,7 @@ public class BezierCurve {
 	 * @param tangent
 	 *            Tangent on this Point
 	 */
-	private void generateMidControlPoint(final ArrayList<Vector3f> cameraPositions, final int camPosID,
-			final Vector3f tangent) {
+	private void generateMidControlPoint(final ArrayList<Vector3f> cameraPositions, final int camPosID, final Vector3f tangent) {
 		final Vector3f currentCameraPos = new Vector3f(cameraPositions.get(camPosID));
 
 		final Vector3f prevControlPos = new Vector3f(currentCameraPos).sub(tangent);
@@ -312,8 +308,7 @@ public class BezierCurve {
 	 * @param length
 	 *            length of the "Tangent"
 	 */
-	private void generateLastControlPoint(final ArrayList<Vector3f> cameraPositions, final Vector3f direction,
-			final float length, final boolean circular) {
+	private void generateLastControlPoint(final ArrayList<Vector3f> cameraPositions, final Vector3f direction, final float length, final boolean circular) {
 		final Vector3f currentCameraPos = new Vector3f(cameraPositions.get(circular ? 0 : cameraPositions.size() - 1));
 
 		final Vector3f tangent = new Vector3f();
@@ -401,6 +396,7 @@ public class BezierCurve {
 	 *            the progress in the current Curve segment
 	 * @return bernstein Vector. ControlPointMatrix * bernsteinVector = resulting position
 	 */
+
 	public Matrix4f bernstein() {
 		/* @formatter:off */
 		return new Matrix4f(
@@ -418,9 +414,8 @@ public class BezierCurve {
 	 *            the progress in the current Curve segment
 	 * @return progess Vector.
 	 */
-	private Vector4f progressVector(double progressInFragment) {
-		return new Vector4f((float) java.lang.Math.pow(progressInFragment, 3), (float) java.lang.Math.pow(
-						progressInFragment, 2), (float) progressInFragment, 1);
+	private Vector4f progressVector(final double progressInFragment) {
+		return new Vector4f((float) java.lang.Math.pow(progressInFragment, 3), (float) java.lang.Math.pow(progressInFragment, 2), (float) progressInFragment, 1);
 	}
 
 	/**
@@ -433,8 +428,8 @@ public class BezierCurve {
 	 * @return resulting position. ControlPointMatrix * bernsteinVector = resulting position
 	 */
 
-	private Vector3f calculateSegmentPosition(int segmentID, float progressInFragment) {
-		Vector4f result = progressVector(progressInFragment).mul(bernstein()).mul(bezierMatrices.get(segmentID));
+	private Vector3f calculateSegmentPosition(final int segmentID, final float progressInFragment) {
+		final Vector4f result = progressVector(progressInFragment).mul(bernstein()).mul(bezierMatrices.get(segmentID));
 
 		return new Vector3f(result.x, result.y, result.z);
 	}

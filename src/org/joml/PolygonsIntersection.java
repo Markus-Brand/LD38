@@ -22,11 +22,7 @@
  */
 package org.joml;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Class for polygon/point intersection tests when testing many points against one or many static concave or convex,
@@ -75,8 +71,7 @@ public class PolygonsIntersection {
 		List/* <Interval> */byBeginning;
 		List/* <Interval> */byEnding;
 
-		static boolean computeEvenOdd(float[] verticesXY, Interval ival, float x, float y, boolean evenOdd,
-				BitSet inPolys) {
+		static boolean computeEvenOdd(float[] verticesXY, Interval ival, float x, float y, boolean evenOdd, BitSet inPolys) {
 			boolean newEvenOdd = evenOdd;
 			int i = ival.i;
 			int j = ival.j;

@@ -1,6 +1,5 @@
 package mbeb.opengldefault.scene;
 
-
 import mbeb.opengldefault.camera.*;
 
 import org.joml.*;

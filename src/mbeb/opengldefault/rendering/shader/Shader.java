@@ -1,21 +1,19 @@
 package mbeb.opengldefault.rendering.shader;
 
-import java.net.URL;
-import java.nio.IntBuffer;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL20;
-
-import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.logging.Log;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.opengl.GL40.*;
+
+import java.net.*;
+import java.nio.*;
+import java.util.*;
+
+import mbeb.opengldefault.logging.*;
+
+import org.lwjgl.*;
+import org.lwjgl.opengl.*;
 
 /**
  * Shader Object used for rendering a {@link mbeb.opengldefault.rendering.renderable.IRenderable}
@@ -106,8 +104,7 @@ public class Shader {
 	 * @param parameters
 	 *            a map containing initial values for shader parameters
 	 */
-	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath,
-			final Map<String, Object> parameters) {
+	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath, final Map<String, Object> parameters) {
 		this(vertexPath, fragmentPath, geometryPath, null, null, parameters);
 	}
 
@@ -125,8 +122,7 @@ public class Shader {
 	 * @param tesEvalPath
 	 *            path of a tessellation evaluation Shader
 	 */
-	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath,
-			final String tesControlPath, final String tesEvalPath) {
+	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath, final String tesControlPath, final String tesEvalPath) {
 		this(vertexPath, fragmentPath, geometryPath, tesControlPath, tesEvalPath, new HashMap<>());
 	}
 
@@ -146,8 +142,7 @@ public class Shader {
 	 * @param parameters
 	 *            a map containing initial values for shader parameters
 	 */
-	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath,
-			final String tesControlPath, final String tesEvalPath, final Map<String, Object> parameters) {
+	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath, final String tesControlPath, final String tesEvalPath, final Map<String, Object> parameters) {
 		this.parameters = parameters;
 		this.vertexSource = getSource(vertexPath);
 		this.fragmentSource = getSource(fragmentPath);
@@ -417,8 +412,7 @@ public class Shader {
 	 * @param tesEvalShader
 	 * @param geomShader
 	 */
-	private void linkShader(final int vertexShader, final int fragmentShader, final int geomShader,
-			final int tesControlShader, final int tesEvalShader) {
+	private void linkShader(final int vertexShader, final int fragmentShader, final int geomShader, final int tesControlShader, final int tesEvalShader) {
 		shaderProgram = glCreateProgram();
 		glAttachShader(shaderProgram, vertexShader);
 		glAttachShader(shaderProgram, fragmentShader);

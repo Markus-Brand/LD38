@@ -22,9 +22,7 @@
  */
 package org.joml;
 
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
+import java.nio.*;
 
 /**
  * Interface to an immutable 4x3 matrix of double-precision floats.
@@ -1814,8 +1812,7 @@ public interface Matrix4x3dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4x3d ortho(double left, double right, double bottom, double top, double zNear, double zFar,
-			boolean zZeroToOne, Matrix4x3d dest);
+	Matrix4x3d ortho(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne, Matrix4x3d dest);
 
 	/**
 	 * Apply an orthographic projection transformation for a right-handed coordinate system
@@ -1874,8 +1871,7 @@ public interface Matrix4x3dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4x3d orthoLH(double left, double right, double bottom, double top, double zNear, double zFar,
-			boolean zZeroToOne, Matrix4x3d dest);
+	Matrix4x3d orthoLH(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne, Matrix4x3d dest);
 
 	/**
 	 * Apply an orthographic projection transformation for a left-handed coordiante system
@@ -1903,8 +1899,7 @@ public interface Matrix4x3dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4x3d
-			orthoLH(double left, double right, double bottom, double top, double zNear, double zFar, Matrix4x3d dest);
+	Matrix4x3d orthoLH(double left, double right, double bottom, double top, double zNear, double zFar, Matrix4x3d dest);
 
 	/**
 	 * Apply a symmetric orthographic projection transformation for a right-handed coordinate system
@@ -1936,8 +1931,7 @@ public interface Matrix4x3dc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return dest
 	 */
-	Matrix4x3d orthoSymmetric(double width, double height, double zNear, double zFar, boolean zZeroToOne,
-			Matrix4x3d dest);
+	Matrix4x3d orthoSymmetric(double width, double height, double zNear, double zFar, boolean zZeroToOne, Matrix4x3d dest);
 
 	/**
 	 * Apply a symmetric orthographic projection transformation for a right-handed coordinate system
@@ -1997,8 +1991,7 @@ public interface Matrix4x3dc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return dest
 	 */
-	Matrix4x3d orthoSymmetricLH(double width, double height, double zNear, double zFar, boolean zZeroToOne,
-			Matrix4x3d dest);
+	Matrix4x3d orthoSymmetricLH(double width, double height, double zNear, double zFar, boolean zZeroToOne, Matrix4x3d dest);
 
 	/**
 	 * Apply a symmetric orthographic projection transformation for a left-handed coordinate system
@@ -2190,8 +2183,7 @@ public interface Matrix4x3dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4x3d lookAt(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ,
-			double upX, double upY, double upZ, Matrix4x3d dest);
+	Matrix4x3d lookAt(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ, Matrix4x3d dest);
 
 	/**
 	 * Apply a "lookat" transformation to this matrix for a left-handed coordinate system,
@@ -2245,8 +2237,7 @@ public interface Matrix4x3dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4x3d lookAtLH(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ,
-			double upX, double upY, double upZ, Matrix4x3d dest);
+	Matrix4x3d lookAtLH(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ, Matrix4x3d dest);
 
 	/**
 	 * Obtain the direction of <tt>+Z</tt> before the transformation represented by <code>this</code> matrix is applied.
@@ -2482,8 +2473,7 @@ public interface Matrix4x3dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4x3d shadow(double lightX, double lightY, double lightZ, double lightW, double a, double b, double c,
-			double d, Matrix4x3d dest);
+	Matrix4x3d shadow(double lightX, double lightY, double lightZ, double lightW, double a, double b, double c, double d, Matrix4x3d dest);
 
 	/**
 	 * Apply a projection transformation to this matrix that projects onto the plane with the general plane equation
@@ -2539,8 +2529,7 @@ public interface Matrix4x3dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4x3d shadow(double lightX, double lightY, double lightZ, double lightW, Matrix4x3dc planeTransform,
-			Matrix4x3d dest);
+	Matrix4x3d shadow(double lightX, double lightY, double lightZ, double lightW, Matrix4x3dc planeTransform, Matrix4x3d dest);
 
 	/**
 	 * Apply a picking transformation to this matrix using the given window coordinates <tt>(x, y)</tt> as the pick
@@ -2589,8 +2578,7 @@ public interface Matrix4x3dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4x3d arcball(double radius, double centerX, double centerY, double centerZ, double angleX, double angleY,
-			Matrix4x3d dest);
+	Matrix4x3d arcball(double radius, double centerX, double centerY, double centerZ, double angleX, double angleY, Matrix4x3d dest);
 
 	/**
 	 * Apply an arcball view transformation to this matrix with the given <code>radius</code> and <code>center</code>
@@ -2638,8 +2626,7 @@ public interface Matrix4x3dc {
 	 *            will hold the maximum corner of the resulting axis-aligned box
 	 * @return this
 	 */
-	Matrix4x3d transformAab(double minX, double minY, double minZ, double maxX, double maxY, double maxZ,
-			Vector3d outMin, Vector3d outMax);
+	Matrix4x3d transformAab(double minX, double minY, double minZ, double maxX, double maxY, double maxZ, Vector3d outMin, Vector3d outMax);
 
 	/**
 	 * Transform the axis-aligned box given as the minimum corner <code>min</code> and maximum corner <code>max</code>
@@ -2726,8 +2713,7 @@ public interface Matrix4x3dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4x3d
-			rotateTowards(double dirX, double dirY, double dirZ, double upX, double upY, double upZ, Matrix4x3d dest);
+	Matrix4x3d rotateTowards(double dirX, double dirY, double dirZ, double upX, double upY, double upZ, Matrix4x3d dest);
 
 	/**
 	 * Extract the Euler angles from the rotation represented by the upper left 3x3 submatrix of <code>this</code> and

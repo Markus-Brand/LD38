@@ -32,8 +32,7 @@ public class FirstPersonCamera extends Camera {
 	public FirstPersonCamera(final Vector3f position, final Vector3f direction) {
 		lastMousePos = new Vector2f(Mouse.getPos());
 		projection = new Matrix4f();
-		projection.perspective((float) java.lang.Math.PI / 2.5f,
-				OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f, 100);
+		projection.perspective((float) java.lang.Math.PI / 2.5f, OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f, 100);
 
 		this.position = position;
 		this.viewDirection = direction;
@@ -51,8 +50,7 @@ public class FirstPersonCamera extends Camera {
 
 	private void updateView() {
 
-		final float viewBobbing =
-				(float) (java.lang.Math.sin(distanceTravelled / viewBobbingDistance) * viewBobbingAltitude);
+		final float viewBobbing = (float) (java.lang.Math.sin(distanceTravelled / viewBobbingDistance) * viewBobbingAltitude);
 		final Vector3f cameraPos = new Vector3f(position);
 		cameraPos.y += viewBobbing;
 

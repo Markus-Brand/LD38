@@ -22,14 +22,9 @@
  */
 package org.joml;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.io.*;
+import java.nio.*;
+import java.text.*;
 
 /**
  * Contains the definition of a 3x3 matrix of floats, and associated functions to transform
@@ -315,8 +310,7 @@ public class Matrix3f implements Externalizable, Matrix3fc {
 			return delegate.rotateTowards(direction, up, dest);
 		}
 
-		public Matrix3f
-				rotateTowards(float dirX, float dirY, float dirZ, float upX, float upY, float upZ, Matrix3f dest) {
+		public Matrix3f rotateTowards(float dirX, float dirY, float dirZ, float upX, float upY, float upZ, Matrix3f dest) {
 			return delegate.rotateTowards(dirX, dirY, dirZ, upX, upY, upZ, dest);
 		}
 
@@ -858,8 +852,7 @@ public class Matrix3f implements Externalizable, Matrix3fc {
 	 *            the new value of m22
 	 * @return this
 	 */
-	public Matrix3f set(float m00, float m01, float m02, float m10, float m11, float m12, float m20, float m21,
-			float m22) {
+	public Matrix3f set(float m00, float m01, float m02, float m10, float m11, float m12, float m20, float m21, float m22) {
 		this.m00 = m00;
 		this.m01 = m01;
 		this.m02 = m02;

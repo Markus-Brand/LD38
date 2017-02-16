@@ -22,8 +22,7 @@
  */
 package org.joml;
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
+import java.nio.*;
 
 /**
  * Interface to an immutable 4x3 matrix of single-precision floats.
@@ -1178,8 +1177,7 @@ public interface Matrix4x3fc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4x3f ortho(float left, float right, float bottom, float top, float zNear, float zFar, boolean zZeroToOne,
-			Matrix4x3f dest);
+	Matrix4x3f ortho(float left, float right, float bottom, float top, float zNear, float zFar, boolean zZeroToOne, Matrix4x3f dest);
 
 	/**
 	 * Apply an orthographic projection transformation for a right-handed coordinate system
@@ -1238,8 +1236,7 @@ public interface Matrix4x3fc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4x3f orthoLH(float left, float right, float bottom, float top, float zNear, float zFar, boolean zZeroToOne,
-			Matrix4x3f dest);
+	Matrix4x3f orthoLH(float left, float right, float bottom, float top, float zNear, float zFar, boolean zZeroToOne, Matrix4x3f dest);
 
 	/**
 	 * Apply an orthographic projection transformation for a left-handed coordiante system
@@ -1359,8 +1356,7 @@ public interface Matrix4x3fc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return dest
 	 */
-	Matrix4x3f
-			orthoSymmetricLH(float width, float height, float zNear, float zFar, boolean zZeroToOne, Matrix4x3f dest);
+	Matrix4x3f orthoSymmetricLH(float width, float height, float zNear, float zFar, boolean zZeroToOne, Matrix4x3f dest);
 
 	/**
 	 * Apply a symmetric orthographic projection transformation for a left-handed coordinate system
@@ -1552,8 +1548,7 @@ public interface Matrix4x3fc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4x3f lookAt(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX,
-			float upY, float upZ, Matrix4x3f dest);
+	Matrix4x3f lookAt(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ, Matrix4x3f dest);
 
 	/**
 	 * Apply a "lookat" transformation to this matrix for a left-handed coordinate system,
@@ -1607,8 +1602,7 @@ public interface Matrix4x3fc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4x3f lookAtLH(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX,
-			float upY, float upZ, Matrix4x3f dest);
+	Matrix4x3f lookAtLH(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ, Matrix4x3f dest);
 
 	/**
 	 * Apply the rotation transformation of the given {@link Quaternionfc} to this matrix and store
@@ -2133,8 +2127,7 @@ public interface Matrix4x3fc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4x3f shadow(float lightX, float lightY, float lightZ, float lightW, float a, float b, float c, float d,
-			Matrix4x3f dest);
+	Matrix4x3f shadow(float lightX, float lightY, float lightZ, float lightW, float a, float b, float c, float d, Matrix4x3f dest);
 
 	/**
 	 * Apply a projection transformation to this matrix that projects onto the plane with the general plane equation
@@ -2190,8 +2183,7 @@ public interface Matrix4x3fc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4x3f shadow(float lightX, float lightY, float lightZ, float lightW, Matrix4x3fc planeTransform,
-			Matrix4x3f dest);
+	Matrix4x3f shadow(float lightX, float lightY, float lightZ, float lightW, Matrix4x3fc planeTransform, Matrix4x3f dest);
 
 	/**
 	 * Apply a picking transformation to this matrix using the given window coordinates <tt>(x, y)</tt> as the pick
@@ -2240,8 +2232,7 @@ public interface Matrix4x3fc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4x3f arcball(float radius, float centerX, float centerY, float centerZ, float angleX, float angleY,
-			Matrix4x3f dest);
+	Matrix4x3f arcball(float radius, float centerX, float centerY, float centerZ, float angleX, float angleY, Matrix4x3f dest);
 
 	/**
 	 * Apply an arcball view transformation to this matrix with the given <code>radius</code> and <code>center</code>
@@ -2289,8 +2280,7 @@ public interface Matrix4x3fc {
 	 *            will hold the maximum corner of the resulting axis-aligned box
 	 * @return this
 	 */
-	Matrix4x3f transformAab(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, Vector3f outMin,
-			Vector3f outMax);
+	Matrix4x3f transformAab(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, Vector3f outMin, Vector3f outMax);
 
 	/**
 	 * Transform the axis-aligned box given as the minimum corner <code>min</code> and maximum corner <code>max</code>

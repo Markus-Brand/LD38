@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL11.*;
 import java.util.*;
 
 import mbeb.opengldefault.camera.*;
-import mbeb.opengldefault.curves.BezierCurve;
+import mbeb.opengldefault.curves.*;
 import mbeb.opengldefault.curves.BezierCurve.ControlPointInputMode;
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.openglcontext.*;
@@ -49,17 +49,14 @@ public class BunnyGame implements IGame {
 
 		bunnyScene = new Scene(cam, skybox);
 
-		IRenderable tm =
-				new TexturedRenderable(new ObjectLoader().loadFromFileAnim("thinmatrix.dae"), new Texture(
-						"bunny_2d.png"));
-		IRenderable bunny =
-				new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
-		IRenderable cube = new TexturedRenderable(new ObjectLoader().loadFromFile("cube.obj"), new Texture("AO.png"));
+		final IRenderable tm = new TexturedRenderable(new ObjectLoader().loadFromFileAnim("thinmatrix.dae"), new Texture("bunny_2d.png"));
+		final IRenderable bunny = new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
+		final IRenderable cube = new TexturedRenderable(new ObjectLoader().loadFromFile("cube.obj"), new Texture("AO.png"));
 
-		Shader bonePhongShader = new Shader("boneAnimation.vert", "phong.frag");
+		final Shader bonePhongShader = new Shader("boneAnimation.vert", "phong.frag");
 		bonePhongShader.addUniformBlockIndex(1, "Matrices");
 
-		Shader curveShader = new Shader("bezier.vert", "bezier.frag", "bezier.geom");
+		final Shader curveShader = new Shader("bezier.vert", "bezier.frag", "bezier.geom");
 		curveShader.addUniformBlockIndex(1, "Matrices");
 		curveShader.setDrawMode(GL_LINES);
 

@@ -22,8 +22,7 @@
  */
 package org.joml;
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
+import java.nio.*;
 
 /**
  * Interface to an immutable quaternion of single-precision floats.
@@ -749,8 +748,7 @@ public interface Quaternionfc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Quaternionf rotateTo(float fromDirX, float fromDirY, float fromDirZ, float toDirX, float toDirY, float toDirZ,
-			Quaternionf dest);
+	Quaternionf rotateTo(float fromDirX, float fromDirY, float fromDirZ, float toDirX, float toDirY, float toDirZ, Quaternionf dest);
 
 	/**
 	 * Apply a rotation to <code>this</code> that rotates the <code>fromDir</code> vector to point along

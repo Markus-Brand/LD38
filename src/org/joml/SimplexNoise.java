@@ -58,40 +58,28 @@ public class SimplexNoise {
 	// Use a three-component vector here to save memory. (instead of using 4-component 'Grad' class)
 	// And as the original author mentioned on the 'Grad' class, using a class to store the gradient components
 	// is indeed faster compared to using a simple int[] array...
-	private static final Vector3b[] grad3 = {new Vector3b(1, 1, 0), new Vector3b(-1, 1, 0), new Vector3b(1, -1, 0),
-			new Vector3b(-1, -1, 0), new Vector3b(1, 0, 1), new Vector3b(-1, 0, 1), new Vector3b(1, 0, -1),
-			new Vector3b(-1, 0, -1), new Vector3b(0, 1, 1), new Vector3b(0, -1, 1), new Vector3b(0, 1, -1),
-			new Vector3b(0, -1, -1)};
+	private static final Vector3b[] grad3 = {new Vector3b(1, 1, 0), new Vector3b(-1, 1, 0), new Vector3b(1, -1, 0), new Vector3b(-1, -1, 0), new Vector3b(1, 0, 1), new Vector3b(-1, 0, 1),
+			new Vector3b(1, 0, -1), new Vector3b(-1, 0, -1), new Vector3b(0, 1, 1), new Vector3b(0, -1, 1), new Vector3b(0, 1, -1), new Vector3b(0, -1, -1)};
 
 	// Kai Burjack:
 	// As the original author mentioned on the 'Grad' class, using a class to store the gradient components
 	// is indeed faster compared to using a simple int[] array...
-	private static final Vector4b[] grad4 = {new Vector4b(0, 1, 1, 1), new Vector4b(0, 1, 1, -1),
-			new Vector4b(0, 1, -1, 1), new Vector4b(0, 1, -1, -1), new Vector4b(0, -1, 1, 1),
-			new Vector4b(0, -1, 1, -1), new Vector4b(0, -1, -1, 1), new Vector4b(0, -1, -1, -1),
-			new Vector4b(1, 0, 1, 1), new Vector4b(1, 0, 1, -1), new Vector4b(1, 0, -1, 1), new Vector4b(1, 0, -1, -1),
-			new Vector4b(-1, 0, 1, 1), new Vector4b(-1, 0, 1, -1), new Vector4b(-1, 0, -1, 1),
-			new Vector4b(-1, 0, -1, -1), new Vector4b(1, 1, 0, 1), new Vector4b(1, 1, 0, -1),
-			new Vector4b(1, -1, 0, 1), new Vector4b(1, -1, 0, -1), new Vector4b(-1, 1, 0, 1),
-			new Vector4b(-1, 1, 0, -1), new Vector4b(-1, -1, 0, 1), new Vector4b(-1, -1, 0, -1),
-			new Vector4b(1, 1, 1, 0), new Vector4b(1, 1, -1, 0), new Vector4b(1, -1, 1, 0), new Vector4b(1, -1, -1, 0),
-			new Vector4b(-1, 1, 1, 0), new Vector4b(-1, 1, -1, 0), new Vector4b(-1, -1, 1, 0),
-			new Vector4b(-1, -1, -1, 0)};
+	private static final Vector4b[] grad4 = {new Vector4b(0, 1, 1, 1), new Vector4b(0, 1, 1, -1), new Vector4b(0, 1, -1, 1), new Vector4b(0, 1, -1, -1), new Vector4b(0, -1, 1, 1),
+			new Vector4b(0, -1, 1, -1), new Vector4b(0, -1, -1, 1), new Vector4b(0, -1, -1, -1), new Vector4b(1, 0, 1, 1), new Vector4b(1, 0, 1, -1), new Vector4b(1, 0, -1, 1),
+			new Vector4b(1, 0, -1, -1), new Vector4b(-1, 0, 1, 1), new Vector4b(-1, 0, 1, -1), new Vector4b(-1, 0, -1, 1), new Vector4b(-1, 0, -1, -1), new Vector4b(1, 1, 0, 1),
+			new Vector4b(1, 1, 0, -1), new Vector4b(1, -1, 0, 1), new Vector4b(1, -1, 0, -1), new Vector4b(-1, 1, 0, 1), new Vector4b(-1, 1, 0, -1), new Vector4b(-1, -1, 0, 1),
+			new Vector4b(-1, -1, 0, -1), new Vector4b(1, 1, 1, 0), new Vector4b(1, 1, -1, 0), new Vector4b(1, -1, 1, 0), new Vector4b(1, -1, -1, 0), new Vector4b(-1, 1, 1, 0),
+			new Vector4b(-1, 1, -1, 0), new Vector4b(-1, -1, 1, 0), new Vector4b(-1, -1, -1, 0)};
 
 	// Kai Burjack:
 	// Use a byte[] instead of a short[] to save memory
-	private static final byte[] p = {-105, -96, -119, 91, 90, 15, -125, 13, -55, 95, 96, 53, -62, -23, 7, -31, -116,
-			36, 103, 30, 69, -114, 8, 99, 37, -16, 21, 10, 23, -66, 6, -108, -9, 120, -22, 75, 0, 26, -59, 62, 94, -4,
-			-37, -53, 117, 35, 11, 32, 57, -79, 33, 88, -19, -107, 56, 87, -82, 20, 125, -120, -85, -88, 68, -81, 74,
-			-91, 71, -122, -117, 48, 27, -90, 77, -110, -98, -25, 83, 111, -27, 122, 60, -45, -123, -26, -36, 105, 92,
-			41, 55, 46, -11, 40, -12, 102, -113, 54, 65, 25, 63, -95, 1, -40, 80, 73, -47, 76, -124, -69, -48, 89, 18,
-			-87, -56, -60, -121, -126, 116, -68, -97, 86, -92, 100, 109, -58, -83, -70, 3, 64, 52, -39, -30, -6, 124,
-			123, 5, -54, 38, -109, 118, 126, -1, 82, 85, -44, -49, -50, 59, -29, 47, 16, 58, 17, -74, -67, 28, 42, -33,
-			-73, -86, -43, 119, -8, -104, 2, 44, -102, -93, 70, -35, -103, 101, -101, -89, 43, -84, 9, -127, 22, 39,
-			-3, 19, 98, 108, 110, 79, 113, -32, -24, -78, -71, 112, 104, -38, -10, 97, -28, -5, 34, -14, -63, -18, -46,
-			-112, 12, -65, -77, -94, -15, 81, 51, -111, -21, -7, 14, -17, 107, 49, -64, -42, 31, -75, -57, 106, -99,
-			-72, 84, -52, -80, 115, 121, 50, 45, 127, 4, -106, -2, -118, -20, -51, 93, -34, 114, 67, 29, 24, 72, -13,
-			-115, -128, -61, 78, 66, -41, 61, -100, -76};
+	private static final byte[] p = {-105, -96, -119, 91, 90, 15, -125, 13, -55, 95, 96, 53, -62, -23, 7, -31, -116, 36, 103, 30, 69, -114, 8, 99, 37, -16, 21, 10, 23, -66, 6, -108, -9, 120, -22, 75,
+			0, 26, -59, 62, 94, -4, -37, -53, 117, 35, 11, 32, 57, -79, 33, 88, -19, -107, 56, 87, -82, 20, 125, -120, -85, -88, 68, -81, 74, -91, 71, -122, -117, 48, 27, -90, 77, -110, -98, -25, 83,
+			111, -27, 122, 60, -45, -123, -26, -36, 105, 92, 41, 55, 46, -11, 40, -12, 102, -113, 54, 65, 25, 63, -95, 1, -40, 80, 73, -47, 76, -124, -69, -48, 89, 18, -87, -56, -60, -121, -126, 116,
+			-68, -97, 86, -92, 100, 109, -58, -83, -70, 3, 64, 52, -39, -30, -6, 124, 123, 5, -54, 38, -109, 118, 126, -1, 82, 85, -44, -49, -50, 59, -29, 47, 16, 58, 17, -74, -67, 28, 42, -33, -73,
+			-86, -43, 119, -8, -104, 2, 44, -102, -93, 70, -35, -103, 101, -101, -89, 43, -84, 9, -127, 22, 39, -3, 19, 98, 108, 110, 79, 113, -32, -24, -78, -71, 112, 104, -38, -10, 97, -28, -5, 34,
+			-14, -63, -18, -46, -112, 12, -65, -77, -94, -15, 81, 51, -111, -21, -7, 14, -17, 107, 49, -64, -42, 31, -75, -57, 106, -99, -72, 84, -52, -80, 115, 121, 50, 45, 127, 4, -106, -2, -118,
+			-20, -51, 93, -34, 114, 67, 29, 24, 72, -13, -115, -128, -61, 78, 66, -41, 61, -100, -76};
 	// To remove the need for index wrapping, float the permutation table length
 	private static final byte[] perm = new byte[512];
 	private static final byte[] permMod12 = new byte[512];

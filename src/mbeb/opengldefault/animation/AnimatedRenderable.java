@@ -1,11 +1,10 @@
 package mbeb.opengldefault.animation;
 
-import java.util.ArrayList;
-import java.util.List;
-import mbeb.opengldefault.logging.Log;
-import mbeb.opengldefault.rendering.renderable.IRenderable;
-import mbeb.opengldefault.rendering.shader.Shader;
-import mbeb.opengldefault.scene.BoundingBox;
+import java.util.*;
+
+import mbeb.opengldefault.rendering.renderable.*;
+import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.scene.*;
 
 /**
  * an animatedMesh together with some animation-state
@@ -25,12 +24,11 @@ public class AnimatedRenderable implements IRenderable {
 	@Override
 	public void render(Shader shader) {
 		//update pose uniforms
-		
+
 		for (Animator anim : getCurrentAnimations()) {
 			Pose p = anim.getCurrentPose();
 			p.setUniformData(shader, "boneTransforms");
 		}
-
 
 		mesh.render(shader);
 	}

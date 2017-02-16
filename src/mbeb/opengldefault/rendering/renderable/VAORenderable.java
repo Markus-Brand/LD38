@@ -63,8 +63,7 @@ public class VAORenderable implements IRenderable {
 	 * @param dataFormat
 	 *            size of the components in the data array in amount of floats. a RGB color would be represented by a 3
 	 */
-	public VAORenderable(FloatBuffer vertexBuffer, IntBuffer indexBuffer, DataFragment[] dataFormat,
-			BoundingBox boundingBox) {
+	public VAORenderable(FloatBuffer vertexBuffer, IntBuffer indexBuffer, DataFragment[] dataFormat, BoundingBox boundingBox) {
 		this.boundingBox = boundingBox;
 		this.indexSize = indexBuffer.capacity();
 		this.VAO = generateVAO(vertexBuffer, indexBuffer, dataFormat);

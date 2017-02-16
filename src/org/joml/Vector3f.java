@@ -22,14 +22,9 @@
  */
 package org.joml;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.io.*;
+import java.nio.*;
+import java.text.*;
 
 /**
  * Contains the definition of a Vector comprising 3 floats and associated
@@ -927,9 +922,8 @@ public class Vector3f implements Externalizable, Vector3fc {
 	@Override
 	public Vector3f mulProject(Matrix4fc mat, Vector3f dest) {
 		float invW = 1.0f / (mat.m03() * x + mat.m13() * y + mat.m23() * z + mat.m33());
-		dest.set((mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30()) * invW, (mat.m01() * x + mat.m11() * y
-				+ mat.m21() * z + mat.m31())
-				* invW, (mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32()) * invW);
+		dest.set((mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30()) * invW, (mat.m01() * x + mat.m11() * y + mat.m21() * z + mat.m31()) * invW,
+				(mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32()) * invW);
 		return dest;
 	}
 
@@ -962,8 +956,7 @@ public class Vector3f implements Externalizable, Vector3fc {
 	 */
 	@Override
 	public Vector3f mul(Matrix3fc mat, Vector3f dest) {
-		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z, mat.m01() * x + mat.m11() * y + mat.m21() * z,
-				mat.m02() * x + mat.m12() * y + mat.m22() * z);
+		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z, mat.m01() * x + mat.m11() * y + mat.m21() * z, mat.m02() * x + mat.m12() * y + mat.m22() * z);
 		return dest;
 	}
 
@@ -983,8 +976,7 @@ public class Vector3f implements Externalizable, Vector3fc {
 	 */
 	@Override
 	public Vector3f mulTranspose(Matrix3fc mat, Vector3f dest) {
-		dest.set(mat.m00() * x + mat.m01() * y + mat.m02() * z, mat.m10() * x + mat.m11() * y + mat.m12() * z,
-				mat.m20() * x + mat.m21() * y + mat.m22() * z);
+		dest.set(mat.m00() * x + mat.m01() * y + mat.m02() * z, mat.m10() * x + mat.m11() * y + mat.m12() * z, mat.m20() * x + mat.m21() * y + mat.m22() * z);
 		return dest;
 	}
 
@@ -1019,8 +1011,7 @@ public class Vector3f implements Externalizable, Vector3fc {
 	 */
 	@Override
 	public Vector3f mulPosition(Matrix4fc mat, Vector3f dest) {
-		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30(), mat.m01() * x + mat.m11() * y + mat.m21()
-				* z + mat.m31(), mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32());
+		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30(), mat.m01() * x + mat.m11() * y + mat.m21() * z + mat.m31(), mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32());
 		return dest;
 	}
 
@@ -1029,8 +1020,7 @@ public class Vector3f implements Externalizable, Vector3fc {
 	 */
 	@Override
 	public Vector3f mulPosition(Matrix4x3fc mat, Vector3f dest) {
-		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30(), mat.m01() * x + mat.m11() * y + mat.m21()
-				* z + mat.m31(), mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32());
+		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30(), mat.m01() * x + mat.m11() * y + mat.m21() * z + mat.m31(), mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32());
 		return dest;
 	}
 
@@ -1052,8 +1042,7 @@ public class Vector3f implements Externalizable, Vector3fc {
 	 */
 	@Override
 	public Vector3f mulTransposePosition(Matrix4fc mat, Vector3f dest) {
-		dest.set(mat.m00() * x + mat.m01() * y + mat.m02() * z + mat.m03(), mat.m10() * x + mat.m11() * y + mat.m12()
-				* z + mat.m13(), mat.m20() * x + mat.m21() * y + mat.m22() * z + mat.m23());
+		dest.set(mat.m00() * x + mat.m01() * y + mat.m02() * z + mat.m03(), mat.m10() * x + mat.m11() * y + mat.m12() * z + mat.m13(), mat.m20() * x + mat.m21() * y + mat.m22() * z + mat.m23());
 		return dest;
 	}
 
@@ -1077,8 +1066,7 @@ public class Vector3f implements Externalizable, Vector3fc {
 	@Override
 	public float mulPositionW(Matrix4fc mat, Vector3f dest) {
 		float w = mat.m03() * x + mat.m13() * y + mat.m23() * z + mat.m33();
-		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30(), mat.m01() * x + mat.m11() * y + mat.m21()
-				* z + mat.m31(), mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32());
+		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30(), mat.m01() * x + mat.m11() * y + mat.m21() * z + mat.m31(), mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32());
 		return w;
 	}
 
@@ -1113,8 +1101,7 @@ public class Vector3f implements Externalizable, Vector3fc {
 	 */
 	@Override
 	public Vector3f mulDirection(Matrix4fc mat, Vector3f dest) {
-		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z, mat.m01() * x + mat.m11() * y + mat.m21() * z,
-				mat.m02() * x + mat.m12() * y + mat.m22() * z);
+		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z, mat.m01() * x + mat.m11() * y + mat.m21() * z, mat.m02() * x + mat.m12() * y + mat.m22() * z);
 		return dest;
 	}
 
@@ -1123,8 +1110,7 @@ public class Vector3f implements Externalizable, Vector3fc {
 	 */
 	@Override
 	public Vector3f mulDirection(Matrix4x3fc mat, Vector3f dest) {
-		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z, mat.m01() * x + mat.m11() * y + mat.m21() * z,
-				mat.m02() * x + mat.m12() * y + mat.m22() * z);
+		dest.set(mat.m00() * x + mat.m10() * y + mat.m20() * z, mat.m01() * x + mat.m11() * y + mat.m21() * z, mat.m02() * x + mat.m12() * y + mat.m22() * z);
 		return dest;
 	}
 
@@ -1146,8 +1132,7 @@ public class Vector3f implements Externalizable, Vector3fc {
 	 */
 	@Override
 	public Vector3f mulTransposeDirection(Matrix4fc mat, Vector3f dest) {
-		dest.set(mat.m00() * x + mat.m01() * y + mat.m02() * z, mat.m10() * x + mat.m11() * y + mat.m12() * z,
-				mat.m20() * x + mat.m21() * y + mat.m22() * z);
+		dest.set(mat.m00() * x + mat.m01() * y + mat.m02() * z, mat.m10() * x + mat.m11() * y + mat.m12() * z, mat.m20() * x + mat.m21() * y + mat.m22() * z);
 		return dest;
 	}
 
@@ -1721,15 +1706,9 @@ public class Vector3f implements Externalizable, Vector3fc {
 	public Vector3f hermite(Vector3fc t0, Vector3fc v1, Vector3fc t1, float t, Vector3f dest) {
 		float t2 = t * t;
 		float t3 = t2 * t;
-		dest.x =
-				(x + x - v1.x() - v1.x() + t1.x() + t0.x()) * t3
-						+ (3.0f * v1.x() - 3.0f * x - t0.x() - t0.x() - t1.x()) * t2 + x * t + x;
-		dest.y =
-				(y + y - v1.y() - v1.y() + t1.y() + t0.y()) * t3
-						+ (3.0f * v1.y() - 3.0f * y - t0.y() - t0.y() - t1.y()) * t2 + y * t + y;
-		dest.z =
-				(z + z - v1.z() - v1.z() + t1.z() + t0.z()) * t3
-						+ (3.0f * v1.z() - 3.0f * z - t0.z() - t0.z() - t1.z()) * t2 + z * t + z;
+		dest.x = (x + x - v1.x() - v1.x() + t1.x() + t0.x()) * t3 + (3.0f * v1.x() - 3.0f * x - t0.x() - t0.x() - t1.x()) * t2 + x * t + x;
+		dest.y = (y + y - v1.y() - v1.y() + t1.y() + t0.y()) * t3 + (3.0f * v1.y() - 3.0f * y - t0.y() - t0.y() - t1.y()) * t2 + y * t + y;
+		dest.z = (z + z - v1.z() - v1.z() + t1.z() + t0.z()) * t3 + (3.0f * v1.z() - 3.0f * z - t0.z() - t0.z() - t1.z()) * t2 + z * t + z;
 		return dest;
 	}
 

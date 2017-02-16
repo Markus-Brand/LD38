@@ -22,15 +22,9 @@
  */
 package org.joml;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.io.*;
+import java.nio.*;
+import java.text.*;
 
 /**
  * Contains the definition of a 3x3 matrix of doubles, and associated functions to transform
@@ -288,8 +282,7 @@ public class Matrix3d implements Externalizable, Matrix3dc {
 			return delegate.lookAlong(dir, up, dest);
 		}
 
-		public Matrix3d lookAlong(double dirX, double dirY, double dirZ, double upX, double upY, double upZ,
-				Matrix3d dest) {
+		public Matrix3d lookAlong(double dirX, double dirY, double dirZ, double upX, double upY, double upZ, Matrix3d dest) {
 			return delegate.lookAlong(dirX, dirY, dirZ, upX, upY, upZ, dest);
 		}
 
@@ -341,8 +334,7 @@ public class Matrix3d implements Externalizable, Matrix3dc {
 			return delegate.rotateTowards(direction, up, dest);
 		}
 
-		public Matrix3d rotateTowards(double dirX, double dirY, double dirZ, double upX, double upY, double upZ,
-				Matrix3d dest) {
+		public Matrix3d rotateTowards(double dirX, double dirY, double dirZ, double upX, double upY, double upZ, Matrix3d dest) {
 			return delegate.rotateTowards(dirX, dirY, dirZ, upX, upY, upZ, dest);
 		}
 
@@ -460,8 +452,7 @@ public class Matrix3d implements Externalizable, Matrix3dc {
 	 * @param m22
 	 *            the value of m22
 	 */
-	public Matrix3d(double m00, double m01, double m02, double m10, double m11, double m12, double m20, double m21,
-			double m22) {
+	public Matrix3d(double m00, double m01, double m02, double m10, double m11, double m12, double m20, double m21, double m22) {
 		this.m00 = m00;
 		this.m01 = m01;
 		this.m02 = m02;
@@ -980,8 +971,7 @@ public class Matrix3d implements Externalizable, Matrix3dc {
 	 *            the new value of m22
 	 * @return this
 	 */
-	public Matrix3d set(double m00, double m01, double m02, double m10, double m11, double m12, double m20, double m21,
-			double m22) {
+	public Matrix3d set(double m00, double m01, double m02, double m10, double m11, double m12, double m20, double m21, double m22) {
 		this.m00 = m00;
 		this.m01 = m01;
 		this.m02 = m02;
@@ -4213,8 +4203,7 @@ public class Matrix3d implements Externalizable, Matrix3dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix3d rotateTowards(double dirX, double dirY, double dirZ, double upX, double upY, double upZ,
-			Matrix3d dest) {
+	public Matrix3d rotateTowards(double dirX, double dirY, double dirZ, double upX, double upY, double upZ, Matrix3d dest) {
 		// Normalize direction
 		double invDirLength = 1.0 / Math.sqrt(dirX * dirX + dirY * dirY + dirZ * dirZ);
 		double ndirX = dirX * invDirLength;

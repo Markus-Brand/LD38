@@ -1,10 +1,7 @@
 package mbeb.opengldefault.animation;
 
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
-import org.lwjgl.assimp.AIMatrix4x4;
+import org.joml.*;
+import org.lwjgl.assimp.*;
 
 /**
  * a Transformation with convenient functions.
@@ -20,10 +17,9 @@ public class BoneTransformation {
 		 aimat.b1(), aimat.b2(), aimat.b3(), aimat.b4(),
 		 aimat.c1(), aimat.c2(), aimat.c3(), aimat.c4(),
 		 aimat.d1(), aimat.d2(), aimat.d3(), aimat.d4());/**/
-		Matrix4f mat = new Matrix4f(aimat.a1(), aimat.b1(), aimat.c1(), aimat.d1(),
-				aimat.a2(), aimat.b2(), aimat.c2(), aimat.d2(),
-				aimat.a3(), aimat.b3(), aimat.c3(), aimat.d3(),
-				aimat.a4(), aimat.b4(), aimat.c4(), aimat.d4());
+		Matrix4f mat =
+				new Matrix4f(aimat.a1(), aimat.b1(), aimat.c1(), aimat.d1(), aimat.a2(), aimat.b2(), aimat.c2(), aimat.d2(), aimat.a3(), aimat.b3(), aimat.c3(), aimat.d3(), aimat.a4(), aimat.b4(),
+						aimat.c4(), aimat.d4());
 		return mat;
 	}
 
@@ -44,10 +40,7 @@ public class BoneTransformation {
 	 * @return
 	 */
 	public static BoneTransformation lerp(BoneTransformation t1, BoneTransformation t2, double factor) {
-		return new BoneTransformation(
-				lerpVec3(t1.getPosition(), t2.getPosition(), factor),
-				lerpQuaternion(t1.getRotation(), t2.getRotation(), factor),
-				lerpVec3(t1.getScale(), t2.getScale(), factor));
+		return new BoneTransformation(lerpVec3(t1.getPosition(), t2.getPosition(), factor), lerpQuaternion(t1.getRotation(), t2.getRotation(), factor), lerpVec3(t1.getScale(), t2.getScale(), factor));
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -70,16 +63,15 @@ public class BoneTransformation {
 	}
 
 	public BoneTransformation(Matrix4f mat) {
-		this(mat.getTranslation(new Vector3f()),
-				mat.getNormalizedRotation(new Quaternionf()),
-				mat.getScale(new Vector3f()));
+		this(mat.getTranslation(new Vector3f()), mat.getNormalizedRotation(new Quaternionf()), mat.getScale(new Vector3f()));
 
 	}
 
 	/**
 	 * combine two transformations
 	 *
-	 * @param other the other transformation to perform "after" this one
+	 * @param other
+	 *            the other transformation to perform "after" this one
 	 * @return a new combined transformation
 	 */
 	public BoneTransformation and(BoneTransformation other) {
@@ -93,10 +85,7 @@ public class BoneTransformation {
 	 * @return a matrix representing this transformation
 	 */
 	public Matrix4f asMatrix() {
-		return new Matrix4f()
-			.translate(getPosition())
-			.scale(getScale())
-			.rotate(getRotation().normalize());
+		return new Matrix4f().translate(getPosition()).scale(getScale()).rotate(getRotation().normalize());
 	}
 
 	/**
@@ -134,8 +123,7 @@ public class BoneTransformation {
 
 	@Override
 	public String toString() {
-		return "Transform( loc=" + getPosition() + ", rot="
-				+ getRotation() + ", scale=" + getScale() + ")";
+		return "Transform( loc=" + getPosition() + ", rot=" + getRotation() + ", scale=" + getScale() + ")";
 	}
 
 	public Vector3f getPosition() {

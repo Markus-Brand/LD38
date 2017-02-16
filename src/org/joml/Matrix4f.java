@@ -22,14 +22,9 @@
  */
 package org.joml;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.io.*;
+import java.nio.*;
+import java.text.*;
 
 /**
  * Contains the definition of a 4x4 matrix of floats, and associated functions to transform
@@ -524,8 +519,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 			return delegate.translateLocal(x, y, z, dest);
 		}
 
-		public Matrix4f ortho(float left, float right, float bottom, float top, float zNear, float zFar,
-				boolean zZeroToOne, Matrix4f dest) {
+		public Matrix4f ortho(float left, float right, float bottom, float top, float zNear, float zFar, boolean zZeroToOne, Matrix4f dest) {
 			return delegate.ortho(left, right, bottom, top, zNear, zFar, zZeroToOne, dest);
 		}
 
@@ -533,18 +527,15 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 			return delegate.ortho(left, right, bottom, top, zNear, zFar, dest);
 		}
 
-		public Matrix4f orthoLH(float left, float right, float bottom, float top, float zNear, float zFar,
-				boolean zZeroToOne, Matrix4f dest) {
+		public Matrix4f orthoLH(float left, float right, float bottom, float top, float zNear, float zFar, boolean zZeroToOne, Matrix4f dest) {
 			return delegate.orthoLH(left, right, bottom, top, zNear, zFar, zZeroToOne, dest);
 		}
 
-		public Matrix4f
-				orthoLH(float left, float right, float bottom, float top, float zNear, float zFar, Matrix4f dest) {
+		public Matrix4f orthoLH(float left, float right, float bottom, float top, float zNear, float zFar, Matrix4f dest) {
 			return delegate.orthoLH(left, right, bottom, top, zNear, zFar, dest);
 		}
 
-		public Matrix4f orthoSymmetric(float width, float height, float zNear, float zFar, boolean zZeroToOne,
-				Matrix4f dest) {
+		public Matrix4f orthoSymmetric(float width, float height, float zNear, float zFar, boolean zZeroToOne, Matrix4f dest) {
 			return delegate.orthoSymmetric(width, height, zNear, zFar, zZeroToOne, dest);
 		}
 
@@ -552,8 +543,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 			return delegate.orthoSymmetric(width, height, zNear, zFar, dest);
 		}
 
-		public Matrix4f orthoSymmetricLH(float width, float height, float zNear, float zFar, boolean zZeroToOne,
-				Matrix4f dest) {
+		public Matrix4f orthoSymmetricLH(float width, float height, float zNear, float zFar, boolean zZeroToOne, Matrix4f dest) {
 			return delegate.orthoSymmetricLH(width, height, zNear, zFar, zZeroToOne, dest);
 		}
 
@@ -581,13 +571,11 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 			return delegate.lookAt(eye, center, up, dest);
 		}
 
-		public Matrix4f lookAt(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ,
-				float upX, float upY, float upZ, Matrix4f dest) {
+		public Matrix4f lookAt(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ, Matrix4f dest) {
 			return delegate.lookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, dest);
 		}
 
-		public Matrix4f lookAtPerspective(float eyeX, float eyeY, float eyeZ, float centerX, float centerY,
-				float centerZ, float upX, float upY, float upZ, Matrix4f dest) {
+		public Matrix4f lookAtPerspective(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ, Matrix4f dest) {
 			return delegate.lookAtPerspective(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, dest);
 		}
 
@@ -595,18 +583,15 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 			return delegate.lookAtLH(eye, center, up, dest);
 		}
 
-		public Matrix4f lookAtLH(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ,
-				float upX, float upY, float upZ, Matrix4f dest) {
+		public Matrix4f lookAtLH(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ, Matrix4f dest) {
 			return delegate.lookAtLH(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, dest);
 		}
 
-		public Matrix4f lookAtPerspectiveLH(float eyeX, float eyeY, float eyeZ, float centerX, float centerY,
-				float centerZ, float upX, float upY, float upZ, Matrix4f dest) {
+		public Matrix4f lookAtPerspectiveLH(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ, Matrix4f dest) {
 			return delegate.lookAtPerspectiveLH(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, dest);
 		}
 
-		public Matrix4f
-				perspective(float fovy, float aspect, float zNear, float zFar, boolean zZeroToOne, Matrix4f dest) {
+		public Matrix4f perspective(float fovy, float aspect, float zNear, float zFar, boolean zZeroToOne, Matrix4f dest) {
 			return delegate.perspective(fovy, aspect, zNear, zFar, zZeroToOne, dest);
 		}
 
@@ -614,8 +599,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 			return delegate.perspective(fovy, aspect, zNear, zFar, dest);
 		}
 
-		public Matrix4f perspectiveLH(float fovy, float aspect, float zNear, float zFar, boolean zZeroToOne,
-				Matrix4f dest) {
+		public Matrix4f perspectiveLH(float fovy, float aspect, float zNear, float zFar, boolean zZeroToOne, Matrix4f dest) {
 			return delegate.perspectiveLH(fovy, aspect, zNear, zFar, zZeroToOne, dest);
 		}
 
@@ -623,23 +607,19 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 			return delegate.perspectiveLH(fovy, aspect, zNear, zFar, dest);
 		}
 
-		public Matrix4f frustum(float left, float right, float bottom, float top, float zNear, float zFar,
-				boolean zZeroToOne, Matrix4f dest) {
+		public Matrix4f frustum(float left, float right, float bottom, float top, float zNear, float zFar, boolean zZeroToOne, Matrix4f dest) {
 			return delegate.frustum(left, right, bottom, top, zNear, zFar, zZeroToOne, dest);
 		}
 
-		public Matrix4f
-				frustum(float left, float right, float bottom, float top, float zNear, float zFar, Matrix4f dest) {
+		public Matrix4f frustum(float left, float right, float bottom, float top, float zNear, float zFar, Matrix4f dest) {
 			return delegate.frustum(left, right, bottom, top, zNear, zFar, dest);
 		}
 
-		public Matrix4f frustumLH(float left, float right, float bottom, float top, float zNear, float zFar,
-				boolean zZeroToOne, Matrix4f dest) {
+		public Matrix4f frustumLH(float left, float right, float bottom, float top, float zNear, float zFar, boolean zZeroToOne, Matrix4f dest) {
 			return delegate.frustumLH(left, right, bottom, top, zNear, zFar, zZeroToOne, dest);
 		}
 
-		public Matrix4f frustumLH(float left, float right, float bottom, float top, float zNear, float zFar,
-				Matrix4f dest) {
+		public Matrix4f frustumLH(float left, float right, float bottom, float top, float zNear, float zFar, Matrix4f dest) {
 			return delegate.frustumLH(left, right, bottom, top, zNear, zFar, dest);
 		}
 
@@ -843,8 +823,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 			return delegate.shadow(light, a, b, c, d, dest);
 		}
 
-		public Matrix4f shadow(float lightX, float lightY, float lightZ, float lightW, float a, float b, float c,
-				float d, Matrix4f dest) {
+		public Matrix4f shadow(float lightX, float lightY, float lightZ, float lightW, float a, float b, float c, float d, Matrix4f dest) {
 			return delegate.shadow(lightX, lightY, lightZ, lightW, a, b, c, d, dest);
 		}
 
@@ -852,8 +831,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 			return delegate.shadow(light, planeTransform, dest);
 		}
 
-		public Matrix4f shadow(float lightX, float lightY, float lightZ, float lightW, Matrix4fc planeTransform,
-				Matrix4f dest) {
+		public Matrix4f shadow(float lightX, float lightY, float lightZ, float lightW, Matrix4fc planeTransform, Matrix4f dest) {
 			return delegate.shadow(lightX, lightY, lightZ, lightW, planeTransform, dest);
 		}
 
@@ -865,8 +843,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 			return delegate.isAffine();
 		}
 
-		public Matrix4f arcball(float radius, float centerX, float centerY, float centerZ, float angleX, float angleY,
-				Matrix4f dest) {
+		public Matrix4f arcball(float radius, float centerX, float centerY, float centerZ, float angleX, float angleY, Matrix4f dest) {
 			return delegate.arcball(radius, centerX, centerY, centerZ, angleX, angleY, dest);
 		}
 
@@ -890,8 +867,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 			return delegate.orthoCrop(view, dest);
 		}
 
-		public Matrix4f transformAab(float minX, float minY, float minZ, float maxX, float maxY, float maxZ,
-				Vector3f outMin, Vector3f outMax) {
+		public Matrix4f transformAab(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, Vector3f outMin, Vector3f outMax) {
 			return delegate.transformAab(minX, minY, minZ, maxX, maxY, maxZ, outMin, outMax);
 		}
 
@@ -907,8 +883,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 			return delegate.rotateTowards(dir, up, dest);
 		}
 
-		public Matrix4f
-				rotateTowards(float dirX, float dirY, float dirZ, float upX, float upY, float upZ, Matrix4f dest) {
+		public Matrix4f rotateTowards(float dirX, float dirY, float dirZ, float upX, float upY, float upZ, Matrix4f dest) {
 			return delegate.rotateTowards(dirX, dirY, dirZ, upX, upY, upZ, dest);
 		}
 
@@ -1058,8 +1033,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 * @param m33
 	 *            the value of m33
 	 */
-	public Matrix4f(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20,
-			float m21, float m22, float m23, float m30, float m31, float m32, float m33) {
+	public Matrix4f(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33) {
 		this._m00(m00);
 		this._m01(m01);
 		this._m02(m02);
@@ -1107,8 +1081,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            the fourth column
 	 */
 	public Matrix4f(Vector4fc col0, Vector4fc col1, Vector4fc col2, Vector4fc col3) {
-		if (col0 instanceof Vector4f && col1 instanceof Vector4f && col2 instanceof Vector4f
-				&& col3 instanceof Vector4f) {
+		if (col0 instanceof Vector4f && col1 instanceof Vector4f && col2 instanceof Vector4f && col3 instanceof Vector4f) {
 			MemUtil.INSTANCE.set(this, (Vector4f) col0, (Vector4f) col1, (Vector4f) col2, (Vector4f) col3);
 		} else {
 			setVector4fc(col0, col1, col2, col3);
@@ -2809,8 +2782,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            the new value of m33
 	 * @return this
 	 */
-	public Matrix4f set(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13,
-			float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33) {
+	public Matrix4f set(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33) {
 		this._m00(m00);
 		this._m10(m10);
 		this._m20(m20);
@@ -2924,8 +2896,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 * @return this
 	 */
 	public Matrix4f set(Vector4fc col0, Vector4fc col1, Vector4fc col2, Vector4fc col3) {
-		if (col0 instanceof Vector4f && col1 instanceof Vector4f && col2 instanceof Vector4f
-				&& col3 instanceof Vector4f) {
+		if (col0 instanceof Vector4f && col1 instanceof Vector4f && col2 instanceof Vector4f && col3 instanceof Vector4f) {
 			MemUtil.INSTANCE.set(this, (Vector4f) col0, (Vector4f) col1, (Vector4f) col2, (Vector4f) col3);
 		} else {
 			setVector4fc(col0, col1, col2, col3);
@@ -2959,9 +2930,8 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	public float determinant() {
 		if ((properties & PROPERTY_AFFINE) != 0)
 			return determinantAffine();
-		return (m00 * m11 - m01 * m10) * (m22 * m33 - m23 * m32) + (m02 * m10 - m00 * m12) * (m21 * m33 - m23 * m31)
-				+ (m00 * m13 - m03 * m10) * (m21 * m32 - m22 * m31) + (m01 * m12 - m02 * m11) * (m20 * m33 - m23 * m30)
-				+ (m03 * m11 - m01 * m13) * (m20 * m32 - m22 * m30) + (m02 * m13 - m03 * m12) * (m20 * m31 - m21 * m30);
+		return (m00 * m11 - m01 * m10) * (m22 * m33 - m23 * m32) + (m02 * m10 - m00 * m12) * (m21 * m33 - m23 * m31) + (m00 * m13 - m03 * m10) * (m21 * m32 - m22 * m31) + (m01 * m12 - m02 * m11)
+				* (m20 * m33 - m23 * m30) + (m03 * m11 - m01 * m13) * (m20 * m32 - m22 * m30) + (m02 * m13 - m03 * m12) * (m20 * m31 - m21 * m30);
 	}
 
 	/* (non-Javadoc)
@@ -3119,8 +3089,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 		float invM11 = 1.0f / m11;
 		float invM23 = 1.0f / m23;
 		float invM32 = 1.0f / m32;
-		dest.set(invM00, 0, 0, 0, 0, invM11, 0, 0, 0, 0, 0, invM32, -m20 * invM00 * invM23, -m21 * invM11 * invM23,
-				invM23, -m22 * invM23 * invM32);
+		dest.set(invM00, 0, 0, 0, 0, invM11, 0, 0, 0, 0, 0, invM32, -m20 * invM00 * invM23, -m21 * invM11 * invM23, invM23, -m22 * invM23 * invM32);
 		dest._properties(0);
 		return dest;
 	}
@@ -3207,9 +3176,8 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 		float vm30 = -view.m00() * view.m30() - view.m01() * view.m31() - view.m02() * view.m32();
 		float vm31 = -view.m10() * view.m30() - view.m11() * view.m31() - view.m12() * view.m32();
 		float vm32 = -view.m20() * view.m30() - view.m21() * view.m31() - view.m22() * view.m32();
-		dest.set(view.m00() * pm00, view.m10() * pm00, view.m20() * pm00, 0.0f, view.m01() * pm11, view.m11() * pm11,
-				view.m21() * pm11, 0.0f, vm30 * pm23, vm31 * pm23, vm32 * pm23, pm23, view.m02() * pm32 + vm30 * pm33,
-				view.m12() * pm32 + vm31 * pm33, view.m22() * pm32 + vm32 * pm33, pm33);
+		dest.set(view.m00() * pm00, view.m10() * pm00, view.m20() * pm00, 0.0f, view.m01() * pm11, view.m11() * pm11, view.m21() * pm11, 0.0f, vm30 * pm23, vm31 * pm23, vm32 * pm23, pm23, view.m02()
+				* pm32 + vm30 * pm33, view.m12() * pm32 + vm31 * pm33, view.m22() * pm32 + vm32 * pm33, pm33);
 		dest._properties(0);
 		return dest;
 	}
@@ -3252,9 +3220,8 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 		float vm30 = -view.m00() * view.m30() - view.m01() * view.m31() - view.m02() * view.m32();
 		float vm31 = -view.m10() * view.m30() - view.m11() * view.m31() - view.m12() * view.m32();
 		float vm32 = -view.m20() * view.m30() - view.m21() * view.m31() - view.m22() * view.m32();
-		dest.set(view.m00() * pm00, view.m10() * pm00, view.m20() * pm00, 0.0f, view.m01() * pm11, view.m11() * pm11,
-				view.m21() * pm11, 0.0f, vm30 * pm23, vm31 * pm23, vm32 * pm23, pm23, view.m02() * pm32 + vm30 * pm33,
-				view.m12() * pm32 + vm31 * pm33, view.m22() * pm32 + vm32 * pm33, pm33);
+		dest.set(view.m00() * pm00, view.m10() * pm00, view.m20() * pm00, 0.0f, view.m01() * pm11, view.m11() * pm11, view.m21() * pm11, 0.0f, vm30 * pm23, vm31 * pm23, vm32 * pm23, pm23, view.m02()
+				* pm32 + vm30 * pm33, view.m12() * pm32 + vm31 * pm33, view.m22() * pm32 + vm32 * pm33, pm33);
 		dest._properties(0);
 		return dest;
 	}
@@ -3337,8 +3304,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 * @see org.joml.Matrix4fc#invertAffineUnitScale(org.joml.Matrix4f)
 	 */
 	public Matrix4f invertAffineUnitScale(Matrix4f dest) {
-		dest.set(m00, m10, m20, 0.0f, m01, m11, m21, 0.0f, m02, m12, m22, 0.0f, -m00 * m30 - m01 * m31 - m02 * m32,
-				-m10 * m30 - m11 * m31 - m12 * m32, -m20 * m30 - m21 * m31 - m22 * m32, 1.0f);
+		dest.set(m00, m10, m20, 0.0f, m01, m11, m21, 0.0f, m02, m12, m22, 0.0f, -m00 * m30 - m01 * m31 - m02 * m32, -m10 * m30 - m11 * m31 - m12 * m32, -m20 * m30 - m21 * m31 - m22 * m32, 1.0f);
 		dest._properties(PROPERTY_AFFINE);
 		return dest;
 	}
@@ -4518,8 +4484,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            the scaling factor for the z-axis
 	 * @return this
 	 */
-	public Matrix4f translationRotateScale(float tx, float ty, float tz, float qx, float qy, float qz, float qw,
-			float sx, float sy, float sz) {
+	public Matrix4f translationRotateScale(float tx, float ty, float tz, float qx, float qy, float qz, float qw, float sx, float sy, float sz) {
 		float dqx = qx + qx;
 		float dqy = qy + qy;
 		float dqz = qz + qz;
@@ -4579,8 +4544,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 * @return this
 	 */
 	public Matrix4f translationRotateScale(Vector3fc translation, Quaternionfc quat, Vector3fc scale) {
-		return translationRotateScale(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(), quat.z(),
-				quat.w(), scale.x(), scale.y(), scale.z());
+		return translationRotateScale(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(), quat.z(), quat.w(), scale.x(), scale.y(), scale.z());
 	}
 
 	/**
@@ -4619,8 +4583,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            the scaling factor for all three axes
 	 * @return this
 	 */
-	public Matrix4f translationRotateScale(float tx, float ty, float tz, float qx, float qy, float qz, float qw,
-			float scale) {
+	public Matrix4f translationRotateScale(float tx, float ty, float tz, float qx, float qy, float qz, float qw, float scale) {
 		return translationRotateScale(tx, ty, tz, qx, qy, qz, qw, scale, scale, scale);
 	}
 
@@ -4651,8 +4614,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 * @return this
 	 */
 	public Matrix4f translationRotateScale(Vector3fc translation, Quaternionfc quat, float scale) {
-		return translationRotateScale(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(), quat.z(),
-				quat.w(), scale, scale, scale);
+		return translationRotateScale(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(), quat.z(), quat.w(), scale, scale, scale);
 	}
 
 	/**
@@ -4687,8 +4649,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            the scaling factor for the z-axis
 	 * @return this
 	 */
-	public Matrix4f translationRotateScaleInvert(float tx, float ty, float tz, float qx, float qy, float qz, float qw,
-			float sx, float sy, float sz) {
+	public Matrix4f translationRotateScaleInvert(float tx, float ty, float tz, float qx, float qy, float qz, float qw, float sx, float sy, float sz) {
 		float nqx = -qx, nqy = -qy, nqz = -qz;
 		float dqx = nqx + nqx;
 		float dqy = nqy + nqy;
@@ -4742,8 +4703,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 * @return this
 	 */
 	public Matrix4f translationRotateScaleInvert(Vector3fc translation, Quaternionfc quat, Vector3fc scale) {
-		return translationRotateScaleInvert(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(),
-				quat.z(), quat.w(), scale.x(), scale.y(), scale.z());
+		return translationRotateScaleInvert(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(), quat.z(), quat.w(), scale.x(), scale.y(), scale.z());
 	}
 
 	/**
@@ -4765,8 +4725,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 * @return this
 	 */
 	public Matrix4f translationRotateScaleInvert(Vector3fc translation, Quaternionfc quat, float scale) {
-		return translationRotateScaleInvert(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(),
-				quat.z(), quat.w(), scale, scale, scale);
+		return translationRotateScaleInvert(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(), quat.z(), quat.w(), scale, scale, scale);
 	}
 
 	/**
@@ -4814,8 +4773,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            the {@link #isAffine() affine} matrix to multiply by
 	 * @return this
 	 */
-	public Matrix4f translationRotateScaleMulAffine(float tx, float ty, float tz, float qx, float qy, float qz,
-			float qw, float sx, float sy, float sz, Matrix4f m) {
+	public Matrix4f translationRotateScaleMulAffine(float tx, float ty, float tz, float qx, float qy, float qz, float qw, float sx, float sy, float sz, Matrix4f m) {
 		float dqx = qx + qx;
 		float dqy = qy + qy;
 		float dqz = qz + qz;
@@ -4892,10 +4850,8 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            the {@link #isAffine() affine} matrix to multiply by
 	 * @return this
 	 */
-	public Matrix4f translationRotateScaleMulAffine(Vector3fc translation, Quaternionfc quat, Vector3fc scale,
-			Matrix4f m) {
-		return translationRotateScaleMulAffine(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(),
-				quat.z(), quat.w(), scale.x(), scale.y(), scale.z(), m);
+	public Matrix4f translationRotateScaleMulAffine(Vector3fc translation, Quaternionfc quat, Vector3fc scale, Matrix4f m) {
+		return translationRotateScaleMulAffine(translation.x(), translation.y(), translation.z(), quat.x(), quat.y(), quat.z(), quat.w(), scale.x(), scale.y(), scale.z(), m);
 	}
 
 	/**
@@ -5040,8 +4996,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 * @see org.joml.Matrix4fc#transform(float, float, float, float, org.joml.Vector4f)
 	 */
 	public Vector4f transform(float x, float y, float z, float w, Vector4f dest) {
-		dest.set(m00 * x + m10 * y + m20 * z + m30 * w, m01 * x + m11 * y + m21 * z + m31 * w, m02 * x + m12 * y + m22
-				* z + m32 * w, m03 * x + m13 * y + m23 * z + m33 * w);
+		dest.set(m00 * x + m10 * y + m20 * z + m30 * w, m01 * x + m11 * y + m21 * z + m31 * w, m02 * x + m12 * y + m22 * z + m32 * w, m03 * x + m13 * y + m23 * z + m33 * w);
 		return dest;
 	}
 
@@ -5064,9 +5019,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 */
 	public Vector4f transformProject(float x, float y, float z, float w, Vector4f dest) {
 		float invW = 1.0f / (m03 * x + m13 * y + m23 * z + m33 * w);
-		dest.set((m00 * x + m10 * y + m20 * z + m30 * w) * invW, (m01 * x + m11 * y + m21 * z + m31 * w) * invW, (m02
-				* x + m12 * y + m22 * z + m32 * w)
-				* invW, 1.0f);
+		dest.set((m00 * x + m10 * y + m20 * z + m30 * w) * invW, (m01 * x + m11 * y + m21 * z + m31 * w) * invW, (m02 * x + m12 * y + m22 * z + m32 * w) * invW, 1.0f);
 		return dest;
 	}
 
@@ -5089,9 +5042,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 */
 	public Vector3f transformProject(float x, float y, float z, Vector3f dest) {
 		float invW = 1.0f / (m03 * x + m13 * y + m23 * z + m33);
-		dest.set((m00 * x + m10 * y + m20 * z + m30) * invW, (m01 * x + m11 * y + m21 * z + m31) * invW, (m02 * x + m12
-				* y + m22 * z + m32)
-				* invW);
+		dest.set((m00 * x + m10 * y + m20 * z + m30) * invW, (m01 * x + m11 * y + m21 * z + m31) * invW, (m02 * x + m12 * y + m22 * z + m32) * invW);
 		return dest;
 	}
 
@@ -5099,8 +5050,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 * @see org.joml.Matrix4fc#transformPosition(org.joml.Vector3f)
 	 */
 	public Vector3f transformPosition(Vector3f v) {
-		v.set(m00 * v.x + m10 * v.y + m20 * v.z + m30, m01 * v.x + m11 * v.y + m21 * v.z + m31, m02 * v.x + m12 * v.y
-				+ m22 * v.z + m32);
+		v.set(m00 * v.x + m10 * v.y + m20 * v.z + m30, m01 * v.x + m11 * v.y + m21 * v.z + m31, m02 * v.x + m12 * v.y + m22 * v.z + m32);
 		return v;
 	}
 
@@ -5115,8 +5065,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 * @see org.joml.Matrix4fc#transformPosition(float, float, float, org.joml.Vector3f)
 	 */
 	public Vector3f transformPosition(float x, float y, float z, Vector3f dest) {
-		dest.set(m00 * x + m10 * y + m20 * z + m30, m01 * x + m11 * y + m21 * z + m31, m02 * x + m12 * y + m22 * z
-				+ m32);
+		dest.set(m00 * x + m10 * y + m20 * z + m30, m01 * x + m11 * y + m21 * z + m31, m02 * x + m12 * y + m22 * z + m32);
 		return dest;
 	}
 
@@ -5147,8 +5096,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 * @see org.joml.Matrix4fc#transformAffine(org.joml.Vector4f)
 	 */
 	public Vector4f transformAffine(Vector4f v) {
-		v.set(m00 * v.x + m10 * v.y + m20 * v.z + m30 * v.w, m01 * v.x + m11 * v.y + m21 * v.z + m31 * v.w, m02 * v.x
-				+ m12 * v.y + m22 * v.z + m32 * v.w, v.w);
+		v.set(m00 * v.x + m10 * v.y + m20 * v.z + m30 * v.w, m01 * v.x + m11 * v.y + m21 * v.z + m31 * v.w, m02 * v.x + m12 * v.y + m22 * v.z + m32 * v.w, v.w);
 		return v;
 	}
 
@@ -5163,8 +5111,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 * @see org.joml.Matrix4fc#transformAffine(float, float, float, float, org.joml.Vector4f)
 	 */
 	public Vector4f transformAffine(float x, float y, float z, float w, Vector4f dest) {
-		dest.set(m00 * x + m10 * y + m20 * z + m30 * w, m01 * x + m11 * y + m21 * z + m31 * w, m02 * x + m12 * y + m22
-				* z + m32 * w, w);
+		dest.set(m00 * x + m10 * y + m20 * z + m30 * w, m01 * x + m11 * y + m21 * z + m31 * w, m02 * x + m12 * y + m22 * z + m32 * w, w);
 		return dest;
 	}
 
@@ -6980,8 +6927,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix4f ortho(float left, float right, float bottom, float top, float zNear, float zFar,
-			boolean zZeroToOne, Matrix4f dest) {
+	public Matrix4f ortho(float left, float right, float bottom, float top, float zNear, float zFar, boolean zZeroToOne, Matrix4f dest) {
 		// calculate right matrix elements
 		float rm00 = 2.0f / (right - left);
 		float rm11 = 2.0f / (top - bottom);
@@ -7078,8 +7024,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return this
 	 */
-	public Matrix4f
-			ortho(float left, float right, float bottom, float top, float zNear, float zFar, boolean zZeroToOne) {
+	public Matrix4f ortho(float left, float right, float bottom, float top, float zNear, float zFar, boolean zZeroToOne) {
 		return ortho(left, right, bottom, top, zNear, zFar, zZeroToOne, this);
 	}
 
@@ -7148,8 +7093,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix4f orthoLH(float left, float right, float bottom, float top, float zNear, float zFar,
-			boolean zZeroToOne, Matrix4f dest) {
+	public Matrix4f orthoLH(float left, float right, float bottom, float top, float zNear, float zFar, boolean zZeroToOne, Matrix4f dest) {
 		// calculate right matrix elements
 		float rm00 = 2.0f / (right - left);
 		float rm11 = 2.0f / (top - bottom);
@@ -7246,8 +7190,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return this
 	 */
-	public Matrix4f orthoLH(float left, float right, float bottom, float top, float zNear, float zFar,
-			boolean zZeroToOne) {
+	public Matrix4f orthoLH(float left, float right, float bottom, float top, float zNear, float zFar, boolean zZeroToOne) {
 		return orthoLH(left, right, bottom, top, zNear, zFar, zZeroToOne, this);
 	}
 
@@ -7310,8 +7253,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return this
 	 */
-	public Matrix4f setOrtho(float left, float right, float bottom, float top, float zNear, float zFar,
-			boolean zZeroToOne) {
+	public Matrix4f setOrtho(float left, float right, float bottom, float top, float zNear, float zFar, boolean zZeroToOne) {
 		MemUtil.INSTANCE.identity(this);
 		this._m00(2.0f / (right - left));
 		this._m11(2.0f / (top - bottom));
@@ -7378,8 +7320,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return this
 	 */
-	public Matrix4f setOrthoLH(float left, float right, float bottom, float top, float zNear, float zFar,
-			boolean zZeroToOne) {
+	public Matrix4f setOrthoLH(float left, float right, float bottom, float top, float zNear, float zFar, boolean zZeroToOne) {
 		MemUtil.INSTANCE.identity(this);
 		this._m00(2.0f / (right - left));
 		this._m11(2.0f / (top - bottom));
@@ -7452,8 +7393,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return dest
 	 */
-	public Matrix4f
-			orthoSymmetric(float width, float height, float zNear, float zFar, boolean zZeroToOne, Matrix4f dest) {
+	public Matrix4f orthoSymmetric(float width, float height, float zNear, float zFar, boolean zZeroToOne, Matrix4f dest) {
 		// calculate right matrix elements
 		float rm00 = 2.0f / width;
 		float rm11 = 2.0f / height;
@@ -7618,8 +7558,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return dest
 	 */
-	public Matrix4f orthoSymmetricLH(float width, float height, float zNear, float zFar, boolean zZeroToOne,
-			Matrix4f dest) {
+	public Matrix4f orthoSymmetricLH(float width, float height, float zNear, float zFar, boolean zZeroToOne, Matrix4f dest) {
 		// calculate right matrix elements
 		float rm00 = 2.0f / width;
 		float rm11 = 2.0f / height;
@@ -8459,8 +8398,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            the z-coordinate of the up vector
 	 * @return this
 	 */
-	public Matrix4f setLookAt(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ,
-			float upX, float upY, float upZ) {
+	public Matrix4f setLookAt(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ) {
 		// Compute direction from position to lookAt
 		float dirX, dirY, dirZ;
 		dirX = eyeX - centerX;
@@ -8594,8 +8532,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix4f lookAt(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX,
-			float upY, float upZ, Matrix4f dest) {
+	public Matrix4f lookAt(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ, Matrix4f dest) {
 		if ((properties & PROPERTY_IDENTITY) != 0)
 			return dest.setLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
 		else if ((properties & PROPERTY_PERSPECTIVE) != 0)
@@ -8603,8 +8540,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 		return lookAtGeneric(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, dest);
 	}
 
-	private Matrix4f lookAtGeneric(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ,
-			float upX, float upY, float upZ, Matrix4f dest) {
+	private Matrix4f lookAtGeneric(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ, Matrix4f dest) {
 		// Compute direction from position to lookAt
 		float dirX, dirY, dirZ;
 		dirX = eyeX - centerX;
@@ -8714,8 +8650,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix4f lookAtPerspective(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ,
-			float upX, float upY, float upZ, Matrix4f dest) {
+	public Matrix4f lookAtPerspective(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ, Matrix4f dest) {
 		// Compute direction from position to lookAt
 		float dirX, dirY, dirZ;
 		dirX = eyeX - centerX;
@@ -8825,8 +8760,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            the z-coordinate of the up vector
 	 * @return this
 	 */
-	public Matrix4f lookAt(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX,
-			float upY, float upZ) {
+	public Matrix4f lookAt(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ) {
 		return lookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, this);
 	}
 
@@ -8884,8 +8818,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            the z-coordinate of the up vector
 	 * @return this
 	 */
-	public Matrix4f setLookAtLH(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ,
-			float upX, float upY, float upZ) {
+	public Matrix4f setLookAtLH(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ) {
 		// Compute direction from position to lookAt
 		float dirX, dirY, dirZ;
 		dirX = centerX - eyeX;
@@ -9017,8 +8950,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix4f lookAtLH(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ,
-			float upX, float upY, float upZ, Matrix4f dest) {
+	public Matrix4f lookAtLH(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ, Matrix4f dest) {
 		if ((properties & PROPERTY_IDENTITY) != 0)
 			return dest.setLookAtLH(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
 		else if ((properties & PROPERTY_PERSPECTIVE) != 0)
@@ -9026,8 +8958,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 		return lookAtLHGeneric(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, dest);
 	}
 
-	private Matrix4f lookAtLHGeneric(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ,
-			float upX, float upY, float upZ, Matrix4f dest) {
+	private Matrix4f lookAtLHGeneric(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ, Matrix4f dest) {
 		// Compute direction from position to lookAt
 		float dirX, dirY, dirZ;
 		dirX = centerX - eyeX;
@@ -9133,8 +9064,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            the z-coordinate of the up vector
 	 * @return this
 	 */
-	public Matrix4f lookAtLH(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ,
-			float upX, float upY, float upZ) {
+	public Matrix4f lookAtLH(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ) {
 		return lookAtLH(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, this);
 	}
 
@@ -9176,8 +9106,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix4f lookAtPerspectiveLH(float eyeX, float eyeY, float eyeZ, float centerX, float centerY,
-			float centerZ, float upX, float upY, float upZ, Matrix4f dest) {
+	public Matrix4f lookAtPerspectiveLH(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ, Matrix4f dest) {
 		// Compute direction from position to lookAt
 		float dirX, dirY, dirZ;
 		dirX = centerX - eyeX;
@@ -9291,8 +9220,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 		return perspectiveGeneric(fovy, aspect, zNear, zFar, zZeroToOne, dest);
 	}
 
-	private Matrix4f perspectiveGeneric(float fovy, float aspect, float zNear, float zFar, boolean zZeroToOne,
-			Matrix4f dest) {
+	private Matrix4f perspectiveGeneric(float fovy, float aspect, float zNear, float zFar, boolean zZeroToOne, Matrix4f dest) {
 		float h = (float) Math.tan(fovy * 0.5f);
 		// calculate right matrix elements
 		float rm00 = 1.0f / (h * aspect);
@@ -9550,8 +9478,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 		return perspectiveLHGeneric(fovy, aspect, zNear, zFar, zZeroToOne, dest);
 	}
 
-	private Matrix4f perspectiveLHGeneric(float fovy, float aspect, float zNear, float zFar, boolean zZeroToOne,
-			Matrix4f dest) {
+	private Matrix4f perspectiveLHGeneric(float fovy, float aspect, float zNear, float zFar, boolean zZeroToOne, Matrix4f dest) {
 		float h = (float) Math.tan(fovy * 0.5f);
 		// calculate right matrix elements
 		float rm00 = 1.0f / (h * aspect);
@@ -9808,8 +9735,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix4f frustum(float left, float right, float bottom, float top, float zNear, float zFar,
-			boolean zZeroToOne, Matrix4f dest) {
+	public Matrix4f frustum(float left, float right, float bottom, float top, float zNear, float zFar, boolean zZeroToOne, Matrix4f dest) {
 		// calculate right matrix elements
 		float rm00 = (zNear + zNear) / (right - left);
 		float rm11 = (zNear + zNear) / (top - bottom);
@@ -9935,8 +9861,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return this
 	 */
-	public Matrix4f frustum(float left, float right, float bottom, float top, float zNear, float zFar,
-			boolean zZeroToOne) {
+	public Matrix4f frustum(float left, float right, float bottom, float top, float zNear, float zFar, boolean zZeroToOne) {
 		return frustum(left, right, bottom, top, zNear, zFar, zZeroToOne, this);
 	}
 
@@ -10008,8 +9933,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return this
 	 */
-	public Matrix4f setFrustum(float left, float right, float bottom, float top, float zNear, float zFar,
-			boolean zZeroToOne) {
+	public Matrix4f setFrustum(float left, float right, float bottom, float top, float zNear, float zFar, boolean zZeroToOne) {
 		MemUtil.INSTANCE.zero(this);
 		this._m00((zNear + zNear) / (right - left));
 		this._m11((zNear + zNear) / (top - bottom));
@@ -10105,8 +10029,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Matrix4f frustumLH(float left, float right, float bottom, float top, float zNear, float zFar,
-			boolean zZeroToOne, Matrix4f dest) {
+	public Matrix4f frustumLH(float left, float right, float bottom, float top, float zNear, float zFar, boolean zZeroToOne, Matrix4f dest) {
 		// calculate right matrix elements
 		float rm00 = (zNear + zNear) / (right - left);
 		float rm11 = (zNear + zNear) / (top - bottom);
@@ -10193,8 +10116,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return this
 	 */
-	public Matrix4f frustumLH(float left, float right, float bottom, float top, float zNear, float zFar,
-			boolean zZeroToOne) {
+	public Matrix4f frustumLH(float left, float right, float bottom, float top, float zNear, float zFar, boolean zZeroToOne) {
 		return frustumLH(left, right, bottom, top, zNear, zFar, zZeroToOne, this);
 	}
 
@@ -10304,8 +10226,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return this
 	 */
-	public Matrix4f setFrustumLH(float left, float right, float bottom, float top, float zNear, float zFar,
-			boolean zZeroToOne) {
+	public Matrix4f setFrustumLH(float left, float right, float bottom, float top, float zNear, float zFar, boolean zZeroToOne) {
 		MemUtil.INSTANCE.zero(this);
 		this._m00((zNear + zNear) / (right - left));
 		this._m11((zNear + zNear) / (top - bottom));
@@ -12456,8 +12377,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	/* (non-Javadoc)
 	 * @see org.joml.Matrix4fc#shadow(float, float, float, float, float, float, float, float, org.joml.Matrix4f)
 	 */
-	public Matrix4f shadow(float lightX, float lightY, float lightZ, float lightW, float a, float b, float c, float d,
-			Matrix4f dest) {
+	public Matrix4f shadow(float lightX, float lightY, float lightZ, float lightW, float a, float b, float c, float d, Matrix4f dest) {
 		// normalize plane
 		float invPlaneLen = (float) (1.0 / Math.sqrt(a * a + b * b + c * c));
 		float an = a * invPlaneLen;
@@ -12558,8 +12478,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	/* (non-Javadoc)
 	 * @see org.joml.Matrix4fc#shadow(float, float, float, float, org.joml.Matrix4fc, org.joml.Matrix4f)
 	 */
-	public Matrix4f shadow(float lightX, float lightY, float lightZ, float lightW, Matrix4fc planeTransform,
-			Matrix4f dest) {
+	public Matrix4f shadow(float lightX, float lightY, float lightZ, float lightW, Matrix4fc planeTransform, Matrix4f dest) {
 		// compute plane equation by transforming (y = 0)
 		float a = planeTransform.m10();
 		float b = planeTransform.m11();
@@ -12913,8 +12832,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	/* (non-Javadoc)
 	 * @see org.joml.Matrix4fc#arcball(float, float, float, float, float, float, org.joml.Matrix4f)
 	 */
-	public Matrix4f arcball(float radius, float centerX, float centerY, float centerZ, float angleX, float angleY,
-			Matrix4f dest) {
+	public Matrix4f arcball(float radius, float centerX, float centerY, float centerZ, float angleX, float angleY, Matrix4f dest) {
 		float m30 = m20 * -radius + this.m30;
 		float m31 = m21 * -radius + this.m31;
 		float m32 = m22 * -radius + this.m32;
@@ -13249,8 +13167,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            the y coordinate of the left corner at the longer edge of the trapezoid
 	 * @return this
 	 */
-	public Matrix4f
-			trapezoidCrop(float p0x, float p0y, float p1x, float p1y, float p2x, float p2y, float p3x, float p3y) {
+	public Matrix4f trapezoidCrop(float p0x, float p0y, float p1x, float p1y, float p2x, float p2y, float p3x, float p3y) {
 		float aX = p1y - p0y, aY = p0x - p1x;
 		float m00 = aY;
 		float m10 = -aX;
@@ -13288,8 +13205,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	/* (non-Javadoc)
 	 * @see org.joml.Matrix4fc#transformAab(float, float, float, float, float, float, org.joml.Vector3f, org.joml.Vector3f)
 	 */
-	public Matrix4f transformAab(float minX, float minY, float minZ, float maxX, float maxY, float maxZ,
-			Vector3f outMin, Vector3f outMax) {
+	public Matrix4f transformAab(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, Vector3f outMin, Vector3f outMax) {
 		float xax = m00 * minX, xay = m01 * minX, xaz = m02 * minX;
 		float xbx = m00 * maxX, xby = m01 * maxX, xbz = m02 * maxX;
 		float yax = m10 * minY, yay = m11 * minY, yaz = m12 * minY;
@@ -13733,8 +13649,7 @@ public class Matrix4f implements Externalizable, Matrix4fc {
 	 *            the z-coordinate of the up vector
 	 * @return this
 	 */
-	public Matrix4f translationRotateTowards(float posX, float posY, float posZ, float dirX, float dirY, float dirZ,
-			float upX, float upY, float upZ) {
+	public Matrix4f translationRotateTowards(float posX, float posY, float posZ, float dirX, float dirY, float dirZ, float upX, float upY, float upZ) {
 		// Normalize direction
 		float invDirLength = 1.0f / (float) Math.sqrt(dirX * dirX + dirY * dirY + dirZ * dirZ);
 		float ndirX = dirX * invDirLength;

@@ -14,18 +14,17 @@ public class BezierCamera extends Camera {
 	/** Class Name Tag */
 	private static final String TAG = "BezierCamera";
 
-	private Vector3f worldUp;
+	private final Vector3f worldUp;
 
-	private BezierCurve path;
+	private final BezierCurve path;
 
 	private float distanceTravelled;
 
-	private float speed;
+	private final float speed;
 
-	public BezierCamera(BezierCurve path) {
+	public BezierCamera(final BezierCurve path) {
 		projection = new Matrix4f();
-		projection.perspective((float) java.lang.Math.PI / 2,
-				OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f, 100);
+		projection.perspective((float) java.lang.Math.PI / 2, OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f, 100);
 
 		this.viewDirection = new Vector3f(1, 0, 0);
 		this.worldUp = new Vector3f(0, 1, 0);
@@ -43,7 +42,7 @@ public class BezierCamera extends Camera {
 	 *
 	 * @param deltaTime
 	 */
-	private void updateView(double deltaTime) {
+	private void updateView(final double deltaTime) {
 
 		distanceTravelled += deltaTime * speed;
 
@@ -53,7 +52,7 @@ public class BezierCamera extends Camera {
 
 		position = path.getPosition(distanceTravelled);
 
-		Vector3f center = new Vector3f();
+		final Vector3f center = new Vector3f();
 		view = new Matrix4f();
 
 		view.lookAt(position, center, worldUp);
@@ -62,7 +61,7 @@ public class BezierCamera extends Camera {
 	}
 
 	@Override
-	public void update(double deltaTime) {
+	public void update(final double deltaTime) {
 		updateView(deltaTime);
 	}
 
