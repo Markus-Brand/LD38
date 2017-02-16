@@ -1,6 +1,5 @@
 package mbeb.opengldefault.rendering.io;
 
-
 import java.util.*;
 import org.lwjgl.assimp.*;
 
@@ -9,6 +8,14 @@ import org.lwjgl.assimp.*;
  */
 public enum DataFragment {
 
+	FLOAT {
+
+		@Override
+		public int size() {
+			return 1;
+		}
+
+	},
 	POSITION {
 
 		@Override
@@ -93,8 +100,9 @@ public enum DataFragment {
 		protected void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
 			POSITION2D.addTo(mesh, v, data, dataPointer);
 		}
-	}, BONE_INDICES_3 {
-		
+	},
+	BONE_INDICES_3 {
+
 		@Override
 		public boolean needsBoneData() {
 			return true;
@@ -109,25 +117,28 @@ public enum DataFragment {
 		public boolean isFloat() {
 			return true;
 		}
-		
+
 		@Override
-		public void addTo(AIMesh mesh, int v, float[] data, int dataPointer, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
+		public void addTo(AIMesh mesh, int v, float[] data, int dataPointer,
+				Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
 			List<Map.Entry<Integer, Float>> weightsData = vertexBoneWeights.get(v);
-			for (Map.Entry<Integer, Float> e: weightsData) {
+			for (Map.Entry<Integer, Float> e : weightsData) {
 				data[dataPointer++] = e.getKey();
 			}
 		}
-	}, BONE_WEIGHTS_3 {
+	},
+	BONE_WEIGHTS_3 {
 
 		@Override
 		public int size() {
 			return 3;
 		}
-		
+
 		@Override
-		public void addTo(AIMesh mesh, int v, float[] data, int dataPointer, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
+		public void addTo(AIMesh mesh, int v, float[] data, int dataPointer,
+				Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
 			List<Map.Entry<Integer, Float>> weightsData = vertexBoneWeights.get(v);
-			for (Map.Entry<Integer, Float> e: weightsData) {
+			for (Map.Entry<Integer, Float> e : weightsData) {
 				data[dataPointer++] = e.getValue();
 			}
 		}
@@ -140,41 +151,46 @@ public enum DataFragment {
 
 	/**
 	 * add your data to the buffer
-	 * @param mesh the mesh to read from
-	 * @param v the currently processed vertex index
-	 * @param data the data array to store in
-	 * @param dataPointer current array offset
+	 * 
+	 * @param mesh
+	 *            the mesh to read from
+	 * @param v
+	 *            the currently processed vertex index
+	 * @param data
+	 *            the data array to store in
+	 * @param dataPointer
+	 *            current array offset
 	 */
 	protected void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
 		System.err.println("addTo not implemented!");
 	}
-	
+
 	/**
 	 * add your data to the buffer, passing vertexWeights aswell
+	 * 
 	 * @param mesh
 	 * @param v
 	 * @param data
 	 * @param dataPointer
-	 * @param vertexBoneWeights 
+	 * @param vertexBoneWeights
 	 */
-	public void addTo(AIMesh mesh, int v, float[] data, int dataPointer, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
+	public void addTo(AIMesh mesh, int v, float[] data, int dataPointer,
+			Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
 		addTo(mesh, v, data, dataPointer);
 	}
 
 	/**
-	 * 
 	 * @return true if this fragment needs animation information
 	 */
 	public boolean needsBoneData() {
 		return false;
 	}
-	
+
 	public boolean isFloat() {
 		return true;
 	}
-	
+
 	////////////////////////////////////////////////////////////////////////
-	
 
 	/**
 	 * @param dataFormat
@@ -199,14 +215,13 @@ public enum DataFragment {
 		}
 		return res;
 	}
-	
+
 	/**
-	 * 
 	 * @param format
 	 * @return true if this format needs animation information
 	 */
 	public static boolean needsBoneData(DataFragment[] format) {
-		for (DataFragment frag: format) {
+		for (DataFragment frag : format) {
 			if (frag.needsBoneData()) {
 				return true;
 			}

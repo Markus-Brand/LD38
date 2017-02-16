@@ -27,7 +27,7 @@ public class VAORenderable implements IRenderable {
 	/** amount of indices */
 	private int indexSize;
 	/** the boundingBox of all my vertices */
-	private BoundingBox boundingBox;
+	private final BoundingBox boundingBox;
 
 	/**
 	 * Constructor for Renderable
@@ -63,7 +63,9 @@ public class VAORenderable implements IRenderable {
 	 * @param dataFormat
 	 *            size of the components in the data array in amount of floats. a RGB color would be represented by a 3
 	 */
-	public VAORenderable(FloatBuffer vertexBuffer, IntBuffer indexBuffer, DataFragment[] dataFormat) {
+	public VAORenderable(FloatBuffer vertexBuffer, IntBuffer indexBuffer, DataFragment[] dataFormat,
+			BoundingBox boundingBox) {
+		this.boundingBox = boundingBox;
 		this.indexSize = indexBuffer.capacity();
 		this.VAO = generateVAO(vertexBuffer, indexBuffer, dataFormat);
 	}
@@ -104,13 +106,13 @@ public class VAORenderable implements IRenderable {
 
 	/**
 	 * render the Renderable with a simple call to glDrawElements
-	 * 
+	 *
 	 * @param shader
 	 */
 	@Override
 	public void render(Shader shader) {
 		bind();
-		glDrawElements(GL_TRIANGLES, indexSize, GL_UNSIGNED_INT, 0);
+		glDrawElements(shader.getDrawMode(), indexSize, GL_UNSIGNED_INT, 0);
 		GLErrors.checkForError(TAG, "glDrawElements");
 		unbind();
 	}
@@ -200,15 +202,10 @@ public class VAORenderable implements IRenderable {
 	 * Static method for generating a VBO
 	 *
 	 * @param vertexBuffer
-<<<<<<< HEAD
-	 *            vertex data in a FloatBuffer. Contains vertex position, texture coordinates, normals, color and maybe other data
-	 * @param dataFormat
-=======
 	 *            vertex data in a FloatBuffer. Contains vertex position, texture coordinates, normals, color and maybe
 	 *            other data
-	 * @param dataSizes
->>>>>>> master
-	 *            size of the components in the data array in amount of floats. a RGB color would be represented by a 3
+	 * @param dataFormat
+	 *            DataFragmets that describe how the data is stored in the buffer.
 	 * @return generated VBO
 	 */
 	private static int generateVBO(FloatBuffer vertexBuffer, DataFragment[] dataFormat) {
