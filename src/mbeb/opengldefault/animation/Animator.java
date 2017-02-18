@@ -25,7 +25,7 @@ public class Animator {
 	}
 
 	public void update(double deltaTime) {
-		currentTime += deltaTime * 0.4f;
+		currentTime += deltaTime;
 	}
 
 	public Animation getAnimation() {

@@ -203,12 +203,16 @@ public class ObjectLoader {
 		Bone rootBone = null;
 		for (int b = 0; b < mesh.mNumBones(); b++) {
 			AIBone aibone = AIBone.create(mesh.mBones().get(b));
+			String boneName = aibone.mName().dataString();
+			Bone bone;
 			if (rootBone == null) {
-				rootBone = sceneStructure.firstBoneNamed(aibone.mName().dataString());
-				rootBone.setIndex(b);
+				bone = sceneStructure.firstBoneNamed(boneName);
+				rootBone = bone;
 			} else {
-				rootBone.firstBoneNamed(aibone.mName().dataString()).setIndex(b);
+				bone = rootBone.firstBoneNamed(boneName);
 			}
+			bone.setInverseBindTransform(BoneTransformation.matFromAI(aibone.mOffsetMatrix()));
+			bone.setIndex(b);
 		}
 		return rootBone;
 	}
@@ -221,7 +225,7 @@ public class ObjectLoader {
 	 * @return a new AnimatedRenderable
 	 */
 	private AnimatedMesh loadAnimatedMesh(AIMesh mesh, VAORenderable vaomesh, Bone skeleton, Matrix4f sceneTransform) {
-		skeleton.updateInverseBindTransform(sceneTransform);/**/
+		//TODO: apply the sceneTransformation on the mesh to get rid of the hacky solution in Pose#updteUniform
 		return new AnimatedMesh(vaomesh, skeleton);
 	}
 
@@ -235,7 +239,6 @@ public class ObjectLoader {
 	private Bone parseScene(AIScene scene) {
 		AINode rootNode = scene.mRootNode();
 		Bone rootBone = new Bone(rootNode.mName().dataString(), -1);
-		rootBone.setLocalBindTransform(BoneTransformation.matFromAI(rootNode.mTransformation()));
 
 		parseBoneChildren(rootBone, rootNode);
 		return rootBone;
@@ -252,7 +255,6 @@ public class ObjectLoader {
 		for (int c = 0; c < node.mNumChildren(); c++) {
 			AINode childNode = AINode.create(node.mChildren().get(c));
 			Bone childBone = new Bone(childNode.mName().dataString(), -1);
-			childBone.setLocalBindTransform(BoneTransformation.matFromAI(childNode.mTransformation()));
 			parseBoneChildren(childBone, childNode);
 			bone.getChildren().add(childBone);
 		}
