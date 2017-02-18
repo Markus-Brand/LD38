@@ -22,7 +22,7 @@ public class SceneObject {
 	/** the combined boundingBox for this object(renderable+subObjects) */
 	private BoundingBox box;
 	/** this objects Transformation */
-	private BoneTransformation myTransformation;
+	private BoneTransformation transformation;
 	/** all subObjects (which inherit transformations) */
 	private List<SceneObject> subObjects;
 	/** the parent in the Scene-graph */
@@ -33,7 +33,7 @@ public class SceneObject {
 	 *
 	 * @param renderable
 	 *            none
-	 * @param myTransformation
+	 * @param transformation
 	 *            identity
 	 * @param subObjects
 	 *            empty collection
@@ -101,7 +101,7 @@ public class SceneObject {
 	 *            Children Objects
 	 */
 	public SceneObject(IRenderable renderable, BoneTransformation myTransformation, List<SceneObject> subObjects) {
-		this.myTransformation = myTransformation;
+		this.transformation = myTransformation;
 		this.subObjects = subObjects;
 		this.renderable = renderable;
 		box = null;
@@ -111,10 +111,10 @@ public class SceneObject {
 	 * @return this objects current Tranformation
 	 */
 	public BoneTransformation getTransformation() {
-		if (myTransformation == null) {
-			myTransformation = new BoneTransformation(new Matrix4f());
+		if (transformation == null) {
+			transformation = new BoneTransformation(new Matrix4f());
 		}
-		return myTransformation;
+		return transformation;
 	}
 
 	/**
@@ -190,6 +190,12 @@ public class SceneObject {
 		return shader != null;
 	}
 
+	/**
+	 * Updates the object
+	 *
+	 * @param deltaTime
+	 *            time since the last update
+	 */
 	public void update(double deltaTime) {
 		if (getRenderable() != null) {
 			getRenderable().update(deltaTime);
@@ -244,5 +250,29 @@ public class SceneObject {
 		}
 		box = box.unionWith(object.getBoundingBox());
 	}
+
 	//</editor-fold>
+
+	/**
+	 * Getter for the global Transformation
+	 *
+	 * @return global Transformation
+	 */
+	public BoneTransformation getGLobalTransformation() {
+		if (parent == null) {
+			return getTransformation();
+		} else {
+			return parent.getGLobalTransformation().and(getTransformation());
+		}
+
+	}
+
+	/**
+	 * Getter for the position of the center of the BoundingBox
+	 *
+	 * @return Objects position
+	 */
+	public Vector3f getPosition() {
+		return getGLobalTransformation().applyTo3(new Vector3f());
+	}
 }

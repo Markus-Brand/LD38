@@ -11,6 +11,7 @@ public interface ICamera {
 	 *            time, that passed since the last update
 	 */
 	default void update(double deltaTime) {
+		updateView();
 	}
 
 	/**
@@ -82,7 +83,7 @@ public interface ICamera {
 
 	/**
 	 * get skybox view matrix. Should be something like mat4(mat3(view))
-	 * 
+	 *
 	 * @return skybox view matrix
 	 */
 	Matrix4f getSkyboxView();
@@ -98,6 +99,16 @@ public interface ICamera {
 	 * updates the UBO: Buffers the view, projection and viewProjection matrix into the UBO
 	 */
 	void updateUniformBlock();
+
+	default void updateView() {
+		Matrix4f view = new Matrix4f();
+
+		view.lookAt(getPosition(), getPosition().add(getViewDirection(), new Vector3f()), new Vector3f(0, 1, 0));
+
+		setView(view);
+
+		updateUniformBlock();
+	}
 
 	/**
 	 * convert the given world space coordinates to screen space

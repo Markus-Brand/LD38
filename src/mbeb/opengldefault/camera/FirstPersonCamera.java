@@ -19,12 +19,6 @@ public class FirstPersonCamera extends Camera {
 
 	private final float movementSpeed, rotationSpeed;
 
-	private float distanceTravelled;
-
-	private final float viewBobbingAltitude;
-
-	private final float viewBobbingDistance;
-
 	/**
 	 * @param position
 	 * @param direction
@@ -42,27 +36,7 @@ public class FirstPersonCamera extends Camera {
 		movementSpeed = 0.1f;
 		rotationSpeed = 0.01f;
 
-		viewBobbingAltitude = 0.0f;
-
-		viewBobbingDistance = 0.2f;
-
 		updateView();
-	}
-
-	private void updateView() {
-
-		final float viewBobbing =
-				(float) (java.lang.Math.sin(distanceTravelled / viewBobbingDistance) * viewBobbingAltitude);
-		final Vector3f cameraPos = new Vector3f(position);
-		cameraPos.y += viewBobbing;
-
-		final Vector3f center = new Vector3f();
-		view = new Matrix4f();
-		cameraPos.add(viewDirection, center);
-
-		view.lookAt(cameraPos, center, worldUp);
-		projectionView = null;
-		updateUniformBlock();
 	}
 
 	@Override
@@ -104,8 +78,6 @@ public class FirstPersonCamera extends Camera {
 		delta.normalize();
 		delta.mul(movementSpeed);
 		position.add(delta);
-
-		distanceTravelled += delta.length();
 	}
 
 	private void updateDirection() {

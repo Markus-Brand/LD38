@@ -12,7 +12,7 @@ import mbeb.opengldefault.openglcontext.*;
 import org.joml.*;
 import org.lwjgl.*;
 
-public abstract class Camera implements ICamera {
+public class Camera implements ICamera {
 
 	/**
 	 * Class Name Tag
@@ -45,13 +45,15 @@ public abstract class Camera implements ICamera {
 	public Camera() {
 		projection = new Matrix4f();
 		view = new Matrix4f();
-		projectionView = new Matrix4f();
-		projection.perspective((float) (java.lang.Math.PI / 2),
+		projectionView = null;
+		projection.perspective((float) (java.lang.Math.PI / 2.8),
 				OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f, 100);
 
 		view.lookAlong(new Vector3f(0, 0, 1), new Vector3f(0, 1, 0));
 
-		projection.mul(view, projectionView);
+		projection.mul(view, getProjectionView());
+		position = new Vector3f();
+		viewDirection = new Vector3f(1, 0, 0);
 		updateUniformBlock();
 	}
 
@@ -63,6 +65,7 @@ public abstract class Camera implements ICamera {
 	@Override
 	public void setView(final Matrix4f view) {
 		this.view = view;
+		projectionView = null;
 		updateUniformBlock();
 	}
 
