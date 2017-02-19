@@ -1,8 +1,7 @@
 package mbeb.opengldefault.scene;
 
-import mbeb.opengldefault.camera.ICamera;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
+import mbeb.opengldefault.camera.*;
+
 import org.joml.*;
 
 /**

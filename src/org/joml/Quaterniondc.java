@@ -589,8 +589,7 @@ public interface Quaterniondc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Quaterniond rotateTo(double fromDirX, double fromDirY, double fromDirZ, double toDirX, double toDirY,
-			double toDirZ, Quaterniond dest);
+	Quaterniond rotateTo(double fromDirX, double fromDirY, double fromDirZ, double toDirX, double toDirY, double toDirZ, Quaterniond dest);
 
 	/**
 	 * Apply a rotation to <code>this</code> that rotates the <code>fromDir</code> vector to point along

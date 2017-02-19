@@ -1,23 +1,21 @@
 package mbeb.opengldefault.animation;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import org.joml.Matrix4f;
+import java.util.*;
+
+import org.joml.*;
 
 /**
  * a bone inside a mesh
  */
 public class Bone {
-	
+
 	private String name;
 	private int index;
-	
+
 	private Matrix4f localBindTransform;
 	private Matrix4f bindTransform;
 	private Matrix4f inverseBindTransform;
-	
+
 	private List<Bone> children;
 
 	public Bone(String name, int index) {
@@ -57,13 +55,12 @@ public class Bone {
 	public String toString() {
 		return getName() + " - " + getIndex() + "(+" + getChildren().size() + ")";
 	}
-	
-	
-	
+
 	/**
 	 * breadth-first search for a bone with this name
+	 * 
 	 * @param name
-	 * @return 
+	 * @return
 	 */
 	public Bone firstBoneNamed(String name) {
 		if (getName().equals(name)) {
@@ -71,15 +68,15 @@ public class Bone {
 		}
 		Queue<Bone> boneQueue = new LinkedList<>();
 		boneQueue.add(this);
-		
-		while (!boneQueue.isEmpty()) {
+
+		while(!boneQueue.isEmpty()) {
 			Bone bone = boneQueue.remove();
 			if (bone.getName().equals(name)) {
 				return bone;
 			}
 			boneQueue.addAll(bone.getChildren());
 		}
-		
+
 		return null;
 	}
 
@@ -90,7 +87,7 @@ public class Bone {
 	public Matrix4f getBindTransform() {
 		return bindTransform;
 	}
-	
+
 	public void updateInverseBindTransform(Matrix4f parentBindTransform) {
 		bindTransform = parentBindTransform.mul(getLocalBindTransform(), new Matrix4f());
 		for (Bone child : getChildren()) {

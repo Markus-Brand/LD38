@@ -59,8 +59,7 @@ public class Animator {
 			}
 		}
 
-		double lerpFactor = (currentTime - beforeAfter[0].getTimeStamp())
-				/ (beforeAfter[1].getTimeStamp() - beforeAfter[0].getTimeStamp());
+		double lerpFactor = (currentTime - beforeAfter[0].getTimeStamp()) / (beforeAfter[1].getTimeStamp() - beforeAfter[0].getTimeStamp());
 
 		return Pose.lerp(beforeAfter[0].getPose(), beforeAfter[1].getPose(), lerpFactor);
 	}

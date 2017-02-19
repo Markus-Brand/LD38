@@ -1,10 +1,7 @@
 package mbeb.opengldefault.animation;
 
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
-import org.lwjgl.assimp.AIMatrix4x4;
+import org.joml.*;
+import org.lwjgl.assimp.*;
 
 /**
  * a Transformation with convenient functions.
@@ -46,6 +43,7 @@ public class BoneTransformation {
 	public static BoneTransformation lerp(BoneTransformation t1, BoneTransformation t2, double factor) {
 		return new BoneTransformation(lerpVec3(t1.getPosition(), t2.getPosition(), factor), lerpQuaternion(
 				t1.getRotation(), t2.getRotation(), factor), lerpVec3(t1.getScale(), t2.getScale(), factor));
+
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////

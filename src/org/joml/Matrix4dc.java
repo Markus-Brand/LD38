@@ -22,9 +22,7 @@
  */
 package org.joml;
 
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
+import java.nio.*;
 
 /**
  * Interface to an immutable 4x4 matrix of double-precision floats.
@@ -3052,8 +3050,7 @@ public interface Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4d ortho(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne,
-			Matrix4d dest);
+	Matrix4d ortho(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest);
 
 	/**
 	 * Apply an orthographic projection transformation for a right-handed coordinate system
@@ -3112,8 +3109,7 @@ public interface Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4d orthoLH(double left, double right, double bottom, double top, double zNear, double zFar,
-			boolean zZeroToOne, Matrix4d dest);
+	Matrix4d orthoLH(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest);
 
 	/**
 	 * Apply an orthographic projection transformation for a left-handed coordiante system
@@ -3233,8 +3229,7 @@ public interface Matrix4dc {
 	 *            whether to use OpenGL's NDC z range of <tt>[-1..+1]</tt> when <code>false</code>
 	 * @return dest
 	 */
-	Matrix4d
-			orthoSymmetricLH(double width, double height, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest);
+	Matrix4d orthoSymmetricLH(double width, double height, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest);
 
 	/**
 	 * Apply a symmetric orthographic projection transformation for a left-handed coordinate system
@@ -3426,8 +3421,7 @@ public interface Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4d lookAt(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX,
-			double upY, double upZ, Matrix4d dest);
+	Matrix4d lookAt(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ, Matrix4d dest);
 
 	/**
 	 * Apply a "lookat" transformation to this matrix for a right-handed coordinate system,
@@ -3463,8 +3457,7 @@ public interface Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4d lookAtPerspective(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ,
-			double upX, double upY, double upZ, Matrix4d dest);
+	Matrix4d lookAtPerspective(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ, Matrix4d dest);
 
 	/**
 	 * Apply a "lookat" transformation to this matrix for a left-handed coordinate system,
@@ -3517,8 +3510,7 @@ public interface Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4d lookAtLH(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ,
-			double upX, double upY, double upZ, Matrix4d dest);
+	Matrix4d lookAtLH(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ, Matrix4d dest);
 
 	/**
 	 * Apply a "lookat" transformation to this matrix for a left-handed coordinate system,
@@ -3554,8 +3546,7 @@ public interface Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4d lookAtPerspectiveLH(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ,
-			double upX, double upY, double upZ, Matrix4d dest);
+	Matrix4d lookAtPerspectiveLH(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ, Matrix4d dest);
 
 	/**
 	 * Apply a symmetric perspective projection frustum transformation for a right-handed coordinate system
@@ -3700,8 +3691,7 @@ public interface Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4d frustum(double left, double right, double bottom, double top, double zNear, double zFar,
-			boolean zZeroToOne, Matrix4d dest);
+	Matrix4d frustum(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest);
 
 	/**
 	 * Apply an arbitrary perspective projection frustum transformation for a right-handed coordinate system
@@ -3768,8 +3758,7 @@ public interface Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4d frustumLH(double left, double right, double bottom, double top, double zNear, double zFar,
-			boolean zZeroToOne, Matrix4d dest);
+	Matrix4d frustumLH(double left, double right, double bottom, double top, double zNear, double zFar, boolean zZeroToOne, Matrix4d dest);
 
 	/**
 	 * Apply an arbitrary perspective projection frustum transformation for a left-handed coordinate system
@@ -4200,8 +4189,7 @@ public interface Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4d shadow(double lightX, double lightY, double lightZ, double lightW, double a, double b, double c, double d,
-			Matrix4d dest);
+	Matrix4d shadow(double lightX, double lightY, double lightZ, double lightW, double a, double b, double c, double d, Matrix4d dest);
 
 	/**
 	 * Apply a projection transformation to this matrix that projects onto the plane with the general plane equation
@@ -4257,8 +4245,7 @@ public interface Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4d
-			shadow(double lightX, double lightY, double lightZ, double lightW, Matrix4dc planeTransform, Matrix4d dest);
+	Matrix4d shadow(double lightX, double lightY, double lightZ, double lightW, Matrix4dc planeTransform, Matrix4d dest);
 
 	/**
 	 * Apply a picking transformation to this matrix using the given window coordinates <tt>(x, y)</tt> as the pick
@@ -4315,8 +4302,7 @@ public interface Matrix4dc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	Matrix4d arcball(double radius, double centerX, double centerY, double centerZ, double angleX, double angleY,
-			Matrix4d dest);
+	Matrix4d arcball(double radius, double centerX, double centerY, double centerZ, double angleX, double angleY, Matrix4d dest);
 
 	/**
 	 * Apply an arcball view transformation to this matrix with the given <code>radius</code> and <code>center</code>
@@ -4436,8 +4422,7 @@ public interface Matrix4dc {
 	 *            will hold the maximum corner of the resulting axis-aligned box
 	 * @return this
 	 */
-	Matrix4d transformAab(double minX, double minY, double minZ, double maxX, double maxY, double maxZ,
-			Vector3d outMin, Vector3d outMax);
+	Matrix4d transformAab(double minX, double minY, double minZ, double maxX, double maxY, double maxZ, Vector3d outMin, Vector3d outMax);
 
 	/**
 	 * Transform the axis-aligned box given as the minimum corner <code>min</code> and maximum corner <code>max</code>

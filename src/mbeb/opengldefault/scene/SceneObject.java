@@ -2,7 +2,7 @@ package mbeb.opengldefault.scene;
 
 import java.util.*;
 
-import mbeb.opengldefault.animation.BoneTransformation;
+import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.rendering.shader.*;
 

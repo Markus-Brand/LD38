@@ -1,6 +1,7 @@
 package mbeb.opengldefault.rendering.io;
 
 import java.util.*;
+
 import org.lwjgl.assimp.*;
 
 /**
@@ -119,8 +120,7 @@ public enum DataFragment {
 		}
 
 		@Override
-		public void addTo(AIMesh mesh, int v, float[] data, int dataPointer,
-				Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
+		public void addTo(AIMesh mesh, int v, float[] data, int dataPointer, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
 			List<Map.Entry<Integer, Float>> weightsData = vertexBoneWeights.get(v);
 			for (Map.Entry<Integer, Float> e : weightsData) {
 				data[dataPointer++] = e.getKey();
@@ -135,8 +135,7 @@ public enum DataFragment {
 		}
 
 		@Override
-		public void addTo(AIMesh mesh, int v, float[] data, int dataPointer,
-				Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
+		public void addTo(AIMesh mesh, int v, float[] data, int dataPointer, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
 			List<Map.Entry<Integer, Float>> weightsData = vertexBoneWeights.get(v);
 			for (Map.Entry<Integer, Float> e : weightsData) {
 				data[dataPointer++] = e.getValue();
@@ -174,8 +173,7 @@ public enum DataFragment {
 	 * @param dataPointer
 	 * @param vertexBoneWeights
 	 */
-	public void addTo(AIMesh mesh, int v, float[] data, int dataPointer,
-			Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
+	public void addTo(AIMesh mesh, int v, float[] data, int dataPointer, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
 		addTo(mesh, v, data, dataPointer);
 	}
 

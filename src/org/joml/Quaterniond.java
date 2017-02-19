@@ -22,12 +22,8 @@
  */
 package org.joml;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.io.*;
+import java.text.*;
 
 /**
  * Contains the definition and functions for rotations expressed as
@@ -181,8 +177,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 			return delegate.lookAlong(dir, up, dest);
 		}
 
-		public Quaterniond lookAlong(double dirX, double dirY, double dirZ, double upX, double upY, double upZ,
-				Quaterniond dest) {
+		public Quaterniond lookAlong(double dirX, double dirY, double dirZ, double upX, double upY, double upZ, Quaterniond dest) {
 			return delegate.lookAlong(dirX, dirY, dirZ, upX, upY, upZ, dest);
 		}
 
@@ -190,8 +185,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 			return delegate.difference(other, dest);
 		}
 
-		public Quaterniond rotateTo(double fromDirX, double fromDirY, double fromDirZ, double toDirX, double toDirY,
-				double toDirZ, Quaterniond dest) {
+		public Quaterniond rotateTo(double fromDirX, double fromDirY, double fromDirZ, double toDirX, double toDirY, double toDirZ, Quaterniond dest) {
 			return delegate.rotateTo(fromDirX, fromDirY, fromDirZ, toDirX, toDirY, toDirZ, dest);
 		}
 
@@ -702,8 +696,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		return setAngleAxis(angle, axis.x(), axis.y(), axis.z());
 	}
 
-	private void setFromUnnormalized(double m00, double m01, double m02, double m10, double m11, double m12,
-			double m20, double m21, double m22) {
+	private void setFromUnnormalized(double m00, double m01, double m02, double m10, double m11, double m12, double m20, double m21, double m22) {
 		double nm00 = m00, nm01 = m01, nm02 = m02;
 		double nm10 = m10, nm11 = m11, nm12 = m12;
 		double nm20 = m20, nm21 = m21, nm22 = m22;
@@ -722,8 +715,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		setFromNormalized(nm00, nm01, nm02, nm10, nm11, nm12, nm20, nm21, nm22);
 	}
 
-	private void setFromNormalized(double m00, double m01, double m02, double m10, double m11, double m12, double m20,
-			double m21, double m22) {
+	private void setFromNormalized(double m00, double m01, double m02, double m10, double m11, double m12, double m20, double m21, double m22) {
 		double t;
 		double tr = m00 + m11 + m22;
 		if (tr >= 0.0) {
@@ -769,8 +761,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	 * @return this
 	 */
 	public Quaterniond setFromUnnormalized(Matrix4fc mat) {
-		setFromUnnormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(),
-				mat.m22());
+		setFromUnnormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(), mat.m22());
 		return this;
 	}
 
@@ -784,8 +775,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	 * @return this
 	 */
 	public Quaterniond setFromUnnormalized(Matrix4x3fc mat) {
-		setFromUnnormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(),
-				mat.m22());
+		setFromUnnormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(), mat.m22());
 		return this;
 	}
 
@@ -799,8 +789,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	 * @return this
 	 */
 	public Quaterniond setFromUnnormalized(Matrix4x3dc mat) {
-		setFromUnnormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(),
-				mat.m22());
+		setFromUnnormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(), mat.m22());
 		return this;
 	}
 
@@ -814,8 +803,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	 * @return this
 	 */
 	public Quaterniond setFromNormalized(Matrix4fc mat) {
-		setFromNormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(),
-				mat.m22());
+		setFromNormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(), mat.m22());
 		return this;
 	}
 
@@ -829,8 +817,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	 * @return this
 	 */
 	public Quaterniond setFromNormalized(Matrix4x3fc mat) {
-		setFromNormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(),
-				mat.m22());
+		setFromNormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(), mat.m22());
 		return this;
 	}
 
@@ -844,8 +831,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	 * @return this
 	 */
 	public Quaterniond setFromNormalized(Matrix4x3dc mat) {
-		setFromNormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(),
-				mat.m22());
+		setFromNormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(), mat.m22());
 		return this;
 	}
 
@@ -859,8 +845,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	 * @return this
 	 */
 	public Quaterniond setFromUnnormalized(Matrix4dc mat) {
-		setFromUnnormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(),
-				mat.m22());
+		setFromUnnormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(), mat.m22());
 		return this;
 	}
 
@@ -874,8 +859,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	 * @return this
 	 */
 	public Quaterniond setFromNormalized(Matrix4dc mat) {
-		setFromNormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(),
-				mat.m22());
+		setFromNormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(), mat.m22());
 		return this;
 	}
 
@@ -889,8 +873,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	 * @return this
 	 */
 	public Quaterniond setFromUnnormalized(Matrix3fc mat) {
-		setFromUnnormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(),
-				mat.m22());
+		setFromUnnormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(), mat.m22());
 		return this;
 	}
 
@@ -904,8 +887,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	 * @return this
 	 */
 	public Quaterniond setFromNormalized(Matrix3fc mat) {
-		setFromNormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(),
-				mat.m22());
+		setFromNormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(), mat.m22());
 		return this;
 	}
 
@@ -919,8 +901,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	 * @return this
 	 */
 	public Quaterniond setFromUnnormalized(Matrix3dc mat) {
-		setFromUnnormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(),
-				mat.m22());
+		setFromUnnormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(), mat.m22());
 		return this;
 	}
 
@@ -932,8 +913,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	 * @return this
 	 */
 	public Quaterniond setFromNormalized(Matrix3dc mat) {
-		setFromNormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(),
-				mat.m22());
+		setFromNormalized(mat.m00(), mat.m01(), mat.m02(), mat.m10(), mat.m11(), mat.m12(), mat.m20(), mat.m21(), mat.m22());
 		return this;
 	}
 
@@ -1031,8 +1011,8 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	 * @see org.joml.Quaterniondc#mul(org.joml.Quaterniondc, org.joml.Quaterniond)
 	 */
 	public Quaterniond mul(Quaterniondc q, Quaterniond dest) {
-		dest.set(w * q.x() + x * q.w() + y * q.z() - z * q.y(), w * q.y() - x * q.z() + y * q.w() + z * q.x(),
-				w * q.z() + x * q.y() - y * q.x() + z * q.w(), w * q.w() - x * q.x() - y * q.y() - z * q.z());
+		dest.set(w * q.x() + x * q.w() + y * q.z() - z * q.y(), w * q.y() - x * q.z() + y * q.w() + z * q.x(), w * q.z() + x * q.y() - y * q.x() + z * q.w(),
+				w * q.w() - x * q.x() - y * q.y() - z * q.z());
 		return dest;
 	}
 
@@ -1058,8 +1038,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	 * @return this
 	 */
 	public Quaterniond mul(double qx, double qy, double qz, double qw) {
-		set(w * qx + x * qw + y * qz - z * qy, w * qy - x * qz + y * qw + z * qx, w * qz + x * qy - y * qx + z * qw, w
-				* qw - x * qx - y * qy - z * qz);
+		set(w * qx + x * qw + y * qz - z * qy, w * qy - x * qz + y * qw + z * qx, w * qz + x * qy - y * qx + z * qw, w * qw - x * qx - y * qy - z * qz);
 		return this;
 	}
 
@@ -1067,8 +1046,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	 * @see org.joml.Quaterniondc#mul(double, double, double, double, org.joml.Quaterniond)
 	 */
 	public Quaterniond mul(double qx, double qy, double qz, double qw, Quaterniond dest) {
-		dest.set(w * qx + x * qw + y * qz - z * qy, w * qy - x * qz + y * qw + z * qx, w * qz + x * qy - y * qx + z
-				* qw, w * qw - x * qx - y * qy - z * qz);
+		dest.set(w * qx + x * qw + y * qz - z * qy, w * qy - x * qz + y * qw + z * qx, w * qz + x * qy - y * qx + z * qw, w * qw - x * qx - y * qy - z * qz);
 		return dest;
 	}
 
@@ -1095,8 +1073,8 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	 * @see org.joml.Quaterniondc#premul(org.joml.Quaterniondc, org.joml.Quaterniond)
 	 */
 	public Quaterniond premul(Quaterniondc q, Quaterniond dest) {
-		dest.set(q.w() * x + q.x() * w + q.y() * z - q.z() * y, q.w() * y - q.x() * z + q.y() * w + q.z() * x, q.w()
-				* z + q.x() * y - q.y() * x + q.z() * w, q.w() * w - q.x() * x - q.y() * y - q.z() * z);
+		dest.set(q.w() * x + q.x() * w + q.y() * z - q.z() * y, q.w() * y - q.x() * z + q.y() * w + q.z() * x, q.w() * z + q.x() * y - q.y() * x + q.z() * w, q.w() * w - q.x() * x - q.y() * y - q.z()
+				* z);
 		return dest;
 	}
 
@@ -1129,8 +1107,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	 * @see org.joml.Quaterniondc#premul(double, double, double, double, org.joml.Quaterniond)
 	 */
 	public Quaterniond premul(double qx, double qy, double qz, double qw, Quaterniond dest) {
-		dest.set(qw * x + qx * w + qy * z - qz * y, qw * y - qx * z + qy * w + qz * x, qw * z + qx * y - qy * x + qz
-				* w, qw * w - qx * x - qy * y - qz * z);
+		dest.set(qw * x + qx * w + qy * z - qz * y, qw * y - qx * z + qy * w + qz * x, qw * z + qx * y - qy * x + qz * w, qw * w - qx * x - qy * y - qz * z);
 		return dest;
 	}
 
@@ -1171,8 +1148,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		double num10 = this.w * num;
 		double num11 = this.w * num2;
 		double num12 = this.w * num3;
-		dest.set((1.0 - (num5 + num6)) * x + (num7 - num12) * y + (num8 + num11) * z, (num7 + num12) * x
-				+ (1.0 - (num4 + num6)) * y + (num9 - num10) * z, (num8 - num11) * x + (num9 + num10) * y
+		dest.set((1.0 - (num5 + num6)) * x + (num7 - num12) * y + (num8 + num11) * z, (num7 + num12) * x + (1.0 - (num4 + num6)) * y + (num9 - num10) * z, (num8 - num11) * x + (num9 + num10) * y
 				+ (1.0 - (num4 + num5)) * z);
 		return dest;
 	}
@@ -1200,8 +1176,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		double num10 = this.w * num;
 		double num11 = this.w * num2;
 		double num12 = this.w * num3;
-		dest.set((1.0 - (num5 + num6)) * x + (num7 - num12) * y + (num8 + num11) * z, (num7 + num12) * x
-				+ (1.0 - (num4 + num6)) * y + (num9 - num10) * z, (num8 - num11) * x + (num9 + num10) * y
+		dest.set((1.0 - (num5 + num6)) * x + (num7 - num12) * y + (num8 + num11) * z, (num7 + num12) * x + (1.0 - (num4 + num6)) * y + (num9 - num10) * z, (num8 - num11) * x + (num9 + num10) * y
 				+ (1.0 - (num4 + num5)) * z, dest.w);
 		return dest;
 	}
@@ -1239,8 +1214,8 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		double y = -b.y() * invNorm;
 		double z = -b.z() * invNorm;
 		double w = b.w() * invNorm;
-		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x,
-				this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x - this.y * y - this.z * z);
+		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x
+				- this.y * y - this.z * z);
 		return dest;
 	}
 
@@ -1741,8 +1716,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public static Quaterniond
-			nlerpIterative(Quaterniondc[] qs, double[] weights, double dotThreshold, Quaterniond dest) {
+	public static Quaterniond nlerpIterative(Quaterniondc[] qs, double[] weights, double dotThreshold, Quaterniond dest) {
 		dest.set(qs[0]);
 		double w = weights[0];
 		for (int i = 1; i < qs.length; i++) {
@@ -1824,8 +1798,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	/* (non-Javadoc)
 	 * @see org.joml.Quaterniondc#lookAlong(double, double, double, double, double, double, org.joml.Quaterniond)
 	 */
-	public Quaterniond lookAlong(double dirX, double dirY, double dirZ, double upX, double upY, double upZ,
-			Quaterniond dest) {
+	public Quaterniond lookAlong(double dirX, double dirY, double dirZ, double upX, double upY, double upZ, Quaterniond dest) {
 		// Normalize direction
 		double invDirLength = 1.0 / Math.sqrt(dirX * dirX + dirY * dirY + dirZ * dirZ);
 		double dirnX = dirX * invDirLength;
@@ -1882,8 +1855,8 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 			}
 		}
 		/* Multiply */
-		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x,
-				this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x - this.y * y - this.z * z);
+		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x
+				- this.y * y - this.z * z);
 		return dest;
 	}
 
@@ -1988,9 +1961,8 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		double y = -this.y * invNorm;
 		double z = -this.z * invNorm;
 		double w = this.w * invNorm;
-		dest.set(w * other.x() + x * other.w() + y * other.z() - z * other.y(), w * other.y() - x * other.z() + y
-				* other.w() + z * other.x(), w * other.z() + x * other.y() - y * other.x() + z * other.w(),
-				w * other.w() - x * other.x() - y * other.y() - z * other.z());
+		dest.set(w * other.x() + x * other.w() + y * other.z() - z * other.y(), w * other.y() - x * other.z() + y * other.w() + z * other.x(), w * other.z() + x * other.y() - y * other.x() + z
+				* other.w(), w * other.w() - x * other.x() - y * other.y() - z * other.z());
 		return dest;
 	}
 
@@ -2018,14 +1990,12 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	 *            the z-coordinate of the direction to rotate to
 	 * @return this
 	 */
-	public Quaterniond rotationTo(double fromDirX, double fromDirY, double fromDirZ, double toDirX, double toDirY,
-			double toDirZ) {
+	public Quaterniond rotationTo(double fromDirX, double fromDirY, double fromDirZ, double toDirX, double toDirY, double toDirZ) {
 		x = fromDirY * toDirZ - fromDirZ * toDirY;
 		y = fromDirZ * toDirX - fromDirX * toDirZ;
 		z = fromDirX * toDirY - fromDirY * toDirX;
 		w =
-				Math.sqrt((fromDirX * fromDirX + fromDirY * fromDirY + fromDirZ * fromDirZ)
-						* (toDirX * toDirX + toDirY * toDirY + toDirZ * toDirZ))
+				Math.sqrt((fromDirX * fromDirX + fromDirY * fromDirY + fromDirZ * fromDirZ) * (toDirX * toDirX + toDirY * toDirY + toDirZ * toDirZ))
 						+ (fromDirX * toDirX + fromDirY * toDirY + fromDirZ * toDirZ);
 		double invNorm = 1.0 / Math.sqrt(x * x + y * y + z * z + w * w);
 		if (Double.isInfinite(invNorm)) {
@@ -2071,14 +2041,12 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	/* (non-Javadoc)
 	 * @see org.joml.Quaterniondc#rotateTo(double, double, double, double, double, double, org.joml.Quaterniond)
 	 */
-	public Quaterniond rotateTo(double fromDirX, double fromDirY, double fromDirZ, double toDirX, double toDirY,
-			double toDirZ, Quaterniond dest) {
+	public Quaterniond rotateTo(double fromDirX, double fromDirY, double fromDirZ, double toDirX, double toDirY, double toDirZ, Quaterniond dest) {
 		double x = fromDirY * toDirZ - fromDirZ * toDirY;
 		double y = fromDirZ * toDirX - fromDirX * toDirZ;
 		double z = fromDirX * toDirY - fromDirY * toDirX;
 		double w =
-				Math.sqrt((fromDirX * fromDirX + fromDirY * fromDirY + fromDirZ * fromDirZ)
-						* (toDirX * toDirX + toDirY * toDirY + toDirZ * toDirZ))
+				Math.sqrt((fromDirX * fromDirX + fromDirY * fromDirY + fromDirZ * fromDirZ) * (toDirX * toDirX + toDirY * toDirY + toDirZ * toDirZ))
 						+ (fromDirX * toDirX + fromDirY * toDirY + fromDirZ * toDirZ);
 		double invNorm = 1.0 / Math.sqrt(x * x + y * y + z * z + w * w);
 		if (Double.isInfinite(invNorm)) {
@@ -2102,8 +2070,8 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		z *= invNorm;
 		w *= invNorm;
 		/* Multiply */
-		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x,
-				this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x - this.y * y - this.z * z);
+		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x
+				- this.y * y - this.z * z);
 		return dest;
 	}
 
@@ -2253,8 +2221,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	 *            the z-coordinate of the direction to rotate to
 	 * @return this
 	 */
-	public Quaterniond rotateTo(double fromDirX, double fromDirY, double fromDirZ, double toDirX, double toDirY,
-			double toDirZ) {
+	public Quaterniond rotateTo(double fromDirX, double fromDirY, double fromDirZ, double toDirX, double toDirY, double toDirZ) {
 		return rotateTo(fromDirX, fromDirY, fromDirZ, toDirX, toDirY, toDirZ, this);
 	}
 
@@ -2369,8 +2336,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		dqY = thetaY * s;
 		dqZ = thetaZ * s;
 		/* Post-multiplication (like matrices multiply) */
-		dest.set(w * dqX + x * dqW + y * dqZ - z * dqY, w * dqY - x * dqZ + y * dqW + z * dqX, w * dqZ + x * dqY - y
-				* dqX + z * dqW, w * dqW - x * dqX - y * dqY - z * dqZ);
+		dest.set(w * dqX + x * dqW + y * dqZ - z * dqY, w * dqY - x * dqZ + y * dqW + z * dqX, w * dqZ + x * dqY - y * dqX + z * dqW, w * dqW - x * dqX - y * dqY - z * dqZ);
 		return dest;
 	}
 
@@ -2435,8 +2401,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		dqY = thetaY * s;
 		dqZ = thetaZ * s;
 		/* Pre-multiplication */
-		dest.set(dqW * x + dqX * w + dqY * z - dqZ * y, dqW * y - dqX * z + dqY * w + dqZ * x, dqW * z + dqX * y - dqY
-				* x + dqZ * w, dqW * w - dqX * x - dqY * y - dqZ * z);
+		dest.set(dqW * x + dqX * w + dqY * z - dqZ * y, dqW * y - dqX * z + dqY * w + dqZ * x, dqW * z + dqX * y - dqY * x + dqZ * w, dqW * w - dqX * x - dqY * y - dqZ * z);
 		return dest;
 	}
 
@@ -2641,8 +2606,8 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		double y = cx * sycz - sx * cysz;
 		double z = cx * cysz + sx * sycz;
 		// right-multiply
-		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x,
-				this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x - this.y * y - this.z * z);
+		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x
+				- this.y * y - this.z * z);
 		return dest;
 	}
 
@@ -2688,8 +2653,8 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		double y = cx * sycz + sx * cysz;
 		double z = cx * cysz - sx * sycz;
 		// right-multiply
-		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x,
-				this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x - this.y * y - this.z * z);
+		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x
+				- this.y * y - this.z * z);
 		return dest;
 	}
 
@@ -2735,8 +2700,8 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		double z = yw * sz - yz * cz;
 		double w = yw * cz + yz * sz;
 		// right-multiply
-		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x,
-				this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x - this.y * y - this.z * z);
+		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x
+				- this.y * y - this.z * z);
 		return dest;
 	}
 
@@ -2763,8 +2728,7 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		double rz = axisZ * invVLength * sinAngle;
 		double rw = Math.cos(hangle);
 
-		dest.set(w * rx + x * rw + y * rz - z * ry, w * ry - x * rz + y * rw + z * rx, w * rz + x * ry - y * rx + z
-				* rw, w * rw - x * rx - y * ry - z * rz);
+		dest.set(w * rx + x * rw + y * rz - z * ry, w * ry - x * rz + y * rw + z * rx, w * rz + x * ry - y * rx + z * rw, w * rw - x * rx - y * ry - z * rz);
 		return dest;
 	}
 
