@@ -5,10 +5,18 @@ import mbeb.opengldefault.scene.entities.Entity;
 
 import org.joml.Vector3f;
 
-public class BezierBehaviour extends Behaviour {
+/**
+ * A Behaviour that makes an Entity follow a {@link BezierCurve} and look in the curves direction
+ * 
+ * @author Markus
+ */
+public class BezierBehaviour implements IBehaviour {
+	/** the followed curve */
 	private BezierCurve curve;
 
+	/** speed of the object */
 	private float speed;
+	/** current progress in the curve */
 	private float progress;
 
 	public BezierBehaviour(BezierCurve curve, float speed) {

@@ -2,8 +2,14 @@ package mbeb.opengldefault.scene.entities;
 
 import mbeb.opengldefault.scene.SceneObject;
 
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+/**
+ * Adapter class that enables a {@link SceneObject} to be interpreted as {@link Entity}
+ * 
+ * @author Markus
+ */
 public class SceneEntity extends Entity {
 
 	private SceneObject sceneObject;
@@ -29,12 +35,20 @@ public class SceneEntity extends Entity {
 
 	@Override
 	public Vector3f getDirection() {
-		return sceneObject.getTransformation().getRotation().getEulerAnglesXYZ(new Vector3f());
+		return sceneObject.getTransformation().getRotation().transform(new Vector3f(1, 0, 0));
 	}
 
 	@Override
 	public void setDirection(Vector3f direction) {
-		sceneObject.getTransformation().getRotation().rotationTo(new Vector3f(0, 0, -1), direction);
+		//TDOD: Make correct
+		Vector3f xzPlane = new Vector3f(direction.x, 0, direction.z).normalize();
+
+		float pitch = xzPlane.angle(direction);
+		float yaw = new Vector3f(1, 0, 0).angle(xzPlane);
+		Quaternionf rotationYaw = new Quaternionf().rotateTo(new Vector3f(1, 0, 0), xzPlane);
+		Quaternionf rotationPitch = new Quaternionf().rotateTo(xzPlane, direction);
+
+		sceneObject.getTransformation().setRotation(rotationPitch.mul(rotationYaw));
 	}
 
 }

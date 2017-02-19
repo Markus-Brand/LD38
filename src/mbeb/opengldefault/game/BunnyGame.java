@@ -15,8 +15,9 @@ import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.rendering.textures.*;
 import mbeb.opengldefault.scene.*;
 import mbeb.opengldefault.scene.behaviour.BezierBehaviour;
-import mbeb.opengldefault.scene.behaviour.FollowingBehaviour;
-import mbeb.opengldefault.scene.behaviour.LimitedDistanceFollowingBehaviour;
+import mbeb.opengldefault.scene.behaviour.EscapingBehaviour;
+import mbeb.opengldefault.scene.behaviour.LimitedDistanceBehaviour;
+import mbeb.opengldefault.scene.behaviour.PlayerControlBehaviour;
 import mbeb.opengldefault.scene.entities.CameraEntity;
 import mbeb.opengldefault.scene.entities.Entity;
 import mbeb.opengldefault.scene.entities.SceneEntity;
@@ -54,7 +55,7 @@ public class BunnyGame implements IGame {
 
 		curve = new BezierCurve(controlPoints, ControlPointInputMode.CameraPointsCircular, true);
 
-		cam = new FirstPersonCamera(new Vector3f(), new Vector3f());
+		cam = new Camera();
 
 		camEntity = new CameraEntity(cam);
 
@@ -63,7 +64,7 @@ public class BunnyGame implements IGame {
 		bunnyScene = new Scene(cam, skybox);
 
 		IRenderable tm =
-				new TexturedRenderable(new ObjectLoader().loadFromFile("thinmatrix.dae"), new Texture("bunny_2d.png"));
+				new TexturedRenderable(new ObjectLoader().loadFromFile("arrow.obj"), new Texture("bunny_2d.png"));
 		IRenderable bunny =
 				new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
 		IRenderable cube = new TexturedRenderable(new ObjectLoader().loadFromFile("cube.obj"), new Texture("AO.png"));
@@ -84,9 +85,9 @@ public class BunnyGame implements IGame {
 
 		cowboy = new SceneObject(tm, new Matrix4f().translate(10, 0, 0), null);
 		follower = new SceneEntity(cowboy);
-		follower.addBehaviour(1, new LimitedDistanceFollowingBehaviour(followed, 7, 5));
-		follower.addBehaviour(2, new FollowingBehaviour(followed, 1f));
-		camEntity.addBehaviour(1, new BezierBehaviour(curve, 8f));
+		follower.addBehaviour(1, new LimitedDistanceBehaviour(new EscapingBehaviour(camEntity, 7), 5));
+		//follower.addBehaviour(2, new PlayerControlBehaviour());
+		camEntity.addBehaviour(1, new PlayerControlBehaviour());
 
 		curveObj = new SceneObject(new BezierCurveRenderable(curve));
 		curveObj.setShader(curveShader);

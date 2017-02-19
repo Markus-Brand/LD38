@@ -10,9 +10,7 @@ public interface ICamera {
 	 * @param deltaTime
 	 *            time, that passed since the last update
 	 */
-	default void update(double deltaTime) {
-		updateView();
-	}
+	void update(double deltaTime);
 
 	/**
 	 * get the cameras position
@@ -100,15 +98,13 @@ public interface ICamera {
 	 */
 	void updateUniformBlock();
 
-	default void updateView() {
-		Matrix4f view = new Matrix4f();
-
-		view.lookAt(getPosition(), getPosition().add(getViewDirection(), new Vector3f()), new Vector3f(0, 1, 0));
-
-		setView(view);
-
-		updateUniformBlock();
-	}
+	/**
+	 * convert the given world space coordinates to screen space
+	 *
+	 * @param pos
+	 * @return
+	 */
+	Vector3f getPosOnScreen(Vector3f pos);
 
 	/**
 	 * convert the given world space coordinates to screen space
@@ -116,18 +112,5 @@ public interface ICamera {
 	 * @param pos
 	 * @return
 	 */
-	default Vector3f getPosOnScreen(Vector3f pos) {
-		return getPosOnScreen(new Vector4f(pos.x, pos.y, pos.z, 1));
-	}
-
-	/**
-	 * convert the given world space coordinates to screen space
-	 *
-	 * @param pos
-	 * @return
-	 */
-	default Vector3f getPosOnScreen(Vector4f pos) {
-		Vector4f res = pos.mul(getProjectionView());
-		return new Vector3f(res.x / res.z, res.y / res.z, res.z);
-	}
+	Vector3f getPosOnScreen(Vector4f pos);
 }

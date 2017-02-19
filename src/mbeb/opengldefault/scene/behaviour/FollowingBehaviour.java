@@ -4,22 +4,24 @@ import org.joml.Vector3f;
 
 import mbeb.opengldefault.scene.entities.Entity;
 
-public class FollowingBehaviour extends Behaviour {
+/**
+ * A Behaviour that makes a Entity follow another Entity
+ * 
+ * @author Markus
+ */
+public class FollowingBehaviour extends ReferenceEntityBehaviour {
 
-	private Entity followed;
-
+	/** speed of the entity */
 	private float speed;
 
 	public FollowingBehaviour(Entity followed, float speed) {
-		this.followed = followed;
+		super(followed);
 		this.speed = speed;
 	}
 
 	@Override
 	public void update(double deltaTime, Entity entity) {
-		Vector3f direction = followed.getPosition().sub(entity.getPosition(), new Vector3f());
-
-		entity.setDirection(direction.normalize(new Vector3f()));
+		Vector3f direction = getReference().getPosition().sub(entity.getPosition(), new Vector3f());
 
 		float distance = (float) (speed * deltaTime);
 
@@ -27,16 +29,14 @@ public class FollowingBehaviour extends Behaviour {
 			direction.normalize().mul(distance);
 		}
 
+		entity.setDirection(direction.normalize(new Vector3f()));
+
 		entity.setPosition(entity.getPosition().add(direction, new Vector3f()));
 	}
 
 	@Override
 	public boolean triggers(Entity entity) {
 		return true;
-	}
-
-	public Entity getFollowed() {
-		return followed;
 	}
 
 }

@@ -14,9 +14,7 @@ import org.lwjgl.*;
 
 public class Camera implements ICamera {
 
-	/**
-	 * Class Name Tag
-	 */
+	/** Class Name Tag */
 	private static final String TAG = "Camera";
 
 	/** Cameras View Matrix */
@@ -54,6 +52,21 @@ public class Camera implements ICamera {
 		projection.mul(view, getProjectionView());
 		position = new Vector3f();
 		viewDirection = new Vector3f(1, 0, 0);
+		updateUniformBlock();
+	}
+
+	@Override
+	public void update(double deltaTime) {
+		updateView();
+	}
+
+	private void updateView() {
+		Matrix4f view = new Matrix4f();
+
+		view.lookAt(getPosition(), getPosition().add(getViewDirection(), new Vector3f()), new Vector3f(0, 1, 0));
+
+		setView(view);
+
 		updateUniformBlock();
 	}
 
@@ -147,5 +160,16 @@ public class Camera implements ICamera {
 	@Override
 	public void setViewDirection(final Vector3f newViewDirection) {
 		this.viewDirection = newViewDirection;
+	}
+
+	@Override
+	public Vector3f getPosOnScreen(Vector3f pos) {
+		return getPosOnScreen(new Vector4f(pos.x, pos.y, pos.z, 1));
+	}
+
+	@Override
+	public Vector3f getPosOnScreen(Vector4f pos) {
+		Vector4f res = pos.mul(getProjectionView());
+		return new Vector3f(res.x / res.z, res.y / res.z, res.z);
 	}
 }

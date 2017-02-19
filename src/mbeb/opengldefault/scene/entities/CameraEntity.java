@@ -4,6 +4,11 @@ import mbeb.opengldefault.camera.ICamera;
 
 import org.joml.Vector3f;
 
+/**
+ * Adapter class that enables a {@link ICamera} to be interpreted as {@link Entity}
+ * 
+ * @author Markus
+ */
 public class CameraEntity extends Entity {
 
 	private ICamera camera;
