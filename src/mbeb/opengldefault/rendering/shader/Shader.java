@@ -252,7 +252,7 @@ public class Shader {
 	 * @param value
 	 *            the value of the parameter
 	 * @param update
-	 *            whether to directly re-compile the shader after (when false is
+	 *            whether to directly re-compile the shader (when false is
 	 *            passed, call shader.compile() to view the results)
 	 */
 	public void updateParameter(final String name, final Object value, final boolean update) {
@@ -443,7 +443,7 @@ public class Shader {
 	 * @param drawMode
 	 *            new drawMode
 	 */
-	public void setDrawMode(int drawMode) {
+	public void setDrawMode(final int drawMode) {
 		this.drawMode = drawMode;
 	}
 

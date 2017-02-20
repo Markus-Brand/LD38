@@ -2,11 +2,13 @@ package mbeb.opengldefault.game;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import java.awt.*;
 import java.util.*;
 
 import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.curves.*;
 import mbeb.opengldefault.curves.BezierCurve.ControlPointInputMode;
+import mbeb.opengldefault.light.*;
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.openglcontext.*;
 import mbeb.opengldefault.rendering.io.*;
@@ -53,18 +55,22 @@ public class BunnyGame implements IGame {
 		final IRenderable bunny = new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
 		final IRenderable cube = new TexturedRenderable(new ObjectLoader().loadFromFile("cube.obj"), new Texture("AO.png"));
 
-		final Shader bonePhongShader = new Shader("boneAnimation.vert", "phong.frag");
-		bonePhongShader.addUniformBlockIndex(1, "Matrices");
+		//final Shader bonePhongShader = new Shader("boneAnimation.vert", "phong.frag");
+		//bonePhongShader.addUniformBlockIndex(1, "Matrices");
 
 		final Shader curveShader = new Shader("bezier.vert", "bezier.frag", "bezier.geom");
 		curveShader.addUniformBlockIndex(1, "Matrices");
 		curveShader.setDrawMode(GL_LINES);
 
-		final Shader defaultShader = new Shader("basic.vert", "phong.frag");
+		final Shader defaultShader = new Shader("basic.vert", "basic.frag");
 		defaultShader.addUniformBlockIndex(1, "Matrices");
+		bunnyScene.getLightManager().addShader(defaultShader);
 
-		cowboy = new SceneObject(tm, new Matrix4f(), null);
-		cowboy.setShader(bonePhongShader);
+		bunnyScene.getLightManager().addLight(new PointLight(Color.GREEN, new Vector3f(10, 10, 0), 1000));
+		bunnyScene.getLightManager().addLight(new PointLight(Color.RED, new Vector3f(0, 10, 0), 1000));
+		bunnyScene.getLightManager().addLight(new PointLight(Color.BLUE, new Vector3f(0, 10, 10), 1000));
+		//cowboy = new SceneObject(tm, new Matrix4f(), null);
+		//cowboy.setShader(bonePhongShader);
 
 		cubeObj = new SceneObject(cube);
 
@@ -75,7 +81,7 @@ public class BunnyGame implements IGame {
 
 		cubeObj.addSubObject(bunnyObj);
 
-		bunnyScene.getSceneGraph().addSubObject(cowboy);
+		//bunnyScene.getSceneGraph().addSubObject(cowboy);
 		bunnyScene.getSceneGraph().addSubObject(cubeObj);
 		bunnyScene.getSceneGraph().addSubObject(curveObj);
 

@@ -1,6 +1,7 @@
 package mbeb.opengldefault.scene;
 
 import mbeb.opengldefault.camera.*;
+import mbeb.opengldefault.light.*;
 import mbeb.opengldefault.rendering.renderable.*;
 
 /**
@@ -9,18 +10,20 @@ import mbeb.opengldefault.rendering.renderable.*;
  */
 public class Scene {
 
-	private SceneGraphRenderer renderer;
+	private final SceneGraphRenderer renderer;
 	private final SceneObject sceneGraph;
-	private ICamera camera;
+	private final ICamera camera;
 	private Skybox skybox;
+	private final LightManager lightManager;
 
-	public Scene(ICamera cam) {
+	public Scene(final ICamera cam) {
 		this(cam, null);
 	}
 
-	public Scene(ICamera cam, Skybox skybox) {
+	public Scene(final ICamera cam, final Skybox skybox) {
 		this.camera = cam;
 		this.skybox = skybox;
+		this.lightManager = new LightManager();
 		this.sceneGraph = new SceneObject();
 		renderer = new VisibleSceneGraphRenderer(sceneGraph, cam);
 	}
@@ -29,12 +32,16 @@ public class Scene {
 		return sceneGraph;
 	}
 
-	public void update(double deltaTime) {
+	public LightManager getLightManager() {
+		return lightManager;
+	}
+
+	public void update(final double deltaTime) {
 		camera.update(deltaTime);
 		sceneGraph.update(deltaTime);
 	}
 
-	public void setSkybox(Skybox skybox) {
+	public void setSkybox(final Skybox skybox) {
 		this.skybox = skybox;
 	}
 

@@ -1,13 +1,12 @@
+#define SHININESS 64
+
 in vec2 tex;
 in vec3 pos;
 in vec3 normal;
 
 out vec4 color;
 
-struct Material{
-	sampler2D texture_diffuse0;
-	sampler2D texture_specular0;
-};
+uniform sampler2D u_texture;
 
 //size 32
 struct DirLight{
@@ -26,7 +25,7 @@ struct PointLight{
 	float quadratic;
 };
 
-//size 80
+//size 80 *** actually 64
 struct SpotLight{
 	vec3 position;
 	vec3 direction;
@@ -44,33 +43,35 @@ float ambientStrength = 0.04f;
 float specularStrength = 2.5f;
 float reflectionStrength = 0.4f;
 
-layout (std140) uniform Lights{		
-	DirLight[
-	#if NUM_DIR_LIGHTS == 0
+layout (std140) uniform Lights{	
+    int numDirectionalLights;
+    int numPointLights;
+    int numSpotLights;
+    
+    DirLight[
+	#if DIRECTIONAL_LIGHT_CAPACITY == 0
 	1
 	#else
-	NUM_DIR_LIGHTS
+	DIRECTIONAL_LIGHT_CAPACITY
 	#endif
 	] dirLights;
 	
-	SpotLight[
-	#if NUM_SPOT_LIGHTS == 0
-	1
-	#else
-	NUM_SPOT_LIGHTS
-	#endif
-	] spotLights;
-	
 	PointLight[
-	#if NUM_POINT_LIGHTS == 0
+	#if POINT_LIGHT_CAPACITY == 0
 	1
 	#else
-	NUM_POINT_LIGHTS
+	POINT_LIGHT_CAPACITY
 	#endif
 	] pointLights;
+    
+    SpotLight[
+	#if SPOT_LIGHT_CAPACITY == 0
+	1
+	#else
+	SPOT_LIGHT_CAPACITY
+	#endif
+	] spotLights;
 };
-
-uniform Material material;
 
 uniform int alpha;
 
@@ -106,26 +107,26 @@ void main(){
 	
 	vec3 result = vec3(0); 
 	
-	for(int i = 0; i < NUM_POINT_LIGHTS; i++){
+	for(int i = 0; i < numPointLights; i++){
 		result += calcPointLight(pointLights[i], norm, viewDir);
 	}
 	
-	for(int i = 0; i < NUM_DIR_LIGHTS; i++){
+	for(int i = 0; i < numDirectionalLights; i++){
 		result += calcDirectionalLight(dirLights[i], norm, viewDir);
 	}
 	
-	for(int i = 0; i < NUM_SPOT_LIGHTS; i++){
+	for(int i = 0; i < numSpotLights; i++){
 		result += calcSpotLight(spotLights[i], norm, viewDir);
 	}
 	
-	vec3 ambient = ambientStrength * vec3(texture(material.texture_diffuse0, tex));
+	vec3 ambient = ambientStrength * vec3(texture(u_texture, tex));
 
 	result += ambient;
 
 	float gamma = 2.0;
    	result = pow(result, vec3(1.0/gamma));
     
-	float a = texture(material.texture_specular0, tex).r * reflectionStrength;
+	float a = texture(u_texture, tex).r * reflectionStrength;
 	if(a > 0){
 		vec3 I = normalize(pos - viewPos);
 		vec3 R = reflect(I, normalize(norm));
@@ -137,14 +138,14 @@ void main(){
 	if(alpha == 0){
 		color = vec4(result.x, result.y, result.z, 1.0f);
 	}else if(alpha == 1){
-		vec4 texColor = vec4(result.x, result.y, result.z, (texture(material.texture_diffuse0, tex)).a);
+		vec4 texColor = vec4(result.x, result.y, result.z, (texture(u_texture, tex)).a);
 		if(texColor.a > 0.01){	
 			color = texColor;
 		}else{	
 			discard;
 		}
 	}	
-	/*
+    /*
 	if(gl_FragCoord.x > 960){
 		float gamma = 1.2;
    		color.xyz = pow(color.xyz, vec3(1.0/gamma));
@@ -162,7 +163,7 @@ vec3 calcDirectionalLight(DirLight light, vec3 norm, vec3 viewDir){
 	float spec = pow(max(dot(norm, halfwayDir), 0.0f), SHININESS);
 	vec3 specular = specularStrength * spec * light.color;
 
-	return vec3(texture(material.texture_diffuse0, tex)) * diffuse + vec3(texture(material.texture_specular0, tex)) * specular;
+	return vec3(texture(u_texture, tex)) * diffuse + vec3(texture(u_texture, tex)) * specular;
 }
 
 vec3 calcPointLight(PointLight light, vec3 norm, vec3 viewDir){
@@ -188,7 +189,7 @@ vec3 calcPointLight(PointLight light, vec3 norm, vec3 viewDir){
 	diffuse  *= attenuation;
 	specular *= attenuation;  
 
-	return vec3(texture(material.texture_diffuse0, tex)) * diffuse + vec3(texture(material.texture_specular0, tex)) * specular;
+	return vec3(texture(u_texture, tex)) * diffuse + vec3(texture(u_texture, tex)) * specular;
 }
 
 vec3 calcSpotLight(SpotLight light, vec3 norm, vec3 viewDir){
@@ -215,5 +216,5 @@ vec3 calcSpotLight(SpotLight light, vec3 norm, vec3 viewDir){
 	diffuse  *= attenuation;
 	specular *= attenuation;  
 
-	return vec3(texture(material.texture_diffuse0, tex)) * (diffuse) + vec3(texture(material.texture_specular0, tex)) * specular;
+	return vec3(texture(u_texture, tex)) * (diffuse) + vec3(texture(u_texture, tex)) * specular;
 }
