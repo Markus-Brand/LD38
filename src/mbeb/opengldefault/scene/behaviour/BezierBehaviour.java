@@ -7,7 +7,7 @@ import org.joml.Vector3f;
 
 /**
  * A Behaviour that makes an Entity follow a {@link BezierCurve} and look in the curves direction
- * 
+ *
  * @author Markus
  */
 public class BezierBehaviour implements IBehaviour {
@@ -22,7 +22,7 @@ public class BezierBehaviour implements IBehaviour {
 	public BezierBehaviour(BezierCurve curve, float speed) {
 		this.curve = curve;
 		this.speed = speed;
-		progress = 0;
+		this.progress = 0;
 	}
 
 	@Override

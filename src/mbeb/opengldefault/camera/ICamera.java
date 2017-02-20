@@ -102,7 +102,7 @@ public interface ICamera {
 	 * convert the given world space coordinates to screen space
 	 *
 	 * @param pos
-	 * @return
+	 * @return the Vectors position on Screen
 	 */
 	Vector3f getPosOnScreen(Vector3f pos);
 
@@ -110,7 +110,7 @@ public interface ICamera {
 	 * convert the given world space coordinates to screen space
 	 *
 	 * @param pos
-	 * @return
+	 * @return the Vectors position on Screen
 	 */
 	Vector3f getPosOnScreen(Vector4f pos);
 }

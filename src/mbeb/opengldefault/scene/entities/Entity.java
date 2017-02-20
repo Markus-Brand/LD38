@@ -9,14 +9,14 @@ import org.joml.Vector3f;
 
 /**
  * An abstract Entity that can have Behaviours
- * 
+ *
  * @author Markus
  */
 public abstract class Entity {
 
 	/**
 	 * Contains a Behaviour and a priority. The class is used to sort the Behaviours
-	 * 
+	 *
 	 * @author Markus
 	 */
 	private class PrioritizedBehaviour implements Comparable<PrioritizedBehaviour> {
@@ -66,7 +66,7 @@ public abstract class Entity {
 
 	/**
 	 * Updates the Entity by updating all of the Behaviours
-	 * 
+	 *
 	 * @param deltaTime
 	 */
 	public void update(double deltaTime) {
@@ -88,11 +88,11 @@ public abstract class Entity {
 
 	/**
 	 * Adds a behaviour with given priority.
-	 * 
+	 *
 	 * @param priority
 	 *            low value is higher priority
 	 * @param behaviour
-	 *            the new Behavour
+	 *            the new Behaviour
 	 */
 	public void addBehaviour(int priority, IBehaviour behaviour) {
 		behaviours.add(new PrioritizedBehaviour(behaviour, priority));

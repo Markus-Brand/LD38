@@ -1,7 +1,7 @@
 package mbeb.opengldefault.scene.behaviour;
 
 /**
- * A Behaviour that combines a {@link PitchYawMouseBehaviour} and a {@link FlyingKeyboardBehaviour} to Control a Entity
+ * A Behaviour that combines a {@link PitchYawMouseBehaviour} and a {@link FlyingKeyboardBehaviour} to Control an Entity
  * with User Input
  *
  * @author Markus
