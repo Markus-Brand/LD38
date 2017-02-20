@@ -94,7 +94,7 @@ public class BoundingBox {
 
 	/**
 	 * Getter for the model transform
-	 * 
+	 *
 	 * @return the model transform
 	 */
 	public Matrix4f getModelTransform() {
@@ -103,7 +103,7 @@ public class BoundingBox {
 
 	/**
 	 * Setter for the model Transform
-	 * 
+	 *
 	 * @param transform
 	 *            new model transform
 	 */
@@ -126,7 +126,7 @@ public class BoundingBox {
 	 */
 	public BoundingBox unionWith(final BoundingBox childBox) {
 		//We also need to check for updates in the child BB, because the BB could potentially grow, if the children have transformations on their own
-		final Vector3f[] childEdges = childBox.getGlobalEdges();
+		final Vector3f[] childEdges = childBox.getGlobalCorners();
 		BoundingBox bigger = this.duplicate();
 		for (final Vector3f edge : childEdges) {
 			bigger = bigger.extendTo(edge);
@@ -139,7 +139,7 @@ public class BoundingBox {
 	 *
 	 * @return
 	 */
-	private Vector3f[] getLocalEdges() {
+	public Vector3f[] getLocalCorners() {
 		final Vector3f[] rawEdges = new Vector3f[8];
 		for (int x = 0; x <= 1; x++) {
 			for (int y = 0; y <= 1; y++) {
@@ -159,8 +159,8 @@ public class BoundingBox {
 	 *
 	 * @return
 	 */
-	private Vector3f[] getGlobalEdges() {
-		final Vector3f[] edges = getLocalEdges();
+	public Vector3f[] getGlobalCorners() {
+		final Vector3f[] edges = getLocalCorners();
 		for (int e = 0; e < edges.length; e++) {
 			Vector4f edge = new Vector4f(edges[e], 1.0f).mul(getModelTransform());
 			edges[e] = new Vector3f(edge.x, edge.y, edge.z);
@@ -177,9 +177,9 @@ public class BoundingBox {
 	 *            the camera to look from
 	 * @return screen-space positions
 	 */
-	public Vector3f[] getEdgesOnScreen(final Matrix4f parentTransform, final ICamera camera) {
+	public Vector3f[] getCornersOnScreen(final Matrix4f parentTransform, final ICamera camera) {
 		//apply to edges
-		final Vector3f[] edges = getGlobalEdges();
+		final Vector3f[] edges = getGlobalCorners();
 		for (int e = 0; e < edges.length; e++) {
 			edges[e] = camera.getPosOnScreen(new Vector4f(edges[e], 1.0f).mul(parentTransform));
 		}
@@ -188,7 +188,7 @@ public class BoundingBox {
 
 	/**
 	 * Returns the center of the BoundingBox
-	 * 
+	 *
 	 * @return center of the BoundingBox
 	 */
 	public Vector3f getCenter() {

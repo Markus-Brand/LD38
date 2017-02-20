@@ -32,7 +32,7 @@ public class VisibleSceneGraphRenderer extends SceneGraphRenderer {
 	 * @return false if this object would not be visible if rendered
 	 */
 	private boolean isVisible(final SceneObject object, final Matrix4f parentTransform) {
-		final Vector3f[] edges = object.getBoundingBox().getEdgesOnScreen(parentTransform, cam);
+		final Vector3f[] edges = object.getBoundingBox().getCornersOnScreen(parentTransform, cam);
 		float minX = edges[0].x;
 		float minY = edges[0].y;
 		float maxX = edges[0].x;

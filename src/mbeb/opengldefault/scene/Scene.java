@@ -10,6 +10,7 @@ import mbeb.opengldefault.rendering.renderable.*;
 public class Scene {
 
 	private SceneGraphRenderer renderer;
+	private SceneGraphRenderer renderer2;
 	private final SceneObject sceneGraph;
 	private ICamera camera;
 	private Skybox skybox;
@@ -23,6 +24,7 @@ public class Scene {
 		this.skybox = skybox;
 		this.sceneGraph = new SceneObject();
 		renderer = new VisibleSceneGraphRenderer(sceneGraph, cam);
+		renderer2 = new BoundingBoxRenderer(sceneGraph, cam);
 	}
 
 	public SceneObject getSceneGraph() {
@@ -40,6 +42,7 @@ public class Scene {
 
 	public void render() {
 		renderer.render();
+		renderer2.render();
 		if (skybox != null) {
 			skybox.render();
 		}
