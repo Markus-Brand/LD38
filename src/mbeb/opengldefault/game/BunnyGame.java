@@ -14,6 +14,13 @@ import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.rendering.textures.*;
 import mbeb.opengldefault.scene.*;
+import mbeb.opengldefault.scene.behaviour.BezierBehaviour;
+import mbeb.opengldefault.scene.behaviour.EscapingBehaviour;
+import mbeb.opengldefault.scene.behaviour.LimitedDistanceBehaviour;
+import mbeb.opengldefault.scene.behaviour.PlayerControlBehaviour;
+import mbeb.opengldefault.scene.entities.CameraEntity;
+import mbeb.opengldefault.scene.entities.Entity;
+import mbeb.opengldefault.scene.entities.SceneEntity;
 
 import org.joml.*;
 
@@ -24,6 +31,8 @@ public class BunnyGame implements IGame {
 	/** Class Name Tag */
 	private static final String TAG = "BunnyGame";
 
+	private float timePassed;
+
 	protected ICamera cam;
 	Scene bunnyScene;
 
@@ -31,8 +40,11 @@ public class BunnyGame implements IGame {
 
 	SceneObject cubeObj, bunnyObj, cowboy, curveObj;
 
+	Entity followed, follower, camEntity;
+
 	@Override
 	public void init() {
+		timePassed = 0;
 		final ArrayList<Vector3f> controlPoints = new ArrayList<>();
 
 		controlPoints.add(new Vector3f(20, 5, 0));
@@ -43,15 +55,19 @@ public class BunnyGame implements IGame {
 
 		curve = new BezierCurve(controlPoints, ControlPointInputMode.CameraPointsCircular, true);
 
-		cam = new FirstPersonCamera(new Vector3f(), new Vector3f());
+		cam = new Camera();
+
+		camEntity = new CameraEntity(cam);
 
 		final Skybox skybox = new Skybox("skybox/mountain");
 
 		bunnyScene = new Scene(cam, skybox);
 
-		final IRenderable tm = new TexturedRenderable(new ObjectLoader().loadFromFileAnim("thinmatrix.dae"), new Texture("bunny_2d.png"));
-		final IRenderable bunny = new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
-		final IRenderable cube = new TexturedRenderable(new ObjectLoader().loadFromFile("cube.obj"), new Texture("AO.png"));
+		IRenderable tm =
+				new TexturedRenderable(new ObjectLoader().loadFromFile("arrow.obj"), new Texture("bunny_2d.png"));
+		IRenderable bunny =
+				new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
+		IRenderable cube = new TexturedRenderable(new ObjectLoader().loadFromFile("cube.obj"), new Texture("AO.png"));
 
 		final Shader bonePhongShader = new Shader("boneAnimation.vert", "phong.frag");
 		bonePhongShader.addUniformBlockIndex(1, "Matrices");
@@ -63,16 +79,20 @@ public class BunnyGame implements IGame {
 		final Shader defaultShader = new Shader("basic.vert", "phong.frag");
 		defaultShader.addUniformBlockIndex(1, "Matrices");
 
-		cowboy = new SceneObject(tm, new Matrix4f(), null);
-		cowboy.setShader(bonePhongShader);
-
-		cubeObj = new SceneObject(cube);
-
 		bunnyObj = new SceneObject(bunny, new Matrix4f().translate(1, 1, 1), null);
+		followed = new SceneEntity(bunnyObj);
+		followed.addBehaviour(1, new BezierBehaviour(curve, 10));
+
+		cowboy = new SceneObject(tm, new Matrix4f().translate(10, 0, 0), null);
+		follower = new SceneEntity(cowboy);
+		follower.addBehaviour(1, new LimitedDistanceBehaviour(new EscapingBehaviour(camEntity, 7), 5));
+		//follower.addBehaviour(2, new PlayerControlBehaviour());
+		camEntity.addBehaviour(1, new PlayerControlBehaviour());
 
 		curveObj = new SceneObject(new BezierCurveRenderable(curve));
 		curveObj.setShader(curveShader);
 
+		cubeObj = new SceneObject(cube);
 		cubeObj.addSubObject(bunnyObj);
 
 		bunnyScene.getSceneGraph().addSubObject(cowboy);
@@ -87,6 +107,11 @@ public class BunnyGame implements IGame {
 
 	@Override
 	public void update(final double deltaTime) {
+		timePassed += deltaTime;
+
+		followed.update(deltaTime);
+		follower.update(deltaTime);
+		camEntity.update(deltaTime);
 
 		glClearColor(0.05f, 0.075f, 0.075f, 1);
 		GLErrors.checkForError(TAG, "glClearColor");

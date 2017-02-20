@@ -48,7 +48,7 @@ public class BoundingBox {
 	protected Vector3f localSize;
 
 	/**
-	 * just the transformation for this object
+	 * the transformation for this object
 	 */
 	protected Matrix4f modelTransform;
 
@@ -92,10 +92,21 @@ public class BoundingBox {
 		return this;
 	}
 
+	/**
+	 * Getter for the model transform
+	 * 
+	 * @return the model transform
+	 */
 	public Matrix4f getModelTransform() {
 		return modelTransform;
 	}
 
+	/**
+	 * Setter for the model Transform
+	 * 
+	 * @param transform
+	 *            new model transform
+	 */
 	public void setModelTransform(final Matrix4f transform) {
 		this.modelTransform = transform;
 	}
@@ -173,5 +184,15 @@ public class BoundingBox {
 			edges[e] = camera.getPosOnScreen(new Vector4f(edges[e], 1.0f).mul(parentTransform));
 		}
 		return edges;
+	}
+
+	/**
+	 * Returns the center of the BoundingBox
+	 * 
+	 * @return center of the BoundingBox
+	 */
+	public Vector3f getCenter() {
+		Vector3f halfSize = localSize.mul(0.5f, new Vector3f());
+		return localStart.add(halfSize, new Vector3f());
 	}
 }

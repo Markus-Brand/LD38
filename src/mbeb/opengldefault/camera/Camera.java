@@ -12,11 +12,9 @@ import mbeb.opengldefault.openglcontext.*;
 import org.joml.*;
 import org.lwjgl.*;
 
-public abstract class Camera implements ICamera {
+public class Camera implements ICamera {
 
-	/**
-	 * Class Name Tag
-	 */
+	/** Class Name Tag */
 	private static final String TAG = "Camera";
 
 	/** Cameras View Matrix */
@@ -45,12 +43,30 @@ public abstract class Camera implements ICamera {
 	public Camera() {
 		projection = new Matrix4f();
 		view = new Matrix4f();
-		projectionView = new Matrix4f();
-		projection.perspective((float) (java.lang.Math.PI / 2), OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f, 100);
+		projectionView = null;
+		float fov = (float) (java.lang.Math.PI / 2.8);
+		projection.perspective(fov, OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f, 100);
 
 		view.lookAlong(new Vector3f(0, 0, 1), new Vector3f(0, 1, 0));
 
-		projection.mul(view, projectionView);
+		projection.mul(view, getProjectionView());
+		position = new Vector3f();
+		viewDirection = new Vector3f(1, 0, 0);
+		updateUniformBlock();
+	}
+
+	@Override
+	public void update(double deltaTime) {
+		updateView();
+	}
+
+	private void updateView() {
+		Matrix4f view = new Matrix4f();
+
+		view.lookAt(getPosition(), getPosition().add(getViewDirection(), new Vector3f()), new Vector3f(0, 1, 0));
+
+		setView(view);
+
 		updateUniformBlock();
 	}
 
@@ -62,6 +78,7 @@ public abstract class Camera implements ICamera {
 	@Override
 	public void setView(final Matrix4f view) {
 		this.view = view;
+		projectionView = null;
 		updateUniformBlock();
 	}
 
@@ -143,5 +160,16 @@ public abstract class Camera implements ICamera {
 	@Override
 	public void setViewDirection(final Vector3f newViewDirection) {
 		this.viewDirection = newViewDirection;
+	}
+
+	@Override
+	public Vector3f getPosOnScreen(Vector3f pos) {
+		return getPosOnScreen(new Vector4f(pos.x, pos.y, pos.z, 1));
+	}
+
+	@Override
+	public Vector3f getPosOnScreen(Vector4f pos) {
+		Vector4f res = pos.mul(getProjectionView());
+		return new Vector3f(res.x / res.z, res.y / res.z, res.z);
 	}
 }
