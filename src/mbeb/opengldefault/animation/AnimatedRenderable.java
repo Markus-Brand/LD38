@@ -12,25 +12,35 @@ import mbeb.opengldefault.scene.BoundingBox;
  */
 public class AnimatedRenderable implements IRenderable {
 
+	private static final String TAG = "AnimatedRenderable";
+
 	private final AnimatedMesh mesh;
 	private List<Animator> currentAnimations = new ArrayList<>();
+	private final Object animatorLock = new Object();
 
 	public AnimatedRenderable(AnimatedMesh mesh) {
 		this.mesh = mesh;
-		if (mesh.getAnimations().size() > 0) {
-			currentAnimations.add(new Animator(mesh.getAnimations().get(0)));
+
+		for (Animation anim : mesh.getAnimations()) {
+			System.out.println("Animation: " + anim.getName());
 		}
+
 	}
 
 	@Override
 	public void render(Shader shader) {
 		//update pose uniforms
-		
-		for (Animator anim : getCurrentAnimations()) {
-			Pose p = anim.getCurrentPose();
-			p.setUniformData(shader, "boneTransforms");
+
+		Pose finalPose = mesh.defaultPose();
+
+		synchronized (animatorLock) {
+			for (Animator anim : getCurrentAnimations()) {
+				Pose p = anim.getCurrentPose();
+				p.applyAfter(finalPose);
+			}
 		}
 
+		finalPose.setUniformData(shader, "boneTransforms");
 
 		mesh.render(shader);
 	}
@@ -38,6 +48,7 @@ public class AnimatedRenderable implements IRenderable {
 	@Override
 	public void update(double deltaTime) {
 		getCurrentAnimations().forEach((Animator anim) -> anim.update(deltaTime));
+		mesh.update(deltaTime);
 	}
 
 	public List<Animator> getCurrentAnimations() {
@@ -48,14 +59,23 @@ public class AnimatedRenderable implements IRenderable {
 	}
 
 	public void playAnimation(Animator animator) {
-		getCurrentAnimations().add(animator);
+		synchronized (animatorLock) {
+			getCurrentAnimations().add(animator);
+		}
 		//todo update animations maybe?
 	}
 
 	public void playAnimation(String name, boolean looping, boolean flipping) {
-		Animator anim = new Animator(mesh.getAnimationByName(name));
+		Animation anim = mesh.getAnimationByName(name);
+		if (anim == null) {
+			Log.log(TAG, "No animation named: " + name);
+			return;
+		}
+		Animator animator = new Animator(anim);
+		animator.setFadeInTime(1);
+		animator.setSpeed(10);
 		//todo apply animation-flags
-		playAnimation(anim);
+		playAnimation(animator);
 	}
 
 	@Override

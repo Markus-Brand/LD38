@@ -3,6 +3,9 @@ package mbeb.opengldefault.game;
 import static org.lwjgl.opengl.GL11.*;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import mbeb.opengldefault.animation.AnimatedRenderable;
 
 import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.logging.*;
@@ -25,40 +28,56 @@ public class BunnyGame implements IGame {
 	protected ICamera cam;
 	Scene bunnyScene;
 
-	SceneObject bunnyObj2;
+	SceneObject cowboy;
 
 	@Override
 	public void init() {
-		final String bunnyObjectName = /*/"thinmatrix.dae"/*/"bunny.obj"/**/;
-		final ArrayList<Vector3f> controlPoints = new ArrayList<>();
-
-		controlPoints.add(new Vector3f(2, 2, 0));
-		controlPoints.add(new Vector3f(0, 2, 2));
-		controlPoints.add(new Vector3f(-2, 2, 0));
-		controlPoints.add(new Vector3f(0, 2, -2));
-
-		cam = new FirstPersonCamera(new Vector3f(), new Vector3f());//(new BezierCurve(controlPoints, ControlPointInputMode.CameraPointsCircular, true));
+		cam = new FirstPersonCamera(new Vector3f(), new Vector3f());
 
 		final Skybox skybox = new Skybox("skybox/mountain");
 
 		bunnyScene = new Scene(cam, skybox);
 
-		IRenderable tm = new ObjectLoader().loadFromFileAnim("thinmatrix.dae");
-		tm = new TexturedRenderable(tm, new Texture("bunny_2d.png"));
-		//IRenderable bunny = new TexturedRenderable(new ObjectLoader().loadFromFile(bunnyObjectName), new Texture("bunny_2d.png"));
+		final AnimatedRenderable bunnyRenderable = (AnimatedRenderable)new ObjectLoader().loadFromFileAnim("ohrenFlackern.fbx");
+		IRenderable bunny = new TexturedRenderable(bunnyRenderable, new Texture("bunny_2d.png"));
 		
 		Shader phongShader = new Shader("boneAnimation.vert", "phong.frag");
 		phongShader.addUniformBlockIndex(1, "Matrices");
 		phongShader.use();
 		
-		bunnyObj2 = new SceneObject(tm, new Matrix4f(), null);
-		bunnyObj2.setShader(phongShader);
+		cowboy = new SceneObject(bunny, new Matrix4f(), null);
+		cowboy.setShader(phongShader);
 
-		bunnyScene.getSceneGraph().addSubObject(bunnyObj2);
+		bunnyScene.getSceneGraph().addSubObject(cowboy);
 		bunnyScene.getSceneGraph().setShader(phongShader);
 		
 		glDisable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
+		
+		new Thread() {
+
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
+				}
+				bunnyRenderable.playAnimation("OhrenFlackern1", true, true);
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
+				}
+				bunnyRenderable.playAnimation("HeadBang", true, true);
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
+				}
+				bunnyRenderable.playAnimation("OhrenFlackern2", true, true);
+			}
+		}.start();
 	}
 
 	@Override

@@ -7,13 +7,23 @@ public class Animator {
 
 	private final Animation animation;
 	private double currentTime;
+	private double fadeInTime;
 
 	private boolean looping;
+	
+	private double speed;
+	private double intensity;
 
 	public Animator(Animation animation) {
 		this.animation = animation;
 		currentTime = 0;
 		looping = true;
+		speed = 1.0;
+		
+	}
+
+	public void setFadeInTime(double fadeInTime) {
+		this.fadeInTime = fadeInTime;
 	}
 
 	public void setLooping(boolean looping) {
@@ -25,11 +35,23 @@ public class Animator {
 	}
 
 	public void update(double deltaTime) {
-		currentTime += deltaTime;
+		currentTime += deltaTime * speed;
 	}
 
 	public Animation getAnimation() {
 		return animation;
+	}
+
+	public void setSpeed(double speed) {
+		this.speed = speed;
+	}
+	
+	/**
+	 * for fades between poses: define how strong this animations pose replaces thw lower one in the animationStack
+	 * @return current opacity of this animation
+	 */
+	public float getOpactiy() {
+		return Math.min(1f, (float)(currentTime / fadeInTime));
 	}
 
 	/**
@@ -38,7 +60,6 @@ public class Animator {
 	 * @return
 	 */
 	public Pose getCurrentPose() {
-
 		KeyFrame[] beforeAfter = animation.getBeforeAndAfter(currentTime);
 
 		//edge-case handling
@@ -53,9 +74,9 @@ public class Animator {
 			}
 		} else {
 			if (beforeAfter[0] == null) {
-				return beforeAfter[1].getPose();
+				return beforeAfter[1].getPose();//todo apply intensity here
 			} else if (beforeAfter[1] == null) {
-				return beforeAfter[0].getPose();
+				return beforeAfter[0].getPose();//todo and here
 			}
 		}
 

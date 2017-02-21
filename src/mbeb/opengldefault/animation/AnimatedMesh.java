@@ -6,6 +6,8 @@ import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.VAORenderable;
 import mbeb.opengldefault.rendering.shader.Shader;
 import mbeb.opengldefault.scene.BoundingBox;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 /**
  * a mesh that has a skeleton
@@ -60,5 +62,21 @@ public class AnimatedMesh implements IRenderable {
 		}
 		return null;
 	}
+
+	/**
+	 * @return the default bind pose of this mesh
+	 */
+	public Pose defaultPose() {
+		Pose p = new Pose(skeleton);
+		
+		skeleton.foreach((Bone bone) -> {
+			p.put(bone.getName(),
+					new BoneTransformation(bone.getDefaultBoneTransform()));
+		});
+		
+		return p;
+	}
+	
+	
 
 }

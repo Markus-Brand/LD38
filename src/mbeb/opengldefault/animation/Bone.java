@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.function.Consumer;
 import mbeb.opengldefault.logging.Log;
 import org.joml.Matrix4f;
 
@@ -19,6 +20,8 @@ public class Bone {
 	
 	/** the inverse bind transform of the bone as given by Ai */
 	private Matrix4f inverseBindTransform;
+	/** boneTransformation in bind pose */
+	private Matrix4f defaultBoneTransform;
 	
 	private List<Bone> children;
 
@@ -94,10 +97,29 @@ public class Bone {
 		this.inverseBindTransform = inverseBindTransform;
 	}
 
+	public Matrix4f getDefaultBoneTransform() {
+		return defaultBoneTransform;
+	}
+
+	public void setDefaultBoneTransform(Matrix4f defaultBoneTransform) {
+		this.defaultBoneTransform = defaultBoneTransform;
+	}
+
 	/**
 	 * @return the recursive number of bones this skeleton has (including this one)
 	 */
 	public int boneCount() {
 		return 1 + getChildren().stream().map(Bone::boneCount).reduce(0, Integer::sum);
+	}
+	
+	/**
+	 * perform an action for every bone in this skeleton
+	 * @param action 
+	 */
+	public void foreach(Consumer<Bone> action) {
+		action.accept(this);
+		for (Bone child : getChildren()) {
+			child.foreach(action);
+		}
 	}
 }

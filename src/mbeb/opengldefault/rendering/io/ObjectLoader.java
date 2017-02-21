@@ -63,6 +63,7 @@ public class ObjectLoader {
 			//todo not return just the first mesh, rather combine meshes
 			return mesh;
 		}
+		System.err.println("NO OBJECT FOUND!");
 		return null;
 	}
 
@@ -126,7 +127,7 @@ public class ObjectLoader {
 		VAORenderable vaomesh = new VAORenderable(data, indices, format, box);
 
 		if (isAnimated) {
-			Matrix4f sceneTransform = BoneTransformation.matFromAI(scene.mRootNode().mTransformation());
+			Matrix4f sceneTransform = BoneTransformation.matrixFromAI(scene.mRootNode().mTransformation());
 			AnimatedMesh animMesh = loadAnimatedMesh(mesh, vaomesh, skeleton, sceneTransform);
 
 			loadAnimations(animMesh, scene);
@@ -211,7 +212,7 @@ public class ObjectLoader {
 			} else {
 				bone = rootBone.firstBoneNamed(boneName);
 			}
-			bone.setInverseBindTransform(BoneTransformation.matFromAI(aibone.mOffsetMatrix()));
+			bone.setInverseBindTransform(BoneTransformation.matrixFromAI(aibone.mOffsetMatrix()));
 			bone.setIndex(b);
 		}
 		return rootBone;
@@ -239,7 +240,7 @@ public class ObjectLoader {
 	private Bone parseScene(AIScene scene) {
 		AINode rootNode = scene.mRootNode();
 		Bone rootBone = new Bone(rootNode.mName().dataString(), -1);
-
+		rootBone.setDefaultBoneTransform(BoneTransformation.matrixFromAI(rootNode.mTransformation()));
 		parseBoneChildren(rootBone, rootNode);
 		return rootBone;
 	}
@@ -255,6 +256,7 @@ public class ObjectLoader {
 		for (int c = 0; c < node.mNumChildren(); c++) {
 			AINode childNode = AINode.create(node.mChildren().get(c));
 			Bone childBone = new Bone(childNode.mName().dataString(), -1);
+			childBone.setDefaultBoneTransform(BoneTransformation.matrixFromAI(childNode.mTransformation()));
 			parseBoneChildren(childBone, childNode);
 			bone.getChildren().add(childBone);
 		}

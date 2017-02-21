@@ -3,6 +3,7 @@ package mbeb.opengldefault.animation;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import mbeb.opengldefault.rendering.shader.Shader;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
@@ -12,16 +13,66 @@ import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
  * orientations of a bone-construct
  */
 public class Pose {
-	
-	private Map<String, BoneTransformation> boneTransforms = new HashMap<>();
-	private Bone skeleton;
+
+	public interface Creator {
+
+		Pose get();
+	}
+
+	/**
+	 * a Proxy-Pose object with lazy Creator-evaluation
+	 */
+	public static class Proxy extends Pose {
+
+		private Pose actualPose;
+		private final Creator creator;
+
+		public Proxy(Creator creator) {
+			super(null);
+			this.creator = creator;
+			this.actualPose = null;
+		}
+
+		private Pose getActualPose() {
+			if (actualPose == null) {
+				actualPose = creator.get();
+			}
+			return actualPose;
+		}
+
+		public Pose put(String bone, BoneTransformation transform) {
+			return getActualPose().put(bone, transform);
+		}
+
+		public void mergeWith(Pose other) {
+			getActualPose().mergeWith(other);
+		}
+
+		@Override
+		public String toString() {
+			return getActualPose().toString();
+		}
+
+		public BoneTransformation get(String boneName) {
+			return getActualPose().get(boneName);
+		}
+
+		public void setUniformData(Shader shader, String uniformName) {
+			getActualPose().setUniformData(shader, uniformName);
+		}
+
+	}
+
+	private final Map<String, BoneTransformation> boneTransforms = new HashMap<>();
+	private final Bone skeleton;
 
 	public Pose(Bone skeleton) {
 		this.skeleton = skeleton;
 	}
-	
+
 	/**
 	 * store the transformation for a bone, overriding old transformations
+	 *
 	 * @param bone
 	 * @param transform
 	 * @return this
@@ -33,16 +84,55 @@ public class Pose {
 
 	/**
 	 * merge the Bonetransforms of the other pose into this one
+	 *
 	 * @param other where to read BoneTransformations from
 	 */
 	public void mergeWith(Pose other) {
 		for (Map.Entry<String, BoneTransformation> transform : other.boneTransforms.entrySet()) {
 			if (this.boneTransforms.containsKey(transform.getKey())) {
-				 System.err.println("Double key! " + transform.getKey());
+				System.err.println("Double key! " + transform.getKey());
 			} else {
 				this.boneTransforms.put(transform.getKey(), transform.getValue());
 			}
 		}
+	}
+
+	/**
+	 * apply this poses relative transformations to a pose before, but only
+	 * to bones which have not been animated yet
+	 *
+	 * @param before the pose to alter
+	 */
+	public void applyAfter(Pose before) {
+		assert before.skeleton == this.skeleton;
+
+		for (Map.Entry<String, BoneTransformation> beforeSet : before.boneTransforms.entrySet()) {
+			String key = beforeSet.getKey();
+			Bone b = skeleton.firstBoneNamed(key);
+			BoneTransformation beforeTransform = beforeSet.getValue();
+			if (beforeTransform.isSameAs(b.getDefaultBoneTransform(), 0.001f)) {
+				BoneTransformation afterTransform = this.boneTransforms.get(key);
+				beforeSet.setValue(afterTransform);
+				
+			} else {
+			}
+		}
+	}
+
+	/**
+	 * @return how many bones are actually animated, in percent
+	 */
+	public float getAnimationAmount() {
+		AtomicInteger sum = new AtomicInteger();
+
+		skeleton.foreach((Bone b) -> {
+			Matrix4f defTrans = b.getDefaultBoneTransform();
+			if (!boneTransforms.get(b.getName()).isSameAs(defTrans, 0.001f)) {
+				sum.incrementAndGet();
+			}
+		});
+
+		return sum.get() / (float) skeleton.boneCount();
 	}
 
 	@Override
@@ -53,29 +143,36 @@ public class Pose {
 		}
 		return s.append(")").toString();
 	}
-	
+
 	/**
 	 * lerp between two poses (eg of two keyFrames)
+	 *
 	 * @param p1
 	 * @param p2
 	 * @param factor
-	 * @return 
+	 * @return
 	 */
 	public static final Pose lerp(Pose p1, Pose p2, double factor) {
-		
+		if (factor == 1) {
+			return p2;
+		}
+		if (factor == 0) {
+			return p1;
+		}
+
 		assert p1.skeleton == p2.skeleton;
-		
+
 		Pose result = new Pose(p1.skeleton);
-		
+
 		for (Map.Entry<String, BoneTransformation> boneTransform : p1.boneTransforms.entrySet()) {
 			String name = boneTransform.getKey();
 			BoneTransformation t1 = boneTransform.getValue();
 			BoneTransformation t2 = p2.boneTransforms.get(name);
-			
+
 			BoneTransformation resTrans = BoneTransformation.lerp(t1, t2, factor);
 			result.put(name, resTrans);
 		}
-		
+
 		return result;
 	}
 
@@ -85,27 +182,29 @@ public class Pose {
 
 	/**
 	 * save this pose's data to the specified uniform
+	 *
 	 * @param shader the shader to set the uniform to
 	 * @param uniformName the uniform to store pose-data
 	 */
 	public void setUniformData(Shader shader, String uniformName) {
 		float[] data = new float[16 * skeleton.boneCount()];
 		setUniformData(new Matrix4f(
-				1, 0,  0, 0,//this matrix is for flipping collada the right angle
+				1, 0, 0, 0,//this matrix is for flipping collada the right angle
 				0, 0, -1, 0,//still a bit hacky though
-				0, 1,  0, 0,//todo - replace with aiScene.rootTransformation
-				0, 0,  0, 1), skeleton, data);
-		
+				0, 1, 0, 0,//todo - replace with aiScene.rootTransformation
+				0, 0, 0, 1), skeleton, data);
+
 		FloatBuffer buf = BufferUtils.createFloatBuffer(data.length);
 		buf.put(data);
 		buf.flip();
-		
+
 		String thisUniform = uniformName;
-		glUniformMatrix4fv(shader.getUniform(thisUniform), false,  buf);
+		glUniformMatrix4fv(shader.getUniform(thisUniform), false, buf);
 	}
-	
+
 	/**
 	 * save a sub-bone of this pose to the given data-array
+	 *
 	 * @param parent the parent pose transformation
 	 * @param bone the current bone to recurively add
 	 * @param data the float array to store matrices into
@@ -116,7 +215,7 @@ public class Pose {
 		for (Bone child : bone.getChildren()) {
 			setUniformData(currentBoneTransform, child, data);
 		}
-		
+
 		Matrix4f combined = currentBoneTransform.mul(bone.getInverseBindTransform(), new Matrix4f());
 		int offset = 16 * bone.getIndex();
 		combined.get(data, offset);
