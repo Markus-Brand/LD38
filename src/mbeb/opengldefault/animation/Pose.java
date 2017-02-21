@@ -1,70 +1,25 @@
 package mbeb.opengldefault.animation;
 
-import java.nio.FloatBuffer;
-import java.util.HashMap;
-import java.util.Map;
+
+import static org.lwjgl.opengl.GL20.*;
+
+import java.nio.*;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import mbeb.opengldefault.rendering.shader.Shader;
-import org.joml.Matrix4f;
-import org.lwjgl.BufferUtils;
-import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
+
+import mbeb.opengldefault.rendering.shader.*;
+
+import org.joml.*;
+import org.lwjgl.*;
 
 /**
  * orientations of a bone-construct
  */
 public class Pose {
 
-	public interface Creator {
 
-		Pose get();
-	}
-
-	/**
-	 * a Proxy-Pose object with lazy Creator-evaluation
-	 */
-	public static class Proxy extends Pose {
-
-		private Pose actualPose;
-		private final Creator creator;
-
-		public Proxy(Creator creator) {
-			super(null);
-			this.creator = creator;
-			this.actualPose = null;
-		}
-
-		private Pose getActualPose() {
-			if (actualPose == null) {
-				actualPose = creator.get();
-			}
-			return actualPose;
-		}
-
-		public Pose put(String bone, BoneTransformation transform) {
-			return getActualPose().put(bone, transform);
-		}
-
-		public void mergeWith(Pose other) {
-			getActualPose().mergeWith(other);
-		}
-
-		@Override
-		public String toString() {
-			return getActualPose().toString();
-		}
-
-		public BoneTransformation get(String boneName) {
-			return getActualPose().get(boneName);
-		}
-
-		public void setUniformData(Shader shader, String uniformName) {
-			getActualPose().setUniformData(shader, uniformName);
-		}
-
-	}
-
-	private final Map<String, BoneTransformation> boneTransforms = new HashMap<>();
-	private final Bone skeleton;
+	private Map<String, BoneTransformation> boneTransforms = new HashMap<>();
+	private Bone skeleton;
 
 	public Pose(Bone skeleton) {
 		this.skeleton = skeleton;

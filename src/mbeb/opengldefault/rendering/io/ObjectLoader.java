@@ -3,8 +3,8 @@ package mbeb.opengldefault.rendering.io;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
-import mbeb.opengldefault.animation.*;
 
+import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.openglcontext.*;
 import mbeb.opengldefault.rendering.renderable.*;
@@ -18,8 +18,8 @@ import org.lwjgl.assimp.*;
  */
 public class ObjectLoader {
 
-	public static final DataFragment[] PosNormUv = new DataFragment[]{DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV};
-	public static final DataFragment[] PosNormUvAnim3 = new DataFragment[]{DataFragment.POSITION, DataFragment.NORMAL, DataFragment.MOCK_UV, DataFragment.BONE_INDICES_3, DataFragment.BONE_WEIGHTS_3};
+	public static final DataFragment[] PosNormUv = new DataFragment[] {DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV};
+	public static final DataFragment[] PosNormUvAnim3 = new DataFragment[] {DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV, DataFragment.BONE_INDICES_3, DataFragment.BONE_WEIGHTS_3};
 
 	private static final String TAG = "ObjectLoader";
 
@@ -27,7 +27,8 @@ public class ObjectLoader {
 	 * load an object into a Renderable. Assumes, that the file contains 3
 	 * Position, 3 Normal and 2 UV Fragments
 	 *
-	 * @param path the absolute File-Path to the object
+	 * @param path
+	 *            the absolute File-Path to the object
 	 * @return a VAO-Renderable
 	 */
 	public IRenderable loadFromFile(String path) {
@@ -37,7 +38,8 @@ public class ObjectLoader {
 	/**
 	 * also load animation data (3 ids / 3 weights)
 	 *
-	 * @param path the absolute File-Path to the object
+	 * @param path
+	 *            the absolute File-Path to the object
 	 * @return a VAO-Renderable
 	 */
 	public IRenderable loadFromFileAnim(String path) {
@@ -47,15 +49,17 @@ public class ObjectLoader {
 	/**
 	 * load an object into a Renderable
 	 *
-	 * @param path the absolute File-Path to the object
-	 * @param format which data to load
+	 * @param path
+	 *            the absolute File-Path to the object
+	 * @param format
+	 *            which data to load
 	 * @return a VAO-Renderable
 	 */
 	public IRenderable loadFromFile(String path, DataFragment[] format) {
 
 		String realPath = getExtractedPath(path);
 		AIScene scene = Assimp.aiImportFile(realPath, Assimp.aiProcess_Triangulate);
-		
+
 		Bone sceneStructure = parseScene(scene);
 
 		for (int meshID = 0; meshID < scene.mNumMeshes(); meshID++) {
@@ -75,8 +79,7 @@ public class ObjectLoader {
 		File export = new File(res, rawPath);
 		if (!export.exists()) {
 			try {
-				Files.copy(OpenGLContext.class.getResourceAsStream("/mbeb/opengldefault/resources/" + rawPath),
-						export.toPath());
+				Files.copy(OpenGLContext.class.getResourceAsStream("/mbeb/opengldefault/resources/" + rawPath), export.toPath());
 			} catch(IOException ex) {
 				Log.log(TAG, ex.getMessage() + " at extracting resource " + rawPath);
 			}
@@ -87,9 +90,12 @@ public class ObjectLoader {
 	/**
 	 * load a single mesh
 	 *
-	 * @param scene the AIScene to load from
-	 * @param meshID which mesh to load
-	 * @param format the format the data should be in
+	 * @param scene
+	 *            the AIScene to load from
+	 * @param meshID
+	 *            which mesh to load
+	 * @param format
+	 *            the format the data should be in
 	 * @return
 	 */
 	private IRenderable loadMesh(AIScene scene, int meshID, DataFragment[] format, Bone sceneStructure) {
@@ -143,7 +149,8 @@ public class ObjectLoader {
 	 *
 	 * @param mesh
 	 * @param skeleton
-	 * @param weightsAmount how many bones per vertex
+	 * @param weightsAmount
+	 *            how many bones per vertex
 	 * @return
 	 */
 	private Map<Integer, List<Map.Entry<Integer, Float>>> loadVertexWeights(AIMesh mesh, Bone skeleton, int weightsAmount) {
@@ -170,16 +177,15 @@ public class ObjectLoader {
 		for (int v = 0; v < mesh.mNumVertices(); v++) {
 			Map<Integer, Float> weights = rawVertexBoneWeights.get(v);
 			//System.err.println("weights = " + weights.size());
-			while (weights.size() < weightsAmount) {
+			while(weights.size() < weightsAmount) {
 				//putting 0 at some non-existent index
 				weights.put(-weights.size() - 1, 0f);
 			}
 			ArrayList<Map.Entry<Integer, Float>> list = new ArrayList<>(weights.entrySet());
 
-			list.sort((Map.Entry<Integer, Float> o1, Map.Entry<Integer, Float> o2)
-					-> -o1.getValue().compareTo(o2.getValue()));
+			list.sort((Map.Entry<Integer, Float> o1, Map.Entry<Integer, Float> o2) -> -o1.getValue().compareTo(o2.getValue()));
 
-			while (list.size() > weightsAmount) {
+			while(list.size() > weightsAmount) {
 				list.remove(list.size() - 1);
 			}
 			//adjuts weights
@@ -187,7 +193,7 @@ public class ObjectLoader {
 			for (Map.Entry<Integer, Float> entry : list) {
 				entry.setValue(entry.getValue() / sum);
 			}
-			
+
 			vertexBoneWeights.put(v, list);
 		}
 		return vertexBoneWeights;
@@ -196,8 +202,10 @@ public class ObjectLoader {
 	/**
 	 * extract a skeleton from the scene structure and adjust the bones indices
 	 *
-	 * @param mesh the mesh that containts bones
-	 * @param sceneStructure the total scene structure
+	 * @param mesh
+	 *            the mesh that containts bones
+	 * @param sceneStructure
+	 *            the total scene structure
 	 * @return
 	 */
 	private Bone parseSkeleton(AIMesh mesh, Bone sceneStructure) {
@@ -221,8 +229,10 @@ public class ObjectLoader {
 	/**
 	 * load all necessary data for an animated mesh
 	 *
-	 * @param mesh the AI-mesh containing this data
-	 * @param vaomesh the VAORenderable (raw mesh data)
+	 * @param mesh
+	 *            the AI-mesh containing this data
+	 * @param vaomesh
+	 *            the VAORenderable (raw mesh data)
 	 * @return a new AnimatedRenderable
 	 */
 	private AnimatedMesh loadAnimatedMesh(AIMesh mesh, VAORenderable vaomesh, Bone skeleton, Matrix4f sceneTransform) {
@@ -264,8 +274,11 @@ public class ObjectLoader {
 
 	/**
 	 * load all the animations in a scene for the given animatedMesh
-	 * @param animMesh the mesh to load animations for
-	 * @param scene the aiScene to load from
+	 * 
+	 * @param animMesh
+	 *            the mesh to load animations for
+	 * @param scene
+	 *            the aiScene to load from
 	 */
 	private void loadAnimations(AnimatedMesh animMesh, AIScene scene) {
 		for (int a = 0; a < scene.mNumAnimations(); a++) {
@@ -275,25 +288,24 @@ public class ObjectLoader {
 			for (int channel = 0; channel < aianim.mNumChannels(); channel++) {
 				AINodeAnim node = AINodeAnim.create(aianim.mChannels().get(channel));
 				String boneName = node.mNodeName().dataString();
-				
+
 				assert node.mNumPositionKeys() == node.mNumRotationKeys();
 				assert node.mNumScalingKeys() == node.mNumRotationKeys();
-				
+
 				for (int key = 0; key < node.mNumPositionKeys(); key++) {
-					
+
 					AIVectorKey pos = node.mPositionKeys().get(key);
 					AIQuatKey rot = node.mRotationKeys().get(key);
 					AIVectorKey scale = node.mScalingKeys().get(key);
-					
-					BoneTransformation transform = new BoneTransformation(
-							new Vector3f(pos.mValue().x(), pos.mValue().y(), pos.mValue().z()),
-							new Quaternionf(rot.mValue().x(), rot.mValue().y(), rot.mValue().z(), rot.mValue().w()),
-							new Vector3f(scale.mValue().x(), scale.mValue().y(), scale.mValue().z()));
+
+					BoneTransformation transform =
+							new BoneTransformation(new Vector3f(pos.mValue().x(), pos.mValue().y(), pos.mValue().z()), new Quaternionf(rot.mValue().x(), rot.mValue().y(), rot.mValue().z(), rot
+									.mValue().w()), new Vector3f(scale.mValue().x(), scale.mValue().y(), scale.mValue().z()));
 					KeyFrame keyFrame = new KeyFrame(pos.mTime(), new Pose(animMesh.getSkeleton()).put(boneName, transform));
 					anim.mergeKeyFrame(keyFrame);
 				}
 			}
-			
+
 			animMesh.addAnimation(anim);
 		}
 	}

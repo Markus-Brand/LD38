@@ -22,8 +22,7 @@
  */
 package org.joml;
 
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
+import java.nio.*;
 
 /**
  * Interface to an immutable 4-dimensional vector of integers.

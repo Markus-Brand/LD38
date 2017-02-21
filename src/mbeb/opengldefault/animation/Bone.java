@@ -1,12 +1,10 @@
 package mbeb.opengldefault.animation;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.function.Consumer;
 import mbeb.opengldefault.logging.Log;
-import org.joml.Matrix4f;
+
+import org.joml.*;
 
 /**
  * a bone inside a mesh
@@ -77,8 +75,8 @@ public class Bone {
 		}
 		Queue<Bone> boneQueue = new LinkedList<>();
 		boneQueue.add(this);
-		
-		while (!boneQueue.isEmpty()) {
+
+		while(!boneQueue.isEmpty()) {
 			Bone bone = boneQueue.remove();
 			if (bone.getName().equals(name)) {
 				return bone;

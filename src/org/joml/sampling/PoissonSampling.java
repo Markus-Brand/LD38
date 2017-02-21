@@ -22,9 +22,9 @@
  */
 package org.joml.sampling;
 
-import java.util.ArrayList;
+import java.util.*;
 
-import org.joml.Vector2f;
+import org.joml.*;
 
 /**
  * Generates Poisson samples.

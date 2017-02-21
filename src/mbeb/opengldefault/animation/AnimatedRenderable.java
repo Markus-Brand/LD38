@@ -1,11 +1,11 @@
 package mbeb.opengldefault.animation;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import mbeb.opengldefault.logging.Log;
-import mbeb.opengldefault.rendering.renderable.IRenderable;
-import mbeb.opengldefault.rendering.shader.Shader;
-import mbeb.opengldefault.scene.BoundingBox;
+
+import mbeb.opengldefault.rendering.renderable.*;
+import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.scene.*;
 
 /**
  * an animatedMesh together with some animation-state

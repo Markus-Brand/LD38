@@ -10,8 +10,7 @@ public interface ICamera {
 	 * @param deltaTime
 	 *            time, that passed since the last update
 	 */
-	default void update(double deltaTime) {
-	}
+	void update(double deltaTime);
 
 	/**
 	 * get the cameras position
@@ -82,7 +81,7 @@ public interface ICamera {
 
 	/**
 	 * get skybox view matrix. Should be something like mat4(mat3(view))
-	 * 
+	 *
 	 * @return skybox view matrix
 	 */
 	Matrix4f getSkyboxView();
@@ -103,20 +102,15 @@ public interface ICamera {
 	 * convert the given world space coordinates to screen space
 	 *
 	 * @param pos
-	 * @return
+	 * @return the Vectors position on Screen
 	 */
-	default Vector3f getPosOnScreen(Vector3f pos) {
-		return getPosOnScreen(new Vector4f(pos.x, pos.y, pos.z, 1));
-	}
+	Vector3f getPosOnScreen(Vector3f pos);
 
 	/**
 	 * convert the given world space coordinates to screen space
 	 *
 	 * @param pos
-	 * @return
+	 * @return the Vectors position on Screen
 	 */
-	default Vector3f getPosOnScreen(Vector4f pos) {
-		Vector4f res = pos.mul(getProjectionView());
-		return new Vector3f(res.x / res.z, res.y / res.z, res.z);
-	}
+	Vector3f getPosOnScreen(Vector4f pos);
 }

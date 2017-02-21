@@ -310,8 +310,7 @@ public class QuaternionfInterpolator {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public Quaternionf
-			computeWeightedAverage(Quaternionfc[] qs, float[] weights, int maxSvdIterations, Quaternionf dest) {
+	public Quaternionf computeWeightedAverage(Quaternionfc[] qs, float[] weights, int maxSvdIterations, Quaternionf dest) {
 		float m00 = 0.0f, m01 = 0.0f, m02 = 0.0f;
 		float m10 = 0.0f, m11 = 0.0f, m12 = 0.0f;
 		float m20 = 0.0f, m21 = 0.0f, m22 = 0.0f;

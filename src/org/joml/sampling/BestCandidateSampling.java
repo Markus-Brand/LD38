@@ -22,10 +22,9 @@
  */
 package org.joml.sampling;
 
-import java.util.ArrayList;
+import java.util.*;
 
-import org.joml.Vector2f;
-import org.joml.Vector3f;
+import org.joml.*;
 
 /**
  * Creates samples using the "Best Candidate" algorithm.
@@ -154,8 +153,7 @@ public class BestCandidateSampling {
 					 * 
 					 * See: http://math.stackexchange.com/questions/1244512/point-in-a-spherical-triangle-test
 					 */
-					if (isPointOnSphericalTriangle(o.x, o.y, o.z, c.v0x, c.v0y, c.v0z, c.v1x, c.v1y, c.v1z, c.v2x,
-							c.v2y, c.v2z, 1E-6f)) {
+					if (isPointOnSphericalTriangle(o.x, o.y, o.z, c.v0x, c.v0y, c.v0z, c.v1x, c.v1y, c.v1z, c.v2x, c.v2y, c.v2z, 1E-6f)) {
 						c.insert(o);
 						return;
 					}
@@ -189,8 +187,8 @@ public class BestCandidateSampling {
 			 * "http://www.cs.virginia.edu/~gfx/Courses/2003/ImageSynthesis/papers/Acceleration/Fast%20MinimumStorage%20RayTriangle%20Intersection.pdf"
 			 * >Fast, Minimum Storage Ray/Triangle Intersection</a>
 			 */
-			private static boolean isPointOnSphericalTriangle(float x, float y, float z, float v0X, float v0Y,
-					float v0Z, float v1X, float v1Y, float v1Z, float v2X, float v2Y, float v2Z, float epsilon) {
+			private static boolean isPointOnSphericalTriangle(float x, float y, float z, float v0X, float v0Y, float v0Z, float v1X, float v1Y, float v1Z, float v2X, float v2Y, float v2Z,
+					float epsilon) {
 				float edge1X = v1X - v0X;
 				float edge1Y = v1Y - v0Y;
 				float edge1Z = v1Z - v0Z;
@@ -223,8 +221,7 @@ public class BestCandidateSampling {
 			private int child(float x, float y, float z) {
 				for (int i = 0; i < children.length; i++) {
 					Node c = children[i];
-					if (isPointOnSphericalTriangle(x, y, z, c.v0x, c.v0y, c.v0z, c.v1x, c.v1y, c.v1z, c.v2x, c.v2y,
-							c.v2z, 1E-5f)) {
+					if (isPointOnSphericalTriangle(x, y, z, c.v0x, c.v0y, c.v0z, c.v1x, c.v1y, c.v1z, c.v2x, c.v2y, c.v2z, 1E-5f)) {
 						return i;
 					}
 				}

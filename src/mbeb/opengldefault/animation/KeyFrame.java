@@ -29,7 +29,5 @@ public class KeyFrame {
 	public String toString() {
 		return "KeyFrame(" + timeStamp + ", " + pose + ")";
 	}
-	
-	
-	
+
 }

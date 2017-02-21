@@ -1,9 +1,5 @@
 package mbeb.opengldefault.scene;
 
-import mbeb.opengldefault.camera.ICamera;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import mbeb.opengldefault.camera.*;
 
 import org.joml.*;
@@ -52,7 +48,7 @@ public class BoundingBox {
 	protected Vector3f localSize;
 
 	/**
-	 * just the transformation for this object
+	 * the transformation for this object
 	 */
 	protected Matrix4f modelTransform;
 
@@ -96,10 +92,21 @@ public class BoundingBox {
 		return this;
 	}
 
+	/**
+	 * Getter for the model transform
+	 * 
+	 * @return the model transform
+	 */
 	public Matrix4f getModelTransform() {
 		return modelTransform;
 	}
 
+	/**
+	 * Setter for the model Transform
+	 * 
+	 * @param transform
+	 *            new model transform
+	 */
 	public void setModelTransform(final Matrix4f transform) {
 		this.modelTransform = transform;
 	}
@@ -155,7 +162,8 @@ public class BoundingBox {
 	private Vector3f[] getGlobalEdges() {
 		final Vector3f[] edges = getLocalEdges();
 		for (int e = 0; e < edges.length; e++) {
-			edges[e] = edges[e].mul(new Matrix3f(getModelTransform()));
+			Vector4f edge = new Vector4f(edges[e], 1.0f).mul(getModelTransform());
+			edges[e] = new Vector3f(edge.x, edge.y, edge.z);
 		}
 		return edges;
 	}
@@ -173,8 +181,18 @@ public class BoundingBox {
 		//apply to edges
 		final Vector3f[] edges = getGlobalEdges();
 		for (int e = 0; e < edges.length; e++) {
-			edges[e] = camera.getPosOnScreen(edges[e].mul(new Matrix3f(parentTransform)));
+			edges[e] = camera.getPosOnScreen(new Vector4f(edges[e], 1.0f).mul(parentTransform));
 		}
 		return edges;
+	}
+
+	/**
+	 * Returns the center of the BoundingBox
+	 * 
+	 * @return center of the BoundingBox
+	 */
+	public Vector3f getCenter() {
+		Vector3f halfSize = localSize.mul(0.5f, new Vector3f());
+		return localStart.add(halfSize, new Vector3f());
 	}
 }

@@ -1,13 +1,11 @@
 package mbeb.opengldefault.animation;
 
-import java.util.ArrayList;
-import java.util.List;
-import mbeb.opengldefault.rendering.renderable.IRenderable;
-import mbeb.opengldefault.rendering.renderable.VAORenderable;
-import mbeb.opengldefault.rendering.shader.Shader;
-import mbeb.opengldefault.scene.BoundingBox;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
+
+import java.util.*;
+
+import mbeb.opengldefault.rendering.renderable.*;
+import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.scene.*;
 
 /**
  * a mesh that has a skeleton
@@ -39,7 +37,7 @@ public class AnimatedMesh implements IRenderable {
 		}
 		return animations;
 	}
-	
+
 	public void addAnimation(Animation anim) {
 		anim.setSkeleton(skeleton);
 		getAnimations().add(anim);
@@ -51,7 +49,9 @@ public class AnimatedMesh implements IRenderable {
 
 	/**
 	 * return the Animation-object from this mesh with the given name
-	 * @param name the name to search for
+	 * 
+	 * @param name
+	 *            the name to search for
 	 * @return null if no such animation was found
 	 */
 	public Animation getAnimationByName(String name) {

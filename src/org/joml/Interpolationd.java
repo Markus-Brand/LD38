@@ -58,8 +58,7 @@ public class Interpolationd {
 	 *            the y coordinate of the point to interpolate <i>f</i> at
 	 * @return the interpolated value of <i>f</i>
 	 */
-	public static double interpolateTriangle(double v0X, double v0Y, double f0, double v1X, double v1Y, double f1,
-			double v2X, double v2Y, double f2, double x, double y) {
+	public static double interpolateTriangle(double v0X, double v0Y, double f0, double v1X, double v1Y, double f1, double v2X, double v2Y, double f2, double x, double y) {
 		double v12Y = v1Y - v2Y;
 		double v21X = v2X - v1X;
 		double v02X = v0X - v2X;
@@ -110,8 +109,8 @@ public class Interpolationd {
 	 *            will hold the interpolation result
 	 * @return dest
 	 */
-	public static Vector2d interpolateTriangle(double v0X, double v0Y, double f0X, double f0Y, double v1X, double v1Y,
-			double f1X, double f1Y, double v2X, double v2Y, double f2X, double f2Y, double x, double y, Vector2d dest) {
+	public static Vector2d interpolateTriangle(double v0X, double v0Y, double f0X, double f0Y, double v1X, double v1Y, double f1X, double f1Y, double v2X, double v2Y, double f2X, double f2Y,
+			double x, double y, Vector2d dest) {
 		double v12Y = v1Y - v2Y;
 		double v21X = v2X - v1X;
 		double v02X = v0X - v2X;
@@ -162,8 +161,7 @@ public class Interpolationd {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public static Vector2d dFdxLinear(double v0X, double v0Y, double f0X, double f0Y, double v1X, double v1Y,
-			double f1X, double f1Y, double v2X, double v2Y, double f2X, double f2Y, Vector2d dest) {
+	public static Vector2d dFdxLinear(double v0X, double v0Y, double f0X, double f0Y, double v1X, double v1Y, double f1X, double f1Y, double v2X, double v2Y, double f2X, double f2Y, Vector2d dest) {
 		double v12Y = v1Y - v2Y;
 		double v02Y = v0Y - v2Y;
 		double den = v12Y * (v0X - v2X) + (v2X - v1X) * v02Y;
@@ -209,8 +207,7 @@ public class Interpolationd {
 	 *            will hold the result
 	 * @return dest
 	 */
-	public static Vector2d dFdyLinear(double v0X, double v0Y, double f0X, double f0Y, double v1X, double v1Y,
-			double f1X, double f1Y, double v2X, double v2Y, double f2X, double f2Y, Vector2d dest) {
+	public static Vector2d dFdyLinear(double v0X, double v0Y, double f0X, double f0Y, double v1X, double v1Y, double f1X, double f1Y, double v2X, double v2Y, double f2X, double f2Y, Vector2d dest) {
 		double v21X = v2X - v1X;
 		double v02X = v0X - v2X;
 		double den = (v1Y - v2Y) * v02X + v21X * (v0Y - v2Y);
@@ -265,15 +262,13 @@ public class Interpolationd {
 	 *            will hold the interpolation result
 	 * @return dest
 	 */
-	public static Vector3d interpolateTriangle(double v0X, double v0Y, double f0X, double f0Y, double f0Z, double v1X,
-			double v1Y, double f1X, double f1Y, double f1Z, double v2X, double v2Y, double f2X, double f2Y, double f2Z,
-			double x, double y, Vector3d dest) {
+	public static Vector3d interpolateTriangle(double v0X, double v0Y, double f0X, double f0Y, double f0Z, double v1X, double v1Y, double f1X, double f1Y, double f1Z, double v2X, double v2Y,
+			double f2X, double f2Y, double f2Z, double x, double y, Vector3d dest) {
 		// compute interpolation factors
 		Vector3d t = dest;
 		interpolationFactorsTriangle(v0X, v0Y, v1X, v1Y, v2X, v2Y, x, y, t);
 		// interpolate using these factors
-		return dest.set(t.x * f0X + t.y * f1X + t.z * f2X, t.x * f0Y + t.y * f1Y + t.z * f2Y, t.x * f0Z + t.y * f1Z
-				+ t.z * f2Z);
+		return dest.set(t.x * f0X + t.y * f1X + t.z * f2X, t.x * f0Y + t.y * f1Y + t.z * f2Y, t.x * f0Z + t.y * f1Z + t.z * f2Z);
 	}
 
 	/**
@@ -305,8 +300,7 @@ public class Interpolationd {
 	 *            will hold the interpolation factors <tt>(t0, t1, t2)</tt>
 	 * @return dest
 	 */
-	public static Vector3d interpolationFactorsTriangle(double v0X, double v0Y, double v1X, double v1Y, double v2X,
-			double v2Y, double x, double y, Vector3d dest) {
+	public static Vector3d interpolationFactorsTriangle(double v0X, double v0Y, double v1X, double v1Y, double v2X, double v2Y, double x, double y, Vector3d dest) {
 		double v12Y = v1Y - v2Y;
 		double v21X = v2X - v1X;
 		double v02X = v0X - v2X;

@@ -1,5 +1,6 @@
 package mbeb.opengldefault.rendering.shader;
 
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
@@ -36,6 +37,8 @@ public class Shader {
 	private String tesControlSource;
 	/** Tessellation Evaluation Shaders source code */
 	private String tesEvalSource;
+	/** Drawmode for the Renderables that get rendered by this shader */
+	private int drawMode;
 
 	/**
 	 * Static parameters that can be changed by recompiling the shaders. They will be written into the shader via
@@ -101,8 +104,7 @@ public class Shader {
 	 * @param parameters
 	 *            a map containing initial values for shader parameters
 	 */
-	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath,
-			final Map<String, Object> parameters) {
+	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath, final Map<String, Object> parameters) {
 		this(vertexPath, fragmentPath, geometryPath, null, null, parameters);
 	}
 
@@ -120,8 +122,7 @@ public class Shader {
 	 * @param tesEvalPath
 	 *            path of a tessellation evaluation Shader
 	 */
-	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath,
-			final String tesControlPath, final String tesEvalPath) {
+	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath, final String tesControlPath, final String tesEvalPath) {
 		this(vertexPath, fragmentPath, geometryPath, tesControlPath, tesEvalPath, new HashMap<>());
 	}
 
@@ -141,8 +142,7 @@ public class Shader {
 	 * @param parameters
 	 *            a map containing initial values for shader parameters
 	 */
-	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath,
-			final String tesControlPath, final String tesEvalPath, final Map<String, Object> parameters) {
+	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath, final String tesControlPath, final String tesEvalPath, final Map<String, Object> parameters) {
 		this.parameters = parameters;
 		this.vertexSource = getSource(vertexPath);
 		this.fragmentSource = getSource(fragmentPath);
@@ -211,7 +211,7 @@ public class Shader {
 	}
 
 	/**
-	 * get the location of a Uniform with given name
+	 * get the location of an Uniform with given name
 	 *
 	 * @param name
 	 *            name of the uniform
@@ -223,7 +223,7 @@ public class Shader {
 
 	/**
 	 * get the location of a Uniform with given name
-	 * 
+	 *
 	 * @param name
 	 *            name of the uniform
 	 * @param logAnError
@@ -412,8 +412,7 @@ public class Shader {
 	 * @param tesEvalShader
 	 * @param geomShader
 	 */
-	private void linkShader(final int vertexShader, final int fragmentShader, final int geomShader,
-			final int tesControlShader, final int tesEvalShader) {
+	private void linkShader(final int vertexShader, final int fragmentShader, final int geomShader, final int tesControlShader, final int tesEvalShader) {
 		shaderProgram = glCreateProgram();
 		glAttachShader(shaderProgram, vertexShader);
 		glAttachShader(shaderProgram, fragmentShader);
@@ -436,5 +435,27 @@ public class Shader {
 
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
+	}
+
+	/**
+	 * Setter for the drawMode
+	 *
+	 * @param drawMode
+	 *            new drawMode
+	 */
+	public void setDrawMode(int drawMode) {
+		this.drawMode = drawMode;
+	}
+
+	/**
+	 * Getter for the drawMode
+	 *
+	 * @return current drawmode. Most likely GL_TRIANGLES
+	 */
+	public int getDrawMode() {
+		if (drawMode <= 0) {
+			drawMode = GL_TRIANGLES;
+		}
+		return drawMode;
 	}
 }

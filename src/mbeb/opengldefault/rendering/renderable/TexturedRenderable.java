@@ -45,7 +45,5 @@ public class TexturedRenderable implements IRenderable {
 	public void update(double deltaTime) {
 		renderable.update(deltaTime);
 	}
-	
-	
 
 }

@@ -22,8 +22,7 @@
  */
 package org.joml;
 
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
+import java.nio.*;
 
 /**
  * Interface to an immutable 3-dimensional vector of double-precision floats.

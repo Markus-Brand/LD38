@@ -22,12 +22,8 @@
  */
 package org.joml;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.io.*;
+import java.text.*;
 
 /**
  * Represents a 3D rotation of a given radians about an axis represented as an
@@ -510,8 +506,7 @@ public class AxisAngle4d implements Externalizable {
 		double cos = Math.cos(angle);
 		double sin = Math.sin(angle);
 		double dot = x * v.x() + y * v.y() + z * v.z();
-		dest.set(v.x() * cos + sin * (y * v.z() - z * v.y()) + (1.0 - cos) * dot * x, v.y() * cos + sin
-				* (z * v.x() - x * v.z()) + (1.0 - cos) * dot * y, v.z() * cos + sin * (x * v.y() - y * v.x())
+		dest.set(v.x() * cos + sin * (y * v.z() - z * v.y()) + (1.0 - cos) * dot * x, v.y() * cos + sin * (z * v.x() - x * v.z()) + (1.0 - cos) * dot * y, v.z() * cos + sin * (x * v.y() - y * v.x())
 				+ (1.0 - cos) * dot * z);
 		return dest;
 	}
@@ -541,8 +536,8 @@ public class AxisAngle4d implements Externalizable {
 		double cos = Math.cos(angle);
 		double sin = Math.sin(angle);
 		double dot = x * v.x + y * v.y + z * v.z;
-		dest.set(v.x * cos + sin * (y * v.z - z * v.y) + (1.0 - cos) * dot * x, v.y * cos + sin * (z * v.x - x * v.z)
-				+ (1.0 - cos) * dot * y, v.z * cos + sin * (x * v.y - y * v.x) + (1.0 - cos) * dot * z, dest.w);
+		dest.set(v.x * cos + sin * (y * v.z - z * v.y) + (1.0 - cos) * dot * x, v.y * cos + sin * (z * v.x - x * v.z) + (1.0 - cos) * dot * y, v.z * cos + sin * (x * v.y - y * v.x) + (1.0 - cos)
+				* dot * z, dest.w);
 		return dest;
 	}
 
@@ -574,9 +569,7 @@ public class AxisAngle4d implements Externalizable {
 		final int prime = 31;
 		int result = 1;
 		long temp;
-		temp =
-				Double.doubleToLongBits((angle < 0.0 ? Math.PI + Math.PI + angle % (Math.PI + Math.PI) : angle)
-						% (Math.PI + Math.PI));
+		temp = Double.doubleToLongBits((angle < 0.0 ? Math.PI + Math.PI + angle % (Math.PI + Math.PI) : angle) % (Math.PI + Math.PI));
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		temp = Double.doubleToLongBits(x);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
@@ -595,9 +588,8 @@ public class AxisAngle4d implements Externalizable {
 		if (getClass() != obj.getClass())
 			return false;
 		AxisAngle4d other = (AxisAngle4d) obj;
-		if (Double.doubleToLongBits((angle < 0.0 ? Math.PI + Math.PI + angle % (Math.PI + Math.PI) : angle)
-				% (Math.PI + Math.PI)) != Double.doubleToLongBits((other.angle < 0.0 ? Math.PI + Math.PI + other.angle
-				% (Math.PI + Math.PI) : other.angle)
+		if (Double.doubleToLongBits((angle < 0.0 ? Math.PI + Math.PI + angle % (Math.PI + Math.PI) : angle) % (Math.PI + Math.PI)) != Double.doubleToLongBits((other.angle < 0.0 ? Math.PI + Math.PI
+				+ other.angle % (Math.PI + Math.PI) : other.angle)
 				% (Math.PI + Math.PI)))
 			return false;
 		if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x))

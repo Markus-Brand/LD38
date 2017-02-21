@@ -8,6 +8,8 @@ import java.util.logging.Logger;
 import mbeb.opengldefault.animation.AnimatedRenderable;
 
 import mbeb.opengldefault.camera.*;
+import mbeb.opengldefault.curves.*;
+import mbeb.opengldefault.curves.BezierCurve.ControlPointInputMode;
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.openglcontext.*;
 import mbeb.opengldefault.rendering.io.*;
@@ -15,6 +17,14 @@ import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.rendering.textures.*;
 import mbeb.opengldefault.scene.*;
+import mbeb.opengldefault.scene.behaviour.BezierBehaviour;
+import mbeb.opengldefault.scene.behaviour.EscapingBehaviour;
+import mbeb.opengldefault.scene.behaviour.FollowingBehaviour;
+import mbeb.opengldefault.scene.behaviour.LimitedDistanceBehaviour;
+import mbeb.opengldefault.scene.behaviour.PlayerControlBehaviour;
+import mbeb.opengldefault.scene.entities.CameraEntity;
+import mbeb.opengldefault.scene.entities.Entity;
+import mbeb.opengldefault.scene.entities.SceneEntity;
 
 import org.joml.*;
 
@@ -25,14 +35,18 @@ public class BunnyGame implements IGame {
 	/** Class Name Tag */
 	private static final String TAG = "BunnyGame";
 
+	private float timePassed;
+
 	protected ICamera cam;
 	Scene bunnyScene;
 
-	SceneObject cowboy;
+	SceneObject bunnySceneObject;
+	
+	Entity camEntity, bunnyEntity;
 
 	@Override
 	public void init() {
-		cam = new FirstPersonCamera(new Vector3f(), new Vector3f());
+		cam = new Camera();
 
 		final Skybox skybox = new Skybox("skybox/mountain");
 
@@ -45,14 +59,20 @@ public class BunnyGame implements IGame {
 		phongShader.addUniformBlockIndex(1, "Matrices");
 		phongShader.use();
 		
-		cowboy = new SceneObject(bunny, new Matrix4f(), null);
-		cowboy.setShader(phongShader);
+		bunnySceneObject = new SceneObject(bunny, new Matrix4f(), null);
+		bunnySceneObject.setShader(phongShader);
 
-		bunnyScene.getSceneGraph().addSubObject(cowboy);
+		bunnyScene.getSceneGraph().addSubObject(bunnySceneObject);
 		bunnyScene.getSceneGraph().setShader(phongShader);
 		
 		glDisable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
+		
+		camEntity = new CameraEntity(cam);
+		camEntity.addBehaviour(1, new PlayerControlBehaviour());
+		
+		bunnyEntity = new SceneEntity(bunnySceneObject);
+		bunnyEntity.addBehaviour(1, new LimitedDistanceBehaviour(new EscapingBehaviour(camEntity, 1), 5));
 		
 		new Thread() {
 
@@ -82,6 +102,7 @@ public class BunnyGame implements IGame {
 
 	@Override
 	public void update(final double deltaTime) {
+		timePassed += deltaTime;
 
 		glClearColor(0.05f, 0.075f, 0.075f, 1);
 		GLErrors.checkForError(TAG, "glClearColor");
@@ -92,6 +113,8 @@ public class BunnyGame implements IGame {
 		GLErrors.checkForError(TAG, "glViewport");
 
 		bunnyScene.update(deltaTime);
+		camEntity.update(deltaTime);
+		bunnyEntity.update(deltaTime);
 	}
 
 	@Override
