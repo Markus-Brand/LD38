@@ -10,6 +10,7 @@ import mbeb.opengldefault.rendering.renderable.*;
 public class Scene {
 
 	private SceneGraphRenderer renderer;
+	private SceneGraphRenderer boundingBoxRenderer;
 	private final SceneObject sceneGraph;
 	private ICamera camera;
 	private Skybox skybox;
@@ -23,6 +24,7 @@ public class Scene {
 		this.skybox = skybox;
 		this.sceneGraph = new SceneObject();
 		renderer = new VisibleSceneGraphRenderer(sceneGraph, cam);
+		boundingBoxRenderer = new BoundingBoxRenderer(sceneGraph, cam);
 	}
 
 	public SceneObject getSceneGraph() {
@@ -39,7 +41,14 @@ public class Scene {
 	}
 
 	public void render() {
+		render(false);
+	}
+
+	public void render(boolean renderBoundingBoxes) {
 		renderer.render();
+		if (renderBoundingBoxes) {
+			boundingBoxRenderer.render();
+		}
 		if (skybox != null) {
 			skybox.render();
 		}

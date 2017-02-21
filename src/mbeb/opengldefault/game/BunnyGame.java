@@ -15,7 +15,7 @@ import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.rendering.textures.*;
 import mbeb.opengldefault.scene.*;
 import mbeb.opengldefault.scene.behaviour.BezierBehaviour;
-import mbeb.opengldefault.scene.behaviour.EscapingBehaviour;
+import mbeb.opengldefault.scene.behaviour.FollowingBehaviour;
 import mbeb.opengldefault.scene.behaviour.LimitedDistanceBehaviour;
 import mbeb.opengldefault.scene.behaviour.PlayerControlBehaviour;
 import mbeb.opengldefault.scene.entities.CameraEntity;
@@ -38,21 +38,19 @@ public class BunnyGame implements IGame {
 
 	BezierCurve curve;
 
-	SceneObject cubeObj, bunnyObj, cowboy, curveObj;
+	SceneObject bunny0, bunny1, bunny2, bunny3, bunny4, curveObj;
 
-	Entity followed, follower, camEntity;
+	Entity mainBunny, followingBunny1, followingBunny2, followingBunny3, followingBunny4, camEntity;
 
 	@Override
 	public void init() {
 		timePassed = 0;
 		final ArrayList<Vector3f> controlPoints = new ArrayList<>();
 
-		controlPoints.add(new Vector3f(20, 5, 0));
-		controlPoints.add(new Vector3f(0, -10, 20));
-		controlPoints.add(new Vector3f(-20, 10, 0));
-		controlPoints.add(new Vector3f(0, 15, -20));
-		controlPoints.add(new Vector3f(0, 0, 0));
-
+		Random random = new Random();
+		for (int i = 0; i < 10; i++) {
+			controlPoints.add(new Vector3f(random.nextInt(51) - 25, random.nextInt(51) - 25, random.nextInt(51) - 25));
+		}
 		curve = new BezierCurve(controlPoints, ControlPointInputMode.CameraPointsCircular, true);
 
 		cam = new Camera();
@@ -63,14 +61,8 @@ public class BunnyGame implements IGame {
 
 		bunnyScene = new Scene(cam, skybox);
 
-		IRenderable tm =
-				new TexturedRenderable(new ObjectLoader().loadFromFile("arrow.obj"), new Texture("bunny_2d.png"));
 		IRenderable bunny =
 				new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
-		IRenderable cube = new TexturedRenderable(new ObjectLoader().loadFromFile("cube.obj"), new Texture("AO.png"));
-
-		final Shader bonePhongShader = new Shader("boneAnimation.vert", "phong.frag");
-		bonePhongShader.addUniformBlockIndex(1, "Matrices");
 
 		final Shader curveShader = new Shader("bezier.vert", "bezier.frag", "bezier.geom");
 		curveShader.addUniformBlockIndex(1, "Matrices");
@@ -79,24 +71,41 @@ public class BunnyGame implements IGame {
 		final Shader defaultShader = new Shader("basic.vert", "phong.frag");
 		defaultShader.addUniformBlockIndex(1, "Matrices");
 
-		bunnyObj = new SceneObject(bunny, new Matrix4f().translate(1, 1, 1), null);
-		followed = new SceneEntity(bunnyObj);
-		followed.addBehaviour(1, new BezierBehaviour(curve, 10));
+		bunny0 = new SceneObject(bunny);
+		bunny1 = new SceneObject(bunny);
+		bunny2 = new SceneObject(bunny);
+		bunny3 = new SceneObject(bunny);
+		bunny4 = new SceneObject(bunny);
+		mainBunny = new SceneEntity(bunny0);
+		followingBunny1 = new SceneEntity(bunny1);
+		followingBunny2 = new SceneEntity(bunny2);
+		followingBunny3 = new SceneEntity(bunny3);
+		followingBunny4 = new SceneEntity(bunny4);
 
-		cowboy = new SceneObject(tm, new Matrix4f().translate(10, 0, 0), null);
-		follower = new SceneEntity(cowboy);
-		follower.addBehaviour(1, new LimitedDistanceBehaviour(new EscapingBehaviour(camEntity, 7), 5));
-		//follower.addBehaviour(2, new PlayerControlBehaviour());
+		mainBunny.addBehaviour(1, new BezierBehaviour(curve, 10));
+
+		followingBunny1.addBehaviour(1, new LimitedDistanceBehaviour(new FollowingBehaviour(mainBunny, 3f), 5));
+		followingBunny1.addBehaviour(2, new FollowingBehaviour(mainBunny, 7.6f));
+
+		followingBunny2.addBehaviour(1, new LimitedDistanceBehaviour(new FollowingBehaviour(followingBunny1, 3f), 5));
+		followingBunny2.addBehaviour(2, new FollowingBehaviour(followingBunny1, 7.6f));
+
+		followingBunny3.addBehaviour(1, new LimitedDistanceBehaviour(new FollowingBehaviour(followingBunny2, 3f), 5));
+		followingBunny3.addBehaviour(2, new FollowingBehaviour(followingBunny2, 7.6f));
+
+		followingBunny4.addBehaviour(1, new LimitedDistanceBehaviour(new FollowingBehaviour(followingBunny3, 3f), 5));
+		followingBunny4.addBehaviour(2, new FollowingBehaviour(followingBunny3, 7.6f));
+
 		camEntity.addBehaviour(1, new PlayerControlBehaviour());
 
 		curveObj = new SceneObject(new BezierCurveRenderable(curve));
 		curveObj.setShader(curveShader);
 
-		cubeObj = new SceneObject(cube);
-		cubeObj.addSubObject(bunnyObj);
-
-		bunnyScene.getSceneGraph().addSubObject(cowboy);
-		bunnyScene.getSceneGraph().addSubObject(cubeObj);
+		bunnyScene.getSceneGraph().addSubObject(bunny0);
+		bunnyScene.getSceneGraph().addSubObject(bunny1);
+		bunnyScene.getSceneGraph().addSubObject(bunny2);
+		bunnyScene.getSceneGraph().addSubObject(bunny3);
+		bunnyScene.getSceneGraph().addSubObject(bunny4);
 		bunnyScene.getSceneGraph().addSubObject(curveObj);
 
 		bunnyScene.getSceneGraph().setShader(defaultShader);
@@ -109,8 +118,11 @@ public class BunnyGame implements IGame {
 	public void update(final double deltaTime) {
 		timePassed += deltaTime;
 
-		followed.update(deltaTime);
-		follower.update(deltaTime);
+		mainBunny.update(deltaTime);
+		followingBunny1.update(deltaTime);
+		followingBunny2.update(deltaTime);
+		followingBunny3.update(deltaTime);
+		followingBunny4.update(deltaTime);
 		camEntity.update(deltaTime);
 
 		glClearColor(0.05f, 0.075f, 0.075f, 1);
@@ -126,7 +138,7 @@ public class BunnyGame implements IGame {
 
 	@Override
 	public void render() {
-		bunnyScene.render();
+		bunnyScene.render(true); //bunnyScene.render(); to render without BoundingBoxes
 	}
 
 	@Override
