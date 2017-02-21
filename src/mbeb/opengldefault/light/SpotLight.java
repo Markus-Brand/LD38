@@ -6,6 +6,9 @@
 package mbeb.opengldefault.light;
 
 import static org.lwjgl.opengl.GL20.*;
+
+import java.awt.*;
+
 import mbeb.opengldefault.rendering.shader.*;
 
 import org.joml.*;
@@ -34,15 +37,16 @@ public class SpotLight extends Light {
 		this.quadratic = quadratic;
 	}
 
+	public SpotLight(final Color color, final Vector3f position, final Vector3f direction, final float cutOff, final float outerCutOff, final float constant, final float linear, final float quadratic) {
+		this(vectorFromColor(color), position, direction, cutOff, outerCutOff, constant, linear, quadratic);
+	}
+
 	public SpotLight(final Vector3f color, final Vector3f position, final Vector3f direction, final float cutOff, final float outerCutOff, final float reach) {
-		super(color);
-		this.position = position;
-		this.direction = direction;
-		this.cutOff = cutOff;
-		this.outerCutOff = outerCutOff;
-		this.constant = 1.0f;
-		this.linear = generateLinearAmount(reach);
-		this.quadratic = generateQuadraticAmount(reach);
+		this(color, position, direction, cutOff, outerCutOff, 1.0f, generateLinearAmount(reach), generateQuadraticAmount(reach));
+	}
+
+	public SpotLight(final Color color, final Vector3f position, final Vector3f direction, final float cutOff, final float outerCutOff, final float reach) {
+		this(vectorFromColor(color), position, direction, cutOff, outerCutOff, 1.0f, generateLinearAmount(reach), generateQuadraticAmount(reach));
 	}
 
 	/**
@@ -118,6 +122,11 @@ public class SpotLight extends Light {
 		data[15] = quadratic;
 
 		return data;
+	}
+
+	@Override
+	public int getBlockSize() {
+		return DATASIZE_IN_BLOCKS;
 	}
 
 }

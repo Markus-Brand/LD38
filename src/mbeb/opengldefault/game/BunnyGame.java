@@ -2,7 +2,6 @@ package mbeb.opengldefault.game;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import java.awt.*;
 import java.util.*;
 
 import mbeb.opengldefault.camera.*;
@@ -66,9 +65,12 @@ public class BunnyGame implements IGame {
 		defaultShader.addUniformBlockIndex(1, "Matrices");
 		bunnyScene.getLightManager().addShader(defaultShader);
 
-		bunnyScene.getLightManager().addLight(new PointLight(Color.GREEN, new Vector3f(10, 10, 0), 1000));
-		bunnyScene.getLightManager().addLight(new PointLight(Color.RED, new Vector3f(0, 10, 0), 1000));
-		bunnyScene.getLightManager().addLight(new PointLight(Color.BLUE, new Vector3f(0, 10, 10), 1000));
+		final Random r = new Random();
+		for (int i = 0; i < 100; i++) {
+			bunnyScene.getLightManager().addLight(
+					new PointLight(new Vector3f(r.nextFloat() / 2, r.nextFloat(), r.nextFloat() / 2), new Vector3f(r.nextFloat() * 20 - 10, r.nextFloat() * 20 - 10, r.nextFloat() * 20 - 10), 20));
+
+		}
 		//cowboy = new SceneObject(tm, new Matrix4f(), null);
 		//cowboy.setShader(bonePhongShader);
 

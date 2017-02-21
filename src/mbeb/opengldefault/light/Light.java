@@ -18,19 +18,34 @@ public abstract class Light {
 	private boolean dirty = true;
 
 	public Light(final Vector3f color) {
-		this.color = color;
+		setColor(color);
 	}
 
 	public Light(final Color color) {
-		this.color = new Vector3f(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f);
+		setColor(color);
+	}
+
+	public static Vector3f vectorFromColor(final Color color) {
+		final float maxValue = 255.0f;
+		return new Vector3f(color.getRed() / maxValue, color.getGreen() / maxValue, color.getBlue() / maxValue);
 	}
 
 	public void setColor(final Vector3f color) {
 		this.color = color;
 	}
 
+	public void setColor(final Color color) {
+		setColor(vectorFromColor(color));
+	}
+
+	public Vector3f getColor() {
+		return color;
+	}
+
+	public abstract int getBlockSize();
+
 	public void apply(final Shader shader, final String uniform) {
-		glUniform3f(shader.getUniform(uniform + ".color"), color.x, color.y, color.z);
+		glUniform3f(shader.getUniform(uniform + ".color"), getColor().x, getColor().y, getColor().z);
 	}
 
 	// @Override

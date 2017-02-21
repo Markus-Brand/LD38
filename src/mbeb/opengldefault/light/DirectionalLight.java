@@ -9,9 +9,13 @@ public class DirectionalLight extends Light {
 	public static final int DATASIZE_IN_BLOCKS = 2;
 	private Vector3f direction;
 
-	public DirectionalLight(final Color color, final Vector3f direction) {
+	public DirectionalLight(final Vector3f color, final Vector3f direction) {
 		super(color);
 		this.direction = direction;
+	}
+
+	public DirectionalLight(final Color color, final Vector3f direction) {
+		this(vectorFromColor(color), direction);
 	}
 
 	public void setDirection(final Vector3f direction) {
@@ -32,5 +36,10 @@ public class DirectionalLight extends Light {
 		data[6] = color.z;
 
 		return data;
+	}
+
+	@Override
+	public int getBlockSize() {
+		return DATASIZE_IN_BLOCKS;
 	}
 }

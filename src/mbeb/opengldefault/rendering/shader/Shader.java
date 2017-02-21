@@ -276,6 +276,7 @@ public class Shader {
 	 * compiles the shader with the current values of the parameters-Map
 	 */
 	public void compile() {
+		GLErrors.checkForError(TAG, "test");
 		// generating parameters precompiler actions
 		String paramString = "#version 330 core " + System.getProperty("line.separator");
 		for (final String key : parameters.keySet()) {
@@ -435,6 +436,7 @@ public class Shader {
 
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
+		GLErrors.checkForError(TAG, "glDeleteShader");
 	}
 
 	/**

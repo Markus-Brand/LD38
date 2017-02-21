@@ -32,12 +32,16 @@ public class PointLight extends Light {
 		this.quadratic = quadratic;
 	}
 
+	public PointLight(final Color color, final Vector3f position, final float constant, final float linear, final float quadratic) {
+		this(vectorFromColor(color), position, constant, linear, quadratic);
+	}
+
+	public PointLight(final Vector3f color, final Vector3f position, final float reach) {
+		this(color, position, 1.0f, generateLinearAmount(reach), generateQuadraticAmount(reach));
+	}
+
 	public PointLight(final Color color, final Vector3f position, final float reach) {
-		super(color);
-		this.position = position;
-		this.constant = 1.0f;
-		this.linear = generateLinearAmount(reach);
-		this.quadratic = generateQuadraticAmount(reach);
+		this(vectorFromColor(color), position, reach);
 	}
 
 	/**
@@ -115,4 +119,8 @@ public class PointLight extends Light {
 		return data;
 	}
 
+	@Override
+	public int getBlockSize() {
+		return DATASIZE_IN_BLOCKS;
+	}
 }
