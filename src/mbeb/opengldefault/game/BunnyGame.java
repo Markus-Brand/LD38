@@ -122,7 +122,7 @@ public class BunnyGame implements IGame {
 		followingBunny1.update(deltaTime);
 		followingBunny2.update(deltaTime);
 		followingBunny3.update(deltaTime);
-		followingBunny4.update(deltaTime);
+		//followingBunny4.update(deltaTime);
 		camEntity.update(deltaTime);
 
 		glClearColor(0.05f, 0.075f, 0.075f, 1);

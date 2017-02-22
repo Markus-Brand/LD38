@@ -2,7 +2,9 @@ out vec4 color;
 
 in vec3 pos;
 
+uniform vec3 boxColor;
+
 void main()
 {
-    color = vec4(1, 0, 0, 1);
+    color = vec4(boxColor, 1);
 }  

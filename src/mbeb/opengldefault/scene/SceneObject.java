@@ -232,7 +232,9 @@ public class SceneObject {
 	 * @return
 	 */
 	public BoundingBox reCalculateBoundingBox() {
-		box = getRenderableBoundingBox();
+		if (box == null) {
+			box = getRenderableBoundingBox().duplicate();
+		}
 		for (SceneObject o : getSubObjects()) {
 			adjustBoundingBoxFor(o);
 		}

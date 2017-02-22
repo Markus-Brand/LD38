@@ -14,6 +14,7 @@ public class Scene {
 	private final SceneObject sceneGraph;
 	private ICamera camera;
 	private Skybox skybox;
+	private MousePicker picker;
 
 	public Scene(ICamera cam) {
 		this(cam, null);
@@ -25,6 +26,7 @@ public class Scene {
 		this.sceneGraph = new SceneObject();
 		renderer = new VisibleSceneGraphRenderer(sceneGraph, cam);
 		boundingBoxRenderer = new BoundingBoxRenderer(sceneGraph, cam);
+		picker = new MousePicker(camera);
 	}
 
 	public SceneObject getSceneGraph() {
@@ -34,6 +36,7 @@ public class Scene {
 	public void update(double deltaTime) {
 		camera.update(deltaTime);
 		sceneGraph.update(deltaTime);
+		picker.update(deltaTime);
 	}
 
 	public void setSkybox(Skybox skybox) {
@@ -52,5 +55,6 @@ public class Scene {
 		if (skybox != null) {
 			skybox.render();
 		}
+		picker.searchBBs(sceneGraph);
 	}
 }

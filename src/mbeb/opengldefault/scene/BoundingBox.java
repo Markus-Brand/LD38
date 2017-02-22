@@ -48,6 +48,13 @@ public class BoundingBox {
 	protected Vector3f localSize;
 
 	/**
+	 * global 3d aabb
+	 */
+	protected Vector3f globalStart;
+	protected Vector3f globalEnd;
+	private Vector3f color;
+
+	/**
 	 * the transformation for this object
 	 */
 	protected Matrix4f modelTransform;
@@ -60,6 +67,7 @@ public class BoundingBox {
 		this.localStart = localStart;
 		this.localSize = localSize;
 		this.modelTransform = localToWorld;
+		color = new Vector3f(1, 0, 0);
 	}
 
 	/**
@@ -109,6 +117,14 @@ public class BoundingBox {
 	 */
 	public void setModelTransform(final Matrix4f transform) {
 		this.modelTransform = transform;
+	}
+
+	public Vector3f getColor() {
+		return color;
+	}
+
+	public void setColor(Vector3f color) {
+		this.color = color;
 	}
 
 	@Override
@@ -179,9 +195,28 @@ public class BoundingBox {
 	 */
 	public Vector3f[] getCornersOnScreen(final Matrix4f parentTransform, final ICamera camera) {
 		final Vector3f[] corners = getGlobalCorners();
+		float minX = 0, minY = 0, minZ = 0, maxX = 0, maxY = 0, maxZ = 0;
 		for (int e = 0; e < corners.length; e++) {
-			corners[e] = camera.getPosOnScreen(new Vector4f(corners[e], 1.0f).mul(parentTransform));
+			Vector4f worldCorner = new Vector4f(corners[e], 1.0f).mul(parentTransform);
+			if (e == 0) {
+				minX = worldCorner.x;
+				minY = worldCorner.y;
+				minZ = worldCorner.z;
+				maxX = worldCorner.x;
+				maxY = worldCorner.y;
+				maxZ = worldCorner.z;
+			} else {
+				minX = java.lang.Math.min(worldCorner.x, minX);
+				minY = java.lang.Math.min(worldCorner.y, minY);
+				minZ = java.lang.Math.min(worldCorner.z, minZ);
+				maxX = java.lang.Math.max(worldCorner.x, maxX);
+				maxY = java.lang.Math.max(worldCorner.y, maxY);
+				maxZ = java.lang.Math.max(worldCorner.z, maxZ);
+			}
+			corners[e] = camera.getPosOnScreen(worldCorner);
 		}
+		globalStart = new Vector3f(minX, minY, minZ);
+		globalEnd = new Vector3f(maxX, maxY, maxZ);
 		return corners;
 	}
 
@@ -193,5 +228,66 @@ public class BoundingBox {
 	public Vector3f getCenter() {
 		Vector3f halfSize = localSize.mul(0.5f, new Vector3f());
 		return localStart.add(halfSize, new Vector3f());
+	}
+
+	public boolean intersectsRay(Vector3f origin, Vector3f direction)
+	{
+		Vector3f min = globalStart;
+		Vector3f max = globalEnd;
+		if (min == null || max == null) {
+			return false;
+		}
+		float tmin = (min.x - origin.x) / direction.x;
+		float tmax = (max.x - origin.x) / direction.x;
+
+		if (tmin > tmax) {
+			float buffer = tmin;
+			tmin = tmax;
+			tmax = buffer;
+		}
+
+		float tymin = (min.y - origin.y) / direction.y;
+		float tymax = (max.y - origin.y) / direction.y;
+
+		if (tymin > tymax) {
+			float buffer = tymin;
+			tymin = tymax;
+			tymax = buffer;
+		}
+
+		if (tmin > tymax || tymin > tmax) {
+			return false;
+		}
+
+		if (tymin > tmin) {
+			tmin = tymin;
+		}
+
+		if (tymax < tmax) {
+			tmax = tymax;
+		}
+
+		float tzmin = (min.z - origin.z) / direction.z;
+		float tzmax = (max.z - origin.z) / direction.z;
+
+		if (tzmin > tzmax) {
+			float buffer = tzmin;
+			tzmin = tzmax;
+			tzmax = buffer;
+		}
+
+		if (tmin > tzmax || tzmin > tmax) {
+			return false;
+		}
+
+		if (tzmin > tmin) {
+			tmin = tzmin;
+		}
+
+		if (tzmax < tmax) {
+			tmax = tzmax;
+		}
+
+		return true;
 	}
 }

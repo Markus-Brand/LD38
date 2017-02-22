@@ -74,6 +74,14 @@ public class OpenGLContext {
 			// invoked during this call.
 			glfwPollEvents();
 
+			if (KeyBoard.isKeyDown(GLFW_KEY_C)) {
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			}
+
+			if (KeyBoard.isKeyDown(GLFW_KEY_X)) {
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			}
+
 			if (KeyBoard.isKeyDown(GLFW_KEY_ESCAPE)) {
 				glfwSetWindowShouldClose(window, true); // We will detect this in our rendering loop
 			}
@@ -98,7 +106,8 @@ public class OpenGLContext {
 		glfwSetErrorCallback(null).free();
 		Log.closeLogFile();
 		try {
-			Files.walk(new File("res").toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+			Files.walk(new File("res").toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile)
+					.forEach(File::delete);
 		} catch(IOException ex) {
 			Log.log(TAG, ex.getMessage() + " - unable to delete old res-directory");
 		}

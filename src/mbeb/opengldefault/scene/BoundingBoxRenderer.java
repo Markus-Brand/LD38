@@ -46,9 +46,9 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 		index = 0;
 		final int[] indexData = {0, 1, 1, 3, 3, 2, 2, 0,
 
-		0, 4, 1, 5, 2, 6, 3, 7,
+				0, 4, 1, 5, 2, 6, 3, 7,
 
-		4, 5, 5, 7, 7, 6, 6, 4};
+				4, 5, 5, 7, 7, 6, 6, 4};
 
 		VAORenderable renderable =
 				new VAORenderable(data, indexData, new DataFragment[] {DataFragment.POSITION}, object.getBoundingBox());
@@ -61,6 +61,8 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 			GL20.glUniformMatrix4fv(modelUniform, false, model.get(buffer));
 			GLErrors.checkForError(TAG, "glUniformMatrix4fv");
 		}
+		Vector3f boxColor = object.getBoundingBox().getColor();
+		GL20.glUniform3f(shader.getUniform("boxColor"), boxColor.x, boxColor.y, boxColor.z);
 
 		renderable.render(shader);
 	}
