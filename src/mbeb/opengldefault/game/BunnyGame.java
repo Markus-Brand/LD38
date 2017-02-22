@@ -52,14 +52,14 @@ public class BunnyGame implements IGame {
 
 		bunnyScene = new Scene(cam, skybox);
 
-		final AnimatedRenderable bunnyRenderable = (AnimatedRenderable)new ObjectLoader().loadFromFileAnim("ohrenFlackern.fbx");
+		final IRenderable bunnyRenderable = new ObjectLoader().loadFromFile("bunny.obj");
 		IRenderable bunny = new TexturedRenderable(bunnyRenderable, new Texture("bunny_2d.png"));
 		
-		Shader phongShader = new Shader("boneAnimation.vert", "phong.frag");
+		Shader phongShader = new Shader("basic.vert", "phong.frag");
 		phongShader.addUniformBlockIndex(1, "Matrices");
-		phongShader.use();
+		//phongShader.use();
 		
-		bunnySceneObject = new SceneObject(bunny, new Matrix4f(), null);
+		bunnySceneObject = new SceneObject(bunny, new Matrix4f().translate(1, 2, 3));
 		bunnySceneObject.setShader(phongShader);
 
 		bunnyScene.getSceneGraph().addSubObject(bunnySceneObject);
@@ -74,7 +74,7 @@ public class BunnyGame implements IGame {
 		bunnyEntity = new SceneEntity(bunnySceneObject);
 		bunnyEntity.addBehaviour(1, new LimitedDistanceBehaviour(new EscapingBehaviour(camEntity, 1), 5));
 		
-		new Thread() {
+		/*new Thread() {
 
 			@Override
 			public void run() {
@@ -97,13 +97,13 @@ public class BunnyGame implements IGame {
 				}
 				bunnyRenderable.playAnimation("OhrenFlackern2", true, true);
 			}
-		}.start();
+		}.start();/**/
 	}
 
 	@Override
 	public void update(final double deltaTime) {
 		timePassed += deltaTime;
-
+		
 		glClearColor(0.05f, 0.075f, 0.075f, 1);
 		GLErrors.checkForError(TAG, "glClearColor");
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -119,7 +119,7 @@ public class BunnyGame implements IGame {
 
 	@Override
 	public void render() {
-		bunnyScene.render();
+		bunnyScene.render(true); //bunnyScene.render(); to render without BoundingBoxes
 	}
 
 	@Override

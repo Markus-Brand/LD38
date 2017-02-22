@@ -1,0 +1,5 @@
+projectKey=opengldefault
+serverUrl=http://localhost:9000
+dashboardUrl=http://localhost:9000/dashboard/index/opengldefault
+ceTaskId=AVpRW7Z3qX2tYN-25vPQ
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AVpRW7Z3qX2tYN-25vPQ

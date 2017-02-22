@@ -170,6 +170,6 @@ public class Camera implements ICamera {
 	@Override
 	public Vector3f getPosOnScreen(Vector4f pos) {
 		Vector4f res = pos.mul(getProjectionView());
-		return new Vector3f(res.x / res.z, res.y / res.z, res.z);
+		return new Vector3f(res.x / res.w, res.y / res.w, res.z / res.w);
 	}
 }
