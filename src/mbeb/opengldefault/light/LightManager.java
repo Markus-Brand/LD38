@@ -14,6 +14,9 @@ import mbeb.opengldefault.rendering.shader.*;
 
 import org.lwjgl.*;
 
+/**
+ * @author Erik + Merlin + Markus :)
+ */
 public class LightManager {
 
 	private static final String TAG = "LightManager";
@@ -46,78 +49,6 @@ public class LightManager {
 		resizeBuffer();
 	}
 
-	public void addLight(final DirectionalLight light) {
-		if (directionalLightCapacity <= directionalLights.size()) {
-			directionalLights.add(light);
-			directionalLightCapacity *= 2;
-			resizeBuffer();
-		} else {
-			final int offset = (getDirectionalLightBufferOffset() + directionalLights.size() * DirectionalLight.DATASIZE_IN_BLOCKS * 4) * 4;
-			directionalLights.add(light);
-			updateSingleLightData(light, offset);
-		}
-	}
-
-	private void updateSingleLightData(final Light light, final int offset) {
-		System.out.println(offset);
-		glBindBuffer(GL_UNIFORM_BUFFER, UBO);
-		GLErrors.checkForError(TAG, "glBindBuffer");
-		bufferSizes();
-		final FloatBuffer lightBuffer = BufferUtils.createFloatBuffer(light.getBlockSize() * 4);
-		lightBuffer.put(light.getData());
-		lightBuffer.flip();
-		glBufferSubData(GL_UNIFORM_BUFFER, offset + 16, lightBuffer);
-		GLErrors.checkForError(TAG, "glBufferSubData");
-
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-	}
-
-	public void addLight(final PointLight light) {
-		if (pointLightCapacity <= pointLights.size()) {
-			pointLights.add(light);
-			pointLightCapacity *= 2;
-			resizeBuffer();
-		} else {
-			final int offset = (getPointLightBufferOffset() + pointLights.size() * PointLight.DATASIZE_IN_BLOCKS * 4) * 4;
-			pointLights.add(light);
-			updateSingleLightData(light, offset);
-		}
-	}
-
-	public void addLight(final SpotLight light) {
-		if (spotLightCapacity <= spotLights.size()) {
-			spotLights.add(light);
-			spotLightCapacity *= 2;
-			resizeBuffer();
-		} else {
-			final int offset = (getSpotLightBufferOffset() + spotLights.size() * SpotLight.DATASIZE_IN_BLOCKS * 4) * 4;
-			spotLights.add(light);
-			updateSingleLightData(light, offset);
-		}
-	}
-
-	/**
-	 * remove light and move last Light to the position of light
-	 *
-	 * @param l
-	 */
-	private void removeLight(final Light light) {
-
-	}
-
-	public void addShader(final Shader shader) {
-		shaders.add(shader);
-		shader.addUniformBlockIndex(0, "Lights");
-
-		shader.updateParameter("DIRECTIONAL_LIGHT_CAPACITY", directionalLightCapacity, false);
-		shader.updateParameter("POINT_LIGHT_CAPACITY", pointLightCapacity, false);
-		shader.updateParameter("SPOT_LIGHT_CAPACITY", spotLightCapacity, true);
-	}
-
-	private void removeShader(final Shader s) {
-		shaders.remove(s);
-	}
-
 	/**
 	 * adjusts capacity of UBO and keeps data in it
 	 */
@@ -131,22 +62,32 @@ public class LightManager {
 		glBindBufferBase(GL_UNIFORM_BUFFER, UBOBaseID, UBO);
 		GLErrors.checkForError(TAG, "glBindBufferBase");
 
-		bufferSizes();
+		saveBufferSizes();
 		bufferData();
 		updateShaders();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
 
-	private void updateShaders() {
-		for (final Shader shader : shaders) {
-			shader.updateParameter("DIRECTIONAL_LIGHT_CAPACITY", directionalLightCapacity, false);
-			shader.updateParameter("POINT_LIGHT_CAPACITY", pointLightCapacity, false);
-			shader.updateParameter("SPOT_LIGHT_CAPACITY", spotLightCapacity, true);
-		}
+	/**
+	 * calculates number of Bytes which are needed to store the light data capacity
+	 *
+	 * @return
+	 */
+	private int getBufferSize() {
+		int blockCount = 0;
+
+		blockCount += directionalLightCapacity * DirectionalLight.DATASIZE_IN_BLOCKS;
+		blockCount += pointLightCapacity * PointLight.DATASIZE_IN_BLOCKS;
+		blockCount += spotLightCapacity * SpotLight.DATASIZE_IN_BLOCKS;
+
+		return blockCount * BYTES_PER_BLOCK;
 	}
 
-	private void bufferSizes() {
+	/**
+	 * saves the 3 buffer sizes in the beginning of the UBO
+	 */
+	private void saveBufferSizes() {
 		final IntBuffer sizeBuffer = BufferUtils.createIntBuffer(12);
 
 		sizeBuffer.put(directionalLights.size());
@@ -193,36 +134,136 @@ public class LightManager {
 		return getPointLightBufferOffset() + pointLightCapacity * PointLight.DATASIZE_IN_BLOCKS * 4;
 	}
 
-	/**
-	 * calculates number of Bytes which are needed to store the light data capacity
-	 *
-	 * @return
-	 */
-	private int getBufferSize() {
-		int blockCount = 0;
+	private void updateShaders() {
+		for (final Shader shader : shaders) {
+			shader.updateParameter("DIRECTIONAL_LIGHT_CAPACITY", directionalLightCapacity, false);
+			shader.updateParameter("POINT_LIGHT_CAPACITY", pointLightCapacity, false);
+			shader.updateParameter("SPOT_LIGHT_CAPACITY", spotLightCapacity, true);
+		}
+	}
 
-		blockCount += directionalLightCapacity * DirectionalLight.DATASIZE_IN_BLOCKS;
-		blockCount += pointLightCapacity * PointLight.DATASIZE_IN_BLOCKS;
-		blockCount += spotLightCapacity * SpotLight.DATASIZE_IN_BLOCKS;
+	public void addShader(final Shader shader) {
+		shaders.add(shader);
+		shader.addUniformBlockIndex(0, "Lights");
 
-		return blockCount * BYTES_PER_BLOCK;
+		shader.updateParameter("DIRECTIONAL_LIGHT_CAPACITY", directionalLightCapacity, false);
+		shader.updateParameter("POINT_LIGHT_CAPACITY", pointLightCapacity, false);
+		shader.updateParameter("SPOT_LIGHT_CAPACITY", spotLightCapacity, true);
+	}
+
+	private void removeShader(final Shader shader) {
+		shaders.remove(shader);
+	}
+
+	public void addLight(final DirectionalLight light) {
+		if (directionalLightCapacity <= directionalLights.size()) {
+			directionalLights.add(light);
+			directionalLightCapacity *= 2;
+			resizeBuffer();
+		} else {
+			final int offset = getTotalDirectionalLightBufferOffset(directionalLights.size());
+			directionalLights.add(light);
+			updateSingleLightData(light, offset);
+		}
+		light.setClean();
+	}
+
+	private int getTotalDirectionalLightBufferOffset(final int lightIndex) {
+		return (getDirectionalLightBufferOffset() + lightIndex * DirectionalLight.DATASIZE_IN_BLOCKS * 4) * 4;
+	}
+
+	public void addLight(final PointLight light) {
+		if (pointLightCapacity <= pointLights.size()) {
+			pointLights.add(light);
+			pointLightCapacity *= 2;
+			resizeBuffer();
+		} else {
+			final int offset = getTotalPointLightBufferOffset(pointLights.size());
+			pointLights.add(light);
+			updateSingleLightData(light, offset);
+		}
+		light.setClean();
+	}
+
+	private int getTotalPointLightBufferOffset(final int lightIndex) {
+		return (getPointLightBufferOffset() + lightIndex * PointLight.DATASIZE_IN_BLOCKS * 4) * 4;
+	}
+
+	public void addLight(final SpotLight light) {
+		if (spotLightCapacity <= spotLights.size()) {
+			spotLights.add(light);
+			spotLightCapacity *= 2;
+			resizeBuffer();
+		} else {
+			final int offset = getTotalSpotLightBufferOffset(spotLights.size());
+			spotLights.add(light);
+			updateSingleLightData(light, offset);
+		}
+		light.setClean();
+	}
+
+	private int getTotalSpotLightBufferOffset(final int lightIndex) {
+		return (getSpotLightBufferOffset() + lightIndex * SpotLight.DATASIZE_IN_BLOCKS * 4) * 4;
 	}
 
 	/**
-	 * checks if Lights were changed since last update and refreshes shaderdata
+	 * updates the UBO data on position offset to light's data
+	 *
+	 * @param light
+	 *            the light that will be saved
+	 * @param offset
+	 *            the position that the light will have afterwards
+	 */
+	private void updateSingleLightData(final Light light, final int offset) {
+		System.out.println(offset);
+		glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+		GLErrors.checkForError(TAG, "glBindBuffer");
+		saveBufferSizes();
+		final FloatBuffer lightBuffer = BufferUtils.createFloatBuffer(light.getBlockSize() * 4);
+		lightBuffer.put(light.getData());
+		lightBuffer.flip();
+		glBufferSubData(GL_UNIFORM_BUFFER, offset + 16, lightBuffer);
+		GLErrors.checkForError(TAG, "glBufferSubData");
+
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	}
+
+	/**
+	 * remove light and move last Light to the position of light
+	 *
+	 * @param light
+	 *            the Light that will be removed
+	 */
+	private void removeLight(final Light light) {
+
+	}
+
+	/**
+	 * checks if Lights were changed since last update and refreshes shader data
 	 *
 	 * @param deltaTime
 	 */
-	public void update(final float deltaTime) {
-		removeDeletedLights();
+	public void update(final double deltaTime) {
+		//removeDeletedLights();
 		updateDirtyLights();
+	}
+
+	/**
+	 * all Lights that are marked as deleted will be removed here
+	 */
+	private void removeDeletedLights() {
+		final AtomicInteger lightIndex = new AtomicInteger(0);
+		forEachLight((final Light light) -> {
+			//count removings + save their indices
+			lightIndex.incrementAndGet();
+		});
+
 	}
 
 	/**
 	 * update data of changed Light objects
 	 */
 	private void updateDirtyLights() {
-		// TODO Auto-generated method stub
 		final AtomicInteger lightIndex = new AtomicInteger(0);
 		forEachLight((final Light light) -> {
 			if (light.isDirty()) {
@@ -231,11 +272,6 @@ public class LightManager {
 			}
 			lightIndex.incrementAndGet();
 		});
-	}
-
-	private void updateLightData(final Light light, final int lightIndex) {
-		// TODO Auto-generated method stub
-
 	}
 
 	private void forEachLight(final Consumer<Light> action) {
@@ -250,12 +286,31 @@ public class LightManager {
 		}
 	}
 
-	/**
-	 * all Lights that are marked as deleted will be removed here
-	 */
-	private void removeDeletedLights() {
-		// TODO Auto-generated method stub
-
+	private void updateLightData(final Light light, final int lightIndex) {
+		System.out.println("teset" + lightIndex);
+		final int offset = calculateOffsetFromIndex(lightIndex);
+		updateSingleLightData(light, offset);
+		light.setClean();
 	}
 
+	private int calculateOffsetFromIndex(int lightIndex) {
+		int offset = 0;
+		Log.assertTrue(TAG, lightIndex >= 0, "lightIndex must be greater than 0, but was " + lightIndex);
+		if (lightIndex < directionalLights.size()) {
+			offset = getTotalDirectionalLightBufferOffset(lightIndex);
+			return offset;
+		}
+		lightIndex -= directionalLights.size();
+		if (lightIndex < pointLights.size()) {
+			offset = getTotalPointLightBufferOffset(lightIndex);
+			return offset;
+		}
+		lightIndex -= pointLights.size();
+		if (lightIndex < spotLights.size()) {
+			offset = getTotalSpotLightBufferOffset(lightIndex);
+			return offset;
+		}
+		Log.error(TAG, "LightIndex out of range: " + lightIndex);
+		return 0;
+	}
 }

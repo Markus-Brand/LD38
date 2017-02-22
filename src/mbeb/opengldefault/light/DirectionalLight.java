@@ -4,6 +4,9 @@ import java.awt.*;
 
 import org.joml.*;
 
+/**
+ * @author Erik + Merlin + Markus :)
+ */
 public class DirectionalLight extends Light {
 
 	public static final int DATASIZE_IN_BLOCKS = 2;
@@ -11,7 +14,7 @@ public class DirectionalLight extends Light {
 
 	public DirectionalLight(final Vector3f color, final Vector3f direction) {
 		super(color);
-		this.direction = direction;
+		setDirection(direction);
 	}
 
 	public DirectionalLight(final Color color, final Vector3f direction) {
@@ -20,6 +23,7 @@ public class DirectionalLight extends Light {
 
 	public void setDirection(final Vector3f direction) {
 		this.direction = direction;
+		setDirty();
 	}
 
 	@Override

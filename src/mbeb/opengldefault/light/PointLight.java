@@ -5,16 +5,12 @@
  */
 package mbeb.opengldefault.light;
 
-import static org.lwjgl.opengl.GL20.*;
-
 import java.awt.*;
-
-import mbeb.opengldefault.rendering.shader.*;
 
 import org.joml.*;
 
 /**
- * @author Erik
+ * @author Erik + Merlin + Markus :)
  */
 public class PointLight extends Light {
 
@@ -26,10 +22,10 @@ public class PointLight extends Light {
 
 	public PointLight(final Vector3f color, final Vector3f position, final float constant, final float linear, final float quadratic) {
 		super(color);
-		this.position = position;
-		this.constant = constant;
-		this.linear = linear;
-		this.quadratic = quadratic;
+		setPosition(position);
+		setConstant(constant);
+		setLinear(linear);
+		setQuadratic(quadratic);
 	}
 
 	public PointLight(final Color color, final Vector3f position, final float constant, final float linear, final float quadratic) {
@@ -72,31 +68,26 @@ public class PointLight extends Light {
 
 	public void setPosition(final Vector3f position) {
 		this.position = position;
+		setDirty();
 	}
 
 	public void setConstant(final float constant) {
 		this.constant = constant;
+		setDirty();
 	}
 
-	public void setLinear(final float lienar) {
-		this.linear = lienar;
+	public void setLinear(final float linear) {
+		this.linear = linear;
+		setDirty();
 	}
 
 	public void setQuadratic(final float quadratic) {
 		this.quadratic = quadratic;
+		setDirty();
 	}
 
 	public Vector3f getPosition() {
 		return position;
-	}
-
-	@Override
-	public void apply(final Shader shader, final String uniform) {
-		glUniform3f(shader.getUniform(uniform + ".position"), position.x, position.y, position.z);
-		glUniform1f(shader.getUniform(uniform + ".constant"), constant);
-		glUniform1f(shader.getUniform(uniform + ".linear"), linear);
-		glUniform1f(shader.getUniform(uniform + ".quadratic"), quadratic);
-		super.apply(shader, uniform);
 	}
 
 	@Override

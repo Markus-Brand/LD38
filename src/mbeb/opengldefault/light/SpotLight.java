@@ -5,16 +5,12 @@
  */
 package mbeb.opengldefault.light;
 
-import static org.lwjgl.opengl.GL20.*;
-
 import java.awt.*;
-
-import mbeb.opengldefault.rendering.shader.*;
 
 import org.joml.*;
 
 /**
- * @author Erik
+ * @author Erik + Merlin + Markus :)
  */
 public class SpotLight extends Light {
 
@@ -77,22 +73,12 @@ public class SpotLight extends Light {
 
 	public void setPosition(final Vector3f position) {
 		this.position = position;
+		setDirty();
 	}
 
 	public void setDirection(final Vector3f direction) {
 		this.direction = direction;
-	}
-
-	@Override
-	public void apply(final Shader shader, final String uniform) {
-		glUniform3f(shader.getUniform(uniform + ".position"), position.x, position.y, position.z);
-		glUniform3f(shader.getUniform(uniform + ".direction"), direction.x, direction.y, direction.z);
-		glUniform1f(shader.getUniform(uniform + ".cutoff"), (float) java.lang.Math.cos(java.lang.Math.toRadians(cutOff)));
-		glUniform1f(shader.getUniform(uniform + ".outerCutoff"), (float) java.lang.Math.cos(java.lang.Math.toRadians(outerCutOff)));
-		glUniform1f(shader.getUniform(uniform + ".constant"), constant);
-		glUniform1f(shader.getUniform(uniform + ".linear"), linear);
-		glUniform1f(shader.getUniform(uniform + ".quadratic"), quadratic);
-		super.apply(shader, uniform);
+		setDirty();
 	}
 
 	@Override

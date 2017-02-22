@@ -39,6 +39,7 @@ public class Scene {
 	public void update(final double deltaTime) {
 		camera.update(deltaTime);
 		sceneGraph.update(deltaTime);
+		lightManager.update(deltaTime);
 	}
 
 	public void setSkybox(final Skybox skybox) {

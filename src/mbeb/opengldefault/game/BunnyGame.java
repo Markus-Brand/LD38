@@ -2,6 +2,7 @@ package mbeb.opengldefault.game;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import java.awt.*;
 import java.util.*;
 
 import mbeb.opengldefault.camera.*;
@@ -27,6 +28,8 @@ public class BunnyGame implements IGame {
 
 	protected ICamera cam;
 	Scene bunnyScene;
+	PointLight pl;
+	double timepassed = 0;
 
 	BezierCurve curve;
 
@@ -66,11 +69,8 @@ public class BunnyGame implements IGame {
 		bunnyScene.getLightManager().addShader(defaultShader);
 
 		final Random r = new Random();
-		for (int i = 0; i < 100; i++) {
-			bunnyScene.getLightManager().addLight(
-					new PointLight(new Vector3f(r.nextFloat() / 2, r.nextFloat(), r.nextFloat() / 2), new Vector3f(r.nextFloat() * 20 - 10, r.nextFloat() * 20 - 10, r.nextFloat() * 20 - 10), 20));
-
-		}
+		pl = new PointLight(new Vector3f(0, 1, 0), new Vector3f(0, 10, 0), 300);
+		bunnyScene.getLightManager().addLight(pl);
 		//cowboy = new SceneObject(tm, new Matrix4f(), null);
 		//cowboy.setShader(bonePhongShader);
 
@@ -95,7 +95,7 @@ public class BunnyGame implements IGame {
 
 	@Override
 	public void update(final double deltaTime) {
-
+		timepassed += deltaTime;
 		glClearColor(0.05f, 0.075f, 0.075f, 1);
 		GLErrors.checkForError(TAG, "glClearColor");
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -103,6 +103,9 @@ public class BunnyGame implements IGame {
 
 		glViewport(0, 0, OpenGLContext.getWidth(), OpenGLContext.getHeight());
 		GLErrors.checkForError(TAG, "glViewport");
+
+		pl.setColor(new Color((float) java.lang.Math.sin(timepassed) / 2 + 0.5f, (float) 1.0, (float) java.lang.Math.cos(timepassed) / 2 + 0.5f));
+		pl.setPosition(new Vector3f((float) java.lang.Math.sin(timepassed) * 5, 10, (float) java.lang.Math.cos(timepassed) * 5));
 
 		bunnyScene.update(deltaTime);
 	}

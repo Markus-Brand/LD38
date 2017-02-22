@@ -1,10 +1,6 @@
 package mbeb.opengldefault.light;
 
-import static org.lwjgl.opengl.GL20.*;
-
 import java.awt.*;
-
-import mbeb.opengldefault.rendering.shader.*;
 
 import org.joml.*;
 
@@ -15,7 +11,7 @@ import org.joml.*;
 public abstract class Light {
 
 	protected Vector3f color;
-	private boolean dirty = true;
+	private boolean dirty = true; //TODO: check whether true or false is better
 
 	public Light(final Vector3f color) {
 		setColor(color);
@@ -32,6 +28,7 @@ public abstract class Light {
 
 	public void setColor(final Vector3f color) {
 		this.color = color;
+		setDirty();
 	}
 
 	public void setColor(final Color color) {
@@ -43,18 +40,6 @@ public abstract class Light {
 	}
 
 	public abstract int getBlockSize();
-
-	public void apply(final Shader shader, final String uniform) {
-		glUniform3f(shader.getUniform(uniform + ".color"), getColor().x, getColor().y, getColor().z);
-	}
-
-	// @Override
-	// public boolean equals(Object obj) {
-	// if (obj instanceof Light) {
-	// return id == ((Light) obj).id;
-	// }
-	// return false;
-	// }
 
 	public abstract float[] getData();
 

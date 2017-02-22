@@ -18,28 +18,28 @@ public class Log {
 	 *
 	 * @param mode
 	 */
-	public static void initDebug(LogMode mode) {
+	public static void initDebug(final LogMode mode) {
 		logMode = mode;
 		if (logMode == LogMode.LOGFILE) {
 
 			// if the directory does not exist, create it
-			File theDir = new File("log");
+			final File theDir = new File("log");
 			if (!theDir.exists()) {
 				theDir.mkdir();
 			}
 
-			DateFormat df = new SimpleDateFormat("MM_dd_yyyy__HH_mm_ss");
-			Date today = Calendar.getInstance().getTime();
-			String log = df.format(today);
+			final DateFormat df = new SimpleDateFormat("MM_dd_yyyy__HH_mm_ss");
+			final Date today = Calendar.getInstance().getTime();
+			final String log = df.format(today);
 			logFile = new File("log/" + log + ".log");
 			try {
 				writer = new PrintWriter(logFile);
-			} catch(FileNotFoundException e1) {
+			} catch(final FileNotFoundException e1) {
 				e1.printStackTrace();
 			}
 			try {
 				logFile.createNewFile();
-			} catch(IOException e) {
+			} catch(final IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -60,11 +60,11 @@ public class Log {
 	 * @param obj
 	 *            the object (mostly Strings) being logged
 	 */
-	public static void log(String tag, Object obj) {
+	public static void log(final String tag, final Object obj) {
 		if (logMode == LogMode.NONE) {
 			return;
 		}
-		String log = constructErrorMessage(obj, "LOG: ", tag);
+		final String log = constructErrorMessage(obj, "LOG: ", tag);
 		if (logMode == LogMode.CONSOLE) {
 			System.out.println(log);
 		} else {
@@ -79,11 +79,11 @@ public class Log {
 	 * @param message
 	 *            the object (mostly Strings) being logged
 	 */
-	public static void error(String tag, Object obj) {
+	public static void error(final String tag, final Object obj) {
 		if (logMode == LogMode.NONE) {
 			return;
 		}
-		String log = constructErrorMessage(obj, "ERR: ", tag);
+		final String log = constructErrorMessage(obj, "ERR: ", tag);
 		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
 		} else {
@@ -92,10 +92,10 @@ public class Log {
 		}
 	}
 
-	private static String constructErrorMessage(Object obj, String info, String tag) {
-		String message = obj.toString();
-		DateFormat df = new SimpleDateFormat("[MM/dd/yyyy HH:mm:ss] ");
-		Date today = Calendar.getInstance().getTime();
+	private static String constructErrorMessage(final Object obj, final String info, final String tag) {
+		final String message = obj.toString();
+		final DateFormat df = new SimpleDateFormat("[MM/dd/yyyy HH:mm:ss] ");
+		final Date today = Calendar.getInstance().getTime();
 		String log = df.format(today);
 		log += info;
 		log += "In class " + tag + ": ";
@@ -104,17 +104,17 @@ public class Log {
 	}
 
 	/**
-	 * Assert if condition is true
+	 * Assert that condition is false
 	 *
 	 * @param condition
 	 * @param message
 	 *            the object (mostly Strings) being logged
 	 */
-	public static void assertIfTrue(String tag, boolean condition, Object obj) {
+	public static void assertFalse(final String tag, final boolean condition, final Object obj) {
 		if (logMode == LogMode.NONE || !condition) {
 			return;
 		}
-		String log = constructErrorMessage(obj, "ASSERTION: ", tag);
+		final String log = constructErrorMessage(obj, "ASSERTION: ", tag);
 		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
 		} else {
@@ -124,17 +124,17 @@ public class Log {
 	}
 
 	/**
-	 * Assert if condition is false
+	 * Assert that condition is true
 	 *
 	 * @param condition
 	 * @param message
 	 *            the object (mostly Strings) being logged
 	 */
-	public static void assertIfFalse(String tag, boolean condition, Object obj) {
+	public static void assertTrue(final String tag, final boolean condition, final Object obj) {
 		if (logMode == LogMode.NONE || condition) {
 			return;
 		}
-		String log = constructErrorMessage(obj, "ASSERTION: ", tag);
+		final String log = constructErrorMessage(obj, "ASSERTION: ", tag);
 		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
 		} else {
@@ -151,11 +151,11 @@ public class Log {
 	 * @param message
 	 *            the object (mostly Strings) being logged
 	 */
-	public static void assertIfEquals(String tag, Object o1, Object o2, Object obj) {
+	public static void assertIfEquals(final String tag, final Object o1, final Object o2, final Object obj) {
 		if (logMode == LogMode.NONE || !o1.equals(o2)) {
 			return;
 		}
-		String log = constructErrorMessage(obj, "ASSERTION: ", tag);
+		final String log = constructErrorMessage(obj, "ASSERTION: ", tag);
 		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
 		} else {
@@ -172,11 +172,11 @@ public class Log {
 	 * @param message
 	 *            the object (mostly Strings) being logged
 	 */
-	public static void assertIfNotEquals(String tag, Object o1, Object o2, Object obj) {
+	public static void assertIfNotEquals(final String tag, final Object o1, final Object o2, final Object obj) {
 		if (logMode == LogMode.NONE || o1.equals(o2)) {
 			return;
 		}
-		String log = constructErrorMessage(obj, "ASSERTION: ", tag);
+		final String log = constructErrorMessage(obj, "ASSERTION: ", tag);
 		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
 		} else {
