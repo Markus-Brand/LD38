@@ -38,9 +38,11 @@ public class Log {
 				e1.printStackTrace();
 			}
 			try {
-				logFile.createNewFile();
+				if (!logFile.createNewFile()) {
+					Log.error(TAG, "cannot create logging File");
+				}
 			} catch(IOException e) {
-				e.printStackTrace();
+				Log.error(TAG, "Error creating logging file", e);
 			}
 		}
 	}
@@ -95,6 +97,9 @@ public class Log {
 		String log = constructErrorMessage(toLog, "ERR: ", tag);
 		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
+			if (t != null) {
+				t.printStackTrace();
+			}
 		} else {
 			writer.println(log);
 			writer.flush();
