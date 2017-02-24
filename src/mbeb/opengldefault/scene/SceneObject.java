@@ -112,6 +112,10 @@ public class SceneObject implements BoundingBox.Owner {
 		return transformation;
 	}
 
+	public void setTransformation(BoneTransformation transformation) {
+		this.transformation = transformation;
+	}
+
 	/**
 	 * add SubObjects via addSubObject instead
 	 *
@@ -267,7 +271,6 @@ public class SceneObject implements BoundingBox.Owner {
 		} else {
 			return getParentGlobalTranform().and(getTransformation());
 		}
-
 	}
 
 	/**

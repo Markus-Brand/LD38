@@ -11,6 +11,7 @@ in VS_OUT {
 
 uniform mat4 bezier;
 uniform mat4 bernstein;
+uniform mat4 model;
 
 out vec4 in_color;
 
@@ -24,19 +25,19 @@ void main(){
 		float progress = mix(gs_in[0].progress, gs_in[1].progress, float(i) * stepSize);
 		in_color = vec4(progress, 1.0f - progress, 0, 1);
 		vec3 pos = vec3(bezier * bernstein * progressVector(progress));
-		gl_Position = projectionView * vec4(pos, 1);
+		gl_Position = projectionView * model * vec4(pos, 1);
    		EmitVertex();
 	}
     EndPrimitive();
     
 	in_color = vec4(0.1, 0.1, 0.1, 1);
-	gl_Position = projectionView * bezier[0];
+	gl_Position = projectionView * model * bezier[0];
 	EmitVertex();
-	gl_Position = projectionView * bezier[1];
+	gl_Position = projectionView * model * bezier[1];
 	EmitVertex();
-	gl_Position = projectionView * bezier[2];
+	gl_Position = projectionView * model * bezier[2];
 	EmitVertex();
-	gl_Position = projectionView * bezier[3];
+	gl_Position = projectionView * model * bezier[3];
 	EmitVertex();
 	EndPrimitive();
 }

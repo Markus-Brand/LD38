@@ -16,6 +16,7 @@ import mbeb.opengldefault.scene.behaviour.*;
 import mbeb.opengldefault.scene.entities.*;
 import org.joml.*;
 
+import mbeb.opengldefault.animation.BoneTransformation;
 import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.curves.BezierCurve;
@@ -120,7 +121,10 @@ public class BunnyGame extends Game {
 		followingBunny4 = new SceneEntity(bunny4);
 		lampEntity = new SceneEntity(lamp);
 
-		mainBunny.addBehaviour(1, new BezierBehaviour(curve, 4));
+		curveObj = new SceneObject(new BezierCurveRenderable(curve));
+		curveObj.setShader(curveShader);
+
+		mainBunny.addBehaviour(1, new BezierBehaviour(curveObj, 10));
 
 		followingBunny1.addBehaviour(1, new FollowingBehaviour(mainBunny, 3f).limited(5));
 		followingBunny1.addBehaviour(2, new FollowingBehaviour(mainBunny, 7.6f));
@@ -172,6 +176,10 @@ public class BunnyGame extends Game {
 		spotLightEntity.addBehaviour(1, new FollowingBehaviour(followingBunny3, 3f).limited(5));
 		spotLightEntity.addBehaviour(9001, new FollowingBehaviour(followingBunny3, 7.6f));
 
+		//bunnyScene.getSceneGraph().getTransformation().setPosition(new Vector3f(11, 0, 0));
+		//bunnyScene.getSceneGraph().getTransformation().
+		curveObj.setTransformation(
+				new BoneTransformation(new Matrix4f().scale(1, 0.1f, 1).rotate(0.1f, 0, 1, 0)));
 		glEnable(GL_CULL_FACE);
 		GLErrors.checkForError(TAG, "glEnable");
 		glEnable(GL_DEPTH_TEST);
