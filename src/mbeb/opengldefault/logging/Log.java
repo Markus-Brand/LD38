@@ -75,15 +75,24 @@ public class Log {
 
 	/**
 	 * error message
-	 *
-	 * @param message
-	 *            the object (mostly Strings) being logged
+     * @param tag
+     * @param obj
 	 */
 	public static void error(String tag, Object obj) {
+        error(tag, obj, null);
+	}
+	/**
+	 * error message
+     * @param tag
+     * @param obj
+     * @param t
+	 */
+	public static void error(String tag, Object obj, Throwable t) {
 		if (logMode == LogMode.NONE) {
 			return;
 		}
-		String log = constructErrorMessage(obj, "ERR: ", tag);
+        Object toLog = (t == null ? obj : (obj.toString() + " (" + t.getLocalizedMessage() + ")"));
+		String log = constructErrorMessage(toLog, "ERR: ", tag);
 		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
 		} else {
