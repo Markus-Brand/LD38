@@ -223,9 +223,7 @@ public class OpenGLContext {
 	 *            command line arguments
 	 */
 	private static void evaluateCommandLineArguments(String[] args) {
-		if (args.length < 2) {
-			Log.initDebug(LogMode.CONSOLE);
-		} else if (args[1].equals("console")) {
+		if (args.length < 2 || args[1].equals("console")) {
 			Log.initDebug(LogMode.CONSOLE);
 		} else if (args[1].equals("logfile")) {
 			Log.initDebug(LogMode.LOGFILE);
@@ -239,10 +237,10 @@ public class OpenGLContext {
 	}
 
 	public static int getWidth() {
-		return vidmode.width();
+		return 1280;//vidmode.width();
 	}
 
 	public static int getHeight() {
-		return vidmode.height();
+		return 720;//vidmode.height();
 	}
 }

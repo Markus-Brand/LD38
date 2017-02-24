@@ -90,6 +90,7 @@ public class SceneGraphRenderer {
 		if (modelUniform >= 0) {
 			//only if shader wants the model matrix
 			final Matrix4f model = transform;
+			System.out.println("render:" + model);
 			final FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
 			GL20.glUniformMatrix4fv(modelUniform, false, model.get(buffer));
 			GLErrors.checkForError(TAG, "glUniformMatrix4fv");
