@@ -36,10 +36,11 @@ public class Log {
 				writer = new PrintWriter(logFile);
 			} catch(FileNotFoundException e1) {
 				e1.printStackTrace();
+				Log.error(TAG, "");
 			}
 			try {
 				if (!logFile.createNewFile()) {
-					Log.error(TAG, "cannot create logging File");
+					Log.error(TAG, "Cannot create logging File");
 				}
 			} catch(IOException e) {
 				Log.error(TAG, "Error creating logging file", e);
@@ -98,7 +99,7 @@ public class Log {
 		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
 			if (t != null) {
-				t.printStackTrace();
+				t.printStackTrace(System.err);
 			}
 		} else {
 			writer.println(log);
@@ -120,9 +121,9 @@ public class Log {
 	/**
 	 * Assert if condition is true
 	 *
+	 * @param tag
 	 * @param condition
-	 * @param message
-	 *            the object (mostly Strings) being logged
+	 * @param obj
 	 */
 	public static void assertIfTrue(String tag, boolean condition, Object obj) {
 		if (logMode == LogMode.NONE || !condition) {
@@ -140,9 +141,9 @@ public class Log {
 	/**
 	 * Assert if condition is false
 	 *
+	 * @param tag
 	 * @param condition
-	 * @param message
-	 *            the object (mostly Strings) being logged
+	 * @param obj
 	 */
 	public static void assertIfFalse(String tag, boolean condition, Object obj) {
 		if (logMode == LogMode.NONE || condition) {
@@ -160,10 +161,10 @@ public class Log {
 	/**
 	 * Assert if o1 equals o2
 	 *
+	 * @param tag
 	 * @param o1
 	 * @param o2
-	 * @param message
-	 *            the object (mostly Strings) being logged
+	 * @param obj
 	 */
 	public static void assertIfEquals(String tag, Object o1, Object o2, Object obj) {
 		if (logMode == LogMode.NONE || !o1.equals(o2)) {
@@ -181,10 +182,10 @@ public class Log {
 	/**
 	 * Assert if o1 doesn't equal o2
 	 *
+	 * @param tag
 	 * @param o1
 	 * @param o2
-	 * @param message
-	 *            the object (mostly Strings) being logged
+	 * @param obj
 	 */
 	public static void assertIfNotEquals(String tag, Object o1, Object o2, Object obj) {
 		if (logMode == LogMode.NONE || o1.equals(o2)) {
