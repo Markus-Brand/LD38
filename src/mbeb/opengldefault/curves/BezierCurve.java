@@ -14,30 +14,30 @@ public class BezierCurve {
 
 	private static final String TAG = "BezierCurve";
 
-	public static enum ControlPointInputMode {
+	public enum ControlPointInputMode {
 		/**
 		 * Directly use the given Input Points as ControlPoints
 		 */
-		ControlPoints,
+		CONTROLPOINTS,
 		/**
 		 * Generate path, that contains all of the Input Positions
 		 */
-		CameraPoints,
+		CAMERAPOINTS,
 		/**
 		 * Generate circular path, that contains all of the Input Positions
 		 */
-		CameraPointsCircular
+		CAMERAPOINTSCIRCULAR
 	}
 
 	/**
 	 * Matrices that can be multiplied with a progress Vector (u^3, u^2, u, 1) to determine a position on a segment with
 	 * given progress
 	 */
-	private ArrayList<Matrix4f> bezierMatrices;
+	private List<Matrix4f> bezierMatrices;
 	/** Control Points for the Curve */
-	private ArrayList<Vector3f> controlPoints;
+	private List<Vector3f> controlPoints;
 	/** The segments lengths */
-	private ArrayList<Float> segmentLengths;
+	private List<Float> segmentLengths;
 	/** Total length of all segments */
 	private float maxLength;
 	/** The input mode of the ControlPoint Data */
@@ -49,8 +49,8 @@ public class BezierCurve {
 	 * @param controlPoints
 	 *            Input Control Points
 	 */
-	public BezierCurve(final ArrayList<Vector3f> controlPoints) {
-		this(controlPoints, ControlPointInputMode.CameraPoints, false);
+	public BezierCurve(final List<Vector3f> controlPoints) {
+		this(controlPoints, ControlPointInputMode.CAMERAPOINTS, false);
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class BezierCurve {
 	 * @param mode
 	 *            ControlPointInputMode
 	 */
-	public BezierCurve(final ArrayList<Vector3f> controlPoints, final ControlPointInputMode mode) {
+	public BezierCurve(final List<Vector3f> controlPoints, final ControlPointInputMode mode) {
 		this(controlPoints, mode, false);
 	}
 
@@ -75,7 +75,8 @@ public class BezierCurve {
 	 * @param adaptiveSegmentLength
 	 *            should the segment length be generated depending on the Curve lengths
 	 */
-	public BezierCurve(final ArrayList<Vector3f> controlPoints, final ControlPointInputMode mode, final boolean adaptiveSegmentLength) {
+	public BezierCurve(final List<Vector3f> controlPoints, final ControlPointInputMode mode,
+			final boolean adaptiveSegmentLength) {
 		this.mode = mode;
 		setInputPoints(controlPoints);
 		generateSegmentLength(adaptiveSegmentLength);
@@ -90,7 +91,7 @@ public class BezierCurve {
 	 *            input segment length
 	 */
 	public BezierCurve(final ArrayList<Vector3f> controlPoints, final ArrayList<Float> segmentLengths) {
-		this(controlPoints, ControlPointInputMode.CameraPoints, segmentLengths);
+		this(controlPoints, ControlPointInputMode.CAMERAPOINTS, segmentLengths);
 	}
 
 	/**
@@ -103,7 +104,8 @@ public class BezierCurve {
 	 * @param segmentLengths
 	 *            input segment length
 	 */
-	public BezierCurve(final ArrayList<Vector3f> controlPoints, final ControlPointInputMode mode, final ArrayList<Float> segmentLengths) {
+	public BezierCurve(final ArrayList<Vector3f> controlPoints, final ControlPointInputMode mode,
+			final ArrayList<Float> segmentLengths) {
 		this.mode = mode;
 		setInputPoints(controlPoints);
 		setSegmentLengths(segmentLengths);
@@ -115,15 +117,15 @@ public class BezierCurve {
 	 * @param inputControlPoints
 	 *            input Control Points
 	 */
-	public final void setInputPoints(final ArrayList<Vector3f> inputControlPoints) {
+	public final void setInputPoints(final List<Vector3f> inputControlPoints) {
 		switch(mode) {
-			case CameraPoints:
+			case CAMERAPOINTS:
 				generatePath(inputControlPoints);
 				break;
-			case CameraPointsCircular:
+			case CAMERAPOINTSCIRCULAR:
 				generateCircularPath(inputControlPoints);
 				break;
-			case ControlPoints:
+			case CONTROLPOINTS:
 				setControlPoints(inputControlPoints);
 				break;
 			default:
@@ -157,7 +159,7 @@ public class BezierCurve {
 	 *            id of the segment
 	 * @return
 	 */
-	private Vector3f calculateSegmentDirection(final ArrayList<Vector3f> cameraPositions, final int segment) {
+	private Vector3f calculateSegmentDirection(final List<Vector3f> cameraPositions, final int segment) {
 		final Vector3f start = cameraPositions.get(segment % cameraPositions.size());
 		final Vector3f end = cameraPositions.get((segment + 1) % cameraPositions.size());
 
@@ -172,7 +174,7 @@ public class BezierCurve {
 	 *
 	 * @param controlPoints
 	 */
-	public void setControlPoints(final ArrayList<Vector3f> controlPoints) {
+	public void setControlPoints(final List<Vector3f> controlPoints) {
 		this.controlPoints = controlPoints;
 	}
 
@@ -182,7 +184,7 @@ public class BezierCurve {
 	 * @param cameraPositions
 	 *            input Control Points
 	 */
-	private void generatePath(final ArrayList<Vector3f> cameraPositions) {
+	private void generatePath(final List<Vector3f> cameraPositions) {
 		controlPoints = new ArrayList<>();
 
 		Vector3f dirPrevious = calculateSegmentDirection(cameraPositions, 0);
@@ -220,7 +222,7 @@ public class BezierCurve {
 	 * @param cameraPositions
 	 *            input Control Points
 	 */
-	private void generateCircularPath(final ArrayList<Vector3f> cameraPositions) {
+	private void generateCircularPath(final List<Vector3f> cameraPositions) {
 		controlPoints = new ArrayList<>();
 
 		Vector3f dirPrevious = calculateSegmentDirection(cameraPositions, cameraPositions.size() - 1);
@@ -265,7 +267,8 @@ public class BezierCurve {
 	 * @param length
 	 *            length of the "Tangent"
 	 */
-	private void generateFirstControlPoint(final ArrayList<Vector3f> cameraPositions, final Vector3f direction, final float length) {
+	private void generateFirstControlPoint(final List<Vector3f> cameraPositions, final Vector3f direction,
+			final float length) {
 		final Vector3f currentCameraPos = new Vector3f(cameraPositions.get(0));
 
 		final Vector3f tangent = new Vector3f();
@@ -287,7 +290,8 @@ public class BezierCurve {
 	 * @param tangent
 	 *            Tangent on this Point
 	 */
-	private void generateMidControlPoint(final ArrayList<Vector3f> cameraPositions, final int camPosID, final Vector3f tangent) {
+	private void generateMidControlPoint(final List<Vector3f> cameraPositions, final int camPosID,
+			final Vector3f tangent) {
 		final Vector3f currentCameraPos = new Vector3f(cameraPositions.get(camPosID));
 
 		final Vector3f prevControlPos = new Vector3f(currentCameraPos).sub(tangent);
@@ -308,7 +312,8 @@ public class BezierCurve {
 	 * @param length
 	 *            length of the "Tangent"
 	 */
-	private void generateLastControlPoint(final ArrayList<Vector3f> cameraPositions, final Vector3f direction, final float length, final boolean circular) {
+	private void generateLastControlPoint(final List<Vector3f> cameraPositions, final Vector3f direction,
+			final float length, final boolean circular) {
 		final Vector3f currentCameraPos = new Vector3f(cameraPositions.get(circular ? 0 : cameraPositions.size() - 1));
 
 		final Vector3f tangent = new Vector3f();
@@ -415,7 +420,8 @@ public class BezierCurve {
 	 * @return progess Vector.
 	 */
 	private Vector4f progressVector(final double progressInFragment) {
-		return new Vector4f((float) java.lang.Math.pow(progressInFragment, 3), (float) java.lang.Math.pow(progressInFragment, 2), (float) progressInFragment, 1);
+		return new Vector4f((float) java.lang.Math.pow(progressInFragment, 3), (float) java.lang.Math.pow(
+				progressInFragment, 2), (float) progressInFragment, 1);
 	}
 
 	/**
@@ -439,7 +445,7 @@ public class BezierCurve {
 	 *
 	 * @return the Bezier Matrices
 	 */
-	public ArrayList<Matrix4f> getBezierMatrices() {
+	public List<Matrix4f> getBezierMatrices() {
 		return bezierMatrices;
 	}
 
@@ -448,7 +454,7 @@ public class BezierCurve {
 	 *
 	 * @return control points
 	 */
-	public ArrayList<Vector3f> getControlPoints() {
+	public List<Vector3f> getControlPoints() {
 		return controlPoints;
 	}
 
