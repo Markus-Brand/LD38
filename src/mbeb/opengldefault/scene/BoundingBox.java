@@ -39,7 +39,7 @@ public class BoundingBox {
 			return new BoundingBox(localVertex, new Vector3f(0), modelTransform);
 		}
 
-	};
+	}
 
 	/**
 	 * local 3d aabb

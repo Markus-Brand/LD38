@@ -1,5 +1,6 @@
 package mbeb.opengldefault.scene.entities;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -16,7 +17,7 @@ public abstract class Entity {
 
 	/**
 	 * Contains a Behaviour and a priority. The class is used to sort the Behaviours
-	 *
+	 * Note: this class has a natural ordering that is inconsistent with equals.
 	 * @author Markus
 	 */
 	private class PrioritizedBehaviour implements Comparable<PrioritizedBehaviour> {
@@ -31,7 +32,7 @@ public abstract class Entity {
 
 		@Override
 		public int compareTo(PrioritizedBehaviour o) {
-			return new Integer(priority).compareTo(o.priority);
+			return Integer.compare(priority, o.priority);
 		}
 
 	}

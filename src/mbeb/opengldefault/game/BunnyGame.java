@@ -51,7 +51,7 @@ public class BunnyGame implements IGame {
 		for (int i = 0; i < 10; i++) {
 			controlPoints.add(new Vector3f(random.nextInt(51) - 25, random.nextInt(51) - 25, random.nextInt(51) - 25));
 		}
-		curve = new BezierCurve(controlPoints, ControlPointInputMode.CameraPointsCircular, true);
+		curve = new BezierCurve(controlPoints, ControlPointInputMode.CAMERAPOINTSCIRCULAR, true);
 
 		cam = new Camera();
 
