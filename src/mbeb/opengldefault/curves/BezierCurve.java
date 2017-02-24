@@ -117,7 +117,7 @@ public class BezierCurve {
 	 * @param inputControlPoints
 	 *            input Control Points
 	 */
-	public void setInputPoints(final List<Vector3f> inputControlPoints) {
+	public final void setInputPoints(final List<Vector3f> inputControlPoints) {
 		switch(mode) {
 			case CAMERAPOINTS:
 				generatePath(inputControlPoints);
@@ -332,7 +332,7 @@ public class BezierCurve {
 	 *            true -> segment lengths are depending on the lengths of the actual curve
 	 *            false -> segment lengths are always 1
 	 */
-	public void generateSegmentLength(final boolean adaptiveSegmentLength) {
+	public final void generateSegmentLength(final boolean adaptiveSegmentLength) {
 		segmentLengths = new ArrayList<>();
 		if (adaptiveSegmentLength) {
 			for (int i = 0; i < controlPoints.size() - 1; i += 3) {
@@ -350,7 +350,7 @@ public class BezierCurve {
 			}
 		} else {
 			for (int i = 0; i < controlPoints.size() - 1; i += 3) {
-				segmentLengths.add(1.0f);
+				segmentLengths.add(1f);
 			}
 			maxLength = segmentLengths.size();
 		}
@@ -362,7 +362,7 @@ public class BezierCurve {
 	 * @param segmentLengths
 	 *            input segment lengths
 	 */
-	public void setSegmentLengths(final ArrayList<Float> segmentLengths) {
+	public final void setSegmentLengths(final ArrayList<Float> segmentLengths) {
 		this.segmentLengths = segmentLengths;
 		maxLength = 0;
 		for (final float length : segmentLengths) {

@@ -16,13 +16,13 @@ import org.lwjgl.*;
 import org.lwjgl.opengl.*;
 
 /**
- * Shader Object used for rendering a {@link mbeb.opengldefault.rendering.renderable.IRenderable}
+ * Shader Object used for rendering a
+ * {@link mbeb.opengldefault.rendering.renderable.IRenderable}
  *
  * @author Markus
  */
 public class Shader {
 
-	/** Class Name Tag */
 	private static final String TAG = "Shader";
 
 	/** OpenGL shader program */
@@ -41,23 +41,25 @@ public class Shader {
 	private int drawMode;
 
 	/**
-	 * Static parameters that can be changed by recompiling the shaders. They will be written into the shader via
-	 * preprocessors #define
+	 * Static parameters that can be changed by recompiling the shaders. They
+	 * will be written into the shader via preprocessors #define
 	 */
 	private final Map<String, Object> parameters;
 	/**
-	 * Uniform Blocks used in the shader. Will hold data like projection and view matrices that are available to
-	 * multiple shaders
+	 * dirty flag for parameters
+	 */
+	private boolean parametersChanged;
+	/**
+	 * Uniform Blocks used in the shader. Will hold data like projection and
+	 * view matrices that are available to multiple shaders
 	 */
 	private final Map<Integer, String> uniformBlocks;
 
 	/**
 	 * constructor of a shader object.
 	 *
-	 * @param vertexPath
-	 *            path of a vertex Shader
-	 * @param fragmentPath
-	 *            path of a fragment Shader
+	 * @param vertexPath path of a vertex Shader
+	 * @param fragmentPath path of a fragment Shader
 	 */
 	public Shader(final String vertexPath, final String fragmentPath) {
 		this(vertexPath, fragmentPath, null, null, null, new HashMap<>());
@@ -66,12 +68,9 @@ public class Shader {
 	/**
 	 * constructor of a shader object.
 	 *
-	 * @param vertexPath
-	 *            path of a vertex Shader
-	 * @param fragmentPath
-	 *            path of a fragment Shader
-	 * @param parameters
-	 *            a map containing initial values for shader parameters
+	 * @param vertexPath path of a vertex Shader
+	 * @param fragmentPath path of a fragment Shader
+	 * @param parameters a map containing initial values for shader parameters
 	 */
 	public Shader(final String vertexPath, final String fragmentPath, final Map<String, Object> parameters) {
 		this(vertexPath, fragmentPath, null, null, null, parameters);
@@ -80,14 +79,10 @@ public class Shader {
 	/**
 	 * constructor of a shader object.
 	 *
-	 * @param vertexPath
-	 *            path of a vertex Shader
-	 * @param fragmentPath
-	 *            path of a fragment Shader
-	 * @param geometryPath
-	 *            path of a geometry Shader
+	 * @param vertexPath path of a vertex Shader
+	 * @param fragmentPath path of a fragment Shader
+	 * @param geometryPath path of a geometry Shader
 	 */
-
 	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath) {
 		this(vertexPath, fragmentPath, geometryPath, null, null, new HashMap<>());
 	}
@@ -95,14 +90,10 @@ public class Shader {
 	/**
 	 * constructor of a shader object.
 	 *
-	 * @param vertexPath
-	 *            path of a vertex Shader
-	 * @param fragmentPath
-	 *            path of a fragment Shader
-	 * @param geometryPath
-	 *            path of a geometry Shader
-	 * @param parameters
-	 *            a map containing initial values for shader parameters
+	 * @param vertexPath path of a vertex Shader
+	 * @param fragmentPath path of a fragment Shader
+	 * @param geometryPath path of a geometry Shader
+	 * @param parameters a map containing initial values for shader parameters
 	 */
 	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath, final Map<String, Object> parameters) {
 		this(vertexPath, fragmentPath, geometryPath, null, null, parameters);
@@ -111,16 +102,11 @@ public class Shader {
 	/**
 	 * constructor of a shader object.
 	 *
-	 * @param vertexPath
-	 *            path of a vertex Shader
-	 * @param fragmentPath
-	 *            path of a fragment Shader
-	 * @param geometryPath
-	 *            path of a geometry Shader
-	 * @param tesControlPath
-	 *            path of a tessellation control Shader
-	 * @param tesEvalPath
-	 *            path of a tessellation evaluation Shader
+	 * @param vertexPath path of a vertex Shader
+	 * @param fragmentPath path of a fragment Shader
+	 * @param geometryPath path of a geometry Shader
+	 * @param tesControlPath path of a tessellation control Shader
+	 * @param tesEvalPath path of a tessellation evaluation Shader
 	 */
 	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath, final String tesControlPath, final String tesEvalPath) {
 		this(vertexPath, fragmentPath, geometryPath, tesControlPath, tesEvalPath, new HashMap<>());
@@ -129,18 +115,12 @@ public class Shader {
 	/**
 	 * main constructor of a shader object.
 	 *
-	 * @param vertexPath
-	 *            path of a vertex Shader
-	 * @param fragmentPath
-	 *            path of a fragment Shader
-	 * @param geometryPath
-	 *            path of a geometry Shader
-	 * @param tesControlPath
-	 *            path of a tessellation control Shader
-	 * @param tesEvalPath
-	 *            path of a tessellation evaluation Shader
-	 * @param parameters
-	 *            a map containing initial values for shader parameters
+	 * @param vertexPath path of a vertex Shader
+	 * @param fragmentPath path of a fragment Shader
+	 * @param geometryPath path of a geometry Shader
+	 * @param tesControlPath path of a tessellation control Shader
+	 * @param tesEvalPath path of a tessellation evaluation Shader
+	 * @param parameters a map containing initial values for shader parameters
 	 */
 	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath, final String tesControlPath, final String tesEvalPath, final Map<String, Object> parameters) {
 		this.parameters = parameters;
@@ -155,9 +135,10 @@ public class Shader {
 		if (tesEvalPath != null) {
 			this.tesEvalSource = getSource(tesEvalPath);
 		}
-		uniformBlocks = new HashMap<Integer, String>();
+		uniformBlocks = new HashMap<>();
 
-		compile();
+		shaderProgram = -1;
+		parametersChanged = true;
 	}
 
 	/**
@@ -173,8 +154,8 @@ public class Shader {
 			final String val = sc.useDelimiter("\\A").next();
 			sc.close();
 			return val;
-		} catch(final Exception ex) {
-			Log.error(TAG, "Loading shader source failed:" + path + "\n" + ex.getMessage());
+		} catch (final Exception ex) {
+			Log.error(TAG, "Loading shader source failed:" + path + "\n", ex);
 			return "";
 		}
 	}
@@ -197,6 +178,7 @@ public class Shader {
 	 * @param name
 	 */
 	private void setUniformBlockIndex(final int index, final String name) {
+		ensureCompiled();
 		final int uniformBlockIndex = glGetUniformBlockIndex(shaderProgram, name);
 		glUniformBlockBinding(shaderProgram, uniformBlockIndex, index);
 		GLErrors.checkForError(TAG, "glUniformBlockBinding");
@@ -206,6 +188,7 @@ public class Shader {
 	 * use Shader
 	 */
 	public void use() {
+		ensureUpToDate();
 		glUseProgram(shaderProgram);
 		GLErrors.checkForError(TAG, "glUseProgram");
 	}
@@ -213,8 +196,7 @@ public class Shader {
 	/**
 	 * get the location of an Uniform with given name
 	 *
-	 * @param name
-	 *            name of the uniform
+	 * @param name name of the uniform
 	 * @return the uniforms location
 	 */
 	public int getUniform(final String name) {
@@ -224,13 +206,12 @@ public class Shader {
 	/**
 	 * get the location of a Uniform with given name
 	 *
-	 * @param name
-	 *            name of the uniform
-	 * @param logAnError
-	 *            log an error if not found
+	 * @param name name of the uniform
+	 * @param logAnError log an error if not found
 	 * @return the uniforms location
 	 */
 	public int getUniform(final String name, final boolean logAnError) {
+		ensureCompiled();
 		final int loc = glGetUniformLocation(shaderProgram, name);
 		GLErrors.checkForError(TAG, "glGetUniformLocation");
 		if (logAnError && loc < 0) {
@@ -245,31 +226,14 @@ public class Shader {
 	}
 
 	/**
-	 * update a shader-parameter
+	 * update a shader-parameter, which triggers re-compiling on next usage
 	 *
-	 * @param name
-	 *            the parameter name, like used in the shader file
-	 * @param value
-	 *            the value of the parameter
-	 * @param update
-	 *            whether to directly re-compile the shader after (when false is
-	 *            passed, call shader.compile() to view the results)
-	 */
-	public void updateParameter(final String name, final Object value, final boolean update) {
-		parameters.put(name, value);
-		if (update) {
-			compile();
-		}
-	}
-
-	/**
-	 * updates a parameter and instantly recompiles the Shader
-	 *
-	 * @param name
-	 * @param value
+	 * @param name the parameter name, like used in the shader file
+	 * @param value the value of the parameter
 	 */
 	public void updateParameter(final String name, final Object value) {
-		updateParameter(name, value, true);
+		parameters.put(name, value);
+		parametersChanged = true;
 	}
 
 	/**
@@ -277,11 +241,13 @@ public class Shader {
 	 */
 	public void compile() {
 		// generating parameters precompiler actions
-		String paramString = "#version 330 core " + System.getProperty("line.separator");
+		parametersChanged = false;
+		StringBuilder headerBuilder = new StringBuilder("#version 330 core ").append(System.getProperty("line.separator"));
 		for (final String key : parameters.keySet()) {
 			final String value = getParameter(key);
-			paramString += "#define " + key + " " + value + System.getProperty("line.separator");
+			headerBuilder.append("#define ").append(key).append(" ").append(value).append(System.getProperty("line.separator"));
 		}
+		String paramString = headerBuilder.toString();
 
 		final int vertexShader = compileVertexShader(paramString);
 		final int fragmentShader = compileFragmentShader(paramString);
@@ -291,17 +257,15 @@ public class Shader {
 
 		linkShader(vertexShader, fragmentShader, geomShader, tesControlShader, tesEvalShader);
 
-		for (final int key : uniformBlocks.keySet()) {
-			setUniformBlockIndex(key, uniformBlocks.get(key));
-			GLErrors.checkForError(TAG, "setUniformBlockIndex");
+		for (Map.Entry<Integer, String> uniformBlockBinding : uniformBlocks.entrySet()) {
+			setUniformBlockIndex(uniformBlockBinding.getKey(), uniformBlockBinding.getValue());
 		}
 	}
 
 	/**
 	 * Compiles Vertex Shader
 	 *
-	 * @param paramString
-	 *            Shader Header
+	 * @param paramString Shader Header
 	 * @return vertex shader object
 	 */
 	private int compileVertexShader(final String paramString) {
@@ -319,8 +283,7 @@ public class Shader {
 	/**
 	 * Compiles Fragment Shader
 	 *
-	 * @param paramString
-	 *            Shader Header
+	 * @param paramString Shader Header
 	 * @return fragment shader object
 	 */
 	private int compileFragmentShader(final String paramString) {
@@ -338,8 +301,7 @@ public class Shader {
 	/**
 	 * Compiles Geometry Shader
 	 *
-	 * @param paramString
-	 *            Shader Header
+	 * @param paramString Shader Header
 	 * @return geometry shader object
 	 */
 	private int compileGeometryShader(final String paramString) {
@@ -360,8 +322,7 @@ public class Shader {
 	/**
 	 * Compiles Tessellation Control Shader
 	 *
-	 * @param paramString
-	 *            Shader Header
+	 * @param paramString Shader Header
 	 * @return tessellation control shader object
 	 */
 	private int compileTesControlShader(final String paramString) {
@@ -382,8 +343,7 @@ public class Shader {
 	/**
 	 * Compiles Tessellation Evaluation Shader
 	 *
-	 * @param paramString
-	 *            Shader Header
+	 * @param paramString Shader Header
 	 * @return tessellation evaluation shader object
 	 */
 	private int compileTesEvalShader(final String paramString) {
@@ -404,10 +364,8 @@ public class Shader {
 	/**
 	 * links the shader program
 	 *
-	 * @param vertexShader
-	 *            vertex shader object
-	 * @param fragmentShader
-	 *            fragment shader object
+	 * @param vertexShader vertex shader object
+	 * @param fragmentShader fragment shader object
 	 * @param tesControlShader
 	 * @param tesEvalShader
 	 * @param geomShader
@@ -440,8 +398,7 @@ public class Shader {
 	/**
 	 * Setter for the drawMode
 	 *
-	 * @param drawMode
-	 *            new drawMode
+	 * @param drawMode new drawMode
 	 */
 	public void setDrawMode(int drawMode) {
 		this.drawMode = drawMode;
@@ -457,5 +414,32 @@ public class Shader {
 			drawMode = GL_TRIANGLES;
 		}
 		return drawMode;
+	}
+
+	/**
+	 * @return whether this program is already compiled
+	 */
+	public boolean isCompiled() {
+		return shaderProgram >= 0;
+	}
+
+	/**
+	 * ensure that this shader is in compiled state
+	 */
+	private void ensureCompiled() {
+		if (!isCompiled() || parametersChanged) {
+			compile();
+		}
+	}
+
+	/**
+	 * ensure that this shader program is up-to-date with the
+	 * parameter-dictionary
+	 */
+	private void ensureUpToDate() {
+		ensureCompiled();
+		if (parametersChanged) {
+			compile();
+		}
 	}
 }
