@@ -74,7 +74,10 @@ public class OpenGLContext {
 		printOpenGLInformation();
 		game.init();
 	}
-	
+
+	/**
+	 * Print OpenGL version and supported extensions
+	 */
 	private void printOpenGLInformation(){
 		Log.log(TAG, "OpenGL version: " + GL11.glGetString(GL11.GL_VERSION));
 		GLCapabilities capabilities = GL.getCapabilities();
