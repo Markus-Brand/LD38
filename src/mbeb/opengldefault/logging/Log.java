@@ -69,7 +69,6 @@ public class Log {
 		String log = constructErrorMessage(obj, "LOG: ", tag);
 		if (logMode == LogMode.CONSOLE) {
 			System.out.println(log);
-			System.out.flush();
 		} else {
 			writer.println(log);
 			writer.flush();
@@ -98,11 +97,9 @@ public class Log {
 		String log = constructErrorMessage(toLog, "ERR: ", tag);
 		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
-			System.err.flush();
 			if (t != null) {
 				t.printStackTrace();
 			}
-			System.err.flush();
 		} else {
 			writer.println(log);
 			writer.flush();

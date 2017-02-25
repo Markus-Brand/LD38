@@ -21,10 +21,11 @@ public class ShaderPreprocessor {
 
 	private final Map<String, Object> parameters;
 	private String header;
+	private boolean parametersDirty;
 
 	public ShaderPreprocessor(Map<String, Object> parameters) {
 		this.parameters = parameters != null ? parameters : new HashMap<>();
-		header = null;
+		setParametersDirty(true);
 	}
 
 	public String getParameter(final String name) {
@@ -38,11 +39,15 @@ public class ShaderPreprocessor {
 			return;
 		}
 		parameters.put(name, value);
-		header = null;
+		setParametersDirty(true);
 	}
 
 	public boolean areParametersDirty() {
-		return header == null;
+		return parametersDirty;
+	}
+
+	public void setParametersDirty(boolean parametersDirty) {
+		this.parametersDirty = parametersDirty;
 	}
 
 	/**
@@ -77,6 +82,7 @@ public class ShaderPreprocessor {
 	 */
 	private String getHeader() {
 		if (areParametersDirty()) {
+			setParametersDirty(false);
 			StringBuilder headerBuilder = new StringBuilder("#version ").append(GLSL_VERSION).append(System.getProperty("line.separator"));
 			for (Map.Entry<String, Object> parameter : parameters.entrySet()) {
 				final Object value = parameter.getValue() != null ? parameter.getValue() : "";
