@@ -69,7 +69,7 @@ public class TextureCache {
 			cachedImages.put(key, texture);
 			return texture;
 		}
-		return texture.intValue();
+		return texture;
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class TextureCache {
 		try {
 			img = ImageIO.read(in);
 		} catch(IOException e) {
-			Log.error(TAG, "Unable to Load Texture: " + path);
+			Log.error(TAG, "Unable to Load Texture: " + path, e);
 			e.printStackTrace();
 		}
 		return img;
@@ -98,6 +98,8 @@ public class TextureCache {
 	 *            input BufferedImage
 	 * @param interpolate
 	 *            interpolation method
+     * @param wrapS
+     * @param wrapT
 	 * @return openGl texture
 	 */
 	public static int loadTexture(BufferedImage image, boolean interpolate, int wrapS, int wrapT) {
@@ -134,12 +136,6 @@ public class TextureCache {
 	 *
 	 * @param path
 	 *            Path in the texture folder
-	 * @param interpolate
-	 *            toggles interpolation
-	 * @param wrapS
-	 *            sets WrapMode in x direction
-	 * @param wrapT
-	 *            sets WrapMode in y direction
 	 * @return OpenGL texture handle
 	 */
 	public static int loadCubeMap(String path) {
@@ -159,20 +155,13 @@ public class TextureCache {
 			cachedImages.put(key, texture);
 			return texture;
 		}
-		return texture.intValue();
+		return texture;
 	}
 
 	/**
 	 * Generate OpenGL CubeMap from BufferedImage Array with given interpolation method
 	 *
-	 * @param image
-	 *            input BufferedImage Array
-	 * @param interpolate
-	 *            interpolation method
-	 * @param wrapS
-	 *            sets WrapMode in x direction
-	 * @param wrapT
-	 *            sets WrapMode in y direction
+     * @param images
 	 * @return openGl texture
 	 */
 	public static int loadCubeMap(BufferedImage[] images) {
@@ -258,7 +247,7 @@ public class TextureCache {
 		image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
 
 		// create the openGL Buffer object
-		ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * (image.getType() == BufferedImage.TYPE_INT_ARGB ? 4 : 4));
+		ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * 4);
 
 		// copy data to the buffer
 		for (int y = 0; y < image.getHeight(); y++) {
@@ -268,7 +257,6 @@ public class TextureCache {
 				buffer.put((byte) (pixel >> 8 & 0xFF)); // Green component
 				buffer.put((byte) (pixel & 0xFF)); // Blue component
 				buffer.put((byte) (pixel >> 24 & 0xFF)); // Alpha component.
-				// Only for RGBA
 			}
 		}
 		buffer.flip();

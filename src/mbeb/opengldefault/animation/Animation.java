@@ -99,7 +99,7 @@ public class Animation {
 		//todo binary search for performance
 
 		KeyFrame before = null;
-		KeyFrame after = null;
+		KeyFrame after;
 
 		for (KeyFrame currentFrame : getKeyFrames()) {
 			after = currentFrame;
@@ -108,9 +108,6 @@ public class Animation {
 			}
 			before = currentFrame;
 		}
-		if (before == after) {
-			after = null;
-		}
-		return new KeyFrame[] {before, after};
+		return new KeyFrame[] {before, null};
 	}
 }
