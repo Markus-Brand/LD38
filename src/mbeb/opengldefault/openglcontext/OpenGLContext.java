@@ -33,6 +33,16 @@ public class OpenGLContext {
 	private static GLFWVidMode vidmode;
 
 	/**
+	 * The actual framebuffer width
+	 */
+	private static int width;
+
+	/**
+	 * The actual framebuffer height
+	 */
+	private static int height;
+
+	/*
 	 * Game Object
 	 */
 	private IGame game;
@@ -56,9 +66,12 @@ public class OpenGLContext {
 	private void init(String[] args) {
 		evaluateCommandLineArguments(args);
 		initOpenGL();
-		createWindow("Test window", false, getWidth(), getHeight());
+
+		createWindow("Test window", false, getVideoWidth(), getVideoHeight());
 		GL.createCapabilities();
 		GLErrors.checkForError(TAG, "createCapabilities");
+
+		System.out.println("OpenGL version: " + GL11.glGetString(GL11.GL_VERSION));
 		game.init();
 	}
 
@@ -67,7 +80,7 @@ public class OpenGLContext {
 	 */
 	private void loop() {
 		double lastTime = glfwGetTime();
-		while(!glfwWindowShouldClose(window)) {
+		while (!glfwWindowShouldClose(window)) {
 
 			glfwSwapBuffers(window); // swap the color buffers
 			// Poll for window events. The key callback above will only be
@@ -99,7 +112,7 @@ public class OpenGLContext {
 		Log.closeLogFile();
 		try {
 			Files.walk(new File("res").toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
-		} catch(IOException ex) {
+		} catch (IOException ex) {
 			Log.log(TAG, ex.getMessage() + " - unable to delete old res-directory");
 		}
 	}
@@ -107,14 +120,10 @@ public class OpenGLContext {
 	/**
 	 * creates the GLFW Window
 	 *
-	 * @param title
-	 *            windows title
-	 * @param fullscreen
-	 *            is the window fullscreen?
-	 * @param width
-	 *            window width
-	 * @param height
-	 *            window height
+	 * @param title windows title
+	 * @param fullscreen is the window fullscreen?
+	 * @param width window width
+	 * @param height window height
 	 */
 	private void createWindow(String title, boolean fullscreen, int width, int height) {
 		// Create the window
@@ -163,9 +172,13 @@ public class OpenGLContext {
 		// Make the OpenGL context current
 		glfwMakeContextCurrent(window);
 
+		int[] widthp = new int[1], heightp = new int[1];
+		glfwGetFramebufferSize(window, widthp, heightp);
+		OpenGLContext.height = heightp[0];
+		OpenGLContext.width = widthp[0];
+
 		// Enable v-sync
 		//glfwSwapInterval(1);
-
 		// Make the window visible
 		glfwShowWindow(window);
 	}
@@ -201,6 +214,10 @@ public class OpenGLContext {
 		glfwDefaultWindowHints();
 		glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_RED_BITS, vidmode.redBits());
 		glfwWindowHint(GLFW_GREEN_BITS, vidmode.greenBits());
 		glfwWindowHint(GLFW_BLUE_BITS, vidmode.blueBits());
@@ -210,8 +227,7 @@ public class OpenGLContext {
 	/**
 	 * Sets Debug Mode
 	 *
-	 * @param args
-	 *            command line arguments
+	 * @param args command line arguments
 	 */
 	private static void evaluateCommandLineArguments(String[] args) {
 		if (args.length < 2) {
@@ -229,11 +245,19 @@ public class OpenGLContext {
 		return vidmode;
 	}
 
-	public static int getWidth() {
+	public static int getVideoWidth() {
 		return vidmode.width();
 	}
 
-	public static int getHeight() {
+	public static int getVideoHeight() {
 		return vidmode.height();
+	}
+
+	public static int getWidth() {
+		return width;
+	}
+
+	public static int getHeight() {
+		return height;
 	}
 }
