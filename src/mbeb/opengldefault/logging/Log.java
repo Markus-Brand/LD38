@@ -69,6 +69,7 @@ public class Log {
 		String log = constructErrorMessage(obj, "LOG: ", tag);
 		if (logMode == LogMode.CONSOLE) {
 			System.out.println(log);
+			System.out.flush();
 		} else {
 			writer.println(log);
 			writer.flush();
@@ -97,9 +98,11 @@ public class Log {
 		String log = constructErrorMessage(toLog, "ERR: ", tag);
 		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
+			System.err.flush();
 			if (t != null) {
 				t.printStackTrace();
 			}
+			System.err.flush();
 		} else {
 			writer.println(log);
 			writer.flush();
@@ -112,7 +115,9 @@ public class Log {
 		Date today = Calendar.getInstance().getTime();
 		String log = df.format(today);
 		log += info;
-		log += "In class " + tag + ": ";
+		if (tag != null) {
+			log += "In class " + tag + ": ";
+		}
 		log += message;
 		return log;
 	}

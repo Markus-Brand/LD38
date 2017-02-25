@@ -8,7 +8,10 @@ import static org.lwjgl.opengl.GL40.*;
 
 import java.net.*;
 import java.nio.*;
+import java.text.DecimalFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import mbeb.opengldefault.logging.*;
 
@@ -25,30 +28,40 @@ public class Shader {
 
 	private static final String TAG = "Shader";
 
-	/** OpenGL shader program */
+	/**
+	 * OpenGL shader program
+	 */
 	private int shaderProgram;
-	/** Vertex Shaders source code */
-	private final String vertexSource;
-	/** Fragment Shaders source code */
-	private final String fragmentSource;
-	/** Geometry Shaders source code */
-	private String geometrySource;
-	/** Tessellation Control Shaders source code */
-	private String tesControlSource;
-	/** Tessellation Evaluation Shaders source code */
-	private String tesEvalSource;
-	/** Drawmode for the Renderables that get rendered by this shader */
+	/**
+	 * Vertex Shaders source code
+	 */
+	private final String vertexPath;
+	/**
+	 * Fragment Shaders source code
+	 */
+	private final String fragmentPath;
+	/**
+	 * Geometry Shaders source code
+	 */
+	private String geometryPath;
+	/**
+	 * Tessellation Control Shaders source code
+	 */
+	private String tesControlPath;
+	/**
+	 * Tessellation Evaluation Shaders source code
+	 */
+	private String tesEvalPath;
+	/**
+	 * Drawmode for the Renderables that get rendered by this shader
+	 */
 	private int drawMode;
 
 	/**
-	 * Static parameters that can be changed by recompiling the shaders. They
-	 * will be written into the shader via preprocessors #define
+	 * handles current parameter set and offers precompilation of Shader-Files
 	 */
-	private final Map<String, Object> parameters;
-	/**
-	 * dirty flag for parameters
-	 */
-	private boolean parametersChanged;
+	private ShaderPreprocessor preprocessor;
+
 	/**
 	 * Uniform Blocks used in the shader. Will hold data like projection and
 	 * view matrices that are available to multiple shaders
@@ -123,41 +136,15 @@ public class Shader {
 	 * @param parameters a map containing initial values for shader parameters
 	 */
 	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath, final String tesControlPath, final String tesEvalPath, final Map<String, Object> parameters) {
-		this.parameters = parameters;
-		this.vertexSource = getSource(vertexPath);
-		this.fragmentSource = getSource(fragmentPath);
-		if (geometryPath != null) {
-			this.geometrySource = getSource(geometryPath);
-		}
-		if (tesControlPath != null) {
-			this.tesControlSource = getSource(tesControlPath);
-		}
-		if (tesEvalPath != null) {
-			this.tesEvalSource = getSource(tesEvalPath);
-		}
+		this.vertexPath = vertexPath;
+		this.fragmentPath = fragmentPath;
+		this.geometryPath = geometryPath;
+		this.tesControlPath = tesControlPath;
+		this.tesEvalPath = tesEvalPath;
+
 		uniformBlocks = new HashMap<>();
-
 		shaderProgram = -1;
-		parametersChanged = true;
-	}
-
-	/**
-	 * returns the Shader Source of a given path
-	 *
-	 * @param path
-	 * @return
-	 */
-	public static String getSource(final String path) {
-		try {
-			final URL shaderURL = ClassLoader.getSystemResource("mbeb/opengldefault/shader/" + path).toURI().toURL();
-			final Scanner sc = new Scanner(shaderURL.openStream(), "UTF-8");
-			final String val = sc.useDelimiter("\\A").next();
-			sc.close();
-			return val;
-		} catch (final Exception ex) {
-			Log.error(TAG, "Loading shader source failed:" + path + "\n", ex);
-			return "";
-		}
+		this.preprocessor = new ShaderPreprocessor(parameters);
 	}
 
 	/**
@@ -221,8 +208,7 @@ public class Shader {
 	}
 
 	public String getParameter(final String name) {
-		final Object obj = parameters.get(name);
-		return obj == null ? "" : obj.toString();
+		return preprocessor.getParameter(name);
 	}
 
 	/**
@@ -232,28 +218,18 @@ public class Shader {
 	 * @param value the value of the parameter
 	 */
 	public void updateParameter(final String name, final Object value) {
-		parameters.put(name, value);
-		parametersChanged = true;
+		preprocessor.updateParameter(name, value);
 	}
 
 	/**
 	 * compiles the shader with the current values of the parameters-Map
 	 */
 	public void compile() {
-		// generating parameters precompiler actions
-		parametersChanged = false;
-		StringBuilder headerBuilder = new StringBuilder("#version 330 core ").append(System.getProperty("line.separator"));
-		for (final String key : parameters.keySet()) {
-			final String value = getParameter(key);
-			headerBuilder.append("#define ").append(key).append(" ").append(value).append(System.getProperty("line.separator"));
-		}
-		String paramString = headerBuilder.toString();
-
-		final int vertexShader = compileVertexShader(paramString);
-		final int fragmentShader = compileFragmentShader(paramString);
-		final int geomShader = compileGeometryShader(paramString);
-		final int tesControlShader = compileTesControlShader(paramString);
-		final int tesEvalShader = compileTesEvalShader(paramString);
+		final int vertexShader = compileVertexShader();
+		final int fragmentShader = compileFragmentShader();
+		final int geomShader = compileGeometryShader();
+		final int tesControlShader = compileTesControlShader();
+		final int tesEvalShader = compileTesEvalShader();
 
 		linkShader(vertexShader, fragmentShader, geomShader, tesControlShader, tesEvalShader);
 
@@ -268,14 +244,16 @@ public class Shader {
 	 * @param paramString Shader Header
 	 * @return vertex shader object
 	 */
-	private int compileVertexShader(final String paramString) {
+	private int compileVertexShader() {
+		String sourceString = preprocessor.getProcessedShaderFile(vertexPath);
 		final int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-		glShaderSource(vertexShader, paramString + vertexSource);
+		glShaderSource(vertexShader, sourceString);
 		glCompileShader(vertexShader);
 		final int compileSuccess = glGetShaderi(vertexShader, GL_COMPILE_STATUS);
 		if (compileSuccess != 1) {
 			Log.error(TAG, "Error compiling vertex shader: " + compileSuccess);
-			Log.error(TAG, "Vertex log:\n" + glGetShaderInfoLog(vertexShader, 512));
+			String log = glGetShaderInfoLog(vertexShader);
+			printDebug(log, sourceString, vertexPath);
 		}
 		return vertexShader;
 	}
@@ -286,14 +264,16 @@ public class Shader {
 	 * @param paramString Shader Header
 	 * @return fragment shader object
 	 */
-	private int compileFragmentShader(final String paramString) {
+	private int compileFragmentShader() {
+		String sourceString = preprocessor.getProcessedShaderFile(fragmentPath);
 		final int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-		glShaderSource(fragmentShader, paramString + fragmentSource);
+		glShaderSource(fragmentShader, sourceString);
 		glCompileShader(fragmentShader);
 		final int compileSuccess = glGetShaderi(fragmentShader, GL_COMPILE_STATUS);
 		if (compileSuccess != 1) {
 			Log.error(TAG, "Error compiling fragment shader: " + compileSuccess);
-			Log.error(TAG, "Fragment log:\n" + glGetShaderInfoLog(fragmentShader, 512));
+			String log = glGetShaderInfoLog(fragmentShader);
+			printDebug(log, sourceString, fragmentPath);
 		}
 		return fragmentShader;
 	}
@@ -304,17 +284,19 @@ public class Shader {
 	 * @param paramString Shader Header
 	 * @return geometry shader object
 	 */
-	private int compileGeometryShader(final String paramString) {
-		if (geometrySource == null) {
+	private int compileGeometryShader() {
+		if (geometryPath == null) {
 			return -1;
 		}
+		String sourceString = preprocessor.getProcessedShaderFile(geometryPath);
 		final int geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
-		glShaderSource(geometryShader, paramString + geometrySource);
+		glShaderSource(geometryShader, sourceString);
 		glCompileShader(geometryShader);
 		final int compileSuccess = glGetShaderi(geometryShader, GL_COMPILE_STATUS);
 		if (compileSuccess != 1) {
 			Log.error(TAG, "Error compiling geometry shader: " + compileSuccess);
-			Log.error(TAG, "Geometry log:\n" + glGetShaderInfoLog(geometryShader, 512));
+			String log = glGetShaderInfoLog(geometryShader);
+			printDebug(log, sourceString, geometryPath);
 		}
 		return geometryShader;
 	}
@@ -325,17 +307,19 @@ public class Shader {
 	 * @param paramString Shader Header
 	 * @return tessellation control shader object
 	 */
-	private int compileTesControlShader(final String paramString) {
-		if (tesControlSource == null) {
+	private int compileTesControlShader() {
+		if (tesControlPath == null) {
 			return -1;
 		}
+		String sourceString = preprocessor.getProcessedShaderFile(tesControlPath);
 		final int tesControlShader = glCreateShader(GL_TESS_CONTROL_SHADER);
-		glShaderSource(tesControlShader, paramString + tesControlSource);
+		glShaderSource(tesControlShader, sourceString);
 		glCompileShader(tesControlShader);
 		final int compileSuccess = glGetShaderi(tesControlShader, GL_COMPILE_STATUS);
 		if (compileSuccess != 1) {
 			Log.error(TAG, "Error compiling tessellation control shader: " + compileSuccess);
-			Log.error(TAG, "Tessellation Control log:\n" + glGetShaderInfoLog(tesControlShader, 512));
+			String log = glGetShaderInfoLog(tesControlShader);
+			printDebug(log, sourceString, tesControlPath);
 		}
 		return tesControlShader;
 	}
@@ -346,17 +330,19 @@ public class Shader {
 	 * @param paramString Shader Header
 	 * @return tessellation evaluation shader object
 	 */
-	private int compileTesEvalShader(final String paramString) {
-		if (tesEvalSource == null) {
+	private int compileTesEvalShader() {
+		if (tesEvalPath == null) {
 			return -1;
 		}
+		String sourceString = preprocessor.getProcessedShaderFile(tesEvalPath);
 		final int tesEvalShader = glCreateShader(GL_TESS_EVALUATION_SHADER);
-		glShaderSource(tesEvalShader, paramString + tesEvalSource);
+		glShaderSource(tesEvalShader, sourceString);
 		glCompileShader(tesEvalShader);
 		final int compileSuccess = glGetShaderi(tesEvalShader, GL_COMPILE_STATUS);
 		if (compileSuccess != 1) {
 			Log.error(TAG, "Error compiling tessellation evaluation shader: " + compileSuccess);
-			Log.error(TAG, "Tessellation Evaluation log:\n" + glGetShaderInfoLog(tesEvalShader, 512));
+			String log = glGetShaderInfoLog(tesEvalShader);
+			printDebug(log, sourceString, tesEvalPath);
 		}
 		return tesEvalShader;
 	}
@@ -388,11 +374,73 @@ public class Shader {
 		GL20.glGetProgramiv(shaderProgram, GL_LINK_STATUS, buffer);
 		if (buffer.get(0) != 1) {
 			Log.error(TAG, "Error linking shader program: " + buffer.get(0));
-			Log.error(TAG, "Linking log:\n" + glGetProgramInfoLog(shaderProgram, 512));
+			Log.error(TAG, "Linking log:\n" + glGetProgramInfoLog(shaderProgram));
 		}
 
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
+	}
+
+	/**
+	 * Print source code of shader object line by line with leading line
+	 * numbers and in-place error messages
+	 *
+	 * @param log the shader log info.
+	 */
+	private void printDebug(final String log, final String source, final String sourceName) {
+		Log.error(TAG, "Errors in \"" + sourceName + "\":");
+		
+		// stores line number and error message
+		final LinkedHashMap<Integer, ArrayList<String>> errorList = new LinkedHashMap<>();
+
+		// regular expression for extracting error line and message for nearly all devices
+		final String generalExp = "(?:ERROR: )?\\d+:\\(?(\\d+)\\)?: (.+)";
+		final Pattern regExPattern = Pattern.compile(generalExp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+		
+		final Scanner scannerShaderLog = new Scanner(log);
+		while (scannerShaderLog.hasNextLine()) {
+			final String logLine = scannerShaderLog.nextLine();
+			final Matcher regExMatcher = regExPattern.matcher(logLine);
+			if (regExMatcher.find()) {
+
+				final String lineNumberString = regExMatcher.group(1);
+				final String errorString = regExMatcher.group(2);
+				final int lineNumber = Integer.parseInt(lineNumberString);
+
+				if (errorList.containsKey(lineNumber)) {
+					errorList.get(lineNumber).add(errorString);
+
+				} else {
+					final ArrayList<String> stringList = new ArrayList<>();
+					stringList.add(errorString);
+					errorList.put(lineNumber, stringList);
+				}
+			}
+		}
+
+        // format source code
+		final String errorNo = "    ";
+		final String errorYes = "\\->>>>>>";
+		final DecimalFormat numberFormat = new DecimalFormat("0000");
+
+		try (Scanner scannerSourceCode = new Scanner(source)) {
+			int lineNumber = 1;
+			
+			while (scannerSourceCode.hasNextLine()) {
+				final String codeLine = scannerSourceCode.nextLine();
+				String formattedLineNumber = numberFormat.format(lineNumber);
+				final String annotatedLine = formattedLineNumber + errorNo + ": " + codeLine;
+				Log.log(null, annotatedLine);
+				if (errorList.containsKey(lineNumber)) {
+					for (final String string : errorList.get(lineNumber)) {
+						Log.log(null, errorYes + ": " + string);
+					}
+				}
+				
+				lineNumber++;
+			}
+		}
+		System.exit(-1);
 	}
 
 	/**
@@ -427,7 +475,7 @@ public class Shader {
 	 * ensure that this shader is in compiled state
 	 */
 	private void ensureCompiled() {
-		if (!isCompiled() || parametersChanged) {
+		if (!isCompiled() || preprocessor.areParametersDirty()) {
 			compile();
 		}
 	}
@@ -438,7 +486,7 @@ public class Shader {
 	 */
 	private void ensureUpToDate() {
 		ensureCompiled();
-		if (parametersChanged) {
+		if (preprocessor.areParametersDirty()) {
 			compile();
 		}
 	}

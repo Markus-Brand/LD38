@@ -44,8 +44,6 @@ public class GLErrors {
 			GLException ex = new GLException(classTag, message, error);
 			if (abortProgram) {
 				throw ex;
-			} else {
-				ex.printStackTrace();
 			}
 			Log.error(classTag, ex.getMessage());
 			return true;
