@@ -58,7 +58,9 @@ public class BezierCurveRenderable implements IRenderable {
 	@Override
 	public void render(final Shader shader) {
 		shader.use();
-		GL11.glLineWidth(3);
+		float[] width_range = new float[2];
+		GL11.glGetFloatv(GL11.GL_LINE_WIDTH_RANGE, width_range);
+		GL11.glLineWidth(Float.min(width_range[1], 3.0f));
 
 		int modelUniform = shader.getUniform("bernstein");
 
