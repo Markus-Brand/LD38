@@ -45,7 +45,7 @@ public class GLErrors {
 			if (abortProgram) {
 				throw ex;
 			}
-			Log.error(classTag, ex.getMessage());
+			Log.error(classTag, message, ex);
 			return true;
 		}
 	}
