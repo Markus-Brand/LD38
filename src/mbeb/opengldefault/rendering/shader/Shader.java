@@ -213,7 +213,7 @@ public class Shader {
 	public int getUniform(final String name, final boolean logAnError) {
 		ensureCompiled();
 		final int loc = glGetUniformLocation(shaderProgram, name);
-		GLErrors.checkForError(TAG, "glGetUniformLocation");
+		GLErrors.checkForError(TAG, "glGetUniformLocation: " + ((name != null) ? name : "null"));
 		if (logAnError && loc < 0) {
 			Log.error(TAG, "GetUniform failed: " + name);
 		}
