@@ -70,9 +70,21 @@ public class OpenGLContext {
 		createWindow("Test window", false, getVideoWidth(), getVideoHeight());
 		GL.createCapabilities();
 		GLErrors.checkForError(TAG, "createCapabilities");
-
-		System.out.println("OpenGL version: " + GL11.glGetString(GL11.GL_VERSION));
+		
+		printOpenGLInformation();
 		game.init();
+	}
+	
+	private void printOpenGLInformation(){
+		Log.log(TAG, "OpenGL version: " + GL11.glGetString(GL11.GL_VERSION));
+		GLCapabilities capabilities = GL.getCapabilities();
+		Log.log(TAG, "Extensions supported:");
+		int num = GL11.glGetInteger(GL30.GL_NUM_EXTENSIONS);
+
+		for (int i = 0; i < num; i++) {
+			String extension = GL30.glGetStringi(GL11.GL_EXTENSIONS, i);
+			Log.log(TAG, extension);
+		}
 	}
 
 	/**
@@ -230,15 +242,22 @@ public class OpenGLContext {
 	 * @param args command line arguments
 	 */
 	private static void evaluateCommandLineArguments(String[] args) {
-		if (args.length < 2) {
-			Log.initDebug(LogMode.CONSOLE);
-		} else if (args[1].equals("console")) {
-			Log.initDebug(LogMode.CONSOLE);
-		} else if (args[1].equals("logfile")) {
-			Log.initDebug(LogMode.LOGFILE);
-		} else {
-			Log.initDebug(LogMode.NONE);
+		LogMode mode = LogMode.CONSOLE;
+		for (int i = 1; i < args.length; i++) {
+			String arg = args[i];
+			switch (arg) {
+				case "-c":
+					mode = LogMode.CONSOLE;
+					break;
+				case "-f":
+					mode = LogMode.LOGFILE;
+					break;
+				case "-n":
+					mode = LogMode.NONE;
+					break;
+			}
 		}
+		Log.initDebug(mode);
 	}
 
 	public static GLFWVidMode getVidmode() {
