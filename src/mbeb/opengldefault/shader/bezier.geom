@@ -1,4 +1,3 @@
-
 #define MAXV 64
 #define SAMPLES (MAXV - 4)
 layout (lines) in;
@@ -8,12 +7,7 @@ in VS_OUT {
     float progress;
 } gs_in[];
 
-layout (std140) uniform Matrices{	
-	uniform mat4 projection;
-	uniform mat4 view;
-	uniform mat4 projectionView;
-	uniform mat4 skyboxView;
-};
+#include modules/UBO_Matrices
 
 uniform mat4 bezier;
 uniform mat4 bernstein;

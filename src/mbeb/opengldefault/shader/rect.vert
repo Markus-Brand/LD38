@@ -1,12 +1,6 @@
-
 layout (location = 0) in vec2 position; 
 
-
-layout (std140) uniform Matrices{	
-	uniform mat4 projection;
-	uniform mat4 view;
-	uniform mat4 projectionView;
-};
+#include modules/UBO_Matrices.glsl
 
 out vec2 tex;
 
