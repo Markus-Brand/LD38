@@ -200,7 +200,7 @@ public class OpenGLContext {
 		//glfw requires the use of an array (because it uses pointers in C) for getFramebufferSize
 		int[] widthBuffer = new int[1], heightBuffer = new int[1];
 		glfwGetFramebufferSize(window, widthBuffer, heightBuffer);
-		OpenGLContext.framebufferHeight = heightBuffer[0];
+		framebufferHeight = heightBuffer[0];
 		framebufferWidth = widthBuffer[0];
 
 		// Enable v-sync
