@@ -1,10 +1,23 @@
 package mbeb.opengldefault.game;
 
-public interface IGame {
+import mbeb.opengldefault.openglcontext.OpenGLContext;
+
+public abstract class IGame {
+	
+	private OpenGLContext context = null;
+
+	public OpenGLContext getContext() {
+		return context;
+	}
+
+	public void setContext(OpenGLContext context) {
+		this.context = context;
+	}
+	
 	/**
 	 * Init the Game here. The OpenGL context is already created at this Point.
 	 */
-	void init();
+	public abstract void init();
 
 	/**
 	 * Entry Point for the update cycle
@@ -12,15 +25,15 @@ public interface IGame {
 	 * @param deltaTime
 	 *            time that passed since the last update
 	 */
-	void update(double deltaTime);
+	public abstract void update(double deltaTime);
 
 	/**
 	 * Rendering entry point of a update cycle
 	 */
-	void render();
+	public abstract void render();
 
 	/**
 	 * Clear the Game. The game will close after this method is called.
 	 */
-	void clear();
+	public abstract void clear();
 }

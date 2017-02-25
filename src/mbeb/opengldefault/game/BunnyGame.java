@@ -27,7 +27,7 @@ import org.joml.*;
 /**
  * Object to characterize a whole game
  */
-public class BunnyGame implements IGame {
+public class BunnyGame extends IGame {
 	/** Class Name Tag */
 	private static final String TAG = "BunnyGame";
 
@@ -53,7 +53,7 @@ public class BunnyGame implements IGame {
 		}
 		curve = new BezierCurve(controlPoints, ControlPointInputMode.CAMERAPOINTSCIRCULAR, true);
 
-		cam = new Camera();
+		cam = new Camera(getContext().getAspectRatio());
 
 		camEntity = new CameraEntity(cam);
 
@@ -130,7 +130,7 @@ public class BunnyGame implements IGame {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		GLErrors.checkForError(TAG, "glClear");
 
-		glViewport(0, 0, OpenGLContext.getFramebufferWidth(), OpenGLContext.getFramebufferHeight());
+		//glViewport(0, 0, OpenGLContext.getFramebufferWidth(), OpenGLContext.getFramebufferHeight());
 		GLErrors.checkForError(TAG, "glViewport");
 
 		bunnyScene.update(deltaTime);

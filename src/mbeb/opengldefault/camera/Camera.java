@@ -39,13 +39,14 @@ public class Camera implements ICamera {
 	 * Basic Camera Constructor. Sets the projection to a default perspective
 	 * projection and the view to Camera looking from origin along positive z
 	 * direction.
+	 * @param aspectRation the aspect ratio of the camera
 	 */
-	public Camera() {
+	public Camera(float aspectRation) {
 		projection = new Matrix4f();
 		view = new Matrix4f();
 		projectionView = null;
 		float fov = (float) (java.lang.Math.PI / 2.8);
-		projection.perspective(fov, OpenGLContext.getFramebufferWidth() / (float) OpenGLContext.getFramebufferHeight(), 0.1f, 100);
+		projection.perspective(fov, aspectRation, 0.1f, 100);
 
 		view.lookAlong(new Vector3f(0, 0, 1), new Vector3f(0, 1, 0));
 

@@ -48,12 +48,12 @@ public class OpenGLContext {
 	/**
 	 * The actual framebuffer width
 	 */
-	private static int framebufferWidth;
+	private int framebufferWidth;
 
 	/**
 	 * The actual framebuffer height
 	 */
-	private static int framebufferHeight;
+	private int framebufferHeight;
 
 	/*
 	 * Game Object
@@ -85,6 +85,7 @@ public class OpenGLContext {
 		GLErrors.checkForError(TAG, "createCapabilities");
 		
 		printOpenGLInformation();
+		game.setContext(this);
 		game.init();
 	}
 
@@ -198,7 +199,8 @@ public class OpenGLContext {
 		glfwMakeContextCurrent(window);
 
 		//glfw requires the use of an array (because it uses pointers in C) for getFramebufferSize
-		int[] widthBuffer = new int[1], heightBuffer = new int[1];
+		int[] widthBuffer = new int[1];
+		int[] heightBuffer = new int[1];
 		glfwGetFramebufferSize(window, widthBuffer, heightBuffer);
 		framebufferHeight = heightBuffer[0];
 		framebufferWidth = widthBuffer[0];
@@ -272,6 +274,8 @@ public class OpenGLContext {
 				case OPTION_LOG_NONE:
 					mode = LogMode.NONE;
 					break;
+				default:
+					Log.log(TAG, "Unknown argument: " + arg);
 			}
 		}
 		Log.initDebug(mode);
@@ -289,11 +293,15 @@ public class OpenGLContext {
 		return vidmode.height();
 	}
 
-	public static int getFramebufferWidth() {
+	public int getFramebufferWidth() {
 		return framebufferWidth;
 	}
 
-	public static int getFramebufferHeight() {
+	public int getFramebufferHeight() {
 		return framebufferHeight;
+	}
+
+	public float getAspectRatio() {
+		return getFramebufferWidth() / (float) getFramebufferHeight();
 	}
 }
