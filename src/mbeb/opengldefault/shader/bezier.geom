@@ -7,7 +7,7 @@ in VS_OUT {
     float progress;
 } gs_in[];
 
-#include modules/UBO_Matrices
+#include modules/UBO_Matrices.glsl
 
 uniform mat4 bezier;
 uniform mat4 bernstein;
