@@ -81,14 +81,14 @@ public class TextureCache {
 	 */
 	private static BufferedImage loadBufferedImage(String path) {
 		InputStream in = ClassLoader.getSystemResourceAsStream("textures/" + path);
-		BufferedImage img = null;
+		BufferedImage image = null;
 		try {
-			img = ImageIO.read(in);
+			image = ImageIO.read(in);
 		} catch(IOException e) {
 			Log.error(TAG, "Unable to Load Texture: " + path, e);
 			e.printStackTrace();
 		}
-		return img;
+		return image;
 	}
 
 	/**
