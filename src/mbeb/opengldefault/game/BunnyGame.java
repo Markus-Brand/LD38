@@ -125,19 +125,19 @@ public class BunnyGame extends IGame {
 		followingBunny4.update(deltaTime);
 		camEntity.update(deltaTime);
 
-		glClearColor(0.05f, 0.075f, 0.075f, 1);
-		GLErrors.checkForError(TAG, "glClearColor");
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		GLErrors.checkForError(TAG, "glClear");
-
-		//glViewport(0, 0, OpenGLContext.getFramebufferWidth(), OpenGLContext.getFramebufferHeight());
-		GLErrors.checkForError(TAG, "glViewport");
-
 		bunnyScene.update(deltaTime);
 	}
 
 	@Override
 	public void render() {
+		glClearColor(0.05f, 0.075f, 0.075f, 1);
+		GLErrors.checkForError(TAG, "glClearColor");
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		GLErrors.checkForError(TAG, "glClear");
+
+		glViewport(0, 0, getContext().getFramebufferWidth(), getContext().getFramebufferHeight());
+		GLErrors.checkForError(TAG, "glViewport");
+		
 		bunnyScene.render(true); //bunnyScene.render(); to render without BoundingBoxes
 	}
 
