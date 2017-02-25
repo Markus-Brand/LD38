@@ -61,11 +61,12 @@ public class Camera implements ICamera {
 	}
 
 	private void updateView() {
-		Matrix4f view = new Matrix4f();
+		Matrix4f newView = new Matrix4f();
 
-		view.lookAt(getPosition(), getPosition().add(getViewDirection(), new Vector3f()), new Vector3f(0, 1, 0));
+		Vector3f lookCenter = getPosition().add(getViewDirection(), new Vector3f());
+		newView.lookAt(getPosition(), lookCenter, new Vector3f(0, 1, 0));
 
-		setView(view);
+		setView(newView);
 
 		updateUniformBlock();
 	}

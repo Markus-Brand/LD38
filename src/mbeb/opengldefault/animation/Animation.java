@@ -9,7 +9,7 @@ import org.lwjgl.assimp.*;
  */
 public class Animation {
 
-	private static final float keyFrameMergeTolerance = 0.01f;
+	private static final float KEY_FRAME_MERGE_TOLERANCE = 0.01f;
 
 	private List<KeyFrame> keyFrames;
 	private String name;
@@ -79,7 +79,7 @@ public class Animation {
 
 	public void mergeKeyFrame(KeyFrame newOne) {
 		for (KeyFrame k : getKeyFrames()) {
-			if (Math.abs(k.getTimeStamp() - newOne.getTimeStamp()) <= keyFrameMergeTolerance) {
+			if (Math.abs(k.getTimeStamp() - newOne.getTimeStamp()) <= KEY_FRAME_MERGE_TOLERANCE) {
 				k.mergeWith(newOne);
 				return;
 			}
@@ -96,7 +96,7 @@ public class Animation {
 	 * @return {before, after}
 	 */
 	public KeyFrame[] getBeforeAndAfter(double timeStamp) {
-		//todo binary search for performance
+		//todo maybe binary search for performance
 
 		KeyFrame before = null;
 		KeyFrame after;
