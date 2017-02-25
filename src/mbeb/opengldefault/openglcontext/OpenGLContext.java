@@ -80,7 +80,6 @@ public class OpenGLContext {
 	 */
 	private void printOpenGLInformation(){
 		Log.log(TAG, "OpenGL version: " + GL11.glGetString(GL11.GL_VERSION));
-		GLCapabilities capabilities = GL.getCapabilities();
 		Log.log(TAG, "Extensions supported:");
 		int num = GL11.glGetInteger(GL30.GL_NUM_EXTENSIONS);
 
