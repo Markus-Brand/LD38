@@ -8,6 +8,7 @@ import java.nio.*;
 
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.openglcontext.*;
+import mbeb.opengldefault.rendering.shader.*;
 
 import org.joml.*;
 import org.lwjgl.*;
@@ -98,7 +99,7 @@ public abstract class Camera implements ICamera {
 			GLErrors.checkForError(TAG, "glBindBuffer");
 			glBufferData(GL_UNIFORM_BUFFER, 256, GL_DYNAMIC_DRAW);
 			GLErrors.checkForError(TAG, "glBufferData");
-			glBindBufferBase(GL_UNIFORM_BUFFER, 1, UBO);
+			glBindBufferBase(GL_UNIFORM_BUFFER, UBOManager.getInstance().getUBOID(UBOManager.MATRICES), UBO);
 			GLErrors.checkForError(TAG, "glBindBufferBase");
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 

@@ -29,6 +29,8 @@ public class BunnyGame implements IGame {
 	protected ICamera cam;
 	Scene bunnyScene;
 	PointLight pl;
+	DirectionalLight dl;
+	SpotLight sl;
 	double timepassed = 0;
 
 	BezierCurve curve;
@@ -48,7 +50,6 @@ public class BunnyGame implements IGame {
 		curve = new BezierCurve(controlPoints, ControlPointInputMode.CameraPointsCircular, true);
 
 		cam = new FirstPersonCamera(new Vector3f(), new Vector3f());
-
 		final Skybox skybox = new Skybox("skybox/mountain");
 
 		bunnyScene = new Scene(cam, skybox);
@@ -61,16 +62,21 @@ public class BunnyGame implements IGame {
 		//bonePhongShader.addUniformBlockIndex(1, "Matrices");
 
 		final Shader curveShader = new Shader("bezier.vert", "bezier.frag", "bezier.geom");
-		curveShader.addUniformBlockIndex(1, "Matrices");
+		curveShader.addUniformBlockIndex(UBOManager.MATRICES);
 		curveShader.setDrawMode(GL_LINES);
 
 		final Shader defaultShader = new Shader("basic.vert", "basic.frag");
-		defaultShader.addUniformBlockIndex(1, "Matrices");
+		defaultShader.addUniformBlockIndex(UBOManager.MATRICES);
 		bunnyScene.getLightManager().addShader(defaultShader);
 
 		final Random r = new Random();
 		pl = new PointLight(new Vector3f(0, 1, 0), new Vector3f(0, 10, 0), 300);
 		bunnyScene.getLightManager().addLight(pl);
+		dl = new DirectionalLight(new Vector3f(0, 1, 0), new Vector3f(0, 1, 0));
+		bunnyScene.getLightManager().addLight(dl);
+		sl = new SpotLight(new Vector3f(1, 0, 0), new Vector3f(10, 0, 0), new Vector3f(-1, 0, 0), 1, 2, 500);
+		bunnyScene.getLightManager().addLight(sl);
+
 		//cowboy = new SceneObject(tm, new Matrix4f(), null);
 		//cowboy.setShader(bonePhongShader);
 
@@ -103,7 +109,9 @@ public class BunnyGame implements IGame {
 
 		glViewport(0, 0, OpenGLContext.getWidth(), OpenGLContext.getHeight());
 		GLErrors.checkForError(TAG, "glViewport");
-
+		if (timepassed > 5) {
+			dl.remove();
+		}
 		pl.setColor(new Color((float) java.lang.Math.sin(timepassed) / 2 + 0.5f, (float) 1.0, (float) java.lang.Math.cos(timepassed) / 2 + 0.5f));
 		pl.setPosition(new Vector3f((float) java.lang.Math.sin(timepassed) * 5, 10, (float) java.lang.Math.cos(timepassed) * 5));
 

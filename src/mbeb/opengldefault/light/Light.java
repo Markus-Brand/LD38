@@ -12,6 +12,7 @@ public abstract class Light {
 
 	protected Vector3f color;
 	private boolean dirty = true; //TODO: check whether true or false is better
+	private boolean markedForRemoving = false;
 
 	public Light(final Vector3f color) {
 		setColor(color);
@@ -54,4 +55,17 @@ public abstract class Light {
 	public void setClean() {
 		this.dirty = false;
 	}
+
+	public boolean shouldBeRemoved() {
+		return markedForRemoving;
+	}
+
+	public void remove() {
+		markedForRemoving = true;
+	}
+
+	public void cancelRemove() {
+		markedForRemoving = false;
+	}
+
 }

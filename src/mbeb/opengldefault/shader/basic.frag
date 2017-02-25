@@ -9,7 +9,7 @@ out vec4 color;
 uniform sampler2D u_texture;
 
 //size 32
-struct DirLight{
+struct DirectionalLight{
 	vec3 direction;
 	vec3 color;
 };
@@ -25,7 +25,7 @@ struct PointLight{
 	float quadratic;
 };
 
-//size 80 *** actually 64
+//size 64
 struct SpotLight{
 	vec3 position;
 	vec3 direction;
@@ -43,26 +43,32 @@ float ambientStrength = 0.04f;
 float specularStrength = 2.5f;
 float reflectionStrength = 0.4f;
 
-layout (std140) uniform Lights{	
+layout (std140) uniform DirectionalLightBlock{	
     int numDirectionalLights;
-    int numPointLights;
-    int numSpotLights;
     
-    DirLight[
+    DirectionalLight[
 	#if DIRECTIONAL_LIGHT_CAPACITY == 0
 	1
 	#else
 	DIRECTIONAL_LIGHT_CAPACITY
 	#endif
-	] dirLights;
-	
-	PointLight[
+	] directionalLights;
+};
+
+layout (std140) uniform PointLightBlock{	
+    int numPointLights;
+    
+    PointLight[
 	#if POINT_LIGHT_CAPACITY == 0
 	1
 	#else
 	POINT_LIGHT_CAPACITY
 	#endif
 	] pointLights;
+};
+
+layout (std140) uniform SpotLightBlock{
+    int numSpotLights;
     
     SpotLight[
 	#if SPOT_LIGHT_CAPACITY == 0
@@ -83,8 +89,8 @@ uniform float time;
 
 uniform int water;
 
-vec3 calcDirectionalLight(DirLight light, vec3 norm, vec3 viewDir);
-vec3 calcPointLight(PointLight pl, vec3 norm, vec3 viewDir);
+vec3 calcDirectionalLight(DirectionalLight light, vec3 norm, vec3 viewDir);
+vec3 calcPointLight(PointLight light, vec3 norm, vec3 viewDir);
 vec3 calcSpotLight(SpotLight light, vec3 norm, vec3 viewDir);
 
 vec3 calcNormal(vec3 normalIn, vec3 fragPos){
@@ -112,7 +118,7 @@ void main(){
 	}
 	
 	for(int i = 0; i < numDirectionalLights; i++){
-		result += calcDirectionalLight(dirLights[i], norm, viewDir);
+		result += calcDirectionalLight(directionalLights[i], norm, viewDir);
 	}
 	
 	for(int i = 0; i < numSpotLights; i++){
@@ -153,7 +159,7 @@ void main(){
 	*/
 }
 
-vec3 calcDirectionalLight(DirLight light, vec3 norm, vec3 viewDir){	
+vec3 calcDirectionalLight(DirectionalLight light, vec3 norm, vec3 viewDir){	
 	vec3 direction = normalize(-light.direction);
 
 	float diff = max(dot(norm, direction), 0.0);

@@ -185,9 +185,10 @@ public class Shader {
 	 * @param index
 	 * @param name
 	 */
-	public void addUniformBlockIndex(final int index, final String name) {
-		uniformBlocks.put(index, name);
-		setUniformBlockIndex(index, name);
+	public void addUniformBlockIndex(final String UBOName) {
+		final int index = UBOManager.getInstance().getUBOID(UBOName);
+		uniformBlocks.put(index, UBOName);
+		setUniformBlockIndex(index, UBOName);
 	}
 
 	/**
