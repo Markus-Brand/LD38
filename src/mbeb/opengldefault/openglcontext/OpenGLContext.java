@@ -23,6 +23,19 @@ public class OpenGLContext {
 	private static final String TAG = "OpenGLContext";
 
 	/**
+	 * Console option constant to switch to console logging
+	 */
+	private static final String OPTION_LOG_CONSOLE = "-c";
+	/**
+	 * Console option constant to switch to file logging
+	 */
+	private static final String OPTION_LOG_FILE = "-f";
+	/**
+	 * Console option constant to turn off logging
+	 */
+	private static final String OPTION_LOG_NONE = "-n";
+
+	/**
 	 * The created window Object
 	 */
 	private long window;
@@ -35,12 +48,12 @@ public class OpenGLContext {
 	/**
 	 * The actual framebuffer width
 	 */
-	private static int width;
+	private static int framebufferWidth;
 
 	/**
 	 * The actual framebuffer height
 	 */
-	private static int height;
+	private static int framebufferHeight;
 
 	/*
 	 * Game Object
@@ -61,13 +74,13 @@ public class OpenGLContext {
 	/**
 	 * Init the OpenGL context
 	 *
-	 * @param args
+	 * @param args The command line arguments
 	 */
 	private void init(String[] args) {
 		evaluateCommandLineArguments(args);
 		initOpenGL();
 
-		createWindow("Test window", false, getVideoWidth(), getVideoHeight());
+		createWindow("Test window", false, getVideoModeWidth(), getVideoModeHeight());
 		GL.createCapabilities();
 		GLErrors.checkForError(TAG, "createCapabilities");
 		
@@ -136,8 +149,8 @@ public class OpenGLContext {
 	 *
 	 * @param title windows title
 	 * @param fullscreen is the window fullscreen?
-	 * @param width window width
-	 * @param height window height
+	 * @param width window framebufferWidth
+	 * @param height window framebufferHeight
 	 */
 	private void createWindow(String title, boolean fullscreen, int width, int height) {
 		// Create the window
@@ -163,9 +176,7 @@ public class OpenGLContext {
 
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-		glfwSetCursorPosCallback(window, (window, xPos, yPos) -> {
-			Mouse.setPos(xPos, yPos);
-		});
+		glfwSetCursorPosCallback(window, (window, xPos, yPos) -> Mouse.setPos(xPos, yPos));
 
 		glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
 			if (action == GLFW_PRESS) {
@@ -186,10 +197,11 @@ public class OpenGLContext {
 		// Make the OpenGL context current
 		glfwMakeContextCurrent(window);
 
-		int[] widthp = new int[1], heightp = new int[1];
-		glfwGetFramebufferSize(window, widthp, heightp);
-		OpenGLContext.height = heightp[0];
-		OpenGLContext.width = widthp[0];
+		//glfw requires the use of an array (because it uses pointers in C) for getFramebufferSize
+		int[] widthBuffer = new int[1], heightBuffer = new int[1];
+		glfwGetFramebufferSize(window, widthBuffer, heightBuffer);
+		OpenGLContext.framebufferHeight = heightBuffer[0];
+		framebufferWidth = widthBuffer[0];
 
 		// Enable v-sync
 		//glfwSwapInterval(1);
@@ -230,7 +242,10 @@ public class OpenGLContext {
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+		//OS X only supports forward compatible contexts if version > 3.2
+		if (System.getProperty("os.name").toLowerCase().contains("os x")) {
+			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+		}
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_RED_BITS, vidmode.redBits());
 		glfwWindowHint(GLFW_GREEN_BITS, vidmode.greenBits());
@@ -248,13 +263,13 @@ public class OpenGLContext {
 		for (int i = 1; i < args.length; i++) {
 			String arg = args[i];
 			switch (arg) {
-				case "-c":
+				case OPTION_LOG_CONSOLE:
 					mode = LogMode.CONSOLE;
 					break;
-				case "-f":
+				case OPTION_LOG_FILE:
 					mode = LogMode.LOGFILE;
 					break;
-				case "-n":
+				case OPTION_LOG_NONE:
 					mode = LogMode.NONE;
 					break;
 			}
@@ -266,19 +281,19 @@ public class OpenGLContext {
 		return vidmode;
 	}
 
-	public static int getVideoWidth() {
+	public static int getVideoModeWidth() {
 		return vidmode.width();
 	}
 
-	public static int getVideoHeight() {
+	public static int getVideoModeHeight() {
 		return vidmode.height();
 	}
 
-	public static int getWidth() {
-		return width;
+	public static int getFramebufferWidth() {
+		return framebufferWidth;
 	}
 
-	public static int getHeight() {
-		return height;
+	public static int getFramebufferHeight() {
+		return framebufferHeight;
 	}
 }
