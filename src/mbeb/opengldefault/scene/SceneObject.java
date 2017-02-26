@@ -30,13 +30,6 @@ public class SceneObject implements BoundingBox.Owner {
 
 	/**
 	 * Create a new sceneObject. All parameters are optional
-	 *
-	 * @param renderable
-	 *            none
-	 * @param transformation
-	 *            identity
-	 * @param subObjects
-	 *            empty collection
 	 */
 	public SceneObject() {
 		this(null, new Matrix4f(), null);
@@ -248,13 +241,21 @@ public class SceneObject implements BoundingBox.Owner {
 	 */
 	private void adjustBoundingBoxFor(SceneObject object) {
 		if (box == null) {
-			box = new BoundingBox.Empty(getTransformation().asMatrix());
+			box = getRenderableBoundingBox();
 		}
 		box = box.unionWith(object.getBoundingBox());
 	}
 
 	//</editor-fold>
 
+	
+	public BoneTransformation getParentGlobalTranform() {
+		if (parent == null) {
+			return BoneTransformation.identity();
+		}
+		return parent.getGLobalTransformation();
+	}
+	
 	/**
 	 * Getter for the global Transformation
 	 *
@@ -264,7 +265,7 @@ public class SceneObject implements BoundingBox.Owner {
 		if (parent == null) {
 			return getTransformation();
 		} else {
-			return parent.getGLobalTransformation().and(getTransformation());
+			return getParentGlobalTranform().and(getTransformation());
 		}
 
 	}
