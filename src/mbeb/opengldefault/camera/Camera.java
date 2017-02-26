@@ -7,12 +7,15 @@ import static org.lwjgl.opengl.GL31.*;
 import java.nio.*;
 
 import mbeb.opengldefault.logging.*;
-import mbeb.opengldefault.openglcontext.*;
 
 import org.joml.*;
 import org.lwjgl.*;
 
 public class Camera implements ICamera {
+	
+	public static final float FOV = (float) (java.lang.Math.PI / 2.8);
+	public static final float NEAR_PLANE = 0.1f;
+	public static final float FAR_PLANE = 1000;
 
 	/** Class Name Tag */
 	private static final String TAG = "Camera";
@@ -45,8 +48,7 @@ public class Camera implements ICamera {
 		projection = new Matrix4f();
 		view = new Matrix4f();
 		projectionView = null;
-		float fov = (float) (java.lang.Math.PI / 2.8);
-		projection.perspective(fov, aspectRation, 0.1f, 100);
+		projection.perspective(FOV, aspectRation, NEAR_PLANE, FAR_PLANE);
 
 		view.lookAlong(new Vector3f(0, 0, 1), new Vector3f(0, 1, 0));
 

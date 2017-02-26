@@ -58,13 +58,13 @@ public class OpenGLContext {
 	/*
 	 * Game Object
 	 */
-	private IGame game;
+	private Game game;
 
 	/**
 	 * Constructor of the Main class It initializes a new Window, then starts
 	 * the main loop and cleans when the window is closed
 	 */
-	public OpenGLContext(IGame game, String[] args) {
+	public OpenGLContext(Game game, String[] args) {
 		this.game = game;
 		init(args);
 		loop();

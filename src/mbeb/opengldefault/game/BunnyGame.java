@@ -27,7 +27,7 @@ import org.joml.*;
 /**
  * Object to characterize a whole game
  */
-public class BunnyGame extends IGame {
+public class BunnyGame extends Game {
 	/** Class Name Tag */
 	private static final String TAG = "BunnyGame";
 

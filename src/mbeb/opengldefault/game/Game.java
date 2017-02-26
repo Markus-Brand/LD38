@@ -2,7 +2,7 @@ package mbeb.opengldefault.game;
 
 import mbeb.opengldefault.openglcontext.OpenGLContext;
 
-public abstract class IGame {
+public abstract class Game {
 	
 	private OpenGLContext context = null;
 
