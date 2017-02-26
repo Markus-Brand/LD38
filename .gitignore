@@ -1,4 +1,5 @@
 bin/
+libs/
 *.log
 log/
 .classpath

@@ -138,10 +138,6 @@ public class BoneTransformation {
 		this.position = position;
 	}
 
-	public void setPosition(Vector4f position) {
-		setPosition(new Vector3f(position.x / position.w, position.y / position.w, position.z / position.w));
-	}
-
 	public Quaternionf getRotation() {
 		return rotation;
 	}

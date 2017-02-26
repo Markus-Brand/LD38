@@ -41,8 +41,7 @@ public class BezierCurveRenderable implements IRenderable {
 	 */
 	private BoundingBox generateBoundingBox() {
 		final Vector3f curveStart = curve.getControlPoints().get(0);
-		float minX = curveStart.x, minY = curveStart.y, minZ = curveStart.z, maxX = curveStart.x, maxY = curveStart.y, maxZ =
-				curveStart.z;
+		float minX = curveStart.x, minY = curveStart.y, minZ = curveStart.z, maxX = curveStart.x, maxY = curveStart.y, maxZ = curveStart.z;
 
 		for (final Vector3f curvePoint : curve.getControlPoints()) {
 			minX = java.lang.Math.min(minX, curvePoint.x);
@@ -82,9 +81,5 @@ public class BezierCurveRenderable implements IRenderable {
 	@Override
 	public BoundingBox getBoundingBox() {
 		return renderable.getBoundingBox();
-	}
-
-	public BezierCurve getCurve() {
-		return curve;
 	}
 }

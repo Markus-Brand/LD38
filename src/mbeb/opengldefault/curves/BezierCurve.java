@@ -378,17 +378,6 @@ public class BezierCurve {
 	 * @return resulting position
 	 */
 	public Vector3f getPosition(final float progress) {
-		return getPosition(progress, new Matrix4f());
-	}
-
-	/**
-	 * Get Position of the Curve with given progress
-	 *
-	 * @param progress
-	 *            total progress on the curve
-	 * @return resulting position
-	 */
-	public Vector3f getPosition(final float progress, final Matrix4f modelTransform) {
 		int segmentID = 0;
 		float progressInFragment = 0;
 		float aggregatedSegmentLength = 0;
@@ -402,10 +391,7 @@ public class BezierCurve {
 				aggregatedSegmentLength += lengthOfThisFragment;
 			}
 		}
-		Vector3f localResult = calculateSegmentPosition(segmentID, progressInFragment);
-		Vector4f transformed = modelTransform.transform(new Vector4f(localResult, 1));
-		System.out.println("sampling: " + modelTransform);
-		return new Vector3f(transformed.x, transformed.y, transformed.z);
+		return calculateSegmentPosition(segmentID, progressInFragment);
 	}
 
 	/**

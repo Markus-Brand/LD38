@@ -117,10 +117,6 @@ public class SceneObject {
 		return transformation;
 	}
 
-	public void setTransformation(BoneTransformation transformation) {
-		this.transformation = transformation;
-	}
-
 	/**
 	 * add SubObjects via addSubObject instead
 	 *
@@ -252,19 +248,12 @@ public class SceneObject {
 	 */
 	private void adjustBoundingBoxFor(SceneObject object) {
 		if (box == null) {
-			box = getRenderableBoundingBox();
+			box = new BoundingBox.Empty(getTransformation().asMatrix());
 		}
 		box = box.unionWith(object.getBoundingBox());
 	}
 
 	//</editor-fold>
-
-	public BoneTransformation getParentGlobalTranform() {
-		if (parent == null) {
-			return BoneTransformation.identity();
-		}
-		return parent.getGLobalTransformation();
-	}
 
 	/**
 	 * Getter for the global Transformation
@@ -272,7 +261,12 @@ public class SceneObject {
 	 * @return global Transformation
 	 */
 	public BoneTransformation getGLobalTransformation() {
-		return getParentGlobalTranform().and(getTransformation());
+		if (parent == null) {
+			return getTransformation();
+		} else {
+			return parent.getGLobalTransformation().and(getTransformation());
+		}
+
 	}
 
 	/**

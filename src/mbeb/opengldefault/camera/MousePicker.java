@@ -52,22 +52,17 @@ public class MousePicker {
 		return new Vector4f(eyeSpaceCoordinates.x, eyeSpaceCoordinates.y, -1, 0);
 	}
 
-	public void searchBBs(SceneObject currentObject, Matrix4f parentTransform) {
+	public void searchBBs(SceneObject sceneGraph) {
 		if (ray == null || camera.getPosition() == null) {
-			System.out.println(ray + " " + camera.getPosition());
 			return;
 		}
-
-		if (currentObject.getBoundingBox().intersectsRay(camera.getPosition(), ray, parentTransform)) {
-			currentObject.getBoundingBox().setColor(new Vector3f(1, 0, 0));
+		if (sceneGraph.getBoundingBox().intersectsRay(camera.getPosition(), ray)) {
+			sceneGraph.getBoundingBox().setColor(new Vector3f(1, 0, 0));
 		} else {
-			currentObject.getBoundingBox().setColor(new Vector3f(0, 1, 0));
+			sceneGraph.getBoundingBox().setColor(new Vector3f(0, 1, 0));
 		}
-
-		final Matrix4f transform = parentTransform.mul(currentObject.getTransformation().asMatrix(), new Matrix4f());
-
-		for (SceneObject child : currentObject.getSubObjects()) {
-			searchBBs(child, transform);
+		for (SceneObject child : sceneGraph.getSubObjects()) {
+			searchBBs(child);
 		}
 	}
 }

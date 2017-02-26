@@ -4,7 +4,6 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.util.*;
 
-import mbeb.opengldefault.animation.BoneTransformation;
 import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.curves.*;
 import mbeb.opengldefault.curves.BezierCurve.ControlPointInputMode;
@@ -83,10 +82,7 @@ public class BunnyGame implements IGame {
 		followingBunny3 = new SceneEntity(bunny3);
 		followingBunny4 = new SceneEntity(bunny4);
 
-		curveObj = new SceneObject(new BezierCurveRenderable(curve));
-		curveObj.setShader(curveShader);
-
-		mainBunny.addBehaviour(1, new BezierBehaviour(curveObj, 10));
+		mainBunny.addBehaviour(1, new BezierBehaviour(curve, 10));
 
 		followingBunny1.addBehaviour(1, new LimitedDistanceBehaviour(new FollowingBehaviour(mainBunny, 3f), 5));
 		followingBunny1.addBehaviour(2, new FollowingBehaviour(mainBunny, 7.6f));
@@ -102,6 +98,9 @@ public class BunnyGame implements IGame {
 
 		camEntity.addBehaviour(1, new PlayerControlBehaviour());
 
+		curveObj = new SceneObject(new BezierCurveRenderable(curve));
+		curveObj.setShader(curveShader);
+
 		bunnyScene.getSceneGraph().addSubObject(bunny0);
 		bunnyScene.getSceneGraph().addSubObject(bunny1);
 		bunnyScene.getSceneGraph().addSubObject(bunny2);
@@ -111,10 +110,6 @@ public class BunnyGame implements IGame {
 
 		bunnyScene.getSceneGraph().setShader(defaultShader);
 
-		//bunnyScene.getSceneGraph().getTransformation().setPosition(new Vector3f(11, 0, 0));
-		//bunnyScene.getSceneGraph().getTransformation().
-		curveObj.setTransformation(
-				new BoneTransformation(new Matrix4f().scale(1, 0.1f, 1).rotate(0.1f, 0, 1, 0)));
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 	}
@@ -127,7 +122,7 @@ public class BunnyGame implements IGame {
 		followingBunny1.update(deltaTime);
 		followingBunny2.update(deltaTime);
 		followingBunny3.update(deltaTime);
-		followingBunny4.update(deltaTime);
+		//followingBunny4.update(deltaTime);
 		camEntity.update(deltaTime);
 
 		glClearColor(0.05f, 0.075f, 0.075f, 1);
