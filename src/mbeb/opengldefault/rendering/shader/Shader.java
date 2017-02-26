@@ -397,23 +397,24 @@ public class Shader {
 		final String generalExp = "(?:ERROR: )?\\d+:\\(?(\\d+)\\)?: (.+)";
 		final Pattern regExPattern = Pattern.compile(generalExp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 		
-		final Scanner scannerShaderLog = new Scanner(log);
-		while (scannerShaderLog.hasNextLine()) {
-			final String logLine = scannerShaderLog.nextLine();
-			final Matcher regExMatcher = regExPattern.matcher(logLine);
-			if (regExMatcher.find()) {
-
-				final String lineNumberString = regExMatcher.group(1);
-				final String errorString = regExMatcher.group(2);
-				final int lineNumber = Integer.parseInt(lineNumberString);
-
-				if (errorList.containsKey(lineNumber)) {
-					errorList.get(lineNumber).add(errorString);
-
-				} else {
-					final ArrayList<String> stringList = new ArrayList<>();
-					stringList.add(errorString);
-					errorList.put(lineNumber, stringList);
+		try (Scanner scannerShaderLog = new Scanner(log)) {
+			while (scannerShaderLog.hasNextLine()) {
+				final String logLine = scannerShaderLog.nextLine();
+				final Matcher regExMatcher = regExPattern.matcher(logLine);
+				if (regExMatcher.find()) {
+					
+					final String lineNumberString = regExMatcher.group(1);
+					final String errorString = regExMatcher.group(2);
+					final int lineNumber = Integer.parseInt(lineNumberString);
+					
+					if (errorList.containsKey(lineNumber)) {
+						errorList.get(lineNumber).add(errorString);
+						
+					} else {
+						final ArrayList<String> stringList = new ArrayList<>();
+						stringList.add(errorString);
+						errorList.put(lineNumber, stringList);
+					}
 				}
 			}
 		}
@@ -440,7 +441,7 @@ public class Shader {
 				lineNumber++;
 			}
 		}
-		System.exit(-1);
+		throw new RuntimeException("Non-compilable shader code!");
 	}
 
 	/**
