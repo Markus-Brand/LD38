@@ -2,30 +2,21 @@ in vec2 tex;
 in vec3 pos;
 in vec3 normal;
 
-#define SHININESS 64
-
-//size 48
-struct PointLight{
-	vec3 position;
-
-	vec3 color;
-
-	float constant;
-	float linear;
-	float quadratic;
-};
+#define SHININESS 16
 
 out vec4 color;
 
 uniform sampler2D u_texture;
 
-float ambientStrength = 0.1f;
-float specularStrength = 2.5f;
-float reflectionStrength = 0.4f;
+const float ambientStrength = 0.1f;
+const float specularStrength = 2.5f;
+const float reflectionStrength = 0.4f;
 
 uniform vec3 viewPos;
 
-vec3 calcPointLight(PointLight pl, vec3 norm, vec3 viewDir);
+#include modules/PointLight.glsl
+vec3 calcPointLight(const in PointLight light, const in vec3 norm, const in vec3 viewDir, const in vec3 fragmentPos, const in float specularStrength);
+
 
 void main(){ 
 	vec3 norm = normalize(normal);	
@@ -41,7 +32,7 @@ void main(){
 	light.linear = 0;
 	light.quadratic = 0;
 
-	result += calcPointLight(light, norm, viewDir);
+	result += calcPointLight(light, norm, viewDir, pos, specularStrength);
 	
 	vec3 ambient = ambientStrength * vec3(texture(u_texture, tex));
 
@@ -49,25 +40,4 @@ void main(){
 	
 	vec4 texColor = vec4(result, 1);
 	color = texColor;
-}
-
-vec3 calcPointLight(PointLight light, vec3 norm, vec3 viewDir){
-	vec3 direction = light.position - pos;
-
-	float distance = length(direction);
-	direction = normalize(direction);
-
-	float diff = max(dot(norm, direction), 0.0);
-	vec3 diffuse = diff * light.color;
-
-	vec3 halfwayDir = normalize(direction + viewDir);
-	float spec = pow(max(dot(norm, halfwayDir), 0.0f), SHININESS);
-	vec3 specular = specularStrength * spec * light.color;
-	
-	float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic * distance * distance);
-
-	diffuse  *= attenuation;
-	specular *= attenuation;  
-
-	return vec3(texture(u_texture, tex)) * diffuse + vec3(texture(u_texture, tex)) * specular;
 }

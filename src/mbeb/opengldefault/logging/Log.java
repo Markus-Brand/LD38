@@ -38,9 +38,11 @@ public class Log {
 				e1.printStackTrace();
 			}
 			try {
-				logFile.createNewFile();
+				if (!logFile.createNewFile()) {
+					Log.error(TAG, "cannot create logging File");
+				}
 			} catch(IOException e) {
-				e.printStackTrace();
+				Log.error(TAG, "Error creating logging file", e);
 			}
 		}
 	}
@@ -75,17 +77,29 @@ public class Log {
 
 	/**
 	 * error message
-	 *
-	 * @param message
-	 *            the object (mostly Strings) being logged
+     * @param tag
+     * @param obj
 	 */
 	public static void error(String tag, Object obj) {
+        error(tag, obj, null);
+	}
+	/**
+	 * error message
+     * @param tag
+     * @param obj
+     * @param t
+	 */
+	public static void error(String tag, Object obj, Throwable t) {
 		if (logMode == LogMode.NONE) {
 			return;
 		}
-		String log = constructErrorMessage(obj, "ERR: ", tag);
+        Object toLog = (t == null ? obj : (obj.toString() + " (" + t.getLocalizedMessage() + ")"));
+		String log = constructErrorMessage(toLog, "ERR: ", tag);
 		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
+			if (t != null) {
+				t.printStackTrace();
+			}
 		} else {
 			writer.println(log);
 			writer.flush();
@@ -98,7 +112,9 @@ public class Log {
 		Date today = Calendar.getInstance().getTime();
 		String log = df.format(today);
 		log += info;
-		log += "In class " + tag + ": ";
+		if (tag != null) {
+			log += "In class " + tag + ": ";
+		}
 		log += message;
 		return log;
 	}
