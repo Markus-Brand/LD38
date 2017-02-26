@@ -6,7 +6,7 @@
 
 #include modules/Attenuation.glsl
 
-vec3 calcPointLight(PointLight light, vec3 norm, vec3 viewDir, vec3 fragmentPos, float specularStrength){
+vec3 calcPointLight(const in PointLight light, const in vec3 norm, const in vec3 viewDir, const in vec3 fragmentPos, const in float specularStrength){
 	vec3 fragToLight = light.position - fragmentPos;
 
 	float lightDistance = length(fragToLight);

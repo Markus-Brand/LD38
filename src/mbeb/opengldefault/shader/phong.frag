@@ -8,14 +8,14 @@ out vec4 color;
 
 uniform sampler2D u_texture;
 
-float ambientStrength = 0.1f;
-float specularStrength = 2.5f;
-float reflectionStrength = 0.4f;
+const float ambientStrength = 0.1f;
+const float specularStrength = 2.5f;
+const float reflectionStrength = 0.4f;
 
 uniform vec3 viewPos;
 
 #include modules/PointLight.glsl
-vec3 calcPointLight(PointLight light, vec3 norm, vec3 viewDir, vec3 fragmentPos);
+vec3 calcPointLight(const in PointLight light, const in vec3 norm, const in vec3 viewDir, const in vec3 fragmentPos, const in float specularStrength);
 
 
 void main(){ 
