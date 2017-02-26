@@ -5,6 +5,7 @@ import java.util.*;
 import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.scene.*;
+import org.joml.Matrix4f;
 
 /**
  * a mesh that has a skeleton
@@ -30,6 +31,10 @@ public class AnimatedMesh implements IRenderable {
 		mesh.render(shader);
 	}
 
+	public VAORenderable getMesh() {
+		return mesh;
+	}
+
 	public List<Animation> getAnimations() {
 		if (animations == null) {
 			animations = new ArrayList<>();
@@ -48,9 +53,8 @@ public class AnimatedMesh implements IRenderable {
 
 	/**
 	 * return the Animation-object from this mesh with the given name
-	 * 
-	 * @param name
-	 *            the name to search for
+	 *
+	 * @param name the name to search for
 	 * @return null if no such animation was found
 	 */
 	public Animation getAnimationByName(String name) {
@@ -60,6 +64,32 @@ public class AnimatedMesh implements IRenderable {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * @return the default bind pose of this mesh
+	 */
+	public Pose defaultPose() {
+		Pose defaultPose = new Pose(skeleton, getTransform());
+
+		skeleton.foreach((Bone bone) -> 
+				defaultPose.put(bone.getName(),
+						new BoneTransformation(bone.getDefaultBoneTransform())));
+
+		return defaultPose;
+	}
+
+	@Override
+	public Matrix4f getTransform() {
+		return mesh.getTransform();
+	}
+
+	/**
+	 * set a static transformation for this mesh
+	 * @param transform 
+	 */
+	public void setTransform(Matrix4f transform) {
+		mesh.setTransform(transform);
 	}
 
 }

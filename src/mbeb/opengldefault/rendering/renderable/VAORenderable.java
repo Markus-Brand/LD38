@@ -11,6 +11,7 @@ import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.io.*;
 import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.scene.*;
+import org.joml.Matrix4f;
 
 import org.lwjgl.*;
 
@@ -28,6 +29,8 @@ public class VAORenderable implements IRenderable {
 	private int indexSize;
 	/** the boundingBox of all my vertices */
 	private final BoundingBox boundingBox;
+	/** the static mesh transformation */
+	private Matrix4f transform;
 
 	/**
 	 * Constructor for Renderable
@@ -67,6 +70,22 @@ public class VAORenderable implements IRenderable {
 		this.boundingBox = boundingBox;
 		this.indexSize = indexBuffer.capacity();
 		this.VAO = generateVAO(vertexBuffer, indexBuffer, dataFormat);
+	}
+
+	@Override
+	public Matrix4f getTransform() {
+		if (transform == null) {
+			transform = new Matrix4f();
+		}
+		return transform;
+	}
+
+	/**
+	 * this meshes Transformation
+	 * @param transform 
+	 */
+	public void setTransform(Matrix4f transform) {
+		this.transform = transform;
 	}
 
 	/**

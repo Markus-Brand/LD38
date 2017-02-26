@@ -77,6 +77,10 @@ public class Animation {
 		return keyFrames;
 	}
 
+	/**
+	 * merge a new keyframe into this animation, combining near keyFrames
+	 * @param newOne 
+	 */
 	public void mergeKeyFrame(KeyFrame newOne) {
 		for (KeyFrame k : getKeyFrames()) {
 			if (Math.abs(k.getTimeStamp() - newOne.getTimeStamp()) <= keyFrameMergeTolerance) {
@@ -96,7 +100,7 @@ public class Animation {
 	 * @return {before, after}
 	 */
 	public KeyFrame[] getBeforeAndAfter(double timeStamp) {
-		//todo binary search for performance
+		//todo maybe binary search for performance
 
 		KeyFrame before = null;
 		KeyFrame after;

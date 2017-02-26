@@ -42,8 +42,8 @@ public class ObjectLoader {
 	 *            the absolute File-Path to the object
 	 * @return a VAO-Renderable
 	 */
-	public IRenderable loadFromFileAnim(String path) {
-		return loadFromFile(path, PosNormUvAnim3);
+	public AnimatedRenderable loadFromFileAnim(String path) {
+		return (AnimatedRenderable)loadFromFile(path, PosNormUvAnim3);
 	}
 
 	/**
@@ -67,6 +67,7 @@ public class ObjectLoader {
 			//todo not return just the first mesh, rather combine meshes
 			return mesh;
 		}
+		System.err.println("NO OBJECT FOUND!");
 		return null;
 	}
 
@@ -118,10 +119,15 @@ public class ObjectLoader {
 			skeleton = parseSkeleton(mesh, sceneStructure);
 			vertexBoneWeights = loadVertexWeights(mesh, skeleton, 3);
 		}
+		Matrix4f sceneTransform = BoneTransformation.matrixFromAI(scene.mRootNode().mTransformation());
 
 		for (int v = 0; v < vertexCount; v++) {
-			AIVector3D position = mesh.mVertices().get(v);
-			box = box.extendTo(new Vector3f(position.x(), position.y(), position.z()));
+			AIVector3D aiposition = mesh.mVertices().get(v);
+			Vector3f position = new Vector3f(aiposition.x(), aiposition.y(), aiposition.z());
+			box = box.extendTo(position);
+			if (isAnimated) {
+				adjustBoneBoxes(skeleton, position, v, vertexBoneWeights, sceneTransform);
+			}
 			for (DataFragment dataFormat : format) {
 				dataFormat.addTo(mesh, v, data, dataPointer, vertexBoneWeights);
 				dataPointer += dataFormat.size();
@@ -132,11 +138,9 @@ public class ObjectLoader {
 		VAORenderable vaomesh = new VAORenderable(data, indices, format, box);
 
 		if (isAnimated) {
-			Matrix4f sceneTransform = BoneTransformation.matFromAI(scene.mRootNode().mTransformation());
-			AnimatedMesh animMesh = loadAnimatedMesh(mesh, vaomesh, skeleton, sceneTransform);
-
+			AnimatedMesh animMesh = new AnimatedMesh(vaomesh, skeleton);
+			animMesh.setTransform(sceneTransform);
 			loadAnimations(animMesh, scene);
-
 			return new AnimatedRenderable(animMesh);
 		} else {
 			return vaomesh;
@@ -211,28 +215,35 @@ public class ObjectLoader {
 		Bone rootBone = null;
 		for (int b = 0; b < mesh.mNumBones(); b++) {
 			AIBone aibone = AIBone.create(mesh.mBones().get(b));
+			String boneName = aibone.mName().dataString();
+			Bone bone;
 			if (rootBone == null) {
-				rootBone = sceneStructure.firstBoneNamed(aibone.mName().dataString());
-				rootBone.setIndex(b);
+				bone = sceneStructure.firstBoneNamed(boneName);
+				rootBone = bone;
 			} else {
-				rootBone.firstBoneNamed(aibone.mName().dataString()).setIndex(b);
+				bone = rootBone.firstBoneNamed(boneName);
 			}
+			bone.setInverseBindTransform(BoneTransformation.matrixFromAI(aibone.mOffsetMatrix()));
+			bone.setIndex(b);
 		}
+		if (rootBone == null) {
+			Log.error(TAG, "No Bones in AnimatedMesh!");
+			return null;
+		}
+		
+		/*
+		rootBone.setDefaultBoneTransform(new Matrix4f(
+				1, 0, 0, 0,//this matrix is for flipping collada the right angle
+				0, 0, -1, 0,//still a bit hacky though
+				0, 1, 0, 0,//todo - replace with aiScene.rootTransformation
+				0, 0, 0, 1).mul(rootBone.getDefaultBoneTransform(), new Matrix4f()));
+		
+		rootBone.setInverseBindTransform(new Matrix4f(
+				1, 0, 0, 0,//this matrix is for flipping collada the right angle
+				0, 0, -1, 0,//still a bit hacky though
+				0, 1, 0, 0,//todo - replace with aiScene.rootTransformation
+				0, 0, 0, 1).mul(rootBone.getInverseBindTransform(), new Matrix4f()));/**/
 		return rootBone;
-	}
-
-	/**
-	 * load all necessary data for an animated mesh
-	 *
-	 * @param mesh
-	 *            the AI-mesh containing this data
-	 * @param vaomesh
-	 *            the VAORenderable (raw mesh data)
-	 * @return a new AnimatedRenderable
-	 */
-	private AnimatedMesh loadAnimatedMesh(AIMesh mesh, VAORenderable vaomesh, Bone skeleton, Matrix4f sceneTransform) {
-		skeleton.updateInverseBindTransform(sceneTransform);/**/
-		return new AnimatedMesh(vaomesh, skeleton);
 	}
 
 	/**
@@ -245,8 +256,7 @@ public class ObjectLoader {
 	private Bone parseScene(AIScene scene) {
 		AINode rootNode = scene.mRootNode();
 		Bone rootBone = new Bone(rootNode.mName().dataString(), -1);
-		rootBone.setLocalBindTransform(BoneTransformation.matFromAI(rootNode.mTransformation()));
-
+		rootBone.setDefaultBoneTransform(BoneTransformation.matrixFromAI(rootNode.mTransformation()));
 		parseBoneChildren(rootBone, rootNode);
 		return rootBone;
 	}
@@ -262,7 +272,7 @@ public class ObjectLoader {
 		for (int c = 0; c < node.mNumChildren(); c++) {
 			AINode childNode = AINode.create(node.mChildren().get(c));
 			Bone childBone = new Bone(childNode.mName().dataString(), -1);
-			childBone.setLocalBindTransform(BoneTransformation.matFromAI(childNode.mTransformation()));
+			childBone.setDefaultBoneTransform(BoneTransformation.matrixFromAI(childNode.mTransformation()));
 			parseBoneChildren(childBone, childNode);
 			bone.getChildren().add(childBone);
 		}
@@ -297,12 +307,35 @@ public class ObjectLoader {
 					BoneTransformation transform =
 							new BoneTransformation(new Vector3f(pos.mValue().x(), pos.mValue().y(), pos.mValue().z()), new Quaternionf(rot.mValue().x(), rot.mValue().y(), rot.mValue().z(), rot
 									.mValue().w()), new Vector3f(scale.mValue().x(), scale.mValue().y(), scale.mValue().z()));
-					KeyFrame keyFrame = new KeyFrame(pos.mTime(), new Pose(animMesh.getSkeleton()).put(boneName, transform));
+					KeyFrame keyFrame = new KeyFrame(pos.mTime(), new Pose(animMesh.getSkeleton(), animMesh.getTransform()).put(boneName, transform));
 					anim.mergeKeyFrame(keyFrame);
 				}
 			}
 
 			animMesh.addAnimation(anim);
+		}
+	}
+
+	/**
+	 * adjust the local boundingboxes of the bones to contain passed vertex
+	 */
+	private void adjustBoneBoxes(Bone skeleton, Vector3f vertexPosition, int vertexID, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights, Matrix4f sceneTransform) {
+		final float THRESHOLD = 0.2f; //vertices with smaller weights are not included into the boundingBox
+		//todo test for good values here
+		
+		List<Map.Entry<Integer, Float>> boneWeights = vertexBoneWeights.get(vertexID);
+		
+		for (Map.Entry<Integer, Float> boneWeight : boneWeights) {
+			int targetIndex = boneWeight.getKey();
+			if (targetIndex < 0 || boneWeight.getValue() < THRESHOLD) {
+				continue;
+			}
+			Bone target = skeleton.firstBoneWithIndex(targetIndex);
+			Matrix4f totalTrans = target.getInverseBindTransform().mul(sceneTransform, new Matrix4f());
+			
+			Vector4f inBoneSpace4 = totalTrans.transform(new Vector4f(vertexPosition, 1));
+			Vector3f inBoneSpace = new Vector3f(inBoneSpace4.x, inBoneSpace4.y, inBoneSpace4.z);
+			target.setBoundingBox(target.getBoundingBox().extendTo(inBoneSpace));
 		}
 	}
 
