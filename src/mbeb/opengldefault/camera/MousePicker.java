@@ -36,8 +36,8 @@ public class MousePicker {
 
 	private Vector2f getNormalizedDeviceCoordinates(Vector2f mousePos) {
 		return new Vector2f(
-				2 * mousePos.x / OpenGLContext.getWidth() - 1,
-				-(2 * mousePos.y / OpenGLContext.getHeight() - 1));
+				2 * mousePos.x / OpenGLContext.getVideoModeWidth()- 1,
+				-(2 * mousePos.y / OpenGLContext.getVideoModeHeight()- 1));
 	}
 
 	private Vector3f getWorldSpaceCoordinates(Vector4f eyeSpaceCoordinates) {
