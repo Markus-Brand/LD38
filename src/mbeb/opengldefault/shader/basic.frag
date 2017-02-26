@@ -9,36 +9,9 @@ struct Material{
 	sampler2D texture_specular0;
 };
 
-//size 32
-struct DirLight{
-	vec3 direction;
-	vec3 color;
-};
-	
-//size 48
-struct PointLight{
-	vec3 position;
-
-	vec3 color;
-
-	float constant;
-	float linear;
-	float quadratic;
-};
-
-//size 80
-struct SpotLight{
-	vec3 position;
-	vec3 direction;
-	vec3 color;
-
-	float cutoff;
-	float outerCutoff;
-
-	float constant;
-	float linear;
-	float quadratic;
-};
+#include modules/Struct_DirLight.glsl
+#include modules/Struct_PointLight.glsl
+#include modules/Struct_SpotLight.glsl
 
 float ambientStrength = 0.04f;
 float specularStrength = 2.5f;

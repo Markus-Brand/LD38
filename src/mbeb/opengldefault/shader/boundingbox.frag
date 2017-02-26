@@ -4,7 +4,6 @@ in vec3 pos;
 
 uniform vec3 boxColor;
 
-void main()
-{
+void main() {
     color = vec4(boxColor, 1);
 }  

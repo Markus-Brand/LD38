@@ -14,11 +14,7 @@ out vec3 normal;
 
 out vec4 color;
 
-layout (std140) uniform Matrices{	
-	uniform mat4 projection;
-	uniform mat4 view;
-	uniform mat4 projectionView;
-};
+#include modules/UBO_Matrices.glsl
 
 uniform mat4 boneTransforms[MAX_JOINTS];
 

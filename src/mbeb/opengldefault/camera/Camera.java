@@ -45,7 +45,7 @@ public class Camera implements ICamera {
 		view = new Matrix4f();
 		projectionView = null;
 		float fov = (float) (java.lang.Math.PI / 2.8);
-		projection.perspective(fov, OpenGLContext.getWidth() / (float) OpenGLContext.getHeight(), 0.1f, 100);
+		projection.perspective(fov, OpenGLContext.getFramebufferWidth() / (float) OpenGLContext.getFramebufferHeight(), 0.1f, 100);
 
 		view.lookAlong(new Vector3f(0, 0, 1), new Vector3f(0, 1, 0));
 

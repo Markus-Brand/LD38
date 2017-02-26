@@ -1,6 +1,8 @@
 package mbeb.opengldefault.scene;
 
 import java.nio.FloatBuffer;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -30,28 +32,36 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 		super(root, cam);
 	}
 
+	private Map<SceneObject, VAORenderable> renderables = new HashMap<>();
+
+	private VAORenderable getRenderableFor(SceneObject obj) {
+		VAORenderable renderable = renderables.get(obj);
+		if (renderable == null) {
+
+			Vector3f[] corners = obj.getBoundingBox().getLocalCorners();
+
+			float[] data = new float[corners.length * 3];
+			int index = 0;
+			for (Vector3f corner : corners) {
+				data[index++] = corner.x;
+				data[index++] = corner.y;
+				data[index++] = corner.z;
+			}
+
+			final int[] indexData = {0, 1, 1, 3, 3, 2, 2, 0,
+				0, 4, 1, 5, 2, 6, 3, 7,
+				4, 5, 5, 7, 7, 6, 6, 4};
+
+			renderable = new VAORenderable(data, indexData, new DataFragment[]{DataFragment.POSITION}, obj.getBoundingBox());
+			renderables.put(obj, renderable);
+		}
+		return renderable;
+	}
+
 	@Override
 	public void renderSelf(SceneObject object, Matrix4f transform) {
 		shader.use();
-		Vector3f[] corners = object.getBoundingBox().getLocalCorners();
-
-		float[] data = new float[corners.length * 3];
-		int index = 0;
-		for (Vector3f corner : corners) {
-			data[index++] = corner.x;
-			data[index++] = corner.y;
-			data[index++] = corner.z;
-		}
-
-		final int[] indexData = {0, 1, 1, 3, 3, 2, 2, 0,
-
-				0, 4, 1, 5, 2, 6, 3, 7,
-
-				4, 5, 5, 7, 7, 6, 6, 4};
-
-		VAORenderable renderable =
-				new VAORenderable(data, indexData, new DataFragment[] {DataFragment.POSITION}, object.getBoundingBox());
-
+		
 		final int modelUniform = shader.getUniform(ModelMatrixUniformName, false);
 		if (modelUniform >= 0) {
 			//only if shader wants the model matrix
@@ -63,6 +73,6 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 		Vector3f boxColor = object.getBoundingBox().getColor();
 		GL20.glUniform3f(shader.getUniform("boxColor"), boxColor.x, boxColor.y, boxColor.z);
 
-		renderable.render(shader);
+		getRenderableFor(object).render(shader);
 	}
 }

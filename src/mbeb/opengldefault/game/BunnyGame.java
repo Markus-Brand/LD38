@@ -130,7 +130,7 @@ public class BunnyGame implements IGame {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		GLErrors.checkForError(TAG, "glClear");
 
-		glViewport(0, 0, OpenGLContext.getWidth(), OpenGLContext.getHeight());
+		glViewport(0, 0, OpenGLContext.getFramebufferWidth(), OpenGLContext.getFramebufferHeight());
 		GLErrors.checkForError(TAG, "glViewport");
 
 		bunnyScene.update(deltaTime);

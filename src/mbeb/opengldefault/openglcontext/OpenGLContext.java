@@ -23,6 +23,19 @@ public class OpenGLContext {
 	private static final String TAG = "OpenGLContext";
 
 	/**
+	 * Console option constant to switch to console logging
+	 */
+	private static final String OPTION_LOG_CONSOLE = "-c";
+	/**
+	 * Console option constant to switch to file logging
+	 */
+	private static final String OPTION_LOG_FILE = "-f";
+	/**
+	 * Console option constant to turn off logging
+	 */
+	private static final String OPTION_LOG_NONE = "-n";
+
+	/**
 	 * The created window Object
 	 */
 	private long window;
@@ -33,6 +46,16 @@ public class OpenGLContext {
 	private static GLFWVidMode vidmode;
 
 	/**
+	 * The actual framebuffer width
+	 */
+	private static int framebufferWidth;
+
+	/**
+	 * The actual framebuffer height
+	 */
+	private static int framebufferHeight;
+
+	/*
 	 * Game Object
 	 */
 	private IGame game;
@@ -51,15 +74,32 @@ public class OpenGLContext {
 	/**
 	 * Init the OpenGL context
 	 *
-	 * @param args
+	 * @param args The command line arguments
 	 */
 	private void init(String[] args) {
 		evaluateCommandLineArguments(args);
 		initOpenGL();
-		createWindow("Test window", false, getWidth(), getHeight());
+
+		createWindow("Test window", false, getVideoModeWidth(), getVideoModeHeight());
 		GL.createCapabilities();
 		GLErrors.checkForError(TAG, "createCapabilities");
+		
+		printOpenGLInformation();
 		game.init();
+	}
+
+	/**
+	 * Print OpenGL version and supported extensions
+	 */
+	private void printOpenGLInformation(){
+		Log.log(TAG, "OpenGL version: " + GL11.glGetString(GL11.GL_VERSION));
+		Log.log(TAG, "Extensions supported:");
+		int num = GL11.glGetInteger(GL30.GL_NUM_EXTENSIONS);
+
+		for (int i = 0; i < num; i++) {
+			String extension = GL30.glGetStringi(GL11.GL_EXTENSIONS, i);
+			Log.log(TAG, extension);
+		}
 	}
 
 	/**
@@ -67,7 +107,7 @@ public class OpenGLContext {
 	 */
 	private void loop() {
 		double lastTime = glfwGetTime();
-		while(!glfwWindowShouldClose(window)) {
+		while (!glfwWindowShouldClose(window)) {
 
 			glfwSwapBuffers(window); // swap the color buffers
 			// Poll for window events. The key callback above will only be
@@ -106,9 +146,8 @@ public class OpenGLContext {
 		glfwSetErrorCallback(null).free();
 		Log.closeLogFile();
 		try {
-			Files.walk(new File("res").toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile)
-					.forEach(File::delete);
-		} catch(IOException ex) {
+			Files.walk(new File("res").toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+		} catch (IOException ex) {
 			Log.log(TAG, ex.getMessage() + " - unable to delete old res-directory");
 		}
 	}
@@ -116,14 +155,10 @@ public class OpenGLContext {
 	/**
 	 * creates the GLFW Window
 	 *
-	 * @param title
-	 *            windows title
-	 * @param fullscreen
-	 *            is the window fullscreen?
-	 * @param width
-	 *            window width
-	 * @param height
-	 *            window height
+	 * @param title windows title
+	 * @param fullscreen is the window fullscreen?
+	 * @param width window framebufferWidth
+	 * @param height window framebufferHeight
 	 */
 	private void createWindow(String title, boolean fullscreen, int width, int height) {
 		// Create the window
@@ -149,9 +184,7 @@ public class OpenGLContext {
 
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-		glfwSetCursorPosCallback(window, (window, xPos, yPos) -> {
-			Mouse.setPos(xPos, yPos);
-		});
+		glfwSetCursorPosCallback(window, (window, xPos, yPos) -> Mouse.setPos(xPos, yPos));
 
 		glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
 			if (action == GLFW_PRESS) {
@@ -172,9 +205,14 @@ public class OpenGLContext {
 		// Make the OpenGL context current
 		glfwMakeContextCurrent(window);
 
+		//glfw requires the use of an array (because it uses pointers in C) for getFramebufferSize
+		int[] widthBuffer = new int[1], heightBuffer = new int[1];
+		glfwGetFramebufferSize(window, widthBuffer, heightBuffer);
+		framebufferHeight = heightBuffer[0];
+		framebufferWidth = widthBuffer[0];
+
 		// Enable v-sync
 		//glfwSwapInterval(1);
-
 		// Make the window visible
 		glfwShowWindow(window);
 	}
@@ -210,6 +248,13 @@ public class OpenGLContext {
 		glfwDefaultWindowHints();
 		glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		//OS X only supports forward compatible contexts if version > 3.2
+		if (System.getProperty("os.name").toLowerCase().contains("os x")) {
+			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+		}
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_RED_BITS, vidmode.redBits());
 		glfwWindowHint(GLFW_GREEN_BITS, vidmode.greenBits());
 		glfwWindowHint(GLFW_BLUE_BITS, vidmode.blueBits());
@@ -219,30 +264,44 @@ public class OpenGLContext {
 	/**
 	 * Sets Debug Mode
 	 *
-	 * @param args
-	 *            command line arguments
+	 * @param args command line arguments
 	 */
 	private static void evaluateCommandLineArguments(String[] args) {
-		if (args.length < 2) {
-			Log.initDebug(LogMode.CONSOLE);
-		} else if (args[1].equals("console")) {
-			Log.initDebug(LogMode.CONSOLE);
-		} else if (args[1].equals("logfile")) {
-			Log.initDebug(LogMode.LOGFILE);
-		} else {
-			Log.initDebug(LogMode.NONE);
+		LogMode mode = LogMode.CONSOLE;
+		for (int i = 1; i < args.length; i++) {
+			String arg = args[i];
+			switch (arg) {
+				case OPTION_LOG_CONSOLE:
+					mode = LogMode.CONSOLE;
+					break;
+				case OPTION_LOG_FILE:
+					mode = LogMode.LOGFILE;
+					break;
+				case OPTION_LOG_NONE:
+					mode = LogMode.NONE;
+					break;
+			}
 		}
+		Log.initDebug(mode);
 	}
 
 	public static GLFWVidMode getVidmode() {
 		return vidmode;
 	}
 
-	public static int getWidth() {
+	public static int getVideoModeWidth() {
 		return vidmode.width();
 	}
 
-	public static int getHeight() {
+	public static int getVideoModeHeight() {
 		return vidmode.height();
+	}
+
+	public static int getFramebufferWidth() {
+		return framebufferWidth;
+	}
+
+	public static int getFramebufferHeight() {
+		return framebufferHeight;
 	}
 }

@@ -3,7 +3,6 @@ out vec4 color;
 
 uniform samplerCube u_cubeMap;
 
-
 void main(){
 	color = texture(u_cubeMap, tex);
 }
