@@ -27,6 +27,8 @@ public class SceneObject implements BoundingBox.Owner {
 	private List<SceneObject> subObjects;
 	/** the parent in the Scene-graph */
 	private SceneObject parent;
+	/** true, if the user hovers over the object currently */
+	private boolean selected;
 
 	/**
 	 * Create a new sceneObject. All parameters are optional
@@ -225,9 +227,8 @@ public class SceneObject implements BoundingBox.Owner {
 	 * @return
 	 */
 	public BoundingBox reCalculateBoundingBox() {
-		if (box == null) {
-			box = getRenderableBoundingBox().duplicate();
-		}
+		box = getRenderableBoundingBox();
+		
 		for (SceneObject o : getSubObjects()) {
 			adjustBoundingBoxFor(o);
 		}
@@ -277,5 +278,13 @@ public class SceneObject implements BoundingBox.Owner {
 	 */
 	public Vector3f getPosition() {
 		return getGLobalTransformation().applyTo3(new Vector3f());
+	}
+
+	public boolean isSelected() {
+		return selected;
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
 	}
 }

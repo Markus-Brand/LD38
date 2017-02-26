@@ -57,9 +57,9 @@ public class MousePicker {
 			return;
 		}
 		if (currentObject.getBoundingBox().intersectsRay(camera.getPosition(), ray, parentTransform)) {
-			currentObject.getBoundingBox().setColor(new Vector3f(1, 0, 0));
+			currentObject.setSelected(true);
 		} else {
-			currentObject.getBoundingBox().setColor(new Vector3f(0, 1, 0));
+			currentObject.setSelected(false);
 		}
 		
 		final Matrix4f transform = parentTransform.mul(currentObject.getTransformation().asMatrix(), new Matrix4f());

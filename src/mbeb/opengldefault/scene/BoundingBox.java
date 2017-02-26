@@ -64,9 +64,6 @@ public class BoundingBox {
 	protected Vector3f localStart;
 	protected Vector3f localSize;
 
-	/** BoundingBox color */
-	private Vector3f color;
-
 	/**
 	 * the transformation for this object
 	 */
@@ -80,7 +77,6 @@ public class BoundingBox {
 		this.localStart = localStart;
 		this.localSize = localSize;
 		this.modelTransform = localToWorld;
-		color = new Vector3f(0, 0, 1);
 	}
 
 	/**
@@ -88,7 +84,6 @@ public class BoundingBox {
 	 */
 	public BoundingBox duplicate() {
 		BoundingBox clone = new BoundingBox(new Vector3f(localStart), new Vector3f(localSize), modelTransform);
-		clone.setColor(color);
 		return clone;
 	}
 
@@ -136,14 +131,6 @@ public class BoundingBox {
 	 */
 	public void setModelTransform(final Matrix4f transform) {
 		this.modelTransform = transform;
-	}
-
-	public Vector3f getColor() {
-		return color;
-	}
-
-	public void setColor(Vector3f color) {
-		this.color = color;
 	}
 
 	@Override
