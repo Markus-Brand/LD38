@@ -1,8 +1,10 @@
 package mbeb.opengldefault.rendering.shader;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
@@ -102,14 +104,14 @@ public class ShaderPreprocessor {
 	private String process(String fileName) {
 		String rawSource = Cache.getInstance().getRawSource(fileName);
 
-		String[] sourceParts = Arrays.asList(rawSource.split("\\n")).stream().map((String line) -> {
+		String[] sourceParts = Arrays.asList(rawSource.split("\\R")).stream().map((String line) -> {
 			String trimmedLine = line.trim();
 			if (trimmedLine.startsWith(INCLUDE_TAG)) {
 				String includedFileName = trimmedLine.substring(INCLUDE_TAG.length()).trim();
-				return process(includedFileName);
+				return getProcessedCode(includedFileName);
 			}
 			return line;
-		}).toArray(String[]::new);
+		}).map((String line) -> line + "\n").toArray(String[]::new);
 
 		StringBuilder result = new StringBuilder();
 		for (String sourcePart : sourceParts) {
@@ -167,8 +169,8 @@ public class ShaderPreprocessor {
 		 */
 		private static String loadSource(final String path) {
 			try {
-				final URL shaderURL = ClassLoader.getSystemResource("mbeb/opengldefault/shader/" + path).toURI().toURL();
-				try (Scanner sc = new Scanner(shaderURL.openStream(), "UTF-8")) {
+				InputStream shaderURL = ShaderPreprocessor.class.getResourceAsStream("/mbeb/opengldefault/shader/" + path);
+				try (Scanner sc = new Scanner(shaderURL, "UTF-8")) {
 					return sc.useDelimiter("\\A").next();
 				}
 			} catch (final Exception ex) {

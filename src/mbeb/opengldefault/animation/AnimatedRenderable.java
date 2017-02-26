@@ -73,7 +73,7 @@ public class AnimatedRenderable implements IRenderable {
 		}
 		Animator animator = new Animator(anim);
 		animator.setFadeInTime(1);
-		animator.setSpeed(10);
+		animator.setSpeed(4);
 		//todo apply animation-flags
 		playAnimation(animator);
 	}

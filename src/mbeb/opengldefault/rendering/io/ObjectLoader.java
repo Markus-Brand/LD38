@@ -42,8 +42,8 @@ public class ObjectLoader {
 	 *            the absolute File-Path to the object
 	 * @return a VAO-Renderable
 	 */
-	public IRenderable loadFromFileAnim(String path) {
-		return loadFromFile(path, PosNormUvAnim3);
+	public AnimatedRenderable loadFromFileAnim(String path) {
+		return (AnimatedRenderable)loadFromFile(path, PosNormUvAnim3);
 	}
 
 	/**

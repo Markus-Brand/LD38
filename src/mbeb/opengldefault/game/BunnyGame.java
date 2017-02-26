@@ -2,6 +2,7 @@ package mbeb.opengldefault.game;
 
 import java.util.ArrayList;
 import java.util.Random;
+import mbeb.opengldefault.animation.AnimatedRenderable;
 import static org.lwjgl.opengl.GL11.*;
 
 
@@ -63,21 +64,21 @@ public class BunnyGame implements IGame {
 
 		bunnyScene = new Scene(cam, skybox);
 
-		IRenderable bunny =
-				new TexturedRenderable(new ObjectLoader().loadFromFile("bunny.obj"), new Texture("bunny_2d.png"));
+		AnimatedRenderable bunnyAnim = new ObjectLoader().loadFromFileAnim("ohrenFlackern.fbx");
+		IRenderable bunnyTextured = new TexturedRenderable(bunnyAnim, new Texture("bunny_2d.png"));
 
 		final Shader curveShader = new Shader("bezier.vert", "bezier.frag", "bezier.geom");
 		curveShader.addUniformBlockIndex(1, "Matrices");
 		curveShader.setDrawMode(GL_LINES);
 
-		final Shader defaultShader = new Shader("basic.vert", "phong.frag");
+		final Shader defaultShader = new Shader("boneAnimation.vert", "phong.frag");
 		defaultShader.addUniformBlockIndex(1, "Matrices");
 
-		bunny0 = new SceneObject(bunny);
-		bunny1 = new SceneObject(bunny);
-		bunny2 = new SceneObject(bunny);
-		bunny3 = new SceneObject(bunny);
-		bunny4 = new SceneObject(bunny);
+		bunny0 = new SceneObject(bunnyTextured);
+		bunny1 = new SceneObject(bunnyTextured);
+		bunny2 = new SceneObject(bunnyTextured);
+		bunny3 = new SceneObject(bunnyTextured);
+		bunny4 = new SceneObject(bunnyTextured);
 		mainBunny = new SceneEntity(bunny0);
 		followingBunny1 = new SceneEntity(bunny1);
 		followingBunny2 = new SceneEntity(bunny2);
@@ -115,7 +116,7 @@ public class BunnyGame implements IGame {
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		
-		/*new Thread() {
+		new Thread() {
 
 			@Override
 			public void run() {
@@ -124,19 +125,19 @@ public class BunnyGame implements IGame {
 				} catch (InterruptedException ex) {
 					ex.printStackTrace();
 				}
-				bunnyRenderable.playAnimation("OhrenFlackern1", true, true);
+				bunnyAnim.playAnimation("OhrenFlackern1", true, true);
 				try {
 					Thread.sleep(3000);
 				} catch (InterruptedException ex) {
 					ex.printStackTrace();
 				}
-				bunnyRenderable.playAnimation("HeadBang", true, true);
+				bunnyAnim.playAnimation("HeadBang", true, true);
 				try {
 					Thread.sleep(3000);
 				} catch (InterruptedException ex) {
 					ex.printStackTrace();
 				}
-				bunnyRenderable.playAnimation("OhrenFlackern2", true, true);
+				bunnyAnim.playAnimation("OhrenFlackern2", true, true);
 			}
 		}.start();/**/
 	}
