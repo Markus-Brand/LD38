@@ -1,6 +1,7 @@
 package mbeb.opengldefault.scene;
 
 import mbeb.opengldefault.camera.*;
+import mbeb.opengldefault.logging.Log;
 
 import org.joml.*;
 
@@ -8,6 +9,18 @@ import org.joml.*;
  * A simple struct defining a box-like area in the world
  */
 public class BoundingBox {
+	
+	private static final String TAG = "BoundingBox";
+	
+	/**
+	 * An interface for Objects that have a BoundingBox
+	 */
+	public interface Owner {
+		BoundingBox getBoundingBox();
+		default void setBoundingBox(BoundingBox newBox) {
+			Log.error(TAG + ".Owner", "Setting of BoundingBox not implemented here.");
+		}
+	}
 
 	/**
 	 * A boundingBox Null-object, indicating that it is empty
@@ -37,6 +50,11 @@ public class BoundingBox {
 		@Override
 		public BoundingBox extendTo(final Vector3f localVertex) {
 			return new BoundingBox(localVertex, new Vector3f(0), modelTransform);
+		}
+
+		@Override
+		public boolean isEmpty() {
+			return true;
 		}
 
 	}
@@ -90,6 +108,26 @@ public class BoundingBox {
 		localEnd.sub(localStart, localSize);
 
 		return this;
+	}
+
+	/**
+	 * the 3 minimum coordinates of this boundingBox, local
+	 * @return 
+	 */
+	public Vector3f getLocalStart() {
+		return localStart;
+	}
+
+	/**
+	 * the local dimensions of this boundingBox
+	 * @return 
+	 */
+	public Vector3f getLocalSize() {
+		return localSize;
+	}
+	
+	public boolean isEmpty() {
+		return false;
 	}
 
 	/**

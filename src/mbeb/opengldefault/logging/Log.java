@@ -113,7 +113,9 @@ public class Log {
 		Date today = Calendar.getInstance().getTime();
 		String log = df.format(today);
 		log += info;
-		log += "In class " + tag + ": ";
+		if (tag != null) {
+			log += "In class " + tag + ": ";
+		}
 		log += message;
 		return log;
 	}

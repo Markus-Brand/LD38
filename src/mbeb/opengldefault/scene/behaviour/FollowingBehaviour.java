@@ -25,6 +25,10 @@ public class FollowingBehaviour extends ReferenceEntityBehaviour {
 
 		float distance = (float) (speed * deltaTime);
 
+		if (direction.length() == 0) {
+			return;
+		}
+		
 		if (direction.length() > distance) {
 			direction.normalize().mul(distance);
 		}
