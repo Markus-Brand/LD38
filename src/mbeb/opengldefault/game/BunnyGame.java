@@ -65,6 +65,7 @@ public class BunnyGame implements IGame {
 		bunnyScene = new Scene(cam, skybox);
 
 		AnimatedRenderable bunnyAnim = new ObjectLoader().loadFromFileAnim("ohrenFlackern.fbx");
+		bunnyAnim.getAnimatedMesh().setTransform(new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1));
 		IRenderable bunnyTextured = new TexturedRenderable(bunnyAnim, new Texture("bunny_2d.png"));
 
 		final Shader curveShader = new Shader("bezier.vert", "bezier.frag", "bezier.geom");
@@ -85,7 +86,7 @@ public class BunnyGame implements IGame {
 		followingBunny3 = new SceneEntity(bunny3);
 		followingBunny4 = new SceneEntity(bunny4);
 
-		mainBunny.addBehaviour(1, new BezierBehaviour(curve, 4));
+		//mainBunny.addBehaviour(1, new BezierBehaviour(curve, 1));
 
 		followingBunny1.addBehaviour(1, new LimitedDistanceBehaviour(new FollowingBehaviour(mainBunny, 3f), 5));
 		followingBunny1.addBehaviour(2, new FollowingBehaviour(mainBunny, 7.6f));
@@ -105,10 +106,10 @@ public class BunnyGame implements IGame {
 		curveObj.setShader(curveShader);
 
 		bunnyScene.getSceneGraph().addSubObject(bunny0);
-		bunnyScene.getSceneGraph().addSubObject(bunny1);
-		bunnyScene.getSceneGraph().addSubObject(bunny2);
-		bunnyScene.getSceneGraph().addSubObject(bunny3);
-		bunnyScene.getSceneGraph().addSubObject(bunny4);
+		//bunnyScene.getSceneGraph().addSubObject(bunny1);
+		//bunnyScene.getSceneGraph().addSubObject(bunny2);
+		//bunnyScene.getSceneGraph().addSubObject(bunny3);
+		//bunnyScene.getSceneGraph().addSubObject(bunny4);
 		bunnyScene.getSceneGraph().addSubObject(curveObj);
 
 		bunnyScene.getSceneGraph().setShader(defaultShader);

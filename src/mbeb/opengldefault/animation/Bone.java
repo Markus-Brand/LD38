@@ -3,13 +3,14 @@ package mbeb.opengldefault.animation;
 import java.util.*;
 import java.util.function.Consumer;
 import mbeb.opengldefault.logging.Log;
+import mbeb.opengldefault.scene.BoundingBox;
 
 import org.joml.*;
 
 /**
  * a bone inside a mesh
  */
-public class Bone {
+public class Bone implements BoundingBox.Owner {
 	
 	private static final String TAG = "Bone";
 	
@@ -20,6 +21,8 @@ public class Bone {
 	private Matrix4f inverseBindTransform;
 	/** boneTransformation in bind pose */
 	private Matrix4f defaultBoneTransform;
+	
+	private BoundingBox boundingBox;
 	
 	private List<Bone> children;
 
@@ -43,6 +46,19 @@ public class Bone {
 		return children;
 	}
 
+	@Override
+	public BoundingBox getBoundingBox() {
+		if (boundingBox == null) {
+			setBoundingBox(new BoundingBox.Empty(getDefaultBoneTransform()));
+		}
+		return boundingBox;
+	}
+
+	@Override
+	public void setBoundingBox(BoundingBox boundingBox) {
+		this.boundingBox = boundingBox;
+	}
+
 	/**
 	 * re-set the index of this bone to another value
 	 * @param index the new index of this bone
@@ -61,21 +77,17 @@ public class Bone {
 
 	@Override
 	public String toString() {
-		return getName() + " - " + getIndex() + "(+" + getChildren().size() + ")";
+		return getName() + " - " + getIndex() + "(total " + boneCount() + ")";
 	}
 	
 	/**
-	 * breadth-first search for a bone with gibven name
+	 * breadth-first search for a bone with given name
 	 * @param name the name to search for
 	 * @return a Bone-object or null when no bone matched the name
 	 */
 	public Bone firstBoneNamed(String name) {
-		if (getName().equals(name)) {
-			return this;
-		}
 		Queue<Bone> boneQueue = new LinkedList<>();
 		boneQueue.add(this);
-
 		while(!boneQueue.isEmpty()) {
 			Bone bone = boneQueue.remove();
 			if (bone.getName().equals(name)) {
@@ -84,6 +96,25 @@ public class Bone {
 			boneQueue.addAll(bone.getChildren());
 		}
 		Log.log(TAG, "cant find any bone named \"" + name + "\"");
+		return null;
+	}
+	
+	/**
+	 * breadth-first search for a bone with given id
+	 * @param index the id to search for
+	 * @return a Bone-object or null when no bone matched the name
+	 */
+	public Bone firstBoneWithIndex(int index) {
+		Queue<Bone> boneQueue = new LinkedList<>();
+		boneQueue.add(this);
+		while(!boneQueue.isEmpty()) {
+			Bone bone = boneQueue.remove();
+			if (bone.getIndex() == index) {
+				return bone;
+			}
+			boneQueue.addAll(bone.getChildren());
+		}
+		Log.log(TAG, "cant find any bone with index \"" + index + "\"");
 		return null;
 	}
 

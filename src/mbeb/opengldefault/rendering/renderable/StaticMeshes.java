@@ -14,6 +14,7 @@ public class StaticMeshes {
 
 	private static IRenderable screenAlignedQuad;
 	private static IRenderable uniformCube;
+	private static IRenderable lineCube;
 
 	/**
 	 * Get A Renderable containing vertexData of a ScreenAlignedQuad
@@ -72,5 +73,35 @@ public class StaticMeshes {
 			uniformCube = new VAORenderable(vertexData, indexData, new DataFragment[] {DataFragment.POSITION}, new BoundingBox(new Vector3f(-1, -1, -1), new Vector3f(2, 2, 2)));
 		}
 		return uniformCube;
+	}
+
+	/**
+	 * a Cube from (0,0,0) to (1,1,1) that can be rendered with GL_LINES
+	 * @return 
+	 */
+	public static IRenderable getLineCube() {
+		if (lineCube == null) {
+			
+			BoundingBox uniformBox = new BoundingBox.Empty();
+			uniformBox = uniformBox.extendTo(new Vector3f(0, 0, 0));
+			uniformBox = uniformBox.extendTo(new Vector3f(1, 1, 1));
+			
+			Vector3f[] corners = uniformBox.getLocalCorners();
+
+			float[] data = new float[corners.length * 3];
+			int index = 0;
+			for (Vector3f corner : corners) {
+				data[index++] = corner.x;
+				data[index++] = corner.y;
+				data[index++] = corner.z;
+			}
+
+			final int[] indexData = {0, 1, 1, 3, 3, 2, 2, 0,
+				0, 4, 1, 5, 2, 6, 3, 7,
+				4, 5, 5, 7, 7, 6, 6, 4};
+
+			lineCube = new VAORenderable(data, indexData, new DataFragment[]{DataFragment.POSITION}, uniformBox);
+		}
+		return lineCube;
 	}
 }

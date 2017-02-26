@@ -20,9 +20,19 @@ public class Pose {
 	/** A BoneTransformation for each bone */
 	private Map<String, BoneTransformation> boneTransforms = new HashMap<>();
 	private Bone skeleton;
+	private Matrix4f transform;
 
-	public Pose(Bone skeleton) {
+	public Pose(Bone skeleton, Matrix4f transform) {
 		this.skeleton = skeleton;
+		this.transform = transform;
+	}
+
+	public Bone getSkeleton() {
+		return skeleton;
+	}
+
+	public Matrix4f getTransform() {
+		return transform;
 	}
 
 	/**
@@ -116,7 +126,7 @@ public class Pose {
 
 		assert p1.skeleton == p2.skeleton;
 
-		Pose result = new Pose(p1.skeleton);
+		Pose result = new Pose(p1.skeleton, p1.transform);
 
 		for (Map.Entry<String, BoneTransformation> boneTransform : p1.boneTransforms.entrySet()) {
 			String name = boneTransform.getKey();
@@ -130,8 +140,17 @@ public class Pose {
 		return result;
 	}
 
-	public BoneTransformation get(String boneName) {
+	public BoneTransformation getRaw(String boneName) {
 		return boneTransforms.get(boneName);
+	}
+	
+	/**
+	 * get the Treansformation of a Bone
+	 * @param name
+	 * @return 
+	 */
+	public Matrix4f get(String name) {
+		return getRaw(name).asMatrix().mul(transform, new Matrix4f());
 	}
 
 	/**
@@ -142,11 +161,7 @@ public class Pose {
 	 */
 	public void setUniformData(Shader shader, String uniformName) {
 		float[] data = new float[16 * skeleton.boneCount()];
-		setUniformData(new Matrix4f(
-				1, 0, 0, 0,//this matrix is for flipping collada the right angle
-				0, 0, -1, 0,//still a bit hacky though
-				0, 1, 0, 0,//todo - replace with aiScene.rootTransformation
-				0, 0, 0, 1), skeleton, data);
+		setUniformData(transform, skeleton, data);
 
 		FloatBuffer buf = BufferUtils.createFloatBuffer(data.length);
 		buf.put(data);
@@ -164,7 +179,7 @@ public class Pose {
 	 * @param data the float array to store matrices into
 	 */
 	private void setUniformData(Matrix4f parent, Bone bone, float[] data) {
-		Matrix4f currentLocalBoneTransform = boneTransforms.get(bone.getName()).asMatrix();
+		Matrix4f currentLocalBoneTransform = getRaw(bone.getName()).asMatrix();
 		Matrix4f currentBoneTransform = parent.mul(currentLocalBoneTransform, new Matrix4f());
 		for (Bone child : bone.getChildren()) {
 			setUniformData(currentBoneTransform, child, data);
