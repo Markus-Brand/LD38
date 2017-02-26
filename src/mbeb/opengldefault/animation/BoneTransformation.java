@@ -12,15 +12,12 @@ public class BoneTransformation {
 		return new BoneTransformation(null, null, null);
 	}
 
-	public static final Matrix4f matFromAI(AIMatrix4x4 aimat) {
-		/*return new Matrix4f(aimat.a1(), aimat.a2(), aimat.a3(), aimat.a4(),
-		 aimat.b1(), aimat.b2(), aimat.b3(), aimat.b4(),
-		 aimat.c1(), aimat.c2(), aimat.c3(), aimat.c4(),
-		 aimat.d1(), aimat.d2(), aimat.d3(), aimat.d4());/**/
-		Matrix4f mat =
-				new Matrix4f(aimat.a1(), aimat.b1(), aimat.c1(), aimat.d1(), aimat.a2(), aimat.b2(), aimat.c2(),
-						aimat.d2(), aimat.a3(), aimat.b3(), aimat.c3(), aimat.d3(), aimat.a4(), aimat.b4(), aimat.c4(),
-						aimat.d4());
+	public static final Matrix4f matrixFromAI(AIMatrix4x4 aimat) {
+		Matrix4f mat = new Matrix4f(
+				aimat.a1(), aimat.b1(), aimat.c1(), aimat.d1(),
+				aimat.a2(), aimat.b2(), aimat.c2(),aimat.d2(),
+				aimat.a3(), aimat.b3(), aimat.c3(), aimat.d3(),
+				aimat.a4(), aimat.b4(), aimat.c4(), aimat.d4());
 		return mat;
 	}
 
@@ -148,6 +145,22 @@ public class BoneTransformation {
 
 	public Vector3f getScale() {
 		return scale;
+	}
+	
+	/**
+	 * check if this transformation is nearly the same as a provided matrix
+	 * @param other other matrix to check
+	 * @param epsilon the tolerance
+	 * @return whether the difference lies within tolerance
+	 */
+	public boolean isSameAs(Matrix4f other, float epsilon) {
+		Matrix4f diff = this.asMatrix().sub(other, new Matrix4f());
+
+		float distance = 0;
+		for (Float f: diff.get(new float[16])) {
+			distance += java.lang.Math.abs(f);
+		}
+		return distance < epsilon;
 	}
 
 	public void setScale(Vector3f scale) {

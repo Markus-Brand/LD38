@@ -11,7 +11,7 @@ import org.joml.*;
 /**
  * A (potentially) complex object inside a scene, with transformations
  */
-public class SceneObject {
+public class SceneObject implements BoundingBox.Owner {
 
 	private static final String TAG = "SceneObject";
 
