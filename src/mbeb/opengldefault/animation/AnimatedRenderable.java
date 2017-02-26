@@ -20,11 +20,6 @@ public class AnimatedRenderable implements IRenderable {
 
 	public AnimatedRenderable(AnimatedMesh mesh) {
 		this.mesh = mesh;
-
-		for (Animation anim : mesh.getAnimations()) {
-			System.out.println("Animation: " + anim.getName());
-		}
-
 	}
 
 	@Override
@@ -62,7 +57,6 @@ public class AnimatedRenderable implements IRenderable {
 		synchronized (animatorLock) {
 			getCurrentAnimations().add(animator);
 		}
-		//todo update animations maybe?
 	}
 
 	public void playAnimation(String name, boolean looping, boolean flipping) {

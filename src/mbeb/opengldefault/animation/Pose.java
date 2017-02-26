@@ -17,7 +17,7 @@ import org.lwjgl.*;
  */
 public class Pose {
 
-
+	/** A BoneTransformation for each bone */
 	private Map<String, BoneTransformation> boneTransforms = new HashMap<>();
 	private Bone skeleton;
 
@@ -69,7 +69,6 @@ public class Pose {
 				BoneTransformation afterTransform = this.boneTransforms.get(key);
 				beforeSet.setValue(afterTransform);
 				
-			} else {
 			}
 		}
 	}

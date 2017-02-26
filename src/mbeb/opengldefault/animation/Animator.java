@@ -12,14 +12,12 @@ public class Animator {
 	private boolean looping;
 	
 	private double speed;
-	private double intensity;
 
 	public Animator(Animation animation) {
 		this.animation = animation;
 		currentTime = 0;
 		looping = true;
 		speed = 1.0;
-		
 	}
 
 	public void setFadeInTime(double fadeInTime) {
@@ -44,14 +42,6 @@ public class Animator {
 
 	public void setSpeed(double speed) {
 		this.speed = speed;
-	}
-	
-	/**
-	 * for fades between poses: define how strong this animations pose replaces thw lower one in the animationStack
-	 * @return current opacity of this animation
-	 */
-	public float getOpactiy() {
-		return Math.min(1f, (float)(currentTime / fadeInTime));
 	}
 
 	/**

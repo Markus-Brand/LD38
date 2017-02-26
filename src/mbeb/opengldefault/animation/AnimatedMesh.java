@@ -1,6 +1,5 @@
 package mbeb.opengldefault.animation;
 
-
 import java.util.*;
 
 import mbeb.opengldefault.rendering.renderable.*;
@@ -49,9 +48,8 @@ public class AnimatedMesh implements IRenderable {
 
 	/**
 	 * return the Animation-object from this mesh with the given name
-	 * 
-	 * @param name
-	 *            the name to search for
+	 *
+	 * @param name the name to search for
 	 * @return null if no such animation was found
 	 */
 	public Animation getAnimationByName(String name) {
@@ -67,16 +65,14 @@ public class AnimatedMesh implements IRenderable {
 	 * @return the default bind pose of this mesh
 	 */
 	public Pose defaultPose() {
-		Pose p = new Pose(skeleton);
-		
+		Pose defaultPose = new Pose(skeleton);
+
 		skeleton.foreach((Bone bone) -> {
-			p.put(bone.getName(),
+			defaultPose.put(bone.getName(),
 					new BoneTransformation(bone.getDefaultBoneTransform()));
 		});
-		
-		return p;
+
+		return defaultPose;
 	}
-	
-	
 
 }
