@@ -72,10 +72,9 @@ public class AnimatedMesh implements IRenderable {
 	public Pose defaultPose() {
 		Pose defaultPose = new Pose(skeleton, getTransform());
 
-		skeleton.foreach((Bone bone) -> {
-			defaultPose.put(bone.getName(),
-					new BoneTransformation(bone.getDefaultBoneTransform()));
-		});
+		skeleton.foreach((Bone bone) -> 
+				defaultPose.put(bone.getName(),
+						new BoneTransformation(bone.getDefaultBoneTransform())));
 
 		return defaultPose;
 	}

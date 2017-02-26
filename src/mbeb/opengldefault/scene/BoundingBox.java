@@ -10,13 +10,15 @@ import org.joml.*;
  */
 public class BoundingBox {
 	
+	private static final String TAG = "BoundingBox";
+	
 	/**
 	 * An interface for Objects that have a BoundingBox
 	 */
 	public interface Owner {
 		BoundingBox getBoundingBox();
 		default void setBoundingBox(BoundingBox newBox) {
-			Log.error("BoundingBox.Owner", "Setting of BoundingBox not implemented here.");
+			Log.error(TAG + ".Owner", "Setting of BoundingBox not implemented here.");
 		}
 	}
 

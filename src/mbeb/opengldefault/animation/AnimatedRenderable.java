@@ -58,16 +58,14 @@ public class AnimatedRenderable implements IRenderable {
 		}
 	}
 
-	public void playAnimation(String name, boolean looping, boolean flipping) {
+	public void playAnimation(String name, double speed) {
 		Animation anim = mesh.getAnimationByName(name);
 		if (anim == null) {
 			Log.log(TAG, "No animation named: " + name);
 			return;
 		}
 		Animator animator = new Animator(anim);
-		animator.setFadeInTime(1);
-		animator.setSpeed(4);
-		//todo apply animation-flags
+		animator.setSpeed(speed);
 		playAnimation(animator);
 	}
 

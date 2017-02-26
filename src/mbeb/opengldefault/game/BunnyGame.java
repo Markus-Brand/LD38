@@ -127,19 +127,19 @@ public class BunnyGame implements IGame {
 				} catch (InterruptedException ex) {
 					ex.printStackTrace();
 				}
-				bunnyAnim.playAnimation("OhrenFlackern1", true, true);
+				bunnyAnim.playAnimation("OhrenFlackern1", 4);
 				try {
 					Thread.sleep(3000);
 				} catch (InterruptedException ex) {
 					ex.printStackTrace();
 				}
-				bunnyAnim.playAnimation("HeadBang", true, true);
+				bunnyAnim.playAnimation("HeadBang", 4);
 				try {
 					Thread.sleep(3000);
 				} catch (InterruptedException ex) {
 					ex.printStackTrace();
 				}
-				bunnyAnim.playAnimation("OhrenFlackern2", true, true);
+				bunnyAnim.playAnimation("OhrenFlackern2", 4);
 			}
 		}.start();/**/
 	}
