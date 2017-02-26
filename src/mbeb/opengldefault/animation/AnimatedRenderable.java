@@ -6,6 +6,7 @@ import mbeb.opengldefault.logging.Log;
 import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.scene.*;
+import org.joml.Matrix4f;
 
 /**
  * an animatedMesh together with some animation-state
@@ -32,9 +33,7 @@ public class AnimatedRenderable implements IRenderable {
 	@Override
 	public void render(Shader shader) {
 		//update pose uniforms
-
 		getCurrentPose().setUniformData(shader, "boneTransforms");
-
 		mesh.render(shader);
 	}
 
@@ -75,18 +74,34 @@ public class AnimatedRenderable implements IRenderable {
 	@Override
 	public BoundingBox getBoundingBox() {
 		if (animatedBoundingBox == null) {
-			animatedBoundingBox = new BoundingBox.Empty();
-
-			animatedBoundingBox = animatedBoundingBox.unionWith(mesh.getSkeleton().getBoundingBox());
-			
-			/*mesh.getSkeleton().foreach((Bone bone) -> {
-				BoundingBox boneBox = bone.getBoundingBox();
-				boneBox.setModelTransform(getCurrentPose().get(bone.getName()));
-				animatedBoundingBox = animatedBoundingBox.unionWith(boneBox);
-			});/**/
-
+			animatedBoundingBox = adjustWith(
+					new BoundingBox.Empty(),
+					mesh.getSkeleton(),
+					getCurrentPose().getTransform());
 		}
 		return animatedBoundingBox;
+	}
+	
+	/**
+	 * adjust the boundingBox recursively for a given skeleton
+	 * @param box the initial box
+	 * @param bone the skeleton to insert into the box
+	 * @param parentTransform
+	 * @return a larger box
+	 */
+	private BoundingBox adjustWith(BoundingBox box, Bone bone, Matrix4f parentTransform) {
+		Matrix4f boneTransform = getCurrentPose().getRaw(bone.getName()).asMatrix();
+		Matrix4f transform = parentTransform.mul(boneTransform, new Matrix4f());
+		
+		BoundingBox boneBox = bone.getBoundingBox();
+		boneBox.setModelTransform(transform);
+		box = box.unionWith(boneBox);
+		
+		for (Bone childBone : bone.getChildren()) {
+			box = adjustWith(box, childBone, transform);
+		}
+		
+		return box;
 	}
 
 	@Override

@@ -85,6 +85,10 @@ public class AnimatedMesh implements IRenderable {
 		return mesh.getTransform();
 	}
 
+	/**
+	 * set a static transformation for this mesh
+	 * @param transform 
+	 */
 	public void setTransform(Matrix4f transform) {
 		mesh.setTransform(transform);
 	}

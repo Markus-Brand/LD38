@@ -117,7 +117,6 @@ public class ObjectLoader {
 
 		if (isAnimated) {
 			skeleton = parseSkeleton(mesh, sceneStructure);
-			System.err.println("skeleton = " + skeleton);
 			vertexBoneWeights = loadVertexWeights(mesh, skeleton, 3);
 		}
 		Matrix4f sceneTransform = BoneTransformation.matrixFromAI(scene.mRootNode().mTransformation());
@@ -141,7 +140,6 @@ public class ObjectLoader {
 		if (isAnimated) {
 			AnimatedMesh animMesh = new AnimatedMesh(vaomesh, skeleton);
 			animMesh.setTransform(sceneTransform);
-			System.err.println("sceneTransform = " + sceneTransform);
 			loadAnimations(animMesh, scene);
 			return new AnimatedRenderable(animMesh);
 		} else {

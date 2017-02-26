@@ -1,31 +1,24 @@
 package mbeb.opengldefault.scene;
 
 import java.nio.FloatBuffer;
-import java.util.HashMap;
-import java.util.Map;
-import mbeb.opengldefault.animation.AnimatedRenderable;
 import mbeb.opengldefault.animation.Bone;
 import mbeb.opengldefault.animation.Pose;
 
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 import mbeb.opengldefault.camera.ICamera;
 import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.rendering.io.DataFragment;
-import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.StaticMeshes;
-import mbeb.opengldefault.rendering.renderable.VAORenderable;
 import mbeb.opengldefault.rendering.shader.Shader;
 
 public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 
 	private static final String TAG = "BoundingBoxRenderer";
 	
-	public static final boolean RENDER_BONE_BOXES = true;
+	public static final boolean RENDER_BONE_BOXES = false;
 
 	private static Shader shader;
 
@@ -48,17 +41,6 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 				.scale(obj.getBoundingBox().getLocalSize());
 	}
 	
-	@Override
-	public void renderSelf(SceneObject object, Matrix4f transform) {
-		shader.use();
-		
-		renderBox(object, transform);
-		if (RENDER_BONE_BOXES && object.getRenderable() != null && object.getRenderable().hasAnimations()) {
-			Pose pose = object.getRenderable().getCurrentPose();
-			renderBoneBoxes(pose.getSkeleton(), pose, transform.mul(pose.getTransform()));
-		}
-	}
-	
 	/**
 	 * render a single objects bounding box
 	 * @param obj
@@ -72,7 +54,17 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 		
 		trySettingModelUniform(boundingBoxTransform.mul(localTrans, new Matrix4f()));
 		StaticMeshes.getLineCube().render(shader);
+	}
+	
+	@Override
+	public void renderSelf(SceneObject object, Matrix4f transform) {
+		shader.use();
 		
+		renderBox(object, transform);
+		if (RENDER_BONE_BOXES && object.getRenderable() != null && object.getRenderable().hasAnimations()) {
+			Pose pose = object.getRenderable().getCurrentPose();
+			renderBoneBoxes(pose.getSkeleton(), pose, transform.mul(pose.getTransform()));
+		}
 	}
 	
 	/**
