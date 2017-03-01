@@ -80,7 +80,7 @@ public class OpenGLContext {
 		evaluateCommandLineArguments(args);
 		initOpenGL();
 
-		createWindow("Test window", false, getVideoModeWidth(), getVideoModeHeight());
+		createWindow("Test window", true, getVideoModeWidth(), getVideoModeHeight());
 		GL.createCapabilities();
 		GLErrors.checkForError(TAG, "createCapabilities");
 		
@@ -114,6 +114,14 @@ public class OpenGLContext {
 			// Poll for window events. The key callback above will only be
 			// invoked during this call.
 			glfwPollEvents();
+
+			if (KeyBoard.isKeyDown(GLFW_KEY_C)) {
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			}
+
+			if (KeyBoard.isKeyDown(GLFW_KEY_X)) {
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			}
 
 			if (KeyBoard.isKeyDown(GLFW_KEY_ESCAPE)) {
 				glfwSetWindowShouldClose(window, true); // We will detect this in our rendering loop

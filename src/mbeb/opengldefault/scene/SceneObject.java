@@ -27,16 +27,11 @@ public class SceneObject implements BoundingBox.Owner {
 	private List<SceneObject> subObjects;
 	/** the parent in the Scene-graph */
 	private SceneObject parent;
+	/** true, if the user hovers over the object currently */
+	private boolean selected;
 
 	/**
 	 * Create a new sceneObject. All parameters are optional
-	 *
-	 * @param renderable
-	 *            none
-	 * @param transformation
-	 *            identity
-	 * @param subObjects
-	 *            empty collection
 	 */
 	public SceneObject() {
 		this(null, new Matrix4f(), null);
@@ -233,6 +228,7 @@ public class SceneObject implements BoundingBox.Owner {
 	 */
 	public BoundingBox reCalculateBoundingBox() {
 		box = getRenderableBoundingBox();
+		
 		for (SceneObject o : getSubObjects()) {
 			adjustBoundingBoxFor(o);
 		}
@@ -246,13 +242,21 @@ public class SceneObject implements BoundingBox.Owner {
 	 */
 	private void adjustBoundingBoxFor(SceneObject object) {
 		if (box == null) {
-			box = new BoundingBox.Empty(getTransformation().asMatrix());
+			box = getRenderableBoundingBox();
 		}
 		box = box.unionWith(object.getBoundingBox());
 	}
 
 	//</editor-fold>
 
+	
+	public BoneTransformation getParentGlobalTranform() {
+		if (parent == null) {
+			return BoneTransformation.identity();
+		}
+		return parent.getGLobalTransformation();
+	}
+	
 	/**
 	 * Getter for the global Transformation
 	 *
@@ -262,7 +266,7 @@ public class SceneObject implements BoundingBox.Owner {
 		if (parent == null) {
 			return getTransformation();
 		} else {
-			return parent.getGLobalTransformation().and(getTransformation());
+			return getParentGlobalTranform().and(getTransformation());
 		}
 
 	}
@@ -274,5 +278,13 @@ public class SceneObject implements BoundingBox.Owner {
 	 */
 	public Vector3f getPosition() {
 		return getGLobalTransformation().applyTo3(new Vector3f());
+	}
+
+	public boolean isSelected() {
+		return selected;
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
 	}
 }

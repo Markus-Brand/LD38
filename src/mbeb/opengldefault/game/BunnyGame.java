@@ -152,7 +152,7 @@ public class BunnyGame extends Game {
 		followingBunny1.update(deltaTime);
 		followingBunny2.update(deltaTime);
 		followingBunny3.update(deltaTime);
-		followingBunny4.update(deltaTime);
+		//followingBunny4.update(deltaTime);
 		camEntity.update(deltaTime);
 
 		bunnyScene.update(deltaTime);
