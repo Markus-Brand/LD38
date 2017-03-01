@@ -32,6 +32,7 @@ public class BunnyGame implements IGame {
 	DirectionalLight dl;
 	SpotLight sl;
 	double timepassed = 0;
+	ArrayList<Light> lights = new ArrayList<>();
 
 	BezierCurve curve;
 
@@ -69,7 +70,6 @@ public class BunnyGame implements IGame {
 		defaultShader.addUniformBlockIndex(UBOManager.MATRICES);
 		bunnyScene.getLightManager().addShader(defaultShader);
 
-		final Random r = new Random();
 		pl = new PointLight(new Vector3f(0, 1, 0), new Vector3f(0, 10, 0), 300);
 		bunnyScene.getLightManager().addLight(pl);
 		dl = new DirectionalLight(new Vector3f(0, 1, 0), new Vector3f(0, 1, 0));
@@ -109,9 +109,7 @@ public class BunnyGame implements IGame {
 
 		glViewport(0, 0, OpenGLContext.getWidth(), OpenGLContext.getHeight());
 		GLErrors.checkForError(TAG, "glViewport");
-		if (timepassed > 5) {
-			dl.remove();
-		}
+
 		pl.setColor(new Color((float) java.lang.Math.sin(timepassed) / 2 + 0.5f, (float) 1.0, (float) java.lang.Math.cos(timepassed) / 2 + 0.5f));
 		pl.setPosition(new Vector3f((float) java.lang.Math.sin(timepassed) * 5, 10, (float) java.lang.Math.cos(timepassed) * 5));
 
