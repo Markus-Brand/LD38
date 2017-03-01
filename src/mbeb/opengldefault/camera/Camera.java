@@ -13,7 +13,8 @@ import org.lwjgl.*;
 
 public class Camera implements ICamera {
 	
-	public static final float FOV = (float) (java.lang.Math.PI / 2.8);
+	public static final float FOV_ANGLE = 70;
+	public static final float FOV = (float)java.lang.Math.toRadians(FOV_ANGLE);
 	public static final float NEAR_PLANE = 0.1f;
 	public static final float FAR_PLANE = 1000;
 

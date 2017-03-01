@@ -36,7 +36,6 @@ public class Log {
 				writer = new PrintWriter(logFile);
 			} catch(FileNotFoundException e1) {
 				e1.printStackTrace();
-				Log.error(TAG, "");
 			}
 			try {
 				if (!logFile.createNewFile()) {
