@@ -4,11 +4,15 @@ public class KeyBoard {
 
 	/** Class Name Tag */
 	private static final String TAG = "KeyBoard";
+	
+	private KeyBoard() {
+		//should never be instantiated
+	}
 
 	/**
 	 * Boolean array of all of the keys
 	 */
-	private static boolean[] keys;
+	private static final boolean[] keys;
 
 	static {
 		keys = new boolean[1024];

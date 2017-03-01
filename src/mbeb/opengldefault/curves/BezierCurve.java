@@ -90,7 +90,7 @@ public class BezierCurve {
 	 * @param segmentLengths
 	 *            input segment length
 	 */
-	public BezierCurve(final ArrayList<Vector3f> controlPoints, final ArrayList<Float> segmentLengths) {
+	public BezierCurve(final List<Vector3f> controlPoints, final List<Float> segmentLengths) {
 		this(controlPoints, ControlPointInputMode.CAMERAPOINTS, segmentLengths);
 	}
 
@@ -104,8 +104,8 @@ public class BezierCurve {
 	 * @param segmentLengths
 	 *            input segment length
 	 */
-	public BezierCurve(final ArrayList<Vector3f> controlPoints, final ControlPointInputMode mode,
-			final ArrayList<Float> segmentLengths) {
+	public BezierCurve(final List<Vector3f> controlPoints, final ControlPointInputMode mode,
+			final List<Float> segmentLengths) {
 		this.mode = mode;
 		setInputPoints(controlPoints);
 		setSegmentLengths(segmentLengths);
@@ -362,7 +362,7 @@ public class BezierCurve {
 	 * @param segmentLengths
 	 *            input segment lengths
 	 */
-	public final void setSegmentLengths(final ArrayList<Float> segmentLengths) {
+	public final void setSegmentLengths(final List<Float> segmentLengths) {
 		this.segmentLengths = segmentLengths;
 		maxLength = 0;
 		for (final float length : segmentLengths) {
@@ -397,8 +397,6 @@ public class BezierCurve {
 	/**
 	 * Returns bernstein Matrix
 	 *
-	 * @param progressInFragment
-	 *            the progress in the current Curve segment
 	 * @return bernstein Vector. ControlPointMatrix * bernsteinVector = resulting position
 	 */
 

@@ -7,12 +7,16 @@ import static org.lwjgl.opengl.GL31.*;
 import java.nio.*;
 
 import mbeb.opengldefault.logging.*;
-import mbeb.opengldefault.openglcontext.*;
 
 import org.joml.*;
 import org.lwjgl.*;
 
 public class Camera implements ICamera {
+	
+	public static final float FOV_ANGLE = 70;
+	public static final float FOV = (float)java.lang.Math.toRadians(FOV_ANGLE);
+	public static final float NEAR_PLANE = 0.1f;
+	public static final float FAR_PLANE = 1000;
 
 	/** Class Name Tag */
 	private static final String TAG = "Camera";
@@ -39,13 +43,13 @@ public class Camera implements ICamera {
 	 * Basic Camera Constructor. Sets the projection to a default perspective
 	 * projection and the view to Camera looking from origin along positive z
 	 * direction.
+	 * @param aspectRation the aspect ratio of the camera
 	 */
-	public Camera() {
+	public Camera(float aspectRation) {
 		projection = new Matrix4f();
 		view = new Matrix4f();
 		projectionView = null;
-		float fov = (float) (java.lang.Math.PI / 2.8);
-		projection.perspective(fov, OpenGLContext.getFramebufferWidth() / (float) OpenGLContext.getFramebufferHeight(), 0.1f, 100);
+		projection.perspective(FOV, aspectRation, NEAR_PLANE, FAR_PLANE);
 
 		view.lookAlong(new Vector3f(0, 0, 1), new Vector3f(0, 1, 0));
 
@@ -61,11 +65,12 @@ public class Camera implements ICamera {
 	}
 
 	private void updateView() {
-		Matrix4f view = new Matrix4f();
+		Matrix4f newView = new Matrix4f();
 
-		view.lookAt(getPosition(), getPosition().add(getViewDirection(), new Vector3f()), new Vector3f(0, 1, 0));
+		Vector3f lookCenter = getPosition().add(getViewDirection(), new Vector3f());
+		newView.lookAt(getPosition(), lookCenter, new Vector3f(0, 1, 0));
 
-		setView(view);
+		setView(newView);
 
 		updateUniformBlock();
 	}
