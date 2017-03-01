@@ -148,9 +148,9 @@ public class BoundingBox {
 	 */
 	public BoundingBox unionWith(final BoundingBox childBox) {
 		//We also need to check for updates in the child BB, because the BB could potentially grow, if the children have transformations on their own
-		final Vector3f[] childEdges = childBox.getParentGlobalCorners();
+		final Vector3f[] childCorners = childBox.getParentGlobalCorners();
 		BoundingBox bigger = this.duplicate();
-		for (final Vector3f corner : childEdges) {
+		for (final Vector3f corner : childCorners) {
 			bigger = bigger.extendTo(corner);
 		}
 		return bigger;
@@ -183,9 +183,9 @@ public class BoundingBox {
 	 */
 	public Vector3f[] getParentGlobalCorners() {
 		final Vector3f[] corners = getLocalCorners();
-		for (int e = 0; e < corners.length; e++) {
-			Vector4f corner = new Vector4f(corners[e], 1.0f).mul(getModelTransform());
-			corners[e] = new Vector3f(corner.x, corner.y, corner.z);
+		for (int c = 0; c < corners.length; c++) {
+			Vector4f corner = new Vector4f(corners[c], 1.0f).mul(getModelTransform());
+			corners[c] = new Vector3f(corner.x, corner.y, corner.z);
 		}
 		return corners;
 	}
@@ -200,8 +200,8 @@ public class BoundingBox {
 		final Vector3f[] parentGlobalCorners = getParentGlobalCorners();
 		final Vector4f[] globalCorners = new Vector4f[8];
 
-		for (int e = 0; e < globalCorners.length; e++) {
-			globalCorners[e] = new Vector4f(parentGlobalCorners[e], 1.0f).mul(parentTransform);
+		for (int c = 0; c < globalCorners.length; c++) {
+			globalCorners[c] = new Vector4f(parentGlobalCorners[c], 1.0f).mul(parentTransform);
 		}
 
 		return globalCorners;
@@ -219,8 +219,8 @@ public class BoundingBox {
 	public Vector3f[] getCornersOnScreen(final Matrix4f parentTransform, final ICamera camera) {
 		final Vector4f[] globalCorners = getGlobalCorners(parentTransform);
 		final Vector3f[] screenCorners = new Vector3f[8];
-		for (int e = 0; e < globalCorners.length; e++) {
-			screenCorners[e] = camera.getPosOnScreen(globalCorners[e]);
+		for (int c = 0; c < globalCorners.length; c++) {
+			screenCorners[c] = camera.getPosOnScreen(globalCorners[c]);
 		}
 		return screenCorners;
 	}

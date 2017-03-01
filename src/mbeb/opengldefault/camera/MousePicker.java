@@ -11,10 +11,10 @@ import org.joml.Vector4f;
 
 public class MousePicker {
 	private Vector3f ray;
-	private ICamera camera;
+	private final ICamera camera;
 
-	public MousePicker(ICamera camera2) {
-		this.camera = camera2;
+	public MousePicker(final ICamera camera) {
+		this.camera = camera;
 	}
 
 	public Vector3f getRay() {
