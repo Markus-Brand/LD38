@@ -143,6 +143,13 @@ public class LightManager {
 
 	public void addShader(final Shader shader) {
 		shaders.add(shader);
+
+		shader.updateParameter("DIRECTIONAL_LIGHT_CAPACITY", directionalLightCapacity);
+		shader.updateParameter("POINT_LIGHT_CAPACITY", pointLightCapacity);
+		shader.updateParameter("SPOT_LIGHT_CAPACITY", spotLightCapacity);
+
+		shader.compile();
+
 		shader.addUniformBlockIndex(UBOManager.DIRECTIONALLIGHT);
 		shader.addUniformBlockIndex(UBOManager.POINTLIGHT);
 		shader.addUniformBlockIndex(UBOManager.SPOTLIGHT);
@@ -150,10 +157,6 @@ public class LightManager {
 		directionalLightManager.updateShader(shader);
 		pointLightManager.updateShader(shader);
 		spotLightManager.updateShader(shader);
-
-		/*shader.updateParameter("DIRECTIONAL_LIGHT_CAPACITY", directionalLightCapacity, false);
-		shader.updateParameter("POINT_LIGHT_CAPACITY", pointLightCapacity, false);
-		shader.updateParameter("SPOT_LIGHT_CAPACITY", spotLightCapacity, true);*/
 	}
 
 	private void removeShader(final Shader shader) {

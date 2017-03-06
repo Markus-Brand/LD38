@@ -33,7 +33,8 @@ public class SpotLight extends Light {
 		this.quadratic = quadratic;
 	}
 
-	public SpotLight(final Color color, final Vector3f position, final Vector3f direction, final float cutOff, final float outerCutOff, final float constant, final float linear, final float quadratic) {
+	public SpotLight(final Color color, final Vector3f position, final Vector3f direction, final float cutOff, final float outerCutOff, final float constant, final float linear,
+			final float quadratic) {
 		this(vectorFromColor(color), position, direction, cutOff, outerCutOff, constant, linear, quadratic);
 	}
 

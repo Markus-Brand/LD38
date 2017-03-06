@@ -1,6 +1,7 @@
 package mbeb.opengldefault.scene;
 
 import mbeb.opengldefault.camera.*;
+import mbeb.opengldefault.logging.Log;
 
 import org.joml.*;
 
@@ -8,6 +9,18 @@ import org.joml.*;
  * A simple struct defining a box-like area in the world
  */
 public class BoundingBox {
+
+	private static final String TAG = "BoundingBox";
+	
+	/**
+	 * An interface for Objects that have a BoundingBox
+	 */
+	public interface Owner {
+		BoundingBox getBoundingBox();
+		default void setBoundingBox(BoundingBox newBox) {
+			Log.error(TAG + ".Owner", "Setting of BoundingBox not implemented here.");
+		}
+	}
 
 	/**
 	 * A boundingBox Null-object, indicating that it is empty
@@ -39,7 +52,11 @@ public class BoundingBox {
 			return new BoundingBox(localVertex, new Vector3f(0), modelTransform);
 		}
 
-	};
+		@Override
+		public boolean isEmpty() {
+			return true;
+		}
+	}
 
 	/**
 	 * local 3d aabb
@@ -48,7 +65,7 @@ public class BoundingBox {
 	protected Vector3f localSize;
 
 	/**
-	 * just the transformation for this object
+	 * the transformation for this object
 	 */
 	protected Matrix4f modelTransform;
 
@@ -66,7 +83,8 @@ public class BoundingBox {
 	 * @return a new equivalent BoundingBox
 	 */
 	public BoundingBox duplicate() {
-		return new BoundingBox(new Vector3f(localStart), new Vector3f(localSize), modelTransform);
+		BoundingBox clone = new BoundingBox(new Vector3f(localStart), new Vector3f(localSize), modelTransform);
+		return clone;
 	}
 
 	/**
@@ -91,11 +109,26 @@ public class BoundingBox {
 
 		return this;
 	}
+	
+	public boolean isEmpty() {
+		return false;
+	}
 
+	/**
+	 * Getter for the model transform
+	 *
+	 * @return the model transform
+	 */
 	public Matrix4f getModelTransform() {
 		return modelTransform;
 	}
 
+	/**
+	 * Setter for the model Transform
+	 *
+	 * @param transform
+	 *            new model transform
+	 */
 	public void setModelTransform(final Matrix4f transform) {
 		this.modelTransform = transform;
 	}
@@ -115,50 +148,67 @@ public class BoundingBox {
 	 */
 	public BoundingBox unionWith(final BoundingBox childBox) {
 		//We also need to check for updates in the child BB, because the BB could potentially grow, if the children have transformations on their own
-		final Vector3f[] childEdges = childBox.getGlobalEdges();
+		final Vector3f[] childCorners = childBox.getParentGlobalCorners();
 		BoundingBox bigger = this.duplicate();
-		for (final Vector3f edge : childEdges) {
-			bigger = bigger.extendTo(edge);
+		for (final Vector3f corner : childCorners) {
+			bigger = bigger.extendTo(corner);
 		}
 		return bigger;
 	}
 
 	/**
-	 * collect the 8 edges in local space
+	 * collect the 8 corners in local space
 	 *
 	 * @return
 	 */
-	private Vector3f[] getLocalEdges() {
-		final Vector3f[] rawEdges = new Vector3f[8];
+	public Vector3f[] getLocalCorners() {
+		final Vector3f[] rawCorners = new Vector3f[8];
 		for (int x = 0; x <= 1; x++) {
 			for (int y = 0; y <= 1; y++) {
 				for (int z = 0; z <= 1; z++) {
 					final Vector3f res = new Vector3f(localSize);
 					res.mul(x, y, z);
 					res.add(localStart);
-					rawEdges[x * 4 + y * 2 + z] = res;
+					rawCorners[x * 4 + y * 2 + z] = res;
 				}
 			}
 		}
-		return rawEdges;
+		return rawCorners;
 	}
 
 	/**
-	 * apply own transformation to local edges and return them
+	 * apply own transformation to local corners and return them
 	 *
 	 * @return
 	 */
-	private Vector3f[] getGlobalEdges() {
-		final Vector3f[] edges = getLocalEdges();
-		for (int e = 0; e < edges.length; e++) {
-			Vector4f edge = new Vector4f(edges[e], 1.0f).mul(getModelTransform());
-			edges[e] = new Vector3f(edge.x, edge.y, edge.z);
+	public Vector3f[] getParentGlobalCorners() {
+		final Vector3f[] corners = getLocalCorners();
+		for (int c = 0; c < corners.length; c++) {
+			Vector4f corner = new Vector4f(corners[c], 1.0f).mul(getModelTransform());
+			corners[c] = new Vector3f(corner.x, corner.y, corner.z);
 		}
-		return edges;
+		return corners;
 	}
 
 	/**
-	 * calculate the screen-space positions of my 8 edges
+	 * apply parent
+	 *
+	 * @param parentTransform
+	 * @return
+	 */
+	public Vector4f[] getGlobalCorners(final Matrix4f parentTransform) {
+		final Vector3f[] parentGlobalCorners = getParentGlobalCorners();
+		final Vector4f[] globalCorners = new Vector4f[8];
+
+		for (int c = 0; c < globalCorners.length; c++) {
+			globalCorners[c] = new Vector4f(parentGlobalCorners[c], 1.0f).mul(parentTransform);
+		}
+
+		return globalCorners;
+	}
+
+	/**
+	 * calculate the screen-space positions of my 8 corners
 	 *
 	 * @param parentTransform
 	 *            the boundingBoxes parent transformation
@@ -166,12 +216,114 @@ public class BoundingBox {
 	 *            the camera to look from
 	 * @return screen-space positions
 	 */
-	public Vector3f[] getEdgesOnScreen(final Matrix4f parentTransform, final ICamera camera) {
-		//apply to edges
-		final Vector3f[] edges = getGlobalEdges();
-		for (int e = 0; e < edges.length; e++) {
-			edges[e] = camera.getPosOnScreen(new Vector4f(edges[e], 1.0f).mul(parentTransform));
+	public Vector3f[] getCornersOnScreen(final Matrix4f parentTransform, final ICamera camera) {
+		final Vector4f[] globalCorners = getGlobalCorners(parentTransform);
+		final Vector3f[] screenCorners = new Vector3f[8];
+		for (int c = 0; c < globalCorners.length; c++) {
+			screenCorners[c] = camera.getPosOnScreen(globalCorners[c]);
 		}
-		return edges;
+		return screenCorners;
+	}
+
+	private BoundingBox getGlobalBoundinBox(final Matrix4f parentTransform) {
+		final Vector4f[] globalCorners = getGlobalCorners(parentTransform);
+		float minX = globalCorners[0].x, minY = globalCorners[0].y, minZ = globalCorners[0].z, maxX =
+				globalCorners[0].x, maxY = globalCorners[0].y, maxZ = globalCorners[0].z;
+
+		for (Vector4f globalCorner : globalCorners) {
+			minX = java.lang.Math.min(globalCorner.x, minX);
+			minY = java.lang.Math.min(globalCorner.y, minY);
+			minZ = java.lang.Math.min(globalCorner.z, minZ);
+			maxX = java.lang.Math.max(globalCorner.x, maxX);
+			maxY = java.lang.Math.max(globalCorner.y, maxY);
+			maxZ = java.lang.Math.max(globalCorner.z, maxZ);
+		}
+
+		return new BoundingBox(new Vector3f(minX, minY, minZ), new Vector3f(maxX - minX, maxY - minY, maxZ - minZ));
+	}
+
+	/**
+	 * Returns the center of the BoundingBox
+	 *
+	 * @return center of the BoundingBox
+	 */
+	public Vector3f getCenter() {
+		Vector3f halfSize = localSize.mul(0.5f, new Vector3f());
+		return localStart.add(halfSize, new Vector3f());
+	}
+
+	public Vector3f getLocalStart() {
+		return localStart;
+	}
+
+	public Vector3f getLocalSize() {
+		return localSize;
+	}
+
+	public Vector3f getLocalEnd() {
+		return getLocalStart().add(getLocalSize(), new Vector3f());
+	}
+
+	public boolean intersectsRay(Vector3f origin, Vector3f direction, Matrix4f parentTransform)
+	{
+		BoundingBox globalBB = getGlobalBoundinBox(parentTransform);
+		Vector3f min = globalBB.getLocalStart();
+		Vector3f max = globalBB.getLocalEnd();
+		if (min == null || max == null) {
+			System.out.println(min + " " + max);
+			return false;
+		}
+		float tmin = (min.x - origin.x) / direction.x;
+		float tmax = (max.x - origin.x) / direction.x;
+
+		if (tmin > tmax) {
+			float buffer = tmin;
+			tmin = tmax;
+			tmax = buffer;
+		}
+
+		float tymin = (min.y - origin.y) / direction.y;
+		float tymax = (max.y - origin.y) / direction.y;
+
+		if (tymin > tymax) {
+			float buffer = tymin;
+			tymin = tymax;
+			tymax = buffer;
+		}
+
+		if (tmin > tymax || tymin > tmax) {
+			return false;
+		}
+
+		if (tymin > tmin) {
+			tmin = tymin;
+		}
+
+		if (tymax < tmax) {
+			tmax = tymax;
+		}
+
+		float tzmin = (min.z - origin.z) / direction.z;
+		float tzmax = (max.z - origin.z) / direction.z;
+
+		if (tzmin > tzmax) {
+			float buffer = tzmin;
+			tzmin = tzmax;
+			tzmax = buffer;
+		}
+
+		if (tmin > tzmax || tzmin > tmax) {
+			return false;
+		}
+
+		if (tzmin > tmin) {
+			tmin = tzmin;
+		}
+
+		if (tzmax < tmax) {
+			tmax = tzmax;
+		}
+
+		return true;
 	}
 }

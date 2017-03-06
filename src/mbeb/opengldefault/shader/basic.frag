@@ -8,36 +8,9 @@ out vec4 color;
 
 uniform sampler2D u_texture;
 
-//size 32
-struct DirectionalLight{
-	vec3 direction;
-	vec3 color;
-};
-	
-//size 48
-struct PointLight{
-	vec3 position;
-
-	vec3 color;
-
-	float constant;
-	float linear;
-	float quadratic;
-};
-
-//size 64
-struct SpotLight{
-	vec3 position;
-	vec3 direction;
-	vec3 color;
-
-	float cutoff;
-	float outerCutoff;
-
-	float constant;
-	float linear;
-	float quadratic;
-};
+#include modules/Struct_DirLight.glsl
+#include modules/Struct_PointLight.glsl
+#include modules/Struct_SpotLight.glsl
 
 float ambientStrength = 0.04f;
 float specularStrength = 2.5f;
@@ -94,7 +67,7 @@ vec3 calcPointLight(PointLight light, vec3 norm, vec3 viewDir);
 vec3 calcSpotLight(SpotLight light, vec3 norm, vec3 viewDir);
 
 vec3 calcNormal(vec3 normalIn, vec3 fragPos){
-	return normalize(normalIn) + vec3(0.03 * cos(fragPos.x * 120f +  8f * time), 0.03 *  sin(fragPos.y * 130f + 7f * time), 0.03 *  sin(fragPos.z * 140f + 5f * time));
+	return normalize(normalIn) + vec3(0.03 * cos(fragPos.x * 120.0f +  8.0f * time), 0.03 *  sin(fragPos.y * 130.0f + 7.0f * time), 0.03 *  sin(fragPos.z * 140.0f + 5.0f * time));
 }
 
 void main(){ 
@@ -173,10 +146,6 @@ vec3 calcDirectionalLight(DirectionalLight light, vec3 norm, vec3 viewDir){
 }
 
 vec3 calcPointLight(PointLight light, vec3 norm, vec3 viewDir){
-
-	#if OPTIMIZED_LIGHT_ENABLED == 1
-	if(light.color.r + light.color.g + light.color.b == 0) return vec3(0);
-	#endif
 
 	vec3 direction = light.position - pos;
 

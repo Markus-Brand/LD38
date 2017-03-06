@@ -4,17 +4,21 @@ import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.light.*;
 import mbeb.opengldefault.rendering.renderable.*;
 
+import org.joml.*;
+
 /**
  * A scene is an object in which objects live and the camera moves. There should
  * be always one active scene that gets rendered.
  */
 public class Scene {
 
+	private final LightManager lightManager;
 	private final SceneGraphRenderer renderer;
-	private final SceneObject sceneGraph;
+	private final SceneGraphRenderer boundingBoxRenderer;
+	private final SceneObject sceneGraphRoot;
 	private final ICamera camera;
 	private Skybox skybox;
-	private final LightManager lightManager;
+	private final MousePicker picker;
 
 	public Scene(final ICamera cam) {
 		this(cam, null);
@@ -24,12 +28,14 @@ public class Scene {
 		this.camera = cam;
 		this.skybox = skybox;
 		this.lightManager = new LightManager();
-		this.sceneGraph = new SceneObject();
-		renderer = new VisibleSceneGraphRenderer(sceneGraph, cam);
+		this.sceneGraphRoot = new SceneObject();
+		renderer = new VisibleSceneGraphRenderer(sceneGraphRoot, cam);
+		boundingBoxRenderer = new BoundingBoxRenderer(sceneGraphRoot, cam);
+		picker = new MousePicker(camera);
 	}
 
 	public SceneObject getSceneGraph() {
-		return sceneGraph;
+		return sceneGraphRoot;
 	}
 
 	public LightManager getLightManager() {
@@ -38,8 +44,9 @@ public class Scene {
 
 	public void update(final double deltaTime) {
 		camera.update(deltaTime);
-		sceneGraph.update(deltaTime);
 		lightManager.update(deltaTime);
+		sceneGraphRoot.update(deltaTime);
+		picker.update(deltaTime);
 	}
 
 	public void setSkybox(final Skybox skybox) {
@@ -47,7 +54,15 @@ public class Scene {
 	}
 
 	public void render() {
+		render(false);
+	}
+
+	public void render(final boolean renderBoundingBoxes) {
 		renderer.render();
+		picker.searchBBs(sceneGraphRoot, new Matrix4f());
+		if (renderBoundingBoxes) {
+			boundingBoxRenderer.render();
+		}
 		if (skybox != null) {
 			skybox.render();
 		}

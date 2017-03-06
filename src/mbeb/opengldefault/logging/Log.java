@@ -38,9 +38,11 @@ public class Log {
 				e1.printStackTrace();
 			}
 			try {
-				logFile.createNewFile();
+				if (!logFile.createNewFile()) {
+					Log.error(TAG, "Cannot create logging File");
+				}
 			} catch(final IOException e) {
-				e.printStackTrace();
+				Log.error(TAG, "Error creating logging file", e);
 			}
 		}
 	}
@@ -76,16 +78,31 @@ public class Log {
 	/**
 	 * error message
 	 *
-	 * @param message
-	 *            the object (mostly Strings) being logged
+	 * @param tag
+	 * @param obj
 	 */
 	public static void error(final String tag, final Object obj) {
+		error(tag, obj, null);
+	}
+
+	/**
+	 * error message
+	 *
+	 * @param tag
+	 * @param obj
+	 * @param t
+	 */
+	public static void error(final String tag, final Object obj, final Throwable t) {
 		if (logMode == LogMode.NONE) {
 			return;
 		}
-		final String log = constructErrorMessage(obj, "ERR: ", tag);
+		final Object toLog = (t == null ? obj : (obj.toString() + " (" + t.getLocalizedMessage() + ")"));
+		final String log = constructErrorMessage(toLog, "ERR: ", tag);
 		if (logMode == LogMode.CONSOLE) {
 			System.err.println(log);
+			if (t != null) {
+				t.printStackTrace(System.err);
+			}
 		} else {
 			writer.println(log);
 			writer.flush();
@@ -98,7 +115,9 @@ public class Log {
 		final Date today = Calendar.getInstance().getTime();
 		String log = df.format(today);
 		log += info;
-		log += "In class " + tag + ": ";
+		if (tag != null) {
+			log += "In class " + tag + ": ";
+		}
 		log += message;
 		return log;
 	}
@@ -106,9 +125,9 @@ public class Log {
 	/**
 	 * Assert that condition is false
 	 *
+	 * @param tag
 	 * @param condition
-	 * @param message
-	 *            the object (mostly Strings) being logged
+	 * @param obj
 	 */
 	public static void assertFalse(final String tag, final boolean condition, final Object obj) {
 		if (logMode == LogMode.NONE || !condition) {
@@ -126,9 +145,9 @@ public class Log {
 	/**
 	 * Assert that condition is true
 	 *
+	 * @param tag
 	 * @param condition
-	 * @param message
-	 *            the object (mostly Strings) being logged
+	 * @param obj
 	 */
 	public static void assertTrue(final String tag, final boolean condition, final Object obj) {
 		if (logMode == LogMode.NONE || condition) {
@@ -146,10 +165,10 @@ public class Log {
 	/**
 	 * Assert if o1 equals o2
 	 *
+	 * @param tag
 	 * @param o1
 	 * @param o2
-	 * @param message
-	 *            the object (mostly Strings) being logged
+	 * @param obj
 	 */
 	public static void assertIfEquals(final String tag, final Object o1, final Object o2, final Object obj) {
 		if (logMode == LogMode.NONE || !o1.equals(o2)) {
@@ -167,10 +186,10 @@ public class Log {
 	/**
 	 * Assert if o1 doesn't equal o2
 	 *
+	 * @param tag
 	 * @param o1
 	 * @param o2
-	 * @param message
-	 *            the object (mostly Strings) being logged
+	 * @param obj
 	 */
 	public static void assertIfNotEquals(final String tag, final Object o1, final Object o2, final Object obj) {
 		if (logMode == LogMode.NONE || o1.equals(o2)) {

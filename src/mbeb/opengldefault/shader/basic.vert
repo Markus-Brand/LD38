@@ -6,15 +6,9 @@ out vec2 tex;
 out vec3 pos;
 out vec3 normal;
 
-layout (std140) uniform Matrices{	
-	uniform mat4 projection;
-	uniform mat4 view;
-	uniform mat4 projectionView;
-	uniform mat4 skyboxView;
-};
+#include modules/UBO_Matrices.glsl
 
 uniform mat4 model;
-
 
 void main(){ 
 	pos = vec3(model * vec4(position, 1.0f));

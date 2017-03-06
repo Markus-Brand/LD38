@@ -8,10 +8,10 @@ import java.nio.*;
 import java.util.*;
 import java.util.concurrent.atomic.*;
 
+import org.lwjgl.*;
+
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.shader.*;
-
-import org.lwjgl.*;
 
 public class LightTypeManager<L extends Light> {
 	private static final String TAG = "LightTypeManager";
@@ -28,7 +28,7 @@ public class LightTypeManager<L extends Light> {
 	public LightTypeManager(final int initialCapacity, final int UBOBaseID, final int lightBlockSize, final String shaderLightTypeParameterName) {
 		this.UBOBaseID = UBOBaseID;
 		this.lightCapacity = initialCapacity;
-		this.lights = new ArrayList<L>();
+		this.lights = new ArrayList<>();
 		this.lightBlockSize = lightBlockSize;
 		this.shaderLightTypeParameterName = shaderLightTypeParameterName;
 

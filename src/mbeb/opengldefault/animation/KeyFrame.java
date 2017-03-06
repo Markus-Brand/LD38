@@ -21,6 +21,10 @@ public class KeyFrame {
 		return pose;
 	}
 
+	/**
+	 * merge the data of a given KeyFrame into this one
+	 * @param newOne 
+	 */
 	public void mergeWith(KeyFrame newOne) {
 		getPose().mergeWith(newOne.getPose());
 	}

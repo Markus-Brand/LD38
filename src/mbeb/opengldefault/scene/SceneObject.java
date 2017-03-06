@@ -11,7 +11,7 @@ import org.joml.*;
 /**
  * A (potentially) complex object inside a scene, with transformations
  */
-public class SceneObject {
+public class SceneObject implements BoundingBox.Owner {
 
 	private static final String TAG = "SceneObject";
 
@@ -22,21 +22,16 @@ public class SceneObject {
 	/** the combined boundingBox for this object(renderable+subObjects) */
 	private BoundingBox box;
 	/** this objects Transformation */
-	private BoneTransformation myTransformation;
+	private BoneTransformation transformation;
 	/** all subObjects (which inherit transformations) */
 	private List<SceneObject> subObjects;
 	/** the parent in the Scene-graph */
 	private SceneObject parent;
+	/** true, if the user hovers over the object currently */
+	private boolean selected;
 
 	/**
 	 * Create a new sceneObject. All parameters are optional
-	 *
-	 * @param renderable
-	 *            none
-	 * @param myTransformation
-	 *            identity
-	 * @param subObjects
-	 *            empty collection
 	 */
 	public SceneObject() {
 		this(null, new Matrix4f(), null);
@@ -101,7 +96,7 @@ public class SceneObject {
 	 *            Children Objects
 	 */
 	public SceneObject(IRenderable renderable, BoneTransformation myTransformation, List<SceneObject> subObjects) {
-		this.myTransformation = myTransformation;
+		this.transformation = myTransformation;
 		this.subObjects = subObjects;
 		this.renderable = renderable;
 		box = null;
@@ -111,10 +106,10 @@ public class SceneObject {
 	 * @return this objects current Tranformation
 	 */
 	public BoneTransformation getTransformation() {
-		if (myTransformation == null) {
-			myTransformation = new BoneTransformation(new Matrix4f());
+		if (transformation == null) {
+			transformation = new BoneTransformation(new Matrix4f());
 		}
-		return myTransformation;
+		return transformation;
 	}
 
 	/**
@@ -190,6 +185,12 @@ public class SceneObject {
 		return shader != null;
 	}
 
+	/**
+	 * Updates the object
+	 *
+	 * @param deltaTime
+	 *            time since the last update
+	 */
 	public void update(double deltaTime) {
 		if (getRenderable() != null) {
 			getRenderable().update(deltaTime);
@@ -227,6 +228,7 @@ public class SceneObject {
 	 */
 	public BoundingBox reCalculateBoundingBox() {
 		box = getRenderableBoundingBox();
+		
 		for (SceneObject o : getSubObjects()) {
 			adjustBoundingBoxFor(o);
 		}
@@ -240,9 +242,49 @@ public class SceneObject {
 	 */
 	private void adjustBoundingBoxFor(SceneObject object) {
 		if (box == null) {
-			box = new BoundingBox.Empty(getTransformation().asMatrix());
+			box = getRenderableBoundingBox();
 		}
 		box = box.unionWith(object.getBoundingBox());
 	}
+
 	//</editor-fold>
+
+	
+	public BoneTransformation getParentGlobalTranform() {
+		if (parent == null) {
+			return BoneTransformation.identity();
+		}
+		return parent.getGLobalTransformation();
+	}
+	
+	/**
+	 * Getter for the global Transformation
+	 *
+	 * @return global Transformation
+	 */
+	public BoneTransformation getGLobalTransformation() {
+		if (parent == null) {
+			return getTransformation();
+		} else {
+			return getParentGlobalTranform().and(getTransformation());
+		}
+
+	}
+
+	/**
+	 * Getter for the position of the center of the BoundingBox
+	 *
+	 * @return Objects position
+	 */
+	public Vector3f getPosition() {
+		return getGLobalTransformation().applyTo3(new Vector3f());
+	}
+
+	public boolean isSelected() {
+		return selected;
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
 }
