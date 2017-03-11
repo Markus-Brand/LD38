@@ -11,10 +11,10 @@ import java.text.*;
 import java.util.*;
 import java.util.regex.*;
 
-import mbeb.opengldefault.logging.*;
-
 import org.lwjgl.*;
 import org.lwjgl.opengl.*;
+
+import mbeb.opengldefault.logging.*;
 
 /**
  * Shader Object used for rendering a {@link mbeb.opengldefault.rendering.renderable.IRenderable}
@@ -188,6 +188,7 @@ public class Shader {
 	private void setUniformBlockIndex(final int index, final String name) {
 		ensureCompiled();
 		final int uniformBlockIndex = glGetUniformBlockIndex(shaderProgram, name);
+		GLErrors.checkForError(TAG, "glGetUniformBlockIndex");
 		glUniformBlockBinding(shaderProgram, uniformBlockIndex, index);
 		GLErrors.checkForError(TAG, "glUniformBlockBinding");
 	}
@@ -223,12 +224,12 @@ public class Shader {
 	 */
 	public int getUniform(final String name, final boolean logAnError) {
 		ensureCompiled();
-		final int loc = glGetUniformLocation(shaderProgram, name);
+		final int location = glGetUniformLocation(shaderProgram, name);
 		GLErrors.checkForError(TAG, "glGetUniformLocation: " + ((name != null) ? name : "null"));
-		if (logAnError && loc < 0) {
+		if (logAnError && location < 0) {
 			Log.error(TAG, "GetUniform failed: " + name);
 		}
-		return loc;
+		return location;
 	}
 
 	public String getParameter(final String name) {
@@ -266,7 +267,8 @@ public class Shader {
 
 	/**
 	 * Compiles Vertex Shader
-	 *
+	 * TODO unify compile<i>name</i>shader calls
+	 * 
 	 * @param paramString
 	 *            Shader Header
 	 * @return vertex shader object
@@ -274,12 +276,17 @@ public class Shader {
 	private int compileVertexShader() {
 		final String sourceString = preprocessor.getProcessedShaderFile(vertexPath);
 		final int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+		GLErrors.checkForError(TAG, "glCreateShader");
 		glShaderSource(vertexShader, sourceString);
+		GLErrors.checkForError(TAG, "glShaderSource");
 		glCompileShader(vertexShader);
+		GLErrors.checkForError(TAG, "glCompileShader");
 		final int compileSuccess = glGetShaderi(vertexShader, GL_COMPILE_STATUS);
+		GLErrors.checkForError(TAG, "glGetShaderi");
 		if (compileSuccess != 1) {
 			Log.error(TAG, "Error compiling vertex shader: " + compileSuccess);
 			final String log = glGetShaderInfoLog(vertexShader);
+			GLErrors.checkForError(TAG, "glGetShaderInfoLog");
 			printDebug(log, sourceString, vertexPath);
 		}
 		return vertexShader;
@@ -402,6 +409,7 @@ public class Shader {
 		if (tesEvalShader != -1) {
 			glAttachShader(shaderProgram, tesEvalShader);
 		}
+		GLErrors.checkForError(TAG, "glAttachShader");
 		glLinkProgram(shaderProgram);
 		final IntBuffer buffer = BufferUtils.createIntBuffer(1);
 		GL20.glGetProgramiv(shaderProgram, GL_LINK_STATUS, buffer);

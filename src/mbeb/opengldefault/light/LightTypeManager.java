@@ -13,10 +13,13 @@ import org.lwjgl.*;
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.shader.*;
 
+/**
+ * @author Erik + Merlin + Markus :)
+ */
 public class LightTypeManager<L extends Light> {
 	private static final String TAG = "LightTypeManager";
 
-	private static int BYTES_PER_BLOCK = 16;
+	private static int BYTES_PER_BLOCK = 16; // 1 Block = four 32bit floats = 16byte
 	private final int UBOBaseID;
 	private final int lightBlockSize;
 	private final String shaderLightTypeParameterName;
@@ -33,11 +36,12 @@ public class LightTypeManager<L extends Light> {
 		this.shaderLightTypeParameterName = shaderLightTypeParameterName;
 
 		this.UBO = glGenBuffers();
+		GLErrors.checkForError(TAG, "glGenBuffers");
 		resizeBuffer();
 	}
 
 	/**
-	 * adjusts capacity of UBO and keeps data in it
+	 * adjusts capacity of UBO and keeps it's data up to date
 	 */
 	private void resizeBuffer() {
 		glBindBuffer(GL_UNIFORM_BUFFER, UBO);
@@ -49,30 +53,27 @@ public class LightTypeManager<L extends Light> {
 		glBindBufferBase(GL_UNIFORM_BUFFER, UBOBaseID, UBO);
 		GLErrors.checkForError(TAG, "glBindBufferBase");
 
-		saveBufferSizes();
+		saveBufferSize();
 		bufferData();
 		//updateShaders();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		GLErrors.checkForError(TAG, "glBindBuffer");
 	}
 
 	/**
-	 * calculates number of Bytes which are needed to store the light data capacity
-	 *
+	 * calculates number of bytes which are needed to store the light data capacity
+	 * 
 	 * @return
 	 */
 	private int getBufferSize() {
-		int blockCount = 0;
-
-		blockCount += lightCapacity * lightBlockSize * BYTES_PER_BLOCK;
-
-		return blockCount;
+		return lightCapacity * lightBlockSize * BYTES_PER_BLOCK;
 	}
 
 	/**
-	 * saves the 3 buffer sizes in the beginning of the UBO
+	 * stores the buffer size at the beginning of the UBO
 	 */
-	private void saveBufferSizes() {
+	private void saveBufferSize() {
 		glBindBuffer(GL_UNIFORM_BUFFER, UBO);
 		GLErrors.checkForError(TAG, "glBindBuffer");
 
@@ -85,6 +86,9 @@ public class LightTypeManager<L extends Light> {
 		GLErrors.checkForError(TAG, "glBufferSubData");
 	}
 
+	/**
+	 * stores the data for each light in the UBO
+	 */
 	private void bufferData() {
 		final FloatBuffer dataBuffer = BufferUtils.createFloatBuffer(getBufferSize());
 
@@ -96,16 +100,32 @@ public class LightTypeManager<L extends Light> {
 		GLErrors.checkForError(TAG, "glBufferSubData");
 	}
 
+	/**
+	 * updates the <i>TYPE</i>_LIGHT_CAPACITY Parameter of all known shaders
+	 * 
+	 * @param shader
+	 */
 	public void updateShader(final List<Shader> shaders) {
 		for (final Shader shader : shaders) {
 			updateShader(shader);
 		}
 	}
 
+	/**
+	 * updates the <i>TYPE</i>_LIGHT_CAPACITY Parameter of the given shader
+	 * 
+	 * @param shader
+	 */
 	public void updateShader(final Shader shader) {
 		shader.updateParameter(shaderLightTypeParameterName, lightCapacity);
 	}
 
+	/**
+	 * adds <i>light</i> and resizes Buffer if necessary
+	 * 
+	 * @param light
+	 *            the Light that will be added
+	 */
 	public void addLight(final L light) {
 		if (lightCapacity <= lights.size()) {
 			lights.add(light);
@@ -116,12 +136,17 @@ public class LightTypeManager<L extends Light> {
 			lights.add(light);
 			updateSingleLightData(light, offset);
 		}
-		saveBufferSizes();
+		saveBufferSize();
 		light.setClean();
 	}
 
+	/**
+	 * @param lightIndex
+	 *            index of a light in the java side storage
+	 * @return offset in the Buffer for the graphics card
+	 */
 	private int getTotalBufferOffset(final int lightIndex) {
-		return (lightIndex * lightBlockSize * 4) * 4;
+		return lightIndex * lightBlockSize * BYTES_PER_BLOCK;
 	}
 
 	/**
@@ -142,6 +167,7 @@ public class LightTypeManager<L extends Light> {
 		GLErrors.checkForError(TAG, "glBufferSubData");
 
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		GLErrors.checkForError(TAG, "glBindBuffer");
 	}
 
 	public void update(final double deltaTime) {
@@ -177,12 +203,12 @@ public class LightTypeManager<L extends Light> {
 			if (lights.get(i).shouldBeRemoved()) {
 				if (i == lights.size() - 1) {
 					lights.remove(i);
-					saveBufferSizes();
+					saveBufferSize();
 					break;
 				}
 				final L swap = lights.get(lights.size() - 1);
 				lights.remove(lights.size() - 1);
-				saveBufferSizes();
+				saveBufferSize();
 				lights.set(i, swap);
 				swap.setDirty();
 				i--;

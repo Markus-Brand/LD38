@@ -51,17 +51,17 @@ public class LightManager {
 	/*private void resizeBuffer() {
 		glBindBuffer(GL_UNIFORM_BUFFER, UBO);
 		GLErrors.checkForError(TAG, "glBindBuffer");
-
+	
 		glBufferData(GL_UNIFORM_BUFFER, getBufferSize() + 16, GL_STATIC_DRAW);
 		GLErrors.checkForError(TAG, "glBufferData");
-
+	
 		glBindBufferBase(GL_UNIFORM_BUFFER, UBOBaseID, UBO);
 		GLErrors.checkForError(TAG, "glBindBufferBase");
-
+	
 		saveBufferSizes();
 		bufferData();
 		updateShaders();
-
+	
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}*/
 
@@ -72,11 +72,11 @@ public class LightManager {
 	 */
 	/*private int getBufferSize() {
 		int blockCount = 0;
-
+	
 		blockCount += directionalLightCapacity * DirectionalLight.DATASIZE_IN_BLOCKS;
 		blockCount += pointLightCapacity * PointLight.DATASIZE_IN_BLOCKS;
 		blockCount += spotLightCapacity * SpotLight.DATASIZE_IN_BLOCKS;
-
+	
 		return blockCount * BYTES_PER_BLOCK;
 	}*/
 
@@ -85,34 +85,34 @@ public class LightManager {
 	 */
 	/*private void saveBufferSizes() {
 		final IntBuffer sizeBuffer = BufferUtils.createIntBuffer(12);
-
+	
 		sizeBuffer.put(directionalLights.size());
 		sizeBuffer.put(pointLights.size());
 		sizeBuffer.put(spotLights.size());
 		sizeBuffer.flip();
-
+	
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeBuffer);
 		GLErrors.checkForError(TAG, "glBufferSubData");
 	}*/
 
 	/*private void bufferData() {
 		final FloatBuffer dataBuffer = BufferUtils.createFloatBuffer(getBufferSize());
-
+	
 		dataBuffer.position(getDirectionalLightBufferOffset());
 		directionalLights.forEach((final DirectionalLight light) -> {
 			dataBuffer.put(light.getData());
 		});
-
+	
 		dataBuffer.position(getPointLightBufferOffset());
 		pointLights.forEach((final PointLight light) -> {
 			dataBuffer.put(light.getData());
 		});
-
+	
 		dataBuffer.position(getSpotLightBufferOffset());
 		spotLights.forEach((final SpotLight light) -> {
 			dataBuffer.put(light.getData());
 		});
-
+	
 		dataBuffer.flip();
 		glBufferSubData(GL_UNIFORM_BUFFER, 16, dataBuffer);
 		GLErrors.checkForError(TAG, "glBufferSubData");
@@ -121,11 +121,11 @@ public class LightManager {
 	/*private int getDirectionalLightBufferOffset() {
 		return 0;
 	}
-
+	
 	private int getPointLightBufferOffset() {
 		return getDirectionalLightBufferOffset() + directionalLightCapacity * DirectionalLight.DATASIZE_IN_BLOCKS * 4;
 	}
-
+	
 	private int getSpotLightBufferOffset() {
 		return getPointLightBufferOffset() + pointLightCapacity * PointLight.DATASIZE_IN_BLOCKS * 4;
 	}*/
@@ -240,7 +240,7 @@ public class LightManager {
 		lightBuffer.flip();
 		glBufferSubData(GL_UNIFORM_BUFFER, offset + 16, lightBuffer);
 		GLErrors.checkForError(TAG, "glBufferSubData");
-
+	
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}*/
 
@@ -251,7 +251,7 @@ public class LightManager {
 	 *            the Light that will be removed
 	 */
 	/*private void removeLight(final Light light) {
-
+	
 	}*/
 
 	/**
