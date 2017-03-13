@@ -11,12 +11,13 @@ import org.joml.*;
 public class BoundingBox {
 
 	private static final String TAG = "BoundingBox";
-	
+
 	/**
 	 * An interface for Objects that have a BoundingBox
 	 */
 	public interface Owner {
 		BoundingBox getBoundingBox();
+
 		default void setBoundingBox(BoundingBox newBox) {
 			Log.error(TAG + ".Owner", "Setting of BoundingBox not implemented here.");
 		}
@@ -109,7 +110,7 @@ public class BoundingBox {
 
 		return this;
 	}
-	
+
 	public boolean isEmpty() {
 		return false;
 	}
@@ -148,6 +149,9 @@ public class BoundingBox {
 	 */
 	public BoundingBox unionWith(final BoundingBox childBox) {
 		//We also need to check for updates in the child BB, because the BB could potentially grow, if the children have transformations on their own
+		if (childBox.isEmpty()) {
+			return this.duplicate();
+		}
 		final Vector3f[] childCorners = childBox.getParentGlobalCorners();
 		BoundingBox bigger = this.duplicate();
 		for (final Vector3f corner : childCorners) {
@@ -266,6 +270,9 @@ public class BoundingBox {
 
 	public boolean intersectsRay(Vector3f origin, Vector3f direction, Matrix4f parentTransform)
 	{
+		if (isEmpty()) {
+			return false;
+		}
 		BoundingBox globalBB = getGlobalBoundinBox(parentTransform);
 		Vector3f min = globalBB.getLocalStart();
 		Vector3f max = globalBB.getLocalEnd();

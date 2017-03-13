@@ -36,8 +36,8 @@ public class MousePicker {
 
 	private Vector2f getNormalizedDeviceCoordinates(Vector2f mousePos) {
 		return new Vector2f(
-				2 * mousePos.x / OpenGLContext.getVideoModeWidth()- 1,
-				-(2 * mousePos.y / OpenGLContext.getVideoModeHeight()- 1));
+				2 * mousePos.x / OpenGLContext.getVideoModeWidth() - 1,
+				-(2 * mousePos.y / OpenGLContext.getVideoModeHeight() - 1));
 	}
 
 	private Vector3f getWorldSpaceCoordinates(Vector4f eyeSpaceCoordinates) {
@@ -53,7 +53,7 @@ public class MousePicker {
 	}
 
 	public void searchBBs(SceneObject currentObject, Matrix4f parentTransform) {
-		if (ray == null || camera.getPosition() == null) {
+		if (ray == null || camera.getPosition() == null || currentObject.getBoundingBox() == null) {
 			return;
 		}
 		if (currentObject.getBoundingBox().intersectsRay(camera.getPosition(), ray, parentTransform)) {
@@ -61,7 +61,7 @@ public class MousePicker {
 		} else {
 			currentObject.setSelected(false);
 		}
-		
+
 		final Matrix4f transform = parentTransform.mul(currentObject.getTransformation().asMatrix(), new Matrix4f());
 		for (SceneObject child : currentObject.getSubObjects()) {
 			searchBBs(child, transform);

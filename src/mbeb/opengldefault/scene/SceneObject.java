@@ -204,6 +204,7 @@ public class SceneObject implements BoundingBox.Owner {
 	/**
 	 * @return a boundingBox so that each sub-Object lies within
 	 */
+	@Override
 	public BoundingBox getBoundingBox() {
 		//TODO: Only recalculate BB if needed
 		reCalculateBoundingBox();
@@ -228,7 +229,7 @@ public class SceneObject implements BoundingBox.Owner {
 	 */
 	public BoundingBox reCalculateBoundingBox() {
 		box = getRenderableBoundingBox();
-		
+
 		for (SceneObject o : getSubObjects()) {
 			adjustBoundingBoxFor(o);
 		}
@@ -244,19 +245,21 @@ public class SceneObject implements BoundingBox.Owner {
 		if (box == null) {
 			box = getRenderableBoundingBox();
 		}
+		if (object.getBoundingBox() == null) {
+			return;
+		}
 		box = box.unionWith(object.getBoundingBox());
 	}
 
 	//</editor-fold>
 
-	
 	public BoneTransformation getParentGlobalTranform() {
 		if (parent == null) {
 			return BoneTransformation.identity();
 		}
 		return parent.getGLobalTransformation();
 	}
-	
+
 	/**
 	 * Getter for the global Transformation
 	 *

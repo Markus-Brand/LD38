@@ -2,15 +2,19 @@ package mbeb.opengldefault.game;
 
 import java.util.ArrayList;
 import java.util.Random;
+
 import mbeb.opengldefault.animation.AnimatedRenderable;
 import static org.lwjgl.opengl.GL11.*;
-
-
 import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.curves.BezierCurve;
 import mbeb.opengldefault.curves.BezierCurve.ControlPointInputMode;
+import mbeb.opengldefault.gui.AtlasGUI;
+import mbeb.opengldefault.gui.AtlasGUIElement;
+import mbeb.opengldefault.gui.Circlebar;
+import mbeb.opengldefault.gui.GUI;
+import mbeb.opengldefault.gui.GUIElement;
+import mbeb.opengldefault.gui.ProgressbarGUI;
 import mbeb.opengldefault.logging.*;
-import mbeb.opengldefault.openglcontext.*;
 import mbeb.opengldefault.rendering.io.*;
 import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.rendering.shader.*;
@@ -32,15 +36,17 @@ import org.joml.*;
 public class BunnyGame extends Game {
 	/** Class Name Tag */
 	private static final String TAG = "BunnyGame";
-	
+
 	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1);
-	
+
 	private float timePassed;
 
 	protected ICamera cam;
 	Scene bunnyScene;
 
 	BezierCurve curve;
+
+	GUI circleGUI;
 
 	SceneObject bunny0, bunny1, bunny2, bunny3, bunny4, curveObj;
 
@@ -106,37 +112,66 @@ public class BunnyGame extends Game {
 		curveObj = new SceneObject(new BezierCurveRenderable(curve));
 		curveObj.setShader(curveShader);
 
+		AtlasGUI gui = new AtlasGUI(2, "AO.png");
+
+		float aspectRatio = getContext().getAspectRatio();
+		GUIElement topLeft = new AtlasGUIElement(0, 2, new Vector2f(0.5f, 0.5f * aspectRatio))
+				.setPositionRelativeToScreen(0, 0);
+		gui.addGUIElement(topLeft);
+		gui.addGUIElement(new AtlasGUIElement(1, 2, new Vector2f(0.2f, 0.2f * aspectRatio))
+				.setPositionRelativeTo(topLeft, 0.5f, 0.5f));
+		gui.addGUIElement(new AtlasGUIElement(2, 2, new Vector2f(0.5f, 0.5f * aspectRatio))
+				.setPositionRelativeToScreen(0, 1));
+		gui.addGUIElement(new AtlasGUIElement(3, 2, new Vector2f(0.5f, 0.5f * aspectRatio))
+				.setPositionRelativeToScreen(1, 1));
+
+		circleGUI = new ProgressbarGUI();
+
+		Circlebar circleElement = new Circlebar(new Vector2f(0.2f, 0.2f * aspectRatio));
+
+		circleGUI.addGUIElement(circleElement);
+
+		SceneObject circleObj = new SceneObject(circleGUI);
+		final Shader circleShader = new Shader("circle.vert", "circle.frag");
+		circleObj.setShader(circleShader);
+
+		SceneObject guiObj = new SceneObject(gui);
+		final Shader guiShader = new Shader("gui.vert", "gui.frag");
+		guiObj.setShader(guiShader);
+
 		bunnyScene.getSceneGraph().addSubObject(bunny0);
 		bunnyScene.getSceneGraph().addSubObject(bunny1);
 		bunnyScene.getSceneGraph().addSubObject(bunny2);
 		bunnyScene.getSceneGraph().addSubObject(bunny3);
 		bunnyScene.getSceneGraph().addSubObject(bunny4);
 		bunnyScene.getSceneGraph().addSubObject(curveObj);
+		bunnyScene.getSceneGraph().addSubObject(guiObj);
+		bunnyScene.getSceneGraph().addSubObject(circleObj);
 
 		bunnyScene.getSceneGraph().setShader(defaultShader);
 
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
-		
+
 		new Thread() {
 
 			@Override
 			public void run() {
 				try {
 					Thread.sleep(3000);
-				} catch (InterruptedException ex) {
+				} catch(InterruptedException ex) {
 					ex.printStackTrace();
 				}
 				bunnyAnim.playAnimation("OhrenFlackern1", 4);
 				try {
 					Thread.sleep(3000);
-				} catch (InterruptedException ex) {
+				} catch(InterruptedException ex) {
 					ex.printStackTrace();
 				}
 				bunnyAnim.playAnimation("HeadBang", 4);
 				try {
 					Thread.sleep(3000);
-				} catch (InterruptedException ex) {
+				} catch(InterruptedException ex) {
 					ex.printStackTrace();
 				}
 				bunnyAnim.playAnimation("OhrenFlackern2", 4);
@@ -152,8 +187,10 @@ public class BunnyGame extends Game {
 		followingBunny1.update(deltaTime);
 		followingBunny2.update(deltaTime);
 		followingBunny3.update(deltaTime);
-		//followingBunny4.update(deltaTime);
+		followingBunny4.update(deltaTime);
 		camEntity.update(deltaTime);
+
+		circleGUI.update(deltaTime);
 
 		bunnyScene.update(deltaTime);
 	}
@@ -167,7 +204,7 @@ public class BunnyGame extends Game {
 
 		glViewport(0, 0, getContext().getFramebufferWidth(), getContext().getFramebufferHeight());
 		GLErrors.checkForError(TAG, "glViewport");
-		
+
 		bunnyScene.render(true); //bunnyScene.render(); to render without BoundingBoxes
 	}
 

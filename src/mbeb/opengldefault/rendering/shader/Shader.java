@@ -6,7 +6,6 @@ import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.opengl.GL40.*;
 
-import java.net.*;
 import java.nio.*;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -19,8 +18,7 @@ import org.lwjgl.*;
 import org.lwjgl.opengl.*;
 
 /**
- * Shader Object used for rendering a
- * {@link mbeb.opengldefault.rendering.renderable.IRenderable}
+ * Shader Object used for rendering a {@link mbeb.opengldefault.rendering.renderable.IRenderable}
  *
  * @author Markus
  */
@@ -71,8 +69,10 @@ public class Shader {
 	/**
 	 * constructor of a shader object.
 	 *
-	 * @param vertexPath path of a vertex Shader
-	 * @param fragmentPath path of a fragment Shader
+	 * @param vertexPath
+	 *            path of a vertex Shader
+	 * @param fragmentPath
+	 *            path of a fragment Shader
 	 */
 	public Shader(final String vertexPath, final String fragmentPath) {
 		this(vertexPath, fragmentPath, null, null, null, new HashMap<>());
@@ -81,9 +81,12 @@ public class Shader {
 	/**
 	 * constructor of a shader object.
 	 *
-	 * @param vertexPath path of a vertex Shader
-	 * @param fragmentPath path of a fragment Shader
-	 * @param parameters a map containing initial values for shader parameters
+	 * @param vertexPath
+	 *            path of a vertex Shader
+	 * @param fragmentPath
+	 *            path of a fragment Shader
+	 * @param parameters
+	 *            a map containing initial values for shader parameters
 	 */
 	public Shader(final String vertexPath, final String fragmentPath, final Map<String, Object> parameters) {
 		this(vertexPath, fragmentPath, null, null, null, parameters);
@@ -92,9 +95,12 @@ public class Shader {
 	/**
 	 * constructor of a shader object.
 	 *
-	 * @param vertexPath path of a vertex Shader
-	 * @param fragmentPath path of a fragment Shader
-	 * @param geometryPath path of a geometry Shader
+	 * @param vertexPath
+	 *            path of a vertex Shader
+	 * @param fragmentPath
+	 *            path of a fragment Shader
+	 * @param geometryPath
+	 *            path of a geometry Shader
 	 */
 	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath) {
 		this(vertexPath, fragmentPath, geometryPath, null, null, new HashMap<>());
@@ -103,39 +109,57 @@ public class Shader {
 	/**
 	 * constructor of a shader object.
 	 *
-	 * @param vertexPath path of a vertex Shader
-	 * @param fragmentPath path of a fragment Shader
-	 * @param geometryPath path of a geometry Shader
-	 * @param parameters a map containing initial values for shader parameters
+	 * @param vertexPath
+	 *            path of a vertex Shader
+	 * @param fragmentPath
+	 *            path of a fragment Shader
+	 * @param geometryPath
+	 *            path of a geometry Shader
+	 * @param parameters
+	 *            a map containing initial values for shader parameters
 	 */
-	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath, final Map<String, Object> parameters) {
+	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath,
+			final Map<String, Object> parameters) {
 		this(vertexPath, fragmentPath, geometryPath, null, null, parameters);
 	}
 
 	/**
 	 * constructor of a shader object.
 	 *
-	 * @param vertexPath path of a vertex Shader
-	 * @param fragmentPath path of a fragment Shader
-	 * @param geometryPath path of a geometry Shader
-	 * @param tesControlPath path of a tessellation control Shader
-	 * @param tesEvalPath path of a tessellation evaluation Shader
+	 * @param vertexPath
+	 *            path of a vertex Shader
+	 * @param fragmentPath
+	 *            path of a fragment Shader
+	 * @param geometryPath
+	 *            path of a geometry Shader
+	 * @param tesControlPath
+	 *            path of a tessellation control Shader
+	 * @param tesEvalPath
+	 *            path of a tessellation evaluation Shader
 	 */
-	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath, final String tesControlPath, final String tesEvalPath) {
+	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath,
+			final String tesControlPath, final String tesEvalPath) {
 		this(vertexPath, fragmentPath, geometryPath, tesControlPath, tesEvalPath, new HashMap<>());
 	}
 
 	/**
 	 * main constructor of a shader object.
 	 *
-	 * @param vertexPath path of a vertex Shader
-	 * @param fragmentPath path of a fragment Shader
-	 * @param geometryPath path of a geometry Shader
-	 * @param tesControlPath path of a tessellation control Shader
-	 * @param tesEvalPath path of a tessellation evaluation Shader
-	 * @param parameters a map containing initial values for shader parameters
+	 * @param vertexPath
+	 *            path of a vertex Shader
+	 * @param fragmentPath
+	 *            path of a fragment Shader
+	 * @param geometryPath
+	 *            path of a geometry Shader
+	 * @param tesControlPath
+	 *            path of a tessellation control Shader
+	 * @param tesEvalPath
+	 *            path of a tessellation evaluation Shader
+	 * @param parameters
+	 *            a map containing initial values for shader parameters
 	 */
-	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath, final String tesControlPath, final String tesEvalPath, final Map<String, Object> parameters) {
+	public Shader(final String vertexPath, final String fragmentPath, final String geometryPath,
+			final String tesControlPath, final String tesEvalPath, final Map<String, Object> parameters) {
 		this.vertexPath = vertexPath;
 		this.fragmentPath = fragmentPath;
 		this.geometryPath = geometryPath;
@@ -183,7 +207,8 @@ public class Shader {
 	/**
 	 * get the location of an Uniform with given name
 	 *
-	 * @param name name of the uniform
+	 * @param name
+	 *            name of the uniform
 	 * @return the uniforms location
 	 */
 	public int getUniform(final String name) {
@@ -193,16 +218,18 @@ public class Shader {
 	/**
 	 * get the location of a Uniform with given name
 	 *
-	 * @param name name of the uniform
-	 * @param logAnError log an error if not found
+	 * @param name
+	 *            name of the uniform
+	 * @param logAnError
+	 *            log an error if not found
 	 * @return the uniforms location
 	 */
 	public int getUniform(final String name, final boolean logAnError) {
 		ensureCompiled();
 		final int loc = glGetUniformLocation(shaderProgram, name);
-		GLErrors.checkForError(TAG, "glGetUniformLocation: " + ((name != null) ? name : "null"));
+		GLErrors.checkForError(TAG, "glGetUniformLocation: " + (name != null ? name : "null"));
 		if (logAnError && loc < 0) {
-			Log.error(TAG, "GetUniform failed: " + name);
+			Log.error(TAG, vertexPath + " GetUniform failed: " + name);
 		}
 		return loc;
 	}
@@ -214,8 +241,10 @@ public class Shader {
 	/**
 	 * update a shader-parameter, which triggers re-compiling on next usage
 	 *
-	 * @param name the parameter name, like used in the shader file
-	 * @param value the value of the parameter
+	 * @param name
+	 *            the parameter name, like used in the shader file
+	 * @param value
+	 *            the value of the parameter
 	 */
 	public void updateParameter(final String name, final Object value) {
 		preprocessor.updateParameter(name, value);
@@ -241,7 +270,8 @@ public class Shader {
 	/**
 	 * Compiles Vertex Shader
 	 *
-	 * @param paramString Shader Header
+	 * @param paramString
+	 *            Shader Header
 	 * @return vertex shader object
 	 */
 	private int compileVertexShader() {
@@ -261,7 +291,8 @@ public class Shader {
 	/**
 	 * Compiles Fragment Shader
 	 *
-	 * @param paramString Shader Header
+	 * @param paramString
+	 *            Shader Header
 	 * @return fragment shader object
 	 */
 	private int compileFragmentShader() {
@@ -281,7 +312,8 @@ public class Shader {
 	/**
 	 * Compiles Geometry Shader
 	 *
-	 * @param paramString Shader Header
+	 * @param paramString
+	 *            Shader Header
 	 * @return geometry shader object
 	 */
 	private int compileGeometryShader() {
@@ -304,7 +336,8 @@ public class Shader {
 	/**
 	 * Compiles Tessellation Control Shader
 	 *
-	 * @param paramString Shader Header
+	 * @param paramString
+	 *            Shader Header
 	 * @return tessellation control shader object
 	 */
 	private int compileTesControlShader() {
@@ -327,7 +360,8 @@ public class Shader {
 	/**
 	 * Compiles Tessellation Evaluation Shader
 	 *
-	 * @param paramString Shader Header
+	 * @param paramString
+	 *            Shader Header
 	 * @return tessellation evaluation shader object
 	 */
 	private int compileTesEvalShader() {
@@ -350,13 +384,16 @@ public class Shader {
 	/**
 	 * links the shader program
 	 *
-	 * @param vertexShader vertex shader object
-	 * @param fragmentShader fragment shader object
+	 * @param vertexShader
+	 *            vertex shader object
+	 * @param fragmentShader
+	 *            fragment shader object
 	 * @param tesControlShader
 	 * @param tesEvalShader
 	 * @param geomShader
 	 */
-	private void linkShader(final int vertexShader, final int fragmentShader, final int geomShader, final int tesControlShader, final int tesEvalShader) {
+	private void linkShader(final int vertexShader, final int fragmentShader, final int geomShader,
+			final int tesControlShader, final int tesEvalShader) {
 		shaderProgram = glCreateProgram();
 		glAttachShader(shaderProgram, vertexShader);
 		glAttachShader(shaderProgram, fragmentShader);
@@ -385,31 +422,33 @@ public class Shader {
 	 * Print source code of shader object line by line with leading line
 	 * numbers and in-place error messages
 	 *
-	 * @param log the shader log info.
+	 * @param log
+	 *            the shader log info.
 	 */
 	private void printDebug(final String log, final String source, final String sourceName) {
+		System.out.println(log);
 		Log.error(TAG, "Errors in \"" + sourceName + "\":");
-		
+
 		// stores line number and error message
 		final LinkedHashMap<Integer, ArrayList<String>> errorList = new LinkedHashMap<>();
 
 		// regular expression for extracting error line and message for nearly all devices
 		final String generalExp = "(?:ERROR: )?\\d+:\\(?(\\d+)\\)?: (.+)";
 		final Pattern regExPattern = Pattern.compile(generalExp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-		
-		try (Scanner scannerShaderLog = new Scanner(log)) {
-			while (scannerShaderLog.hasNextLine()) {
+
+		try(Scanner scannerShaderLog = new Scanner(log)) {
+			while(scannerShaderLog.hasNextLine()) {
 				final String logLine = scannerShaderLog.nextLine();
 				final Matcher regExMatcher = regExPattern.matcher(logLine);
 				if (regExMatcher.find()) {
-					
+
 					final String lineNumberString = regExMatcher.group(1);
 					final String errorString = regExMatcher.group(2);
 					final int lineNumber = Integer.parseInt(lineNumberString);
-					
+
 					if (errorList.containsKey(lineNumber)) {
 						errorList.get(lineNumber).add(errorString);
-						
+
 					} else {
 						final ArrayList<String> stringList = new ArrayList<>();
 						stringList.add(errorString);
@@ -419,15 +458,15 @@ public class Shader {
 			}
 		}
 
-        // format source code
+		// format source code
 		final String errorNo = "    ";
 		final String errorYes = "\\->>>>>>";
 		final DecimalFormat numberFormat = new DecimalFormat("0000");
 
-		try (Scanner scannerSourceCode = new Scanner(source)) {
+		try(Scanner scannerSourceCode = new Scanner(source)) {
 			int lineNumber = 1;
-			
-			while (scannerSourceCode.hasNextLine()) {
+
+			while(scannerSourceCode.hasNextLine()) {
 				final String codeLine = scannerSourceCode.nextLine();
 				String formattedLineNumber = numberFormat.format(lineNumber);
 				final String annotatedLine = formattedLineNumber + errorNo + ": " + codeLine;
@@ -437,7 +476,7 @@ public class Shader {
 						Log.log(null, errorYes + ": " + string);
 					}
 				}
-				
+
 				lineNumber++;
 			}
 		}
@@ -447,7 +486,8 @@ public class Shader {
 	/**
 	 * Setter for the drawMode
 	 *
-	 * @param drawMode new drawMode
+	 * @param drawMode
+	 *            new drawMode
 	 */
 	public void setDrawMode(int drawMode) {
 		this.drawMode = drawMode;
@@ -490,5 +530,9 @@ public class Shader {
 		if (preprocessor.areParametersDirty()) {
 			compile();
 		}
+	}
+
+	public String getVertexName() {
+		return vertexPath.split("[.]")[0];
 	}
 }

@@ -1,6 +1,5 @@
 package mbeb.opengldefault.rendering.renderable;
 
-import mbeb.opengldefault.animation.Bone;
 import mbeb.opengldefault.animation.Pose;
 import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.scene.*;
@@ -16,19 +15,20 @@ public interface IRenderable {
 
 	default void update(double deltaTime) {
 	}
-	
+
 	/**
 	 * a static transformation on this Renderable
-	 * @return 
+	 * 
+	 * @return
 	 */
 	default Matrix4f getTransform() {
 		return new Matrix4f();
 	}
-	
+
 	default boolean hasAnimations() {
 		return getCurrentPose() != null;
 	}
-	
+
 	default Pose getCurrentPose() {
 		return null;
 	}
