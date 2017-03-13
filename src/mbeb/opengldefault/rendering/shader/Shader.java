@@ -174,7 +174,7 @@ public class Shader {
 	 * @param name
 	 */
 	public void addUniformBlockIndex(final String UBOName) {
-		final int index = UBOManager.getInstance().getUBOID(UBOName);
+		final int index = UBOManager.getUBOID(UBOName);
 		uniformBlocks.put(index, UBOName);
 		setUniformBlockIndex(index, UBOName);
 	}
@@ -268,7 +268,7 @@ public class Shader {
 	/**
 	 * Compiles Vertex Shader
 	 * TODO unify compile<i>name</i>shader calls
-	 * 
+	 *
 	 * @param paramString
 	 *            Shader Header
 	 * @return vertex shader object

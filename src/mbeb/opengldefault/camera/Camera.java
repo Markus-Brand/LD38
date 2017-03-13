@@ -6,11 +6,11 @@ import static org.lwjgl.opengl.GL31.*;
 
 import java.nio.*;
 
-import mbeb.opengldefault.logging.*;
-import mbeb.opengldefault.rendering.shader.*;
-
 import org.joml.*;
 import org.lwjgl.*;
+
+import mbeb.opengldefault.logging.*;
+import mbeb.opengldefault.rendering.shader.*;
 
 public class Camera implements ICamera {
 
@@ -44,7 +44,7 @@ public class Camera implements ICamera {
 	 * Basic Camera Constructor. Sets the projection to a default perspective
 	 * projection and the view to Camera looking from origin along positive z
 	 * direction.
-	 * 
+	 *
 	 * @param aspectRation
 	 *            the aspect ratio of the camera
 	 */
@@ -123,7 +123,7 @@ public class Camera implements ICamera {
 			GLErrors.checkForError(TAG, "glBindBuffer");
 			glBufferData(GL_UNIFORM_BUFFER, 256, GL_DYNAMIC_DRAW);
 			GLErrors.checkForError(TAG, "glBufferData");
-			glBindBufferBase(GL_UNIFORM_BUFFER, UBOManager.getInstance().getUBOID(UBOManager.MATRICES), UBO);
+			glBindBufferBase(GL_UNIFORM_BUFFER, UBOManager.getUBOID(UBOManager.MATRICES), UBO);
 			GLErrors.checkForError(TAG, "glBindBufferBase");
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 

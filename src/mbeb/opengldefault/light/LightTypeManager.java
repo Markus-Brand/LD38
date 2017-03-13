@@ -16,25 +16,22 @@ import mbeb.opengldefault.rendering.shader.*;
 /**
  * @author Erik + Merlin + Markus :)
  */
-public class LightTypeManager<L extends Light> {
+public abstract class LightTypeManager {
+	/** Class Name Tag */
 	private static final String TAG = "LightTypeManager";
 
 	private static int BYTES_PER_BLOCK = 16; // 1 Block = four 32bit floats = 16byte
-	private final int UBOBaseID;
-	private final int lightBlockSize;
-	private final String shaderLightTypeParameterName;
+	protected String UBOBaseName;
+	protected int UBOBaseID;
+	protected int lightBlockSize;
+	protected String shaderLightTypeParameterName;
+	protected int lightCapacity;
+	private ArrayList<Light> lights;
+	private int UBO;
 
-	private int lightCapacity;
-	private final ArrayList<L> lights;
-	private final int UBO;
-
-	public LightTypeManager(final int initialCapacity, final int UBOBaseID, final int lightBlockSize, final String shaderLightTypeParameterName) {
-		this.UBOBaseID = UBOBaseID;
-		this.lightCapacity = initialCapacity;
+	protected void init() {
+		this.UBOBaseID = UBOManager.getUBOID(UBOBaseName);
 		this.lights = new ArrayList<>();
-		this.lightBlockSize = lightBlockSize;
-		this.shaderLightTypeParameterName = shaderLightTypeParameterName;
-
 		this.UBO = glGenBuffers();
 		GLErrors.checkForError(TAG, "glGenBuffers");
 		resizeBuffer();
@@ -63,7 +60,7 @@ public class LightTypeManager<L extends Light> {
 
 	/**
 	 * calculates number of bytes which are needed to store the light data capacity
-	 * 
+	 *
 	 * @return
 	 */
 	private int getBufferSize() {
@@ -92,7 +89,7 @@ public class LightTypeManager<L extends Light> {
 	private void bufferData() {
 		final FloatBuffer dataBuffer = BufferUtils.createFloatBuffer(getBufferSize());
 
-		lights.forEach((final L light) -> {
+		lights.forEach((final Light light) -> {
 			dataBuffer.put(light.getData());
 		});
 		dataBuffer.flip();
@@ -101,32 +98,22 @@ public class LightTypeManager<L extends Light> {
 	}
 
 	/**
-	 * updates the <i>TYPE</i>_LIGHT_CAPACITY Parameter of all known shaders
-	 * 
-	 * @param shader
-	 */
-	public void updateShader(final List<Shader> shaders) {
-		for (final Shader shader : shaders) {
-			updateShader(shader);
-		}
-	}
-
-	/**
 	 * updates the <i>TYPE</i>_LIGHT_CAPACITY Parameter of the given shader
-	 * 
+	 *
 	 * @param shader
 	 */
 	public void updateShader(final Shader shader) {
+		shader.addUniformBlockIndex(UBOBaseName);
 		shader.updateParameter(shaderLightTypeParameterName, lightCapacity);
 	}
 
 	/**
 	 * adds <i>light</i> and resizes Buffer if necessary
-	 * 
+	 *
 	 * @param light
 	 *            the Light that will be added
 	 */
-	public void addLight(final L light) {
+	public void addLight(final Light light) {
 		if (lightCapacity <= lights.size()) {
 			lights.add(light);
 			lightCapacity *= 2;
@@ -157,10 +144,10 @@ public class LightTypeManager<L extends Light> {
 	 * @param offset
 	 *            the position that the light will have afterwards
 	 */
-	private void updateSingleLightData(final L light, final int offset) {
+	private void updateSingleLightData(final Light light, final int offset) {
 		glBindBuffer(GL_UNIFORM_BUFFER, UBO);
 		GLErrors.checkForError(TAG, "glBindBuffer");
-		final FloatBuffer lightBuffer = BufferUtils.createFloatBuffer(light.getBlockSize() * 4);
+		final FloatBuffer lightBuffer = BufferUtils.createFloatBuffer(lightBlockSize * 4);
 		lightBuffer.put(light.getData());
 		lightBuffer.flip();
 		glBufferSubData(GL_UNIFORM_BUFFER, offset + 16, lightBuffer);
@@ -175,7 +162,7 @@ public class LightTypeManager<L extends Light> {
 		updateDirtyLights();
 	}
 
-	private void updateLightData(final L light, final int lightIndex) {
+	private void updateLightData(final Light light, final int lightIndex) {
 		final int offset = getTotalBufferOffset(lightIndex);
 		updateSingleLightData(light, offset);
 		light.setClean();
@@ -186,7 +173,7 @@ public class LightTypeManager<L extends Light> {
 	 */
 	private void updateDirtyLights() {
 		final AtomicInteger lightIndex = new AtomicInteger(0);
-		lights.forEach((final L light) -> {
+		lights.forEach((final Light light) -> {
 			if (light.isDirty()) {
 				updateLightData(light, lightIndex.get());
 				light.setClean();
@@ -206,7 +193,7 @@ public class LightTypeManager<L extends Light> {
 					saveBufferSize();
 					break;
 				}
-				final L swap = lights.get(lights.size() - 1);
+				final Light swap = lights.get(lights.size() - 1);
 				lights.remove(lights.size() - 1);
 				saveBufferSize();
 				lights.set(i, swap);

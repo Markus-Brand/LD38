@@ -119,6 +119,12 @@ public class BunnyGame extends Game {
 		pl = new PointLight(Color.GREEN, new Vector3f(0, 10, 0), 1000);
 		bunnyScene.getLightManager().addLight(pl);
 
+		dl = new DirectionalLight(Color.GREEN, new Vector3f(1, 0.5f, 0));
+		bunnyScene.getLightManager().addLight(dl);
+
+		sl = new SpotLight(Color.ORANGE, new Vector3f(0, -0.25f, 0), new Vector3f(0, 1, 0), 10, 5, 1000);
+		bunnyScene.getLightManager().addLight(sl);
+
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 
