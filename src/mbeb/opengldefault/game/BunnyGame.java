@@ -2,6 +2,8 @@ package mbeb.opengldefault.game;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+import mbeb.opengldefault.animation.AnimatedMesh;
 import mbeb.opengldefault.animation.AnimatedRenderable;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -42,6 +44,8 @@ public class BunnyGame extends Game {
 
 	BezierCurve curve;
 
+	AnimatedRenderable animBunny0, animBunny1, animBunny2, animBunny3, animBunny4;
+
 	SceneObject bunny0, bunny1, bunny2, bunny3, bunny4, curveObj;
 
 	Entity mainBunny, followingBunny1, followingBunny2, followingBunny3, followingBunny4, camEntity;
@@ -65,9 +69,9 @@ public class BunnyGame extends Game {
 
 		bunnyScene = new Scene(cam, skybox);
 
-		AnimatedRenderable bunnyAnim = new ObjectLoader().loadFromFileAnim("ohrenFlackern.fbx");
-		bunnyAnim.getAnimatedMesh().setTransform(MeshFlip);
-		IRenderable bunnyTextured = new TexturedRenderable(bunnyAnim, new Texture("bunny_2d.png"));
+		AnimatedMesh bunnyAnim = new ObjectLoader().loadFromFileAnim("ohrenFlackern.fbx");
+		bunnyAnim.setTransform(MeshFlip);
+		Texture bunnyTexture = new Texture("bunny_2d.png");
 
 		final Shader curveShader = new Shader("bezier.vert", "bezier.frag", "bezier.geom");
 		curveShader.addUniformBlockIndex(1, "Matrices");
@@ -76,11 +80,17 @@ public class BunnyGame extends Game {
 		final Shader defaultShader = new Shader("boneAnimation.vert", "phong.frag");
 		defaultShader.addUniformBlockIndex(1, "Matrices");
 
-		bunny0 = new SceneObject(bunnyTextured);
-		bunny1 = new SceneObject(bunnyTextured);
-		bunny2 = new SceneObject(bunnyTextured);
-		bunny3 = new SceneObject(bunnyTextured);
-		bunny4 = new SceneObject(bunnyTextured);
+		animBunny0 = new AnimatedRenderable(bunnyAnim);
+		animBunny1 = new AnimatedRenderable(bunnyAnim);
+		animBunny2 = new AnimatedRenderable(bunnyAnim);
+		animBunny3 = new AnimatedRenderable(bunnyAnim);
+		animBunny4 = new AnimatedRenderable(bunnyAnim);
+
+		bunny0 = new SceneObject(new TexturedRenderable(animBunny0, bunnyTexture));
+		bunny1 = new SceneObject(new TexturedRenderable(animBunny1, bunnyTexture));
+		bunny2 = new SceneObject(new TexturedRenderable(animBunny2, bunnyTexture));
+		bunny3 = new SceneObject(new TexturedRenderable(animBunny3, bunnyTexture));
+		bunny4 = new SceneObject(new TexturedRenderable(animBunny4, bunnyTexture));
 		mainBunny = new SceneEntity(bunny0);
 		followingBunny1 = new SceneEntity(bunny1);
 		followingBunny2 = new SceneEntity(bunny2);
@@ -118,30 +128,38 @@ public class BunnyGame extends Game {
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		
-		new Thread() {
-
-			@Override
-			public void run() {
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException ex) {
-					ex.printStackTrace();
-				}
-				bunnyAnim.playAnimation("OhrenFlackern1", 4);
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException ex) {
-					ex.printStackTrace();
-				}
-				bunnyAnim.playAnimation("HeadBang", 4);
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException ex) {
-					ex.printStackTrace();
-				}
-				bunnyAnim.playAnimation("OhrenFlackern2", 4);
+		new Thread(() -> {
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException ex) {
+				ex.printStackTrace();
 			}
-		}.start();/**/
+			animBunny0.playAnimation("OhrenFlackern1", 1, 3);
+			animBunny1.playAnimation("OhrenFlackern1", 1, 3);
+			animBunny2.playAnimation("OhrenFlackern1", 1, 3);
+			animBunny3.playAnimation("OhrenFlackern1", 1, 3);
+			animBunny4.playAnimation("OhrenFlackern1", 1, 3);
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException ex) {
+				ex.printStackTrace();
+			}
+			animBunny0.playAnimation("HeadBang", 1, 3);
+			animBunny1.playAnimation("HeadBang", 1, 3);
+			animBunny2.playAnimation("HeadBang", 1, 3);
+			animBunny3.playAnimation("HeadBang", 1, 3);
+			animBunny4.playAnimation("HeadBang", 1, 3);
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException ex) {
+				ex.printStackTrace();
+			}
+			animBunny0.playAnimation("OhrenFlackern2", 1, 3);
+			animBunny1.playAnimation("OhrenFlackern2", 1, 3);
+			animBunny2.playAnimation("OhrenFlackern2", 1, 3);
+			animBunny3.playAnimation("OhrenFlackern2", 1, 3);
+			animBunny4.playAnimation("OhrenFlackern2", 1, 3);
+		}).start();/**/
 	}
 
 	@Override

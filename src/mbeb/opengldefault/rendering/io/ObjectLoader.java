@@ -40,10 +40,10 @@ public class ObjectLoader {
 	 *
 	 * @param path
 	 *            the absolute File-Path to the object
-	 * @return a VAO-Renderable
+	 * @return a Renderable
 	 */
-	public AnimatedRenderable loadFromFileAnim(String path) {
-		return (AnimatedRenderable)loadFromFile(path, PosNormUvAnim3);
+	public AnimatedMesh loadFromFileAnim(String path) {
+		return (AnimatedMesh)loadFromFile(path, PosNormUvAnim3);
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class ObjectLoader {
 			AnimatedMesh animMesh = new AnimatedMesh(vaomesh, skeleton);
 			animMesh.setTransform(sceneTransform);
 			loadAnimations(animMesh, scene);
-			return new AnimatedRenderable(animMesh);
+			return animMesh;
 		} else {
 			return vaomesh;
 		}
@@ -230,19 +230,6 @@ public class ObjectLoader {
 			Log.error(TAG, "No Bones in AnimatedMesh!");
 			return null;
 		}
-		
-		/*
-		rootBone.setDefaultBoneTransform(new Matrix4f(
-				1, 0, 0, 0,//this matrix is for flipping collada the right angle
-				0, 0, -1, 0,//still a bit hacky though
-				0, 1, 0, 0,//todo - replace with aiScene.rootTransformation
-				0, 0, 0, 1).mul(rootBone.getDefaultBoneTransform(), new Matrix4f()));
-		
-		rootBone.setInverseBindTransform(new Matrix4f(
-				1, 0, 0, 0,//this matrix is for flipping collada the right angle
-				0, 0, -1, 0,//still a bit hacky though
-				0, 1, 0, 0,//todo - replace with aiScene.rootTransformation
-				0, 0, 0, 1).mul(rootBone.getInverseBindTransform(), new Matrix4f()));/**/
 		return rootBone;
 	}
 

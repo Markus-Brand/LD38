@@ -58,14 +58,13 @@ public class AnimatedRenderable implements IRenderable {
 		}
 	}
 
-	public void playAnimation(String name, double speed) {
+	public void playAnimation(String name, double speed, double fadeInTime) {
 		Animation anim = mesh.getAnimationByName(name);
 		if (anim == null) {
 			Log.log(TAG, "No animation named: " + name);
 			return;
 		}
-		Animator animator = new Animator(anim);
-		animator.setSpeed(speed);
+		Animator animator = new Animator(anim, speed, fadeInTime);
 		playAnimation(animator);
 	}
 
@@ -114,7 +113,7 @@ public class AnimatedRenderable implements IRenderable {
 			synchronized (animatorLock) {
 				for (Animator anim : getCurrentAnimations()) {
 					Pose p = anim.getCurrentPose();
-					p.applyAfter(currentPose);
+					p.applyAfter(anim.getCurrentStrength(), currentPose);
 				}
 			}
 		}

@@ -66,9 +66,10 @@ public class Pose {
 	 * apply this poses relative transformations to a pose before, but only
 	 * to bones which have not been animated yet
 	 *
+	 * @param ownStrength the strength (intensity factor) of <code>this</code> Pose
 	 * @param before the pose to alter
 	 */
-	public void applyAfter(Pose before) {
+	public void applyAfter(final double ownStrength, final Pose before) {
 		assert before.skeleton == this.skeleton;
 
 		for (Map.Entry<String, BoneTransformation> beforeSet : before.boneTransforms.entrySet()) {
@@ -77,7 +78,10 @@ public class Pose {
 			BoneTransformation beforeTransform = beforeSet.getValue();
 			if (beforeTransform.isSameAs(b.getDefaultBoneTransform(), 0.001f)) {
 				BoneTransformation afterTransform = this.boneTransforms.get(key);
-				beforeSet.setValue(afterTransform);
+				BoneTransformation lerped = BoneTransformation.lerp(
+						new BoneTransformation(b.getDefaultBoneTransform()),
+						afterTransform, ownStrength);
+				beforeSet.setValue(lerped);
 				
 			}
 		}
@@ -117,11 +121,11 @@ public class Pose {
 	 * @return
 	 */
 	public static final Pose lerp(Pose p1, Pose p2, double factor) {
-		if (factor == 1) {
-			return p2;
-		}
 		if (factor == 0) {
 			return p1;
+		}
+		if (factor == 1) {
+			return p2;
 		}
 
 		assert p1.skeleton == p2.skeleton;

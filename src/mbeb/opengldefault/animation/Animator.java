@@ -7,20 +7,25 @@ public class Animator {
 
 	private final Animation animation;
 	private double currentTime;
+	private double currentTotalTime;
 	private double fadeInTime;
 
 	private boolean looping;
 	
 	private double speed;
+	private double intensity;
 
 	public Animator(Animation animation) {
-		this(animation, 1);
+		this(animation, 1, 0);
 	}
-	public Animator(Animation animation, double speed) {
+	public Animator(Animation animation, double speed, double fadeInTime) {
 		this.animation = animation;
 		currentTime = 0;
+		currentTotalTime = 0;
 		looping = true;
-		speed = 1.0;
+		setSpeed(speed);
+		setFadeInTime(fadeInTime);
+		setIntensity(1);
 	}
 
 	public void setFadeInTime(double fadeInTime) {
@@ -37,6 +42,7 @@ public class Animator {
 
 	public void update(double deltaTime) {
 		currentTime += deltaTime * speed;
+		currentTotalTime += deltaTime * speed;
 	}
 
 	public Animation getAnimation() {
@@ -45,6 +51,28 @@ public class Animator {
 
 	public void setSpeed(double speed) {
 		this.speed = speed;
+	}
+
+	public void setIntensity(double intensity) {
+		this.intensity = intensity;
+	}
+
+	public double getIntensity() {
+		return intensity;
+	}
+
+	/**
+	 * @return the current weight of this animator (for fading / intensity)
+	 */
+	public double getCurrentStrength() {
+		double strength = getIntensity();
+
+		double fadeFactor = currentTotalTime / fadeInTime;
+		if (fadeFactor < 1) {
+			strength *= fadeFactor * fadeFactor;
+		}
+
+		return strength;
 	}
 
 	/**
@@ -67,9 +95,9 @@ public class Animator {
 			}
 		} else {
 			if (beforeAfter[0] == null) {
-				return beforeAfter[1].getPose();//todo apply intensity here
+				return beforeAfter[1].getPose();
 			} else if (beforeAfter[1] == null) {
-				return beforeAfter[0].getPose();//todo and here
+				return beforeAfter[0].getPose();
 			}
 		}
 

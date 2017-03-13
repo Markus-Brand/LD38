@@ -38,6 +38,12 @@ public class BoneTransformation {
 	 * @return
 	 */
 	public static BoneTransformation lerp(BoneTransformation t1, BoneTransformation t2, double factor) {
+		if (factor == 0) {
+			return t1;
+		}
+		if (factor == 1) {
+			return t2;
+		}
 		return new BoneTransformation(lerpVec3(t1.getPosition(), t2.getPosition(), factor), lerpQuaternion(
 				t1.getRotation(), t2.getRotation(), factor), lerpVec3(t1.getScale(), t2.getScale(), factor));
 
