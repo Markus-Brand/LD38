@@ -164,6 +164,7 @@ public class OpenGLContext {
 	private void createWindow(String title, boolean fullscreen, int width, int height) {
 		// Create the window
 		if (fullscreen) {
+			glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 			window = glfwCreateWindow(width, height, title, glfwGetPrimaryMonitor(), NULL);
 		} else {
 			window = glfwCreateWindow(width, height, title, NULL, NULL);
@@ -201,7 +202,9 @@ public class OpenGLContext {
 		});
 
 		// Center our window
-		glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
+		if (!fullscreen) {
+			glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
+		}
 
 		// Make the OpenGL context current
 		glfwMakeContextCurrent(window);
