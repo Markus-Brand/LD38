@@ -69,7 +69,7 @@ public class DirectionalLight extends Light {
 	 * <li>the color (3 components + 1 buffer)</li>
 	 * </list>
 	 * <br>
-	 * if changes occur -> {@link DirectionalLightManager}
+	 * if changes occur -> {@link DirectionalLightTypeManager}
 	 */
 	@Override
 	public float[] getData() {

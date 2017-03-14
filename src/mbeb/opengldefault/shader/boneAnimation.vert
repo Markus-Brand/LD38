@@ -57,5 +57,5 @@ void main() {
 	normal = mat3(model) * normalize(totalNormal.xyz);
 	tex = texCoord;
 
-	//color = vec4((normal * 0.5f) + vec3(0.5), 1.0);
+	color = vec4((normal * 0.5f) + vec3(0.5), 1.0);
 }

@@ -2,15 +2,15 @@ package mbeb.opengldefault.rendering.renderable;
 
 import java.nio.*;
 
+import org.joml.*;
+import org.lwjgl.*;
+import org.lwjgl.opengl.*;
+
 import mbeb.opengldefault.curves.*;
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.io.*;
 import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.scene.*;
-
-import org.joml.*;
-import org.lwjgl.*;
-import org.lwjgl.opengl.*;
 
 /**
  * Renders a {@link BezierCurve}

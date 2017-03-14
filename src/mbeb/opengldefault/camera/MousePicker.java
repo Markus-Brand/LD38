@@ -1,13 +1,10 @@
 package mbeb.opengldefault.camera;
 
-import mbeb.opengldefault.controls.Mouse;
-import mbeb.opengldefault.openglcontext.OpenGLContext;
-import mbeb.opengldefault.scene.SceneObject;
+import org.joml.*;
 
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import mbeb.opengldefault.controls.*;
+import mbeb.opengldefault.openglcontext.*;
+import mbeb.opengldefault.scene.*;
 
 public class MousePicker {
 	private Vector3f ray;
@@ -35,9 +32,7 @@ public class MousePicker {
 	}
 
 	private Vector2f getNormalizedDeviceCoordinates(Vector2f mousePos) {
-		return new Vector2f(
-				2 * mousePos.x / OpenGLContext.getVideoModeWidth()- 1,
-				-(2 * mousePos.y / OpenGLContext.getVideoModeHeight()- 1));
+		return new Vector2f(2 * mousePos.x / OpenGLContext.getVideoModeWidth() - 1, -(2 * mousePos.y / OpenGLContext.getVideoModeHeight() - 1));
 	}
 
 	private Vector3f getWorldSpaceCoordinates(Vector4f eyeSpaceCoordinates) {
@@ -61,7 +56,7 @@ public class MousePicker {
 		} else {
 			currentObject.setSelected(false);
 		}
-		
+
 		final Matrix4f transform = parentTransform.mul(currentObject.getTransformation().asMatrix(), new Matrix4f());
 		for (SceneObject child : currentObject.getSubObjects()) {
 			searchBBs(child, transform);

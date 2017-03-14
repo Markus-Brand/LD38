@@ -2,9 +2,9 @@ package mbeb.opengldefault.curves;
 
 import java.util.*;
 
-import mbeb.opengldefault.logging.*;
-
 import org.joml.*;
+
+import mbeb.opengldefault.logging.*;
 
 /**
  * A Bezier Curve that can be used as a path for a camera or an entity.
@@ -75,8 +75,7 @@ public class BezierCurve {
 	 * @param adaptiveSegmentLength
 	 *            should the segment length be generated depending on the Curve lengths
 	 */
-	public BezierCurve(final List<Vector3f> controlPoints, final ControlPointInputMode mode,
-			final boolean adaptiveSegmentLength) {
+	public BezierCurve(final List<Vector3f> controlPoints, final ControlPointInputMode mode, final boolean adaptiveSegmentLength) {
 		this.mode = mode;
 		setInputPoints(controlPoints);
 		generateSegmentLength(adaptiveSegmentLength);
@@ -104,8 +103,7 @@ public class BezierCurve {
 	 * @param segmentLengths
 	 *            input segment length
 	 */
-	public BezierCurve(final List<Vector3f> controlPoints, final ControlPointInputMode mode,
-			final List<Float> segmentLengths) {
+	public BezierCurve(final List<Vector3f> controlPoints, final ControlPointInputMode mode, final List<Float> segmentLengths) {
 		this.mode = mode;
 		setInputPoints(controlPoints);
 		setSegmentLengths(segmentLengths);
@@ -267,8 +265,7 @@ public class BezierCurve {
 	 * @param length
 	 *            length of the "Tangent"
 	 */
-	private void generateFirstControlPoint(final List<Vector3f> cameraPositions, final Vector3f direction,
-			final float length) {
+	private void generateFirstControlPoint(final List<Vector3f> cameraPositions, final Vector3f direction, final float length) {
 		final Vector3f currentCameraPos = new Vector3f(cameraPositions.get(0));
 
 		final Vector3f tangent = new Vector3f();
@@ -290,8 +287,7 @@ public class BezierCurve {
 	 * @param tangent
 	 *            Tangent on this Point
 	 */
-	private void generateMidControlPoint(final List<Vector3f> cameraPositions, final int camPosID,
-			final Vector3f tangent) {
+	private void generateMidControlPoint(final List<Vector3f> cameraPositions, final int camPosID, final Vector3f tangent) {
 		final Vector3f currentCameraPos = new Vector3f(cameraPositions.get(camPosID));
 
 		final Vector3f prevControlPos = new Vector3f(currentCameraPos).sub(tangent);
@@ -312,8 +308,7 @@ public class BezierCurve {
 	 * @param length
 	 *            length of the "Tangent"
 	 */
-	private void generateLastControlPoint(final List<Vector3f> cameraPositions, final Vector3f direction,
-			final float length, final boolean circular) {
+	private void generateLastControlPoint(final List<Vector3f> cameraPositions, final Vector3f direction, final float length, final boolean circular) {
 		final Vector3f currentCameraPos = new Vector3f(cameraPositions.get(circular ? 0 : cameraPositions.size() - 1));
 
 		final Vector3f tangent = new Vector3f();
@@ -418,8 +413,7 @@ public class BezierCurve {
 	 * @return progess Vector.
 	 */
 	private Vector4f progressVector(final double progressInFragment) {
-		return new Vector4f((float) java.lang.Math.pow(progressInFragment, 3), (float) java.lang.Math.pow(
-				progressInFragment, 2), (float) progressInFragment, 1);
+		return new Vector4f((float) java.lang.Math.pow(progressInFragment, 3), (float) java.lang.Math.pow(progressInFragment, 2), (float) progressInFragment, 1);
 	}
 
 	/**

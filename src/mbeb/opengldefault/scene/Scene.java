@@ -1,10 +1,10 @@
 package mbeb.opengldefault.scene;
 
+import org.joml.*;
+
 import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.light.*;
 import mbeb.opengldefault.rendering.renderable.*;
-
-import org.joml.*;
 
 /**
  * A scene is an object in which objects live and the camera moves. There should

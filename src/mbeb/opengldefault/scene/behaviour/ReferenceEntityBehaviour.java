@@ -1,6 +1,6 @@
 package mbeb.opengldefault.scene.behaviour;
 
-import mbeb.opengldefault.scene.entities.Entity;
+import mbeb.opengldefault.scene.entities.*;
 
 /**
  * A abstract Behaviour that interacts with a reference Entity

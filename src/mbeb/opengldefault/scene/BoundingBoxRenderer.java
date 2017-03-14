@@ -2,15 +2,15 @@ package mbeb.opengldefault.scene;
 
 import java.nio.*;
 
+import org.joml.*;
+import org.lwjgl.*;
+import org.lwjgl.opengl.*;
+
 import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.rendering.shader.*;
-
-import org.joml.*;
-import org.lwjgl.*;
-import org.lwjgl.opengl.*;
 
 public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 

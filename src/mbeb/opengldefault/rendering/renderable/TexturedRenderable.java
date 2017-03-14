@@ -1,11 +1,11 @@
 package mbeb.opengldefault.rendering.renderable;
 
-import mbeb.opengldefault.animation.Bone;
-import mbeb.opengldefault.animation.Pose;
+import org.joml.*;
+
+import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.rendering.textures.*;
 import mbeb.opengldefault.scene.*;
-import org.joml.Matrix4f;
 
 /**
  * A renderable with its own texture

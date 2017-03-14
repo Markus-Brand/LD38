@@ -13,11 +13,8 @@ public class BoneTransformation {
 	}
 
 	public static final Matrix4f matrixFromAI(AIMatrix4x4 aimat) {
-		Matrix4f mat = new Matrix4f(
-				aimat.a1(), aimat.b1(), aimat.c1(), aimat.d1(),
-				aimat.a2(), aimat.b2(), aimat.c2(),aimat.d2(),
-				aimat.a3(), aimat.b3(), aimat.c3(), aimat.d3(),
-				aimat.a4(), aimat.b4(), aimat.c4(), aimat.d4());
+		Matrix4f mat = new Matrix4f(aimat.a1(), aimat.b1(), aimat.c1(), aimat.d1(), aimat.a2(), aimat.b2(), aimat.c2(), aimat.d2(), aimat.a3(), aimat.b3(), aimat.c3(), aimat.d3(), aimat.a4(),
+				aimat.b4(), aimat.c4(), aimat.d4());
 		return mat;
 	}
 
@@ -38,8 +35,7 @@ public class BoneTransformation {
 	 * @return
 	 */
 	public static BoneTransformation lerp(BoneTransformation t1, BoneTransformation t2, double factor) {
-		return new BoneTransformation(lerpVec3(t1.getPosition(), t2.getPosition(), factor), lerpQuaternion(
-				t1.getRotation(), t2.getRotation(), factor), lerpVec3(t1.getScale(), t2.getScale(), factor));
+		return new BoneTransformation(lerpVec3(t1.getPosition(), t2.getPosition(), factor), lerpQuaternion(t1.getRotation(), t2.getRotation(), factor), lerpVec3(t1.getScale(), t2.getScale(), factor));
 
 	}
 
@@ -63,8 +59,7 @@ public class BoneTransformation {
 	}
 
 	public BoneTransformation(Matrix4f mat) {
-		this(mat.getTranslation(new Vector3f()), mat.getNormalizedRotation(new Quaternionf()), mat
-				.getScale(new Vector3f()));
+		this(mat.getTranslation(new Vector3f()), mat.getNormalizedRotation(new Quaternionf()), mat.getScale(new Vector3f()));
 
 	}
 
@@ -134,7 +129,7 @@ public class BoneTransformation {
 	public void setPosition(Vector3f position) {
 		this.position = position;
 	}
-	
+
 	public void setPosition(Vector4f position) {
 		setPosition(new Vector3f(position.x / position.w, position.y / position.w, position.z / position.w));
 	}
@@ -150,18 +145,21 @@ public class BoneTransformation {
 	public Vector3f getScale() {
 		return scale;
 	}
-	
+
 	/**
 	 * check if this transformation is nearly the same as a provided matrix
-	 * @param other other matrix to check
-	 * @param epsilon the tolerance
+	 * 
+	 * @param other
+	 *            other matrix to check
+	 * @param epsilon
+	 *            the tolerance
 	 * @return whether the difference lies within tolerance
 	 */
 	public boolean isSameAs(Matrix4f other, float epsilon) {
 		Matrix4f diff = this.asMatrix().sub(other, new Matrix4f());
 
 		float distance = 0;
-		for (Float f: diff.get(new float[16])) {
+		for (Float f : diff.get(new float[16])) {
 			distance += java.lang.Math.abs(f);
 		}
 		return distance < epsilon;

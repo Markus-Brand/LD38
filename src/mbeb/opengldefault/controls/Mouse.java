@@ -6,7 +6,7 @@ public class Mouse {
 
 	/** Class Name Tag */
 	private static final String TAG = "Mouse";
-	
+
 	private Mouse() {
 		//should never be instantiated
 	}

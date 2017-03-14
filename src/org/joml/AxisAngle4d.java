@@ -506,8 +506,8 @@ public class AxisAngle4d implements Externalizable {
 		double cos = Math.cos(angle);
 		double sin = Math.sin(angle);
 		double dot = x * v.x() + y * v.y() + z * v.z();
-		dest.set(v.x() * cos + sin * (y * v.z() - z * v.y()) + (1.0 - cos) * dot * x, v.y() * cos + sin * (z * v.x() - x * v.z()) + (1.0 - cos) * dot * y, v.z() * cos + sin * (x * v.y() - y * v.x())
-				+ (1.0 - cos) * dot * z);
+		dest.set(v.x() * cos + sin * (y * v.z() - z * v.y()) + (1.0 - cos) * dot * x, v.y() * cos + sin * (z * v.x() - x * v.z()) + (1.0 - cos) * dot * y,
+				v.z() * cos + sin * (x * v.y() - y * v.x()) + (1.0 - cos) * dot * z);
 		return dest;
 	}
 
@@ -536,8 +536,8 @@ public class AxisAngle4d implements Externalizable {
 		double cos = Math.cos(angle);
 		double sin = Math.sin(angle);
 		double dot = x * v.x + y * v.y + z * v.z;
-		dest.set(v.x * cos + sin * (y * v.z - z * v.y) + (1.0 - cos) * dot * x, v.y * cos + sin * (z * v.x - x * v.z) + (1.0 - cos) * dot * y, v.z * cos + sin * (x * v.y - y * v.x) + (1.0 - cos)
-				* dot * z, dest.w);
+		dest.set(v.x * cos + sin * (y * v.z - z * v.y) + (1.0 - cos) * dot * x, v.y * cos + sin * (z * v.x - x * v.z) + (1.0 - cos) * dot * y,
+				v.z * cos + sin * (x * v.y - y * v.x) + (1.0 - cos) * dot * z, dest.w);
 		return dest;
 	}
 
@@ -588,9 +588,8 @@ public class AxisAngle4d implements Externalizable {
 		if (getClass() != obj.getClass())
 			return false;
 		AxisAngle4d other = (AxisAngle4d) obj;
-		if (Double.doubleToLongBits((angle < 0.0 ? Math.PI + Math.PI + angle % (Math.PI + Math.PI) : angle) % (Math.PI + Math.PI)) != Double.doubleToLongBits((other.angle < 0.0 ? Math.PI + Math.PI
-				+ other.angle % (Math.PI + Math.PI) : other.angle)
-				% (Math.PI + Math.PI)))
+		if (Double.doubleToLongBits((angle < 0.0 ? Math.PI + Math.PI + angle % (Math.PI + Math.PI) : angle) % (Math.PI + Math.PI)) != Double
+				.doubleToLongBits((other.angle < 0.0 ? Math.PI + Math.PI + other.angle % (Math.PI + Math.PI) : other.angle) % (Math.PI + Math.PI)))
 			return false;
 		if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x))
 			return false;

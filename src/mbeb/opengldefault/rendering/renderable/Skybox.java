@@ -1,6 +1,7 @@
 package mbeb.opengldefault.rendering.renderable;
 
 import static org.lwjgl.opengl.GL11.*;
+
 import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.rendering.textures.*;
 

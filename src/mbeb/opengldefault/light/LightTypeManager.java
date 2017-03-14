@@ -14,22 +14,43 @@ import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.shader.*;
 
 /**
- * @author Erik + Merlin + Markus :)
+ * I'm an abstract class blueprint used for classes managing lights of one type (e.g. directional, point or spot lights) and there different parameters (e.g. UBOID, capacity, storage size...).
+ * I'm encapsuling all basic functions probably useful for a concrete LightTypeManager.
+ *
+ * @author Merlin (and Erik and Markus but if something is wrong blame him and only him) :D
  */
 public abstract class LightTypeManager {
 	/** Class Name Tag */
 	private static final String TAG = "LightTypeManager";
 
-	private static int BYTES_PER_BLOCK = 16; // 1 Block = four 32bit floats = 16byte
+	/** 1 Block = four 32bit floats = 16byte */
+	private static int BYTES_PER_BLOCK = 16;
+	/** stores UBO Name */
 	protected String UBOBaseName;
+	/** stores UBO identifier */
 	protected int UBOBaseID;
+	/** number of Blocks needed to store one Object of the managed LightType */
 	protected int lightBlockSize;
+	/** name of the LightType Parameter for the managed LightType */
 	protected String shaderLightTypeParameterName;
+	/** maximal number of Lights that can be stored without resizing the UBO */
 	protected int lightCapacity;
-	private ArrayList<Light> lights;
-	private int UBO;
+	/** all managed lights */
+	private final ArrayList<Light> lights;
+	/** UBO identifier */
+	private final int UBO;
 
-	protected void init() {
+	/**
+	 * @param shaderLightTypeParameterName
+	 * @param lightBlockSize
+	 * @param UBOBaseName
+	 * @param lightCapacity
+	 */
+	public LightTypeManager(final String shaderLightTypeParameterName, final int lightBlockSize, final String UBOBaseName, final int lightCapacity) {
+		this.shaderLightTypeParameterName = shaderLightTypeParameterName;
+		this.lightBlockSize = lightBlockSize;
+		this.UBOBaseName = UBOBaseName;
+		this.lightCapacity = lightCapacity;
 		this.UBOBaseID = UBOManager.getUBOID(UBOBaseName);
 		this.lights = new ArrayList<>();
 		this.UBO = glGenBuffers();
@@ -52,16 +73,13 @@ public abstract class LightTypeManager {
 
 		saveBufferSize();
 		bufferData();
-		//updateShaders();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		GLErrors.checkForError(TAG, "glBindBuffer");
 	}
 
 	/**
-	 * calculates number of bytes which are needed to store the light data capacity
-	 *
-	 * @return
+	 * @return number of bytes which are needed to store theLight capacity
 	 */
 	private int getBufferSize() {
 		return lightCapacity * lightBlockSize * BYTES_PER_BLOCK;
@@ -101,6 +119,7 @@ public abstract class LightTypeManager {
 	 * updates the <i>TYPE</i>_LIGHT_CAPACITY Parameter of the given shader
 	 *
 	 * @param shader
+	 *            that will be updated
 	 */
 	public void updateShader(final Shader shader) {
 		shader.addUniformBlockIndex(UBOBaseName);
@@ -150,18 +169,34 @@ public abstract class LightTypeManager {
 		final FloatBuffer lightBuffer = BufferUtils.createFloatBuffer(lightBlockSize * 4);
 		lightBuffer.put(light.getData());
 		lightBuffer.flip();
-		glBufferSubData(GL_UNIFORM_BUFFER, offset + 16, lightBuffer);
+
+		final int bufferSizeStorageSpace = BYTES_PER_BLOCK; //one block reserved space for this at the beginning of the UBO
+		glBufferSubData(GL_UNIFORM_BUFFER, bufferSizeStorageSpace + offset, lightBuffer);
 		GLErrors.checkForError(TAG, "glBufferSubData");
 
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		GLErrors.checkForError(TAG, "glBindBuffer");
 	}
 
+	/**
+	 * calling this removes lights witch are super markt for deletion
+	 * and updates lights witch are super markt as dirty
+	 *
+	 * @param deltaTime
+	 */
 	public void update(final double deltaTime) {
 		removeDeletedLightsFromList();
 		updateDirtyLights();
 	}
 
+	/**
+	 * updates <i>light</i>'s data in the UBO and cleanses it afterwards
+	 *
+	 * @param light
+	 *            witch data shall be updated
+	 * @param lightIndex
+	 *            at witch the light is stored in the UBO
+	 */
 	private void updateLightData(final Light light, final int lightIndex) {
 		final int offset = getTotalBufferOffset(lightIndex);
 		updateSingleLightData(light, offset);
@@ -169,7 +204,7 @@ public abstract class LightTypeManager {
 	}
 
 	/**
-	 * update data of changed Light objects
+	 * updates data of all changed ("aka dirty") Light objects
 	 */
 	private void updateDirtyLights() {
 		final AtomicInteger lightIndex = new AtomicInteger(0);

@@ -3,14 +3,14 @@ package mbeb.opengldefault.scene;
 import java.nio.*;
 import java.util.*;
 
+import org.joml.*;
+import org.lwjgl.*;
+import org.lwjgl.opengl.*;
+
 import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.rendering.shader.*;
-
-import org.joml.*;
-import org.lwjgl.*;
-import org.lwjgl.opengl.*;
 
 /**
  * A "visitor" of the scenegraph to render it

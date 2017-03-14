@@ -1,8 +1,8 @@
 package mbeb.opengldefault.scene.entities;
 
-import mbeb.opengldefault.camera.ICamera;
+import org.joml.*;
 
-import org.joml.Vector3f;
+import mbeb.opengldefault.camera.*;
 
 /**
  * Adapter class that enables a {@link ICamera} to be interpreted as {@link Entity}

@@ -9,7 +9,7 @@ import mbeb.opengldefault.logging.*;
 /**
  * @author Merlin (and Erik and Markus but if something is wrong blame him and only him) :D
  */
-public class SpotLight extends Light {
+public class SpotLight extends Light implements LimitedLight {
 	/** Class Name Tag */
 	private static final String TAG = "SpotLight";
 
@@ -27,6 +27,37 @@ public class SpotLight extends Light {
 	protected float linear;
 	/** quadratic attenuation factor */
 	protected float quadratic;
+
+	/**
+	 * creates a straight, <i>color</i> colored lightcone located at <i>position</i> "shining" in <i>direction</i>
+	 * light intensity is interpolated between innerCutoff and outerCutoff
+	 *
+	 * @param color
+	 *            with rgb values usually in [0,1]^3
+	 * @param position
+	 *            as Vector3f
+	 * @param direction
+	 *            as Vector3f
+	 * @param innerCutoff
+	 *            as angle in degrees
+	 * @param outerCutoff
+	 *            as angle in degrees
+	 * @param constant
+	 *            attenuation factor
+	 * @param linear
+	 *            attenuation factor
+	 * @param quadratic
+	 *            attenuation factor
+	 * @throws AssertionError
+	 *             if direction is zero vector
+	 */
+	private SpotLight(final Vector3f color, final Vector3f position, final Vector3f direction, final float innerCutoff, final float outerCutoff) {
+		super(color);
+		setPosition(position);
+		setDirection(direction);
+		setInnerCutoff(innerCutoff);
+		setOuterCutoff(outerCutoff);
+	}
 
 	/**
 	 * creates a straight, <i>color</i> colored lightcone located at <i>position</i> "shining" in <i>direction</i> with explicit naming of the attenuation factors <i>constant</i>, <i>linear</i> and
@@ -54,11 +85,7 @@ public class SpotLight extends Light {
 	 */
 	public SpotLight(final Vector3f color, final Vector3f position, final Vector3f direction, final float innerCutoff, final float outerCutoff, final float constant, final float linear,
 			final float quadratic) {
-		super(color);
-		setPosition(position);
-		setDirection(direction);
-		setInnerCutoff(innerCutoff);
-		setOuterCutoff(outerCutoff);
+		this(color, position, direction, innerCutoff, outerCutoff);
 		setConstant(constant);
 		setLinear(linear);
 		setQuadratic(quadratic);
@@ -114,7 +141,8 @@ public class SpotLight extends Light {
 	 *             if direction is zero vector
 	 */
 	public SpotLight(final Vector3f color, final Vector3f position, final Vector3f direction, final float innerCutoff, final float outerCutoff, final float reach) {
-		this(color, position, direction, innerCutoff, outerCutoff, 1.0f, generateLinearAmount(reach), generateQuadraticAmount(reach));
+		this(color, position, direction, innerCutoff, outerCutoff);
+		setReach(reach);
 	}
 
 	/**
@@ -139,32 +167,6 @@ public class SpotLight extends Light {
 	 */
 	public SpotLight(final Color color, final Vector3f position, final Vector3f direction, final float innerCutoff, final float outerCutoff, final float reach) {
 		this(vectorFromColor(color), position, direction, innerCutoff, outerCutoff, reach);
-	}
-
-	/**
-	 * generates an approximation of this tables linear amount column:
-	 * http://www.learnopengl.com/#!Lighting/Light-casters based on this
-	 * function restorer: http://www.arndt-bruenner.de/mathe/scripts/regrnl.htm
-	 *
-	 * @param distance
-	 *            the desired reach distance of the light
-	 * @return the linear part for attenuation calculation
-	 */
-	private static float generateLinearAmount(final float distance) {
-		return (float) (4.767566446388858 / distance);
-	}
-
-	/**
-	 * generates an approximation of this tables quadratic amount column:
-	 * http://www.learnopengl.com/#!Lighting/Light-casters based on this
-	 * function restorer: http://www.arndt-bruenner.de/mathe/scripts/regrnl.htm
-	 *
-	 * @param distance
-	 *            the desired distance for the light
-	 * @return the quadratic amount for attenuation calculation
-	 */
-	private static float generateQuadraticAmount(final float distance) {
-		return (float) (0.0361492d / distance + 48.572348116d / (distance * distance) + 280d / (distance * distance * distance));
 	}
 
 	/**
@@ -302,7 +304,7 @@ public class SpotLight extends Light {
 	 * <li><b>cos</b>(cutoff), <b>cos</b>(outerCutoff) and the 3 attenuation factors constant, linear and quadratic</li>
 	 * </list>
 	 * <br>
-	 * if changes occur -> {@link SpotLightManager}
+	 * if changes occur -> {@link SpotLightTypeManager}
 	 */
 	@Override
 	public float[] getData() {

@@ -32,7 +32,7 @@ public class BunnyGame extends Game {
 
 	private float timePassed;
 
-	protected ICamera cam;
+	protected ICamera camera;
 	Scene bunnyScene;
 	PointLight pl;
 	DirectionalLight dl;
@@ -57,13 +57,13 @@ public class BunnyGame extends Game {
 		}
 		curve = new BezierCurve(controlPoints, ControlPointInputMode.CAMERAPOINTSCIRCULAR, true);
 
-		cam = new Camera(getContext().getAspectRatio());
+		camera = new Camera(getContext().getAspectRatio());
 
-		camEntity = new CameraEntity(cam);
+		camEntity = new CameraEntity(camera);
 
 		final Skybox skybox = new Skybox("skybox/mountain");
 
-		bunnyScene = new Scene(cam, skybox);
+		bunnyScene = new Scene(camera, skybox);
 
 		final AnimatedRenderable bunnyAnim = new ObjectLoader().loadFromFileAnim("ohrenFlackern.fbx");
 		bunnyAnim.getAnimatedMesh().setTransform(MeshFlip);
@@ -75,7 +75,7 @@ public class BunnyGame extends Game {
 
 		final Shader defaultShader = new Shader("boneAnimation.vert", "basic.frag");
 		bunnyScene.getLightManager().addShader(defaultShader);
-		defaultShader.addUniformBlockIndex("Matrices");
+		defaultShader.addUniformBlockIndex(UBOManager.MATRICES);
 
 		bunny0 = new SceneObject(bunnyTextured);
 		bunny1 = new SceneObject(bunnyTextured);

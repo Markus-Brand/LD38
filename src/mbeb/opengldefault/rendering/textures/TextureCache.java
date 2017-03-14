@@ -7,15 +7,14 @@ import static org.lwjgl.opengl.GL30.*;
 
 import java.awt.image.*;
 import java.io.*;
-import java.net.*;
 import java.nio.*;
 import java.util.*;
 
 import javax.imageio.*;
 
-import mbeb.opengldefault.logging.*;
-
 import org.lwjgl.*;
+
+import mbeb.opengldefault.logging.*;
 
 /**
  * static methods for creating / using textures.
@@ -98,8 +97,8 @@ public class TextureCache {
 	 *            input BufferedImage
 	 * @param interpolate
 	 *            interpolation method
-     * @param wrapS
-     * @param wrapT
+	 * @param wrapS
+	 * @param wrapT
 	 * @return openGl texture
 	 */
 	public static int loadTexture(BufferedImage image, boolean interpolate, int wrapS, int wrapT) {
@@ -161,7 +160,7 @@ public class TextureCache {
 	/**
 	 * Generate OpenGL CubeMap from BufferedImage Array with given interpolation method
 	 *
-     * @param images
+	 * @param images
 	 * @return openGl texture
 	 */
 	public static int loadCubeMap(BufferedImage[] images) {

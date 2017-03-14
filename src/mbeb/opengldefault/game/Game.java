@@ -1,9 +1,9 @@
 package mbeb.opengldefault.game;
 
-import mbeb.opengldefault.openglcontext.OpenGLContext;
+import mbeb.opengldefault.openglcontext.*;
 
 public abstract class Game {
-	
+
 	private OpenGLContext context = null;
 
 	public OpenGLContext getContext() {
@@ -13,7 +13,7 @@ public abstract class Game {
 	public void setContext(OpenGLContext context) {
 		this.context = context;
 	}
-	
+
 	/**
 	 * Init the Game here. The OpenGL context is already created at this Point.
 	 */
