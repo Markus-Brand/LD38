@@ -5,7 +5,7 @@ import java.util.*;
 import org.lwjgl.assimp.*;
 
 /**
- * a list of keyframes for an AnimatedMesh
+ * a list of keyframes and a priority mask for an AnimatedMesh
  */
 public class Animation {
 
@@ -14,6 +14,9 @@ public class Animation {
 	private List<KeyFrame> keyFrames;
 	private String name;
 	private Bone skeleton;
+
+	/** how important each bone is for this animation */
+	private Map<Bone, Integer> bonePriorities = new HashMap<>();
 
 	private double duration;
 
@@ -32,6 +35,18 @@ public class Animation {
 		anim.setName(aianim.mName().dataString());
 
 		return anim;
+	}
+
+	/**
+	 * call this after loading all keyFrames
+	 * @param bone
+	 * @param value
+	 */
+	public void setBonePriority(Bone bone, int value) {
+		bonePriorities.put(bone, value);
+		for (KeyFrame kf: keyFrames) {
+			kf.getPose().setBonePriority(bone.getName(), value);
+		}
 	}
 
 	public double getDuration() {

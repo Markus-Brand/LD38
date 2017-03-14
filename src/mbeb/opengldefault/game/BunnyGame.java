@@ -82,6 +82,8 @@ public class BunnyGame extends Game {
 		bunnyAnim.setTransform(MeshFlip);
 		Texture bunnyTexture = new Texture("bunny_2d.png");
 
+		bunnyAnim.getSkeleton().printRecursive("");
+
 		final Shader curveShader = new Shader("bezier.vert", "bezier.frag", "bezier.geom");
 		curveShader.addUniformBlockIndex(1, "Matrices");
 		curveShader.setDrawMode(GL_LINES);
@@ -137,8 +139,8 @@ public class BunnyGame extends Game {
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 
-		runningAnim = new Animator(bunnyAnim.getAnimationByName("running"), 25, 3 * 25, 3 * 25);
-		waveAnim = new Animator(bunnyAnim.getAnimationByName("wave"), 10, 1 * 10 , 1 * 10);
+		runningAnim = new Animator(bunnyAnim.getAnimationByName("running"), 25, 2 * 25, 0.5 * 25);
+		waveAnim = new Animator(bunnyAnim.getAnimationByName("wave"), 10, 0.5 * 10 , 0.5 * 10);
 
 	}
 
@@ -147,7 +149,7 @@ public class BunnyGame extends Game {
 		timePassed += deltaTime;
 
 		if (KeyBoard.isKeyDown(GLFW_KEY_Q)) {
-			if (!waving) {
+			if (!waving && !animBunny4.hasAnimationsOf(waveAnim.getAnimation())) {
 				waving = true;
 				animBunny4.playAnimation(new Animator(waveAnim));
 			}
@@ -158,7 +160,7 @@ public class BunnyGame extends Game {
 			}
 		}
 		if (KeyBoard.isKeyDown(GLFW_KEY_E)) {
-			if (!running) {
+			if (!running && !animBunny4.hasAnimationsOf(runningAnim.getAnimation())) {
 				running = true;
 				animBunny4.playAnimation(new Animator(runningAnim));
 			}

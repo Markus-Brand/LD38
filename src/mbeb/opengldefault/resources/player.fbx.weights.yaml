@@ -1,0 +1,6 @@
+wave:
+  Arm.L: 8
+  Hand.L: 5
+running:
+  Torso: 2
+  Leg: 8

@@ -43,7 +43,37 @@ public class ObjectLoader {
 	 * @return a Renderable
 	 */
 	public AnimatedMesh loadFromFileAnim(String path) {
-		return (AnimatedMesh)loadFromFile(path, PosNormUvAnim3);
+		AnimatedMesh mesh =  (AnimatedMesh)loadFromFile(path, PosNormUvAnim3);
+		loadAnimationPriorities(mesh, path + ".weights.yaml");
+		return mesh;
+	}
+
+	/**
+	 * load the priorities of movements per bone
+	 * @param mesh the mesh to modify
+	 * @param weightsPath path to the file containing this information
+	 */
+	private void loadAnimationPriorities(AnimatedMesh mesh, String weightsPath) {
+		YAMLParser.YAMLNode root = new YAMLParser(new File(getExtractedPath(weightsPath))).parse();
+		for (YAMLParser.YAMLNode animNode: root.getChildren()) {
+			Animation anim = mesh.getAnimationByName(animNode.getName());
+
+			for (YAMLParser.YAMLNode boneNode : animNode.getChildren()) {
+				adjustBoneAnimationPriorities(anim, anim.getSkeleton(), boneNode);
+			}
+		}
+	}
+
+	private void adjustBoneAnimationPriorities(Animation anim, Bone bone, YAMLParser.YAMLNode boneNode) {
+		if (bone.getName().toLowerCase().contains(boneNode.getName().toLowerCase())) {
+			bone.foreach((Bone ancestor) ->  {
+				anim.setBonePriority(ancestor, Integer.valueOf(boneNode.getData()));
+			});
+		} else {
+			for (Bone child: bone.getChildren()) {
+				adjustBoneAnimationPriorities(anim, child, boneNode);
+			}
+		}
 	}
 
 	/**

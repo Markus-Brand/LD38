@@ -74,11 +74,6 @@ public class Bone implements BoundingBox.Owner {
 	public int getIndex() {
 		return index;
 	}
-
-	@Override
-	public String toString() {
-		return getName() + " - " + getIndex() + "(total " + boneCount() + ")";
-	}
 	
 	/**
 	 * breadth-first search for a bone with given name
@@ -149,6 +144,19 @@ public class Bone implements BoundingBox.Owner {
 		action.accept(this);
 		for (Bone child : getChildren()) {
 			child.foreach(action);
+		}
+	}
+
+	@Override
+	public String toString() {
+		return getName() + " - " + getIndex() + "(total " + boneCount() + ")";
+	}
+
+	public void printRecursive(String pre) {
+		System.out.println(pre + getName() + " - " + getIndex());
+
+		for (Bone child: getChildren()) {
+			child.printRecursive(pre + "  |");
 		}
 	}
 }

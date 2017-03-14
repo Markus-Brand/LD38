@@ -80,7 +80,7 @@ public class OpenGLContext {
 		evaluateCommandLineArguments(args);
 		initOpenGL();
 
-		createWindow("Test window", false, getVideoModeWidth() / 2, getVideoModeHeight() / 2);
+		createWindow("Test window", true, getVideoModeWidth(), getVideoModeHeight());
 		GL.createCapabilities();
 		GLErrors.checkForError(TAG, "createCapabilities");
 		
@@ -203,7 +203,7 @@ public class OpenGLContext {
 
 		// Center our window
 		if (!fullscreen) {
-			glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
+			glfwSetWindowPos(window, (vidmode.width() - width), (vidmode.height() - height));
 		}
 
 		// Make the OpenGL context current

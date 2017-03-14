@@ -112,9 +112,14 @@ public class AnimatedRenderable implements IRenderable {
 		if (currentPose == null) {
 			currentPose = mesh.defaultPose();
 			synchronized (animatorLock) {
-				for (Animator anim : getCurrentAnimations()) {
+
+				//mix these animations from stronger strength to lower to minimize artifacts
+				List<Animator> currentAnimations = getCurrentAnimations();
+				currentAnimations.sort((Animator a1, Animator a2) -> -Double.compare(a1.getCurrentStrength(), a2.getCurrentStrength()));
+
+				for (Animator anim : currentAnimations) {
 					Pose p = anim.getCurrentPose();
-					p.applyAfter(anim.getCurrentStrength(), currentPose);
+					p.mixInto(anim.getCurrentStrength(), currentPose);
 				}
 			}
 		}
@@ -133,5 +138,20 @@ public class AnimatedRenderable implements IRenderable {
 				}
 			}
 		}
+	}
+
+	/**
+	 * @param animation
+	 * @return true, if an Animator of the given Animation is currently running on this Renderable
+	 */
+	public boolean hasAnimationsOf(Animation animation) {
+		synchronized (animatorLock) {
+			for (Animator anim : getCurrentAnimations()) {
+				if (anim.getAnimation().equals(animation)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

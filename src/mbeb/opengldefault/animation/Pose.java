@@ -19,6 +19,8 @@ public class Pose {
 
 	/** A BoneTransformation for each bone */
 	private Map<String, BoneTransformation> boneTransforms = new HashMap<>();
+	/** The priority of each bone */
+	private Map<String, Integer> bonePriorities = new HashMap<>();
 	private Bone skeleton;
 	private Matrix4f transform;
 
@@ -62,30 +64,40 @@ public class Pose {
 		}
 	}
 
+	public int getBonePriority(String boneName) {
+		Integer prio = bonePriorities.get(boneName);
+		return (prio != null) ? prio : 0;
+	}
+
+	public void setBonePriority(String boneName, int value) {
+		bonePriorities.put(boneName, value);
+	}
+
 	/**
 	 * apply this poses relative transformations to a pose before, but only
-	 * to bones which have not been animated yet
+	 * to bones with lower priority
 	 *
 	 * @param ownStrength the strength (intensity factor) of <code>this</code> Pose
 	 * @param before the pose to alter
 	 */
-	public void applyAfter(final double ownStrength, final Pose before) {
+	public void mixInto(final double ownStrength, final Pose before) {
 		assert before.skeleton == this.skeleton;
 
 		for (Map.Entry<String, BoneTransformation> beforeSet : before.boneTransforms.entrySet()) {
 			String key = beforeSet.getKey();
 			Bone b = skeleton.firstBoneNamed(key);
 			BoneTransformation beforeTransform = beforeSet.getValue();
-			if (beforeTransform.isSameAs(b.getDefaultBoneTransform(), 0.00001f)) {
+
+			if (getBonePriority(key) > before.getBonePriority(key)) {
 				BoneTransformation afterTransform = this.boneTransforms.get(key);
 				if (afterTransform == null) {
 					continue;
 				}
 				BoneTransformation lerped = BoneTransformation.lerp(
-						new BoneTransformation(b.getDefaultBoneTransform()),
+						beforeTransform,
 						afterTransform, ownStrength);
 				beforeSet.setValue(lerped);
-				
+				before.bonePriorities.put(key, getBonePriority(key));
 			}
 		}
 	}
@@ -134,6 +146,7 @@ public class Pose {
 		assert p1.skeleton == p2.skeleton;
 
 		Pose result = new Pose(p1.skeleton, p1.transform);
+		result.bonePriorities = p1.bonePriorities;
 
 		for (Map.Entry<String, BoneTransformation> boneTransform : p1.boneTransforms.entrySet()) {
 			String name = boneTransform.getKey();

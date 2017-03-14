@@ -38,14 +38,8 @@ public class Animator {
 	 * @param reference
 	 */
 	public Animator(Animator reference) {
-		this.animation = reference.animation;
-		this.currentTime = reference.currentTime;
-		this.currentTotalTime = reference.currentTotalTime;
-		this.stopTimestamp = reference.stopTimestamp;
-		this.fadeInTime = reference.fadeInTime;
-		this.fadeOutTime = reference.fadeOutTime;
+		this(reference.animation, reference.speed, reference.fadeInTime, reference.fadeOutTime);
 		this.looping = reference.looping;
-		this.speed = reference.speed;
 		this.intensity = reference.intensity;
 	}
 
@@ -113,7 +107,6 @@ public class Animator {
 
 		if (stopTimestamp != null) {
 			double fadeOutFactor = 1 - (currentTotalTime - stopTimestamp) / fadeOutTime;
-			System.out.println(fadeOutFactor);
 			strength *= fadeOutFactor;
 		}
 
