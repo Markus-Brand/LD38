@@ -76,8 +76,11 @@ public class Pose {
 			String key = beforeSet.getKey();
 			Bone b = skeleton.firstBoneNamed(key);
 			BoneTransformation beforeTransform = beforeSet.getValue();
-			if (beforeTransform.isSameAs(b.getDefaultBoneTransform(), 0.001f)) {
+			if (beforeTransform.isSameAs(b.getDefaultBoneTransform(), 0.00001f)) {
 				BoneTransformation afterTransform = this.boneTransforms.get(key);
+				if (afterTransform == null) {
+					continue;
+				}
 				BoneTransformation lerped = BoneTransformation.lerp(
 						new BoneTransformation(b.getDefaultBoneTransform()),
 						afterTransform, ownStrength);
@@ -121,12 +124,12 @@ public class Pose {
 	 * @return
 	 */
 	public static final Pose lerp(Pose p1, Pose p2, double factor) {
-		if (factor == 0) {
+		/*if (factor == 0) {
 			return p1;
 		}
 		if (factor == 1) {
 			return p2;
-		}
+		}/**/
 
 		assert p1.skeleton == p2.skeleton;
 
@@ -137,8 +140,10 @@ public class Pose {
 			BoneTransformation t1 = boneTransform.getValue();
 			BoneTransformation t2 = p2.boneTransforms.get(name);
 
-			BoneTransformation resTrans = BoneTransformation.lerp(t1, t2, factor);
-			result.put(name, resTrans);
+			if (t1 != null && t2 != null) {
+				BoneTransformation resTrans = BoneTransformation.lerp(t1, t2, factor);
+				result.put(name, resTrans);
+			}
 		}
 
 		return result;
@@ -183,6 +188,9 @@ public class Pose {
 	 * @param data the float array to store matrices into
 	 */
 	private void setUniformData(Matrix4f parent, Bone bone, float[] data) {
+		if (bone.getIndex() < 0) {
+			return;
+		}
 		Matrix4f currentLocalBoneTransform = getRaw(bone.getName()).asMatrix();
 		Matrix4f currentBoneTransform = parent.mul(currentLocalBoneTransform, new Matrix4f());
 		for (Bone child : bone.getChildren()) {

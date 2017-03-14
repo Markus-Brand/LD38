@@ -137,6 +137,7 @@ public class Log {
 			writer.println(log);
 			writer.flush();
 		}
+		throw new RuntimeException(obj.toString());
 	}
 
 	/**
@@ -199,5 +200,17 @@ public class Log {
 			writer.println(log);
 			writer.flush();
 		}
+	}
+
+	/**
+	 * make sure that an object is not null
+	 * @param tag
+	 * @param obj
+	 * @param <T>
+	 * @return the object, definitely not null
+	 */
+	public static <T> T assertNotNull(String tag, T obj) {
+		assertIfTrue(tag, obj == null, "Object is null");
+		return obj;
 	}
 }

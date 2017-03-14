@@ -1,7 +1,6 @@
 package mbeb.opengldefault.animation;
 
 import java.util.*;
-import mbeb.opengldefault.logging.Log;
 
 import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.rendering.shader.*;
@@ -40,6 +39,15 @@ public class AnimatedRenderable implements IRenderable {
 	@Override
 	public void update(double deltaTime) {
 		getCurrentAnimations().forEach((Animator anim) -> anim.update(deltaTime));
+
+		//delete all animators from the list that have finished their animation
+		for (int a = 0; a < getCurrentAnimations().size(); a++) {
+			if (getCurrentAnimations().get(a).hasEnded()) {
+				getCurrentAnimations().remove(a);
+				a--;
+			}
+		}
+
 		mesh.update(deltaTime);
 		animatedBoundingBox = null;
 		currentPose = null;
@@ -56,16 +64,6 @@ public class AnimatedRenderable implements IRenderable {
 		synchronized (animatorLock) {
 			getCurrentAnimations().add(animator);
 		}
-	}
-
-	public void playAnimation(String name, double speed, double fadeInTime) {
-		Animation anim = mesh.getAnimationByName(name);
-		if (anim == null) {
-			Log.log(TAG, "No animation named: " + name);
-			return;
-		}
-		Animator animator = new Animator(anim, speed, fadeInTime);
-		playAnimation(animator);
 	}
 
 	@Override
@@ -87,13 +85,16 @@ public class AnimatedRenderable implements IRenderable {
 	 * @return a larger box
 	 */
 	private BoundingBox adjustWith(BoundingBox box, Bone bone, Matrix4f parentTransform) {
+		if (bone.getIndex() < 0) {
+			return box;
+		}
 		Matrix4f boneTransform = getCurrentPose().getRaw(bone.getName()).asMatrix();
 		Matrix4f transform = parentTransform.mul(boneTransform, new Matrix4f());
-		
+
 		BoundingBox boneBox = bone.getBoundingBox();
 		boneBox.setModelTransform(transform);
 		box = box.unionWith(boneBox);
-		
+
 		for (Bone childBone : bone.getChildren()) {
 			box = adjustWith(box, childBone, transform);
 		}
@@ -120,4 +121,17 @@ public class AnimatedRenderable implements IRenderable {
 		return currentPose;
 	}
 
+	/**
+	 * stop all running animators of a given animation
+	 * @param animation
+	 */
+	public void stopAnimationsOf(Animation animation) {
+		synchronized (animatorLock) {
+			for (Animator anim: getCurrentAnimations()) {
+				if (anim.getAnimation().equals(animation)) {
+					anim.stop();
+				}
+			}
+		}
+	}
 }

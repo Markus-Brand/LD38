@@ -5,10 +5,15 @@ import java.util.Random;
 
 import mbeb.opengldefault.animation.AnimatedMesh;
 import mbeb.opengldefault.animation.AnimatedRenderable;
+
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_E;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_Q;
 import static org.lwjgl.opengl.GL11.*;
 
 
+import mbeb.opengldefault.animation.Animator;
 import mbeb.opengldefault.camera.*;
+import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.curves.BezierCurve;
 import mbeb.opengldefault.curves.BezierCurve.ControlPointInputMode;
 import mbeb.opengldefault.logging.*;
@@ -50,6 +55,10 @@ public class BunnyGame extends Game {
 
 	Entity mainBunny, followingBunny1, followingBunny2, followingBunny3, followingBunny4, camEntity;
 
+	boolean waving = false, running = false;
+
+	Animator runningAnim, waveAnim;
+
 	@Override
 	public void init() {
 		timePassed = 0;
@@ -69,7 +78,7 @@ public class BunnyGame extends Game {
 
 		bunnyScene = new Scene(cam, skybox);
 
-		AnimatedMesh bunnyAnim = new ObjectLoader().loadFromFileAnim("ohrenFlackern.fbx");
+		AnimatedMesh bunnyAnim = new ObjectLoader().loadFromFileAnim("player.fbx");
 		bunnyAnim.setTransform(MeshFlip);
 		Texture bunnyTexture = new Texture("bunny_2d.png");
 
@@ -127,44 +136,38 @@ public class BunnyGame extends Game {
 
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
-		
-		new Thread(() -> {
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException ex) {
-				ex.printStackTrace();
-			}
-			animBunny0.playAnimation("OhrenFlackern1", 1, 3);
-			animBunny1.playAnimation("OhrenFlackern1", 1, 3);
-			animBunny2.playAnimation("OhrenFlackern1", 1, 3);
-			animBunny3.playAnimation("OhrenFlackern1", 1, 3);
-			animBunny4.playAnimation("OhrenFlackern1", 1, 3);
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException ex) {
-				ex.printStackTrace();
-			}
-			animBunny0.playAnimation("HeadBang", 1, 3);
-			animBunny1.playAnimation("HeadBang", 1, 3);
-			animBunny2.playAnimation("HeadBang", 1, 3);
-			animBunny3.playAnimation("HeadBang", 1, 3);
-			animBunny4.playAnimation("HeadBang", 1, 3);
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException ex) {
-				ex.printStackTrace();
-			}
-			animBunny0.playAnimation("OhrenFlackern2", 1, 3);
-			animBunny1.playAnimation("OhrenFlackern2", 1, 3);
-			animBunny2.playAnimation("OhrenFlackern2", 1, 3);
-			animBunny3.playAnimation("OhrenFlackern2", 1, 3);
-			animBunny4.playAnimation("OhrenFlackern2", 1, 3);
-		}).start();/**/
+
+		runningAnim = new Animator(bunnyAnim.getAnimationByName("running"), 25, 3 * 25, 3 * 25);
+		waveAnim = new Animator(bunnyAnim.getAnimationByName("wave"), 10, 1 * 10 , 1 * 10);
+
 	}
 
 	@Override
 	public void update(final double deltaTime) {
 		timePassed += deltaTime;
+
+		if (KeyBoard.isKeyDown(GLFW_KEY_Q)) {
+			if (!waving) {
+				waving = true;
+				animBunny4.playAnimation(new Animator(waveAnim));
+			}
+		} else {
+			if (waving) {
+				waving = false;
+				animBunny4.stopAnimationsOf(waveAnim.getAnimation());
+			}
+		}
+		if (KeyBoard.isKeyDown(GLFW_KEY_E)) {
+			if (!running) {
+				running = true;
+				animBunny4.playAnimation(new Animator(runningAnim));
+			}
+		} else {
+			if (running) {
+				running = false;
+				animBunny4.stopAnimationsOf(runningAnim.getAnimation());
+			}
+		}
 
 		mainBunny.update(deltaTime);
 		followingBunny1.update(deltaTime);

@@ -8,7 +8,10 @@ public class Animator {
 	private final Animation animation;
 	private double currentTime;
 	private double currentTotalTime;
+	private Double stopTimestamp;
+
 	private double fadeInTime;
+	private double fadeOutTime;
 
 	private boolean looping;
 	
@@ -16,16 +19,34 @@ public class Animator {
 	private double intensity;
 
 	public Animator(Animation animation) {
-		this(animation, 1, 0);
+		this(animation, 1, 0, 0);
 	}
-	public Animator(Animation animation, double speed, double fadeInTime) {
+	public Animator(Animation animation, double speed, double fadeInTime, double fadeOutTime) {
 		this.animation = animation;
-		currentTime = 0;
-		currentTotalTime = 0;
+		currentTime = 0.001;
+		currentTotalTime = 0.001;
 		looping = true;
 		setSpeed(speed);
 		setFadeInTime(fadeInTime);
+		this.fadeOutTime = fadeOutTime;
+		this.stopTimestamp = null;
 		setIntensity(1);
+	}
+
+	/**
+	 * copy constructor
+	 * @param reference
+	 */
+	public Animator(Animator reference) {
+		this.animation = reference.animation;
+		this.currentTime = reference.currentTime;
+		this.currentTotalTime = reference.currentTotalTime;
+		this.stopTimestamp = reference.stopTimestamp;
+		this.fadeInTime = reference.fadeInTime;
+		this.fadeOutTime = reference.fadeOutTime;
+		this.looping = reference.looping;
+		this.speed = reference.speed;
+		this.intensity = reference.intensity;
 	}
 
 	public void setFadeInTime(double fadeInTime) {
@@ -62,14 +83,38 @@ public class Animator {
 	}
 
 	/**
+	 * init the fade-out phase
+	 */
+	public void stop() {
+		stopTimestamp = currentTotalTime;
+	}
+
+	/**
+	 *
+	 * @return true whether this animator is at its end
+	 */
+	public boolean hasEnded() {
+		if (stopTimestamp != null && stopTimestamp + fadeOutTime < currentTotalTime) {
+			return true; //finished fading out
+		}
+		return false;
+	}
+
+	/**
 	 * @return the current weight of this animator (for fading / intensity)
 	 */
 	public double getCurrentStrength() {
 		double strength = getIntensity();
 
-		double fadeFactor = currentTotalTime / fadeInTime;
-		if (fadeFactor < 1) {
-			strength *= fadeFactor * fadeFactor;
+		double fadeInFactor = currentTotalTime / fadeInTime;
+		if (fadeInFactor < 1) {
+			strength *= fadeInFactor;
+		}
+
+		if (stopTimestamp != null) {
+			double fadeOutFactor = 1 - (currentTotalTime - stopTimestamp) / fadeOutTime;
+			System.out.println(fadeOutFactor);
+			strength *= fadeOutFactor;
 		}
 
 		return strength;

@@ -80,11 +80,11 @@ public class OpenGLContext {
 		evaluateCommandLineArguments(args);
 		initOpenGL();
 
-		createWindow("Test window", true, getVideoModeWidth(), getVideoModeHeight());
+		createWindow("Test window", false, getVideoModeWidth() / 2, getVideoModeHeight() / 2);
 		GL.createCapabilities();
 		GLErrors.checkForError(TAG, "createCapabilities");
 		
-		printOpenGLInformation();
+		//printOpenGLInformation();
 		game.setContext(this);
 		game.init();
 	}
@@ -184,7 +184,7 @@ public class OpenGLContext {
 			}
 		});
 
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
 		glfwSetCursorPosCallback(window, (window, xPos, yPos) -> Mouse.setPos(xPos, yPos));
 

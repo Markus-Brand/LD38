@@ -32,7 +32,7 @@ public class BoundingBox {
 		}
 
 		public Empty(final Matrix4f localToWorld) {
-			super(null, null, localToWorld);
+			super(new Vector3f(), new Vector3f(), localToWorld);
 		}
 
 		@Override
@@ -74,8 +74,8 @@ public class BoundingBox {
 	}
 
 	public BoundingBox(final Vector3f localStart, final Vector3f localSize, final Matrix4f localToWorld) {
-		this.localStart = localStart;
-		this.localSize = localSize;
+		this.localStart = Log.assertNotNull(TAG, localStart);
+		this.localSize = Log.assertNotNull(TAG, localSize);
 		this.modelTransform = localToWorld;
 	}
 

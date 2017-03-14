@@ -89,6 +89,7 @@ public class Animation {
 			}
 		}
 		keyFrames.add(newOne);
+		keyFrames.sort(Comparator.comparingDouble(KeyFrame::getTimeStamp));
 	}
 
 	/**
