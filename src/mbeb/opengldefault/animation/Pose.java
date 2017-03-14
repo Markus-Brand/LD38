@@ -136,12 +136,12 @@ public class Pose {
 	 * @return
 	 */
 	public static final Pose lerp(Pose p1, Pose p2, double factor) {
-		/*if (factor == 0) {
+		if (factor == 0) {
 			return p1;
 		}
 		if (factor == 1) {
 			return p2;
-		}/**/
+		}
 
 		assert p1.skeleton == p2.skeleton;
 
