@@ -19,7 +19,11 @@ public class YAMLParser {
 		this.file = file;
 	}
 
-	public YAMLNode parse() {
+	/**
+	 * parse the yaml file if not happened already
+	 * @return the YAML root-node
+	 */
+	public YAMLNode getRoot() {
 		if (root == null) {
 			try {
 				Iterator<String> lines = Files.lines(file.toPath()).filter((String s) -> !s.startsWith("#")).iterator();
@@ -32,10 +36,10 @@ public class YAMLParser {
 	}
 
 	/**
-	 *
-	 * @param lines
+	 * parse the content of a Node
+	 * @param lines the Content iterator
 	 * @param depth all lines with indentation of <code>depth</code> are my children
-	 * @return
+	 * @return me
 	 */
 	private YAMLNode parse(PeekableIterator<String> lines, YAMLNode me, int depth) {
 		while (lines.hasNext()) {
@@ -53,6 +57,10 @@ public class YAMLParser {
 		return me;
 	}
 
+	/**
+	 * @param line
+	 * @return the number of leading spaces of the given String
+	 */
 	private int indentation(String line) {
 		int indent = 0;
 		for (char c : line.toCharArray()) {
@@ -65,6 +73,9 @@ public class YAMLParser {
 		return indent;
 	}
 
+	/**
+	 * An Object inside a YAML-File (composite)
+	 */
 	public static class YAMLNode {
 		private final String name;
 		private final String data;
@@ -95,6 +106,9 @@ public class YAMLParser {
 		}
 	}
 
+	/**
+	 * An Iterator<T> that allows peeking of the next()-value
+	 */
 	private static class PeekableIterator<T> {
 		private T next = null;
 		private Iterator<T> it;

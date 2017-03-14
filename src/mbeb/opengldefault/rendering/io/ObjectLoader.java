@@ -54,7 +54,7 @@ public class ObjectLoader {
 	 * @param weightsPath path to the file containing this information
 	 */
 	private void loadAnimationPriorities(AnimatedMesh mesh, String weightsPath) {
-		YAMLParser.YAMLNode root = new YAMLParser(new File(getExtractedPath(weightsPath))).parse();
+		YAMLParser.YAMLNode root = new YAMLParser(new File(getExtractedPath(weightsPath))).getRoot();
 		for (YAMLParser.YAMLNode animNode: root.getChildren()) {
 			Animation anim = mesh.getAnimationByName(animNode.getName());
 
@@ -64,6 +64,12 @@ public class ObjectLoader {
 		}
 	}
 
+	/**
+	 * apply one directive (one line of YAML) to the corresponding Animation
+	 * @param anim the Animation to alter
+	 * @param bone the root bone (anim.getSkeleton())
+	 * @param boneNode the directive to apply
+	 */
 	private void adjustBoneAnimationPriorities(Animation anim, Bone bone, YAMLParser.YAMLNode boneNode) {
 		if (bone.getName().toLowerCase().contains(boneNode.getName().toLowerCase())) {
 			bone.foreach((Bone ancestor) ->  {
