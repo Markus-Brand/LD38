@@ -202,11 +202,7 @@ public class ObjectLoader {
 			for (int w = 0; w < bone.mNumWeights(); w++) {
 				AIVertexWeight aiWeight = bone.mWeights().get(w);
 				int vertex = aiWeight.mVertexId();
-				Map<Integer, Float> vertexMapping = rawVertexBoneWeights.get(vertex);
-				if (vertexMapping == null) {
-					vertexMapping = new HashMap<>();
-					rawVertexBoneWeights.put(vertex, vertexMapping);
-				}
+				Map<Integer, Float> vertexMapping = rawVertexBoneWeights.computeIfAbsent(vertex, k -> new HashMap<>());
 				String boneName = bone.mName().dataString();
 				int boneID = skeleton.firstBoneNamed(boneName).getIndex();
 				vertexMapping.put(boneID, aiWeight.mWeight());
