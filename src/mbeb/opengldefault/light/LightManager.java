@@ -6,7 +6,7 @@ import mbeb.opengldefault.rendering.shader.*;
 
 /**
  * I am managing different lights (like directional, point or spot lights), e.g. adding, deleting and updating their data on the graphics card.
- * I'm also storing shaders with are using them.
+ * I'm also storing shaders witch are using them.
  *
  * @author Merlin (and Erik and Markus but if something is wrong blame him and only him) :D
  */
