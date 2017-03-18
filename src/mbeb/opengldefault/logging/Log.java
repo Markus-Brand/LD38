@@ -36,9 +36,9 @@ public class Log {
 				loggingDirectory.mkdir();
 			}
 
-			final DateFormat df = new SimpleDateFormat("MM_dd_yyyy__HH_mm_ss");
-			final Date today = Calendar.getInstance().getTime();
-			final String log = df.format(today);
+			final DateFormat dateFormat = new SimpleDateFormat("MM_dd_yyyy__HH_mm_ss");
+			final Date today = Calendar.getInstance().getTime(); //what happens when the date changes while this is running?
+			final String log = dateFormat.format(today);
 			logFile = new File("log/" + log + ".log");
 			try {
 				writer = new PrintWriter(logFile);
