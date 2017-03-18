@@ -90,16 +90,16 @@ public class BunnyGame extends Game {
 
 		mainBunny.addBehaviour(1, new BezierBehaviour(curve, 4));
 
-		followingBunny1.addBehaviour(1, new LimitedDistanceBehaviour(new FollowingBehaviour(mainBunny, 3f), 5));
+		followingBunny1.addBehaviour(1, new FollowingBehaviour(mainBunny, 3f).limited(5));
 		followingBunny1.addBehaviour(2, new FollowingBehaviour(mainBunny, 7.6f));
 
-		followingBunny2.addBehaviour(1, new LimitedDistanceBehaviour(new FollowingBehaviour(followingBunny1, 3f), 5));
+		followingBunny2.addBehaviour(1, new FollowingBehaviour(followingBunny1, 3f).limited(5));
 		followingBunny2.addBehaviour(2, new FollowingBehaviour(followingBunny1, 7.6f));
 
-		followingBunny3.addBehaviour(1, new LimitedDistanceBehaviour(new FollowingBehaviour(followingBunny2, 3f), 5));
+		followingBunny3.addBehaviour(1, new FollowingBehaviour(followingBunny2, 3f).limited(5));
 		followingBunny3.addBehaviour(2, new FollowingBehaviour(followingBunny2, 7.6f));
 
-		followingBunny4.addBehaviour(1, new LimitedDistanceBehaviour(new FollowingBehaviour(followingBunny3, 3f), 5));
+		followingBunny4.addBehaviour(1, new FollowingBehaviour(followingBunny3, 3f).limited(5));
 		followingBunny4.addBehaviour(2, new FollowingBehaviour(followingBunny3, 7.6f));
 
 		camEntity.addBehaviour(1, new PlayerControlBehaviour());
