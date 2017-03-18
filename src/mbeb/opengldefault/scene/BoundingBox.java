@@ -148,7 +148,7 @@ public class BoundingBox {
 	 * @return a new boundingBox
 	 */
 	public BoundingBox unionWith(final BoundingBox childBox) {
-		//We also need to check for updates in the child BB, because the BB could potentially grow, if the children have transformations on their own
+		//We also need to check for updates in the child BoundingBox, because the BoundingBox could potentially grow, if the children have transformations on their own
 		if (childBox.isEmpty()) {
 			return this.duplicate();
 		}
@@ -273,9 +273,9 @@ public class BoundingBox {
 		if (isEmpty()) {
 			return false;
 		}
-		BoundingBox globalBB = getGlobalBoundinBox(parentTransform);
-		Vector3f min = globalBB.getLocalStart();
-		Vector3f max = globalBB.getLocalEnd();
+		BoundingBox globalBoundingBox = getGlobalBoundinBox(parentTransform);
+		Vector3f min = globalBoundingBox.getLocalStart();
+		Vector3f max = globalBoundingBox.getLocalEnd();
 		if (min == null || max == null) {
 			System.out.println(min + " " + max);
 			return false;

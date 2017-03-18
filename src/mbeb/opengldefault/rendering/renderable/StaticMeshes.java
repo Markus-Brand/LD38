@@ -62,7 +62,7 @@ public class StaticMeshes {
 	}
 
 	/**
-	 * Get A Renderable containing vertexData of a uniform Cube. Used in {@link Skybox}
+	 * Gets A Renderable containing vertexData of a uniform Cube. Used in {@link Skybox}
 	 *
 	 * @return Cube Renderable
 	 */
@@ -100,7 +100,7 @@ public class StaticMeshes {
 
 			uniformCube =
 					new VAORenderable(vertexData, indexData, new DataFragment[] {DataFragment.POSITION},
-							new BoundingBox(new Vector3f(-1, -1, -1), new Vector3f(2, 2, 2)));
+							new BoundingBox(new Vector3f(-1), new Vector3f(2)));
 		}
 		return uniformCube;
 	}
@@ -114,8 +114,8 @@ public class StaticMeshes {
 		if (lineCube == null) {
 
 			BoundingBox uniformBox = new BoundingBox.Empty();
-			uniformBox = uniformBox.extendTo(new Vector3f(0, 0, 0));
-			uniformBox = uniformBox.extendTo(new Vector3f(1, 1, 1));
+			uniformBox = uniformBox.extendTo(new Vector3f(0));
+			uniformBox = uniformBox.extendTo(new Vector3f(1));
 
 			Vector3f[] corners = uniformBox.getLocalCorners();
 

@@ -23,7 +23,7 @@ public class SceneGraphRenderer {
 	private static final String TAG = "SceneGraphRenderer";
 
 	protected final SceneObject root;
-	protected final ICamera cam;
+	protected final ICamera camera;
 
 	/**
 	 * create a new renderer for the given SceneGraph and Camera
@@ -33,7 +33,7 @@ public class SceneGraphRenderer {
 	 */
 	public SceneGraphRenderer(final SceneObject root, final ICamera cam) {
 		this.root = root;
-		this.cam = cam;
+		this.camera = cam;
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class SceneGraphRenderer {
 			//update camera on first object with this shader only
 			final int viewPosUniform = shader.getUniform(ViewPosUniformName, false);
 			if (viewPosUniform >= 0) {
-				final Vector3f pos = cam.getPosition();
+				final Vector3f pos = camera.getPosition();
 				GL20.glUniform3f(viewPosUniform, pos.x, pos.y, pos.z);
 				GLErrors.checkForError(TAG, "glUniform3f");
 			}

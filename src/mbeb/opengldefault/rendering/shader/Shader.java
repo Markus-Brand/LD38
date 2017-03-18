@@ -226,12 +226,12 @@ public class Shader {
 	 */
 	public int getUniform(final String name, final boolean logAnError) {
 		ensureCompiled();
-		final int loc = glGetUniformLocation(shaderProgram, name);
+		final int uniformLocation = glGetUniformLocation(shaderProgram, name);
 		GLErrors.checkForError(TAG, "glGetUniformLocation: " + (name != null ? name : "null"));
-		if (logAnError && loc < 0) {
+		if (logAnError && uniformLocation < 0) {
 			Log.error(TAG, vertexPath + " GetUniform failed: " + name);
 		}
-		return loc;
+		return uniformLocation;
 	}
 
 	public String getParameter(final String name) {
@@ -239,7 +239,7 @@ public class Shader {
 	}
 
 	/**
-	 * update a shader-parameter, which triggers re-compiling on next usage
+	 * updates a shader-parameter, which triggers re-compiling on next usage
 	 *
 	 * @param name
 	 *            the parameter name, like used in the shader file

@@ -6,8 +6,8 @@ import org.joml.Vector2f;
 import org.joml.Vector4f;
 
 /**
- * A {@link GUIElement} that gets rendered by a {@link AtlasGUI}
- * 
+ * An {@link GUIElement} that gets rendered by a {@link AtlasGUI}
+ *
  * @author Markus
  */
 public class AtlasGUIElement extends GUIElement {
@@ -51,21 +51,24 @@ public class AtlasGUIElement extends GUIElement {
 	}
 
 	/**
-	 * Calculates a Vector4f that can be sent to the GPU containing the atlasIndex, the atlasSIze, and the x and y
+	 * Calculates a Vector4f that can be sent to the GPU containing the atlasIndex, the atlasSize, and the x and y
 	 * offset in the atlas
 	 *
 	 * @param atlasSize
-	 * @return
+	 *            size of the atlas
+	 * @return generated Vector
 	 */
 	public Vector4f getOffset(int atlasSize) {
-		return new Vector4f(atlasIndex, atlasSize, atlasIndex % atlasSize / (float) atlasSize, atlasIndex / atlasSize
-				/ (float) atlasSize);
+		float row = atlasIndex / atlasSize / (float) atlasSize;
+		float column = atlasIndex % atlasSize / (float) atlasSize;
+		return new Vector4f(atlasIndex, atlasSize, column, row);
 	}
 
 	@Override
 	public void writeToBuffer(FloatBuffer buffer, int offset) {
 		getModelMatrix().get(offset, buffer);
-		getOffset(atlasSize).get(offset + 16, buffer);
+		int offsetByMatrix = 16;
+		getOffset(atlasSize).get(offset + offsetByMatrix, buffer);
 	}
 
 	@Override

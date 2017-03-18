@@ -7,16 +7,12 @@ import mbeb.opengldefault.rendering.shader.Shader;
 
 /**
  * A Progressbar {@link GUI} that is able to render Progressbars in one drawcall
- * 
+ *
  * @author Markus
  */
-public class ProgressbarGUI extends GUI {
+public class ProgressBarGUI extends GUI {
 
-	private static final int FLOAT_SIZE = 4;
-	private static final int VEC4_SIZE = FLOAT_SIZE * 4;
-	private static final int MAT4_SIZE = VEC4_SIZE * 4;
-
-	public ProgressbarGUI() {
+	public ProgressBarGUI() {
 		super();
 		stride = 5 * VEC4_SIZE;
 	}

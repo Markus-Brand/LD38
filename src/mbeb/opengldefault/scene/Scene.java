@@ -50,7 +50,7 @@ public class Scene {
 
 	public void render(boolean renderBoundingBoxes) {
 		renderer.render();
-		picker.searchBBs(sceneGraphRoot, new Matrix4f());
+		picker.searchBoundingBoxes(sceneGraphRoot, new Matrix4f());
 		if (renderBoundingBoxes) {
 			boundingBoxRenderer.render();
 		}

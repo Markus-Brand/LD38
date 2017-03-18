@@ -10,10 +10,10 @@ import mbeb.opengldefault.curves.BezierCurve;
 import mbeb.opengldefault.curves.BezierCurve.ControlPointInputMode;
 import mbeb.opengldefault.gui.AtlasGUI;
 import mbeb.opengldefault.gui.AtlasGUIElement;
-import mbeb.opengldefault.gui.Circlebar;
+import mbeb.opengldefault.gui.CircleBar;
 import mbeb.opengldefault.gui.GUI;
 import mbeb.opengldefault.gui.GUIElement;
-import mbeb.opengldefault.gui.ProgressbarGUI;
+import mbeb.opengldefault.gui.ProgressBarGUI;
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.io.*;
 import mbeb.opengldefault.rendering.renderable.*;
@@ -125,9 +125,9 @@ public class BunnyGame extends Game {
 		gui.addGUIElement(new AtlasGUIElement(3, 2, new Vector2f(0.5f, 0.5f * aspectRatio))
 				.setPositionRelativeToScreen(1, 1));
 
-		circleGUI = new ProgressbarGUI();
+		circleGUI = new ProgressBarGUI();
 
-		Circlebar circleElement = new Circlebar(new Vector2f(0.2f, 0.2f * aspectRatio));
+		CircleBar circleElement = new CircleBar(new Vector2f(0.2f, 0.2f * aspectRatio));
 
 		circleGUI.addGUIElement(circleElement);
 

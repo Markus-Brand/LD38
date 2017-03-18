@@ -230,8 +230,8 @@ public class SceneObject implements BoundingBox.Owner {
 	public BoundingBox reCalculateBoundingBox() {
 		box = getRenderableBoundingBox();
 
-		for (SceneObject o : getSubObjects()) {
-			adjustBoundingBoxFor(o);
+		for (SceneObject subObject : getSubObjects()) {
+			adjustBoundingBoxFor(subObject);
 		}
 		return box;
 	}

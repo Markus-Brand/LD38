@@ -18,8 +18,8 @@ public interface IRenderable {
 
 	/**
 	 * a static transformation on this Renderable
-	 * 
-	 * @return
+	 *
+	 * @return the static transformation on this Renderable
 	 */
 	default Matrix4f getTransform() {
 		return new Matrix4f();

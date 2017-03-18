@@ -8,7 +8,7 @@ out vec3 pos;
 out float prog;
 
 void main(){ 
-	pos = position - vec3(0.5, 0.5, 0);
+	pos = vec3(position) - vec3(0.5, 0.5, 0);
 	gl_Position = model * vec4(pos, 1);
 	tex = texCoord.xy;
 	prog = progress.x;

@@ -5,6 +5,8 @@ in float prog;
 
 uniform sampler2D u_texture;
 
+const float PI = 3.14159265358979;
+
 void main(){
 	float len = length(pos);
 	if(len > 0.45 || len < 0.3){
@@ -16,6 +18,6 @@ void main(){
 		discard;
 	}
 	float angle = atan(pos.x, pos.y);
-	float expected = (prog - 0.5) * 2 * 3.1415926;
+	float expected = (prog - 0.5) * 2 * PI;
 	gl_FragColor = mix(vec4(0, 1, 0, 1), vec4(0.1, 0.1, 0.1, 1), max(0, min(1, 4 * (angle - expected)))) + vec4(max(0, prog - 1), 0, max(0, prog - 1), 0);		
 }

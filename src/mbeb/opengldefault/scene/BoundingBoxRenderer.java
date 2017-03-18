@@ -43,16 +43,16 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 	}
 
 	/**
-	 * render a single objects bounding box
-	 * 
-	 * @param object
+	 * renders a single objects bounding box
+	 *
+	 * @param owner
 	 * @param boundingBoxTransform
 	 */
-	private void renderBox(BoundingBox.Owner object, Vector3f boxColor, Matrix4f boundingBoxTransform) {
-		if (object.getBoundingBox().isEmpty()) {
+	private void renderBox(BoundingBox.Owner owner, Vector3f boxColor, Matrix4f boundingBoxTransform) {
+		if (owner.getBoundingBox().isEmpty()) {
 			return;
 		}
-		Matrix4f localTrans = getBoxTransformFor(object);
+		Matrix4f localTrans = getBoxTransformFor(owner);
 
 		trySettingModelUniform(boundingBoxTransform.mul(localTrans, new Matrix4f()));
 		GL20.glUniform3f(shader.getUniform("boxColor"), boxColor.x, boxColor.y, boxColor.z);
@@ -93,6 +93,6 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 	}
 
 	private Vector3f colorFor(boolean selected) {
-		return selected == true ? new Vector3f(1, 0, 0) : new Vector3f(0, 1, 0);
+		return selected ? new Vector3f(1, 0, 0) : new Vector3f(0, 1, 0);
 	}
 }

@@ -34,10 +34,10 @@ public class MousePicker {
 		ray = worldSpaceCoordinates;
 	}
 
-	private Vector2f getNormalizedDeviceCoordinates(Vector2f mousePos) {
+	private Vector2f getNormalizedDeviceCoordinates(Vector2f mousePosition) {
 		return new Vector2f(
-				2 * mousePos.x / OpenGLContext.getVideoModeWidth() - 1,
-				-(2 * mousePos.y / OpenGLContext.getVideoModeHeight() - 1));
+				2 * mousePosition.x / OpenGLContext.getVideoModeWidth() - 1,
+				-(2 * mousePosition.y / OpenGLContext.getVideoModeHeight() - 1));
 	}
 
 	private Vector3f getWorldSpaceCoordinates(Vector4f eyeSpaceCoordinates) {
@@ -52,19 +52,18 @@ public class MousePicker {
 		return new Vector4f(eyeSpaceCoordinates.x, eyeSpaceCoordinates.y, -1, 0);
 	}
 
-	public void searchBBs(SceneObject currentObject, Matrix4f parentTransform) {
+	public void searchBoundingBoxes(SceneObject currentObject, Matrix4f parentTransform) {
 		if (ray == null || camera.getPosition() == null || currentObject.getBoundingBox() == null) {
 			return;
 		}
-		if (currentObject.getBoundingBox().intersectsRay(camera.getPosition(), ray, parentTransform)) {
-			currentObject.setSelected(true);
-		} else {
-			currentObject.setSelected(false);
-		}
+
+		boolean selected = currentObject.getBoundingBox().intersectsRay(camera.getPosition(), ray, parentTransform);
+
+		currentObject.setSelected(selected);
 
 		final Matrix4f transform = parentTransform.mul(currentObject.getTransformation().asMatrix(), new Matrix4f());
 		for (SceneObject child : currentObject.getSubObjects()) {
-			searchBBs(child, transform);
+			searchBoundingBoxes(child, transform);
 		}
 	}
 }

@@ -35,7 +35,7 @@ public class VisibleSceneGraphRenderer extends SceneGraphRenderer {
 		if (object.getBoundingBox().isEmpty()) {
 			return true;
 		}
-		final Vector3f[] corners = object.getBoundingBox().getCornersOnScreen(parentTransform, cam);
+		final Vector3f[] corners = object.getBoundingBox().getCornersOnScreen(parentTransform, camera);
 		float minX = corners[0].x;
 		float minY = corners[0].y;
 		float maxX = corners[0].x;

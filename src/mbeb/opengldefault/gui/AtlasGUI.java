@@ -4,6 +4,7 @@ import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL33.glVertexAttribDivisor;
+import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.rendering.shader.Shader;
 import mbeb.opengldefault.rendering.textures.Texture;
 
@@ -13,29 +14,31 @@ import mbeb.opengldefault.rendering.textures.Texture;
  * @author Markus
  */
 public class AtlasGUI extends GUI {
+	private static final String TAG = "AtlasGUI";
 	/**
 	 * The texture atlas
 	 */
 	private Texture atlas;
 
-	private static final int FLOAT_SIZE = 4;
-	private static final int VEC4_SIZE = FLOAT_SIZE * 4;
-	private static final int MAT4_SIZE = VEC4_SIZE * 4;
-
 	public AtlasGUI(int atlasSize, String atlasName) {
 		super();
 		atlas = new Texture(atlasName);
-		stride = 5 * VEC4_SIZE;
+		//Store a Matrix and the offset Vector from {@link AtlasGUIElement}
+		stride = MAT4_SIZE + VEC4_SIZE;
 	}
 
 	@Override
 	public void setupVAO() {
 		super.setupVAO();
 		renderable.bind();
+
 		glEnableVertexAttribArray(7);
+		GLErrors.checkForError(TAG, "glEnableVertexAttribArray");
 		glVertexAttribPointer(7, 4, GL_FLOAT, false, stride, 4 * VEC4_SIZE);
+		GLErrors.checkForError(TAG, "glVertexAttribPointer");
 
 		glVertexAttribDivisor(7, 1);
+		GLErrors.checkForError(TAG, "glVertexAttribDivisor");
 		renderable.unbind();
 	}
 

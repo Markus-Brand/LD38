@@ -8,13 +8,13 @@ import org.joml.Vector3f;
 
 /**
  * A GUI Element that gets rendered in a {@link GUI}
- * 
+ *
  * @author Markus
  */
 public abstract class GUIElement {
 
 	/**
-	 * downLeft position
+	 * position of the downLeft corner
 	 */
 	private Vector2f position;
 
@@ -24,7 +24,7 @@ public abstract class GUIElement {
 	private Vector2f size;
 
 	/**
-	 * Has data changed
+	 * Has data changed?
 	 */
 	private boolean dirty;
 
@@ -44,7 +44,7 @@ public abstract class GUIElement {
 
 	/**
 	 * Sets the position of the GUI Element relative to the screen
-	 * 
+	 *
 	 * @param relativeX
 	 *            float value normally in range [0, 1] for x position relative to screen.
 	 * @param relativeY
@@ -57,7 +57,7 @@ public abstract class GUIElement {
 
 	/**
 	 * Sets the position of the GUIElement relative to another GUI Element
-	 * 
+	 *
 	 * @param element
 	 *            the parent GUIElement
 	 * @param relativeX
@@ -72,15 +72,15 @@ public abstract class GUIElement {
 
 	/**
 	 * Sets the position of the GUIElement relative to a BoundingBox
-	 * 
+	 *
 	 * @param boundingStart
 	 *            bounding box start
 	 * @param boundingSize
 	 *            bounding box size
 	 * @param relativeX
-	 *            float value normally in range [0, 1] for x position relative to bb.
+	 *            float value normally in range [0, 1] for x position relative to a BoundingBox.
 	 * @param relativeY
-	 *            float value normally in range [0, 1] for y position relative to bb.
+	 *            float value normally in range [0, 1] for y position relative to a BoundingBox.
 	 * @return this
 	 */
 	public GUIElement setPositionRelativeTo(Vector2f boundingStart, Vector2f boundingSize, float relativeX,
@@ -107,8 +107,8 @@ public abstract class GUIElement {
 	}
 
 	/**
-	 * Calculate Model Matrix based on the {@link #position} and {@link #size}
-	 * 
+	 * Calculates Model Matrix based on the {@link #position} and {@link #size}
+	 *
 	 * @return
 	 */
 	public Matrix4f getModelMatrix() {
@@ -119,7 +119,7 @@ public abstract class GUIElement {
 
 	/**
 	 * Writes the model matrix and potentially other instanced gui data to the buffer
-	 * 
+	 *
 	 * @param buffer
 	 *            buffer handle for the GL_ARRAY_BUFFER from the {@link GUI}
 	 * @param offset
@@ -131,7 +131,7 @@ public abstract class GUIElement {
 
 	/**
 	 * Updates the GUIElement
-	 * 
+	 *
 	 * @param deltaTime
 	 */
 	public abstract void update(double deltaTime);
@@ -140,7 +140,11 @@ public abstract class GUIElement {
 		return dirty;
 	}
 
-	public void setDirty(boolean dirty) {
-		this.dirty = dirty;
+	public void setDirty() {
+		this.dirty = true;
+	}
+
+	public void setClean() {
+		this.dirty = false;
 	}
 }

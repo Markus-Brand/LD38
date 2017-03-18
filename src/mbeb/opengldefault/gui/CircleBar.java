@@ -5,19 +5,24 @@ import java.nio.FloatBuffer;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
-public class Circlebar extends GUIElement {
+/**
+ * A CircleBar {@link GUIElement}, like the Stamina Meter in Zelda BotW
+ * 
+ * @author Markus
+ */
+public class CircleBar extends GUIElement {
 	float progress;
 
-	public Circlebar(Vector2f position, Vector2f size) {
+	public CircleBar(Vector2f position, Vector2f size) {
 		super(position, size);
 		progress = 0;
 	}
 
-	public Circlebar(Vector2f size) {
+	public CircleBar(Vector2f size) {
 		this(new Vector2f(), size);
 	}
 
-	public Circlebar() {
+	public CircleBar() {
 		this(new Vector2f(1));
 	}
 
@@ -25,13 +30,14 @@ public class Circlebar extends GUIElement {
 	public void update(double deltaTime) {
 		progress += deltaTime * 0.1;
 		progress %= 2;
-		setDirty(true);
+		setDirty();
 	}
 
 	@Override
 	public void writeToBuffer(FloatBuffer buffer, int offset) {
 		getModelMatrix().get(offset, buffer);
-		new Vector4f(progress).get(offset + 16, buffer);
+		int offsetByMatrix = 16;
+		new Vector4f(progress).get(offset + offsetByMatrix, buffer);
 	}
 
 }
