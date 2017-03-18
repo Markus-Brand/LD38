@@ -158,6 +158,7 @@ public class Log {
 			writer.println(log);
 			writer.flush();
 		}
+		throw new RuntimeException(obj.toString());
 	}
 
 	/**

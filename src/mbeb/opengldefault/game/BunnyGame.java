@@ -5,19 +5,18 @@ import java.util.Random;
 
 import mbeb.opengldefault.animation.AnimatedMesh;
 import mbeb.opengldefault.animation.AnimatedRenderable;
+import mbeb.opengldefault.animation.AnimationStateFacade;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_E;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_Q;
 import static org.lwjgl.opengl.GL11.*;
 
 
-import mbeb.opengldefault.animation.Animator;
 import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.curves.BezierCurve;
 import mbeb.opengldefault.curves.BezierCurve.ControlPointInputMode;
 import mbeb.opengldefault.logging.*;
-import mbeb.opengldefault.openglcontext.*;
 import mbeb.opengldefault.rendering.io.*;
 import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.rendering.shader.*;
@@ -32,6 +31,7 @@ import mbeb.opengldefault.scene.entities.Entity;
 import mbeb.opengldefault.scene.entities.SceneEntity;
 
 import org.joml.*;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * Object to characterize a whole game
@@ -49,15 +49,13 @@ public class BunnyGame extends Game {
 
 	BezierCurve curve;
 
-	AnimatedRenderable animBunny0, animBunny1, animBunny2, animBunny3, animBunny4;
+	AnimationStateFacade animBunny0;
+	
+	AnimatedRenderable animBunny1, animBunny2, animBunny3, animBunny4;
 
 	SceneObject bunny0, bunny1, bunny2, bunny3, bunny4, curveObj;
 
 	Entity mainBunny, followingBunny1, followingBunny2, followingBunny3, followingBunny4, camEntity;
-
-	boolean waving = false, running = false;
-
-	Animator runningAnim, waveAnim;
 
 	@Override
 	public void init() {
@@ -91,22 +89,22 @@ public class BunnyGame extends Game {
 		final Shader defaultShader = new Shader("boneAnimation.vert", "phong.frag");
 		defaultShader.addUniformBlockIndex(1, "Matrices");
 
-		animBunny0 = new AnimatedRenderable(bunnyAnim);
+		animBunny0 = new AnimationStateFacade(bunnyAnim);
 		animBunny1 = new AnimatedRenderable(bunnyAnim);
 		animBunny2 = new AnimatedRenderable(bunnyAnim);
 		animBunny3 = new AnimatedRenderable(bunnyAnim);
 		animBunny4 = new AnimatedRenderable(bunnyAnim);
 
-		bunny0 = new SceneObject(new TexturedRenderable(animBunny0, bunnyTexture));
+		bunny0 = new SceneObject(new TexturedRenderable(animBunny0.getRenderable(), bunnyTexture));
 		bunny1 = new SceneObject(new TexturedRenderable(animBunny1, bunnyTexture));
 		bunny2 = new SceneObject(new TexturedRenderable(animBunny2, bunnyTexture));
 		bunny3 = new SceneObject(new TexturedRenderable(animBunny3, bunnyTexture));
 		bunny4 = new SceneObject(new TexturedRenderable(animBunny4, bunnyTexture));
-		mainBunny = new SceneEntity(bunny0);
+		mainBunny = new SceneEntity(bunny4);
 		followingBunny1 = new SceneEntity(bunny1);
 		followingBunny2 = new SceneEntity(bunny2);
 		followingBunny3 = new SceneEntity(bunny3);
-		followingBunny4 = new SceneEntity(bunny4);
+		followingBunny4 = new SceneEntity(bunny0);
 
 		mainBunny.addBehaviour(1, new BezierBehaviour(curve, 4));
 
@@ -138,38 +136,24 @@ public class BunnyGame extends Game {
 
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
-
-		runningAnim = new Animator(bunnyAnim.getAnimationByName("running"), 25, 2 * 25, 0.5 * 25);
-		waveAnim = new Animator(bunnyAnim.getAnimationByName("wave"), 10, 0.5 * 10 , 0.5 * 10);
+		
+		animBunny0.registerAnimation("jogging", "running", 25, 2, 0.5);
+		animBunny0.registerAnimation("hat", "wave", 10, 0.5, 0.5);
 
 	}
 
 	@Override
 	public void update(final double deltaTime) {
 		timePassed += deltaTime;
-
-		if (KeyBoard.isKeyDown(GLFW_KEY_Q)) {
-			if (!waving && !animBunny4.hasAnimationsOf(waveAnim.getAnimation())) {
-				waving = true;
-				animBunny4.playAnimation(new Animator(waveAnim));
-			}
+		
+		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
+			animBunny0.setSpeed("jogging", 50);
 		} else {
-			if (waving) {
-				waving = false;
-				animBunny4.stopAnimationsOf(waveAnim.getAnimation());
-			}
+			animBunny0.setSpeed("jogging", 25);
 		}
-		if (KeyBoard.isKeyDown(GLFW_KEY_E)) {
-			if (!running && !animBunny4.hasAnimationsOf(runningAnim.getAnimation())) {
-				running = true;
-				animBunny4.playAnimation(new Animator(runningAnim));
-			}
-		} else {
-			if (running) {
-				running = false;
-				animBunny4.stopAnimationsOf(runningAnim.getAnimation());
-			}
-		}
+		
+		animBunny0.ensureRunning("jogging", KeyBoard.isKeyDown(GLFW_KEY_Q));
+		animBunny0.ensureRunning("hat", KeyBoard.isKeyDown(GLFW_KEY_E), false);
 
 		mainBunny.update(deltaTime);
 		followingBunny1.update(deltaTime);
