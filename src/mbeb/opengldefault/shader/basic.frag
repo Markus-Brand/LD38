@@ -39,7 +39,7 @@ vec3 calcNormal(vec3 normalIn, vec3 fragPos){
 	return normalize(normalIn) + vec3(0.03 * cos(fragPos.x * 120.0f +  8.0f * time), 0.03 *  sin(fragPos.y * 130.0f + 7.0f * time), 0.03 *  sin(fragPos.z * 140.0f + 5.0f * time));
 }
 
-void main(){ 
+void main(){
 	vec3 norm;
 	if(water == 0){	
 		norm = normalize(calcNormal(normal, pos));
@@ -47,42 +47,39 @@ void main(){
 		norm = normalize(normal);
 	}
 
+    vec4 textureColor = texture(u_texture, tex);
+    vec3 materialColor = textureColor.rgb;
+
 	vec3 viewDir = normalize(viewPos - pos);
 
 	vec3 result = vec3(0); 
 
 	for(int i = 0; i < numPointLights; i++){
-		result += calcPointLight(pointLights[i], norm, viewDir);
+		result += calcPointLight(pointLights[i], norm, viewDir, materialColor);
 	}
 
 	for(int i = 0; i < numDirectionalLights; i++){
-		result += calcDirectionalLight(directionalLights[i], norm, viewDir);
+		result += calcDirectionalLight(directionalLights[i], norm, viewDir, materialColor);
 	}
 
 	for(int i = 0; i < numSpotLights; i++){
-		result += calcSpotLight(spotLights[i], norm, viewDir);
+		result += calcSpotLight(spotLights[i], norm, viewDir, materialColor);
 	}
 
-	vec3 ambient = ambientStrength * vec3(texture(u_texture, tex));
+	vec3 ambient = ambientStrength * materialColor;
 
 	result += ambient;
 
-	float gamma = 2.0;
-	result = pow(result, vec3(1.0/gamma));
-    
-	float a = texture(u_texture, tex).r * reflectionStrength;
-	if(a > 0){
-		vec3 I = normalize(pos - viewPos);
-		vec3 R = reflect(I, normalize(norm));
-		vec3 reflectionColor = vec3(texture(skybox, R));
-
-		result = mix(result, reflectionColor, a);	
-	}
+	float gamma = 2.2;
+	float gi = 1.0 / gamma;
+	result.x = pow(result.x, gi);
+	result.y = pow(result.y, gi);
+	result.z = pow(result.z, gi);
 
 	if(alpha == 0){
-		color = vec4(result.x, result.y, result.z, 1.0f);
+		color = vec4(result, 1.0f);
 	}else if(alpha == 1){
-		vec4 texColor = vec4(result.x, result.y, result.z, (texture(u_texture, tex)).a);
+		vec4 texColor = vec4(result, textureColor.a);
 		if(texColor.a > 0.01){
 			color = texColor;
 		}else{

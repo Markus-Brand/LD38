@@ -1,4 +1,4 @@
-vec3 calcDirectionalLight(DirectionalLight light, vec3 norm, vec3 viewDir){	
+vec3 calcDirectionalLight(DirectionalLight light, vec3 norm, vec3 viewDir, vec3 materialColor){
 	vec3 direction = normalize(-light.direction);
 
 	float diff = max(dot(norm, direction), 0.0);
@@ -8,5 +8,5 @@ vec3 calcDirectionalLight(DirectionalLight light, vec3 norm, vec3 viewDir){
 	float spec = pow(max(dot(norm, halfwayDir), 0.0f), SHININESS);
 	vec3 specular = specularStrength * spec * light.color;
 
-	return vec3(texture(u_texture, tex)) * diffuse + vec3(texture(u_texture, tex)) * specular;
+	return materialColor * diffuse + materialColor * specular;
 }

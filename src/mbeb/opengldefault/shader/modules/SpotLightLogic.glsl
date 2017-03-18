@@ -1,9 +1,9 @@
-vec3 calcSpotLight(SpotLight light, vec3 norm, vec3 viewDir){
+vec3 calcSpotLight(SpotLight light, vec3 norm, vec3 viewDir, vec3 materialColor){
 
 	vec3 direction = light.position - pos;
 
 	float distance = length(direction);
-	direction = normalize(direction);	
+	direction = normalize(direction);
 
 	float diff = max(dot(norm, direction), 0.0);
 	vec3 diffuse = diff * light.color;
@@ -22,5 +22,5 @@ vec3 calcSpotLight(SpotLight light, vec3 norm, vec3 viewDir){
 	diffuse  *= attenuation;
 	specular *= attenuation;  
 
-	return vec3(texture(u_texture, tex)) * (diffuse) + vec3(texture(u_texture, tex)) * specular;
+	return materialColor * (diffuse) + materialColor * specular;
 }

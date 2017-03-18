@@ -1,4 +1,4 @@
-vec3 calcPointLight(PointLight light, vec3 norm, vec3 viewDir){
+vec3 calcPointLight(PointLight light, vec3 norm, vec3 viewDir, vec3 materialColor){
 
 	vec3 direction = light.position - pos;
 
@@ -17,5 +17,5 @@ vec3 calcPointLight(PointLight light, vec3 norm, vec3 viewDir){
 	diffuse  *= attenuation;
 	specular *= attenuation;  
 
-	return vec3(texture(u_texture, tex)) * diffuse + vec3(texture(u_texture, tex)) * specular;
+	return materialColor * diffuse + materialColor * specular;
 }
