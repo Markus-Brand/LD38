@@ -18,4 +18,8 @@ public abstract class ReferenceEntityBehaviour implements IBehaviour {
 	public Entity getReference() {
 		return reference;
 	}
+	
+	public LimitedDistanceBehaviour limited(float distance) {
+		return new LimitedDistanceBehaviour(this, distance);
+	}
 }
