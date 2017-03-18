@@ -79,7 +79,8 @@ public class Animation {
 
 	/**
 	 * merge a new keyframe into this animation, combining near keyFrames
-	 * @param newOne 
+	 * 
+	 * @param newOne
 	 */
 	public void mergeKeyFrame(KeyFrame newOne) {
 		for (KeyFrame k : getKeyFrames()) {

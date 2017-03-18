@@ -3,6 +3,7 @@ package mbeb.opengldefault.rendering.textures;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL20.*;
+
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.shader.*;
 

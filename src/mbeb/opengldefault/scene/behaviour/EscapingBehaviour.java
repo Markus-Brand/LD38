@@ -1,6 +1,6 @@
 package mbeb.opengldefault.scene.behaviour;
 
-import mbeb.opengldefault.scene.entities.Entity;
+import mbeb.opengldefault.scene.entities.*;
 
 /**
  * A Behaviour that makes a Entity run away from another Entity

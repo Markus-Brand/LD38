@@ -1,9 +1,9 @@
 package mbeb.opengldefault.scene.behaviour;
 
-import mbeb.opengldefault.curves.BezierCurve;
-import mbeb.opengldefault.scene.entities.Entity;
+import org.joml.*;
 
-import org.joml.Vector3f;
+import mbeb.opengldefault.curves.*;
+import mbeb.opengldefault.scene.entities.*;
 
 /**
  * A Behaviour that makes an Entity follow a {@link BezierCurve} and look in the curves direction

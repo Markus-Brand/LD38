@@ -1073,8 +1073,8 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 	 * @see org.joml.Quaterniondc#premul(org.joml.Quaterniondc, org.joml.Quaterniond)
 	 */
 	public Quaterniond premul(Quaterniondc q, Quaterniond dest) {
-		dest.set(q.w() * x + q.x() * w + q.y() * z - q.z() * y, q.w() * y - q.x() * z + q.y() * w + q.z() * x, q.w() * z + q.x() * y - q.y() * x + q.z() * w, q.w() * w - q.x() * x - q.y() * y - q.z()
-				* z);
+		dest.set(q.w() * x + q.x() * w + q.y() * z - q.z() * y, q.w() * y - q.x() * z + q.y() * w + q.z() * x, q.w() * z + q.x() * y - q.y() * x + q.z() * w,
+				q.w() * w - q.x() * x - q.y() * y - q.z() * z);
 		return dest;
 	}
 
@@ -1148,8 +1148,8 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		double num10 = this.w * num;
 		double num11 = this.w * num2;
 		double num12 = this.w * num3;
-		dest.set((1.0 - (num5 + num6)) * x + (num7 - num12) * y + (num8 + num11) * z, (num7 + num12) * x + (1.0 - (num4 + num6)) * y + (num9 - num10) * z, (num8 - num11) * x + (num9 + num10) * y
-				+ (1.0 - (num4 + num5)) * z);
+		dest.set((1.0 - (num5 + num6)) * x + (num7 - num12) * y + (num8 + num11) * z, (num7 + num12) * x + (1.0 - (num4 + num6)) * y + (num9 - num10) * z,
+				(num8 - num11) * x + (num9 + num10) * y + (1.0 - (num4 + num5)) * z);
 		return dest;
 	}
 
@@ -1176,8 +1176,8 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		double num10 = this.w * num;
 		double num11 = this.w * num2;
 		double num12 = this.w * num3;
-		dest.set((1.0 - (num5 + num6)) * x + (num7 - num12) * y + (num8 + num11) * z, (num7 + num12) * x + (1.0 - (num4 + num6)) * y + (num9 - num10) * z, (num8 - num11) * x + (num9 + num10) * y
-				+ (1.0 - (num4 + num5)) * z, dest.w);
+		dest.set((1.0 - (num5 + num6)) * x + (num7 - num12) * y + (num8 + num11) * z, (num7 + num12) * x + (1.0 - (num4 + num6)) * y + (num9 - num10) * z,
+				(num8 - num11) * x + (num9 + num10) * y + (1.0 - (num4 + num5)) * z, dest.w);
 		return dest;
 	}
 
@@ -1214,8 +1214,8 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		double y = -b.y() * invNorm;
 		double z = -b.z() * invNorm;
 		double w = b.w() * invNorm;
-		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x
-				- this.y * y - this.z * z);
+		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w,
+				this.w * w - this.x * x - this.y * y - this.z * z);
 		return dest;
 	}
 
@@ -1855,8 +1855,8 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 			}
 		}
 		/* Multiply */
-		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x
-				- this.y * y - this.z * z);
+		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w,
+				this.w * w - this.x * x - this.y * y - this.z * z);
 		return dest;
 	}
 
@@ -1961,8 +1961,8 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		double y = -this.y * invNorm;
 		double z = -this.z * invNorm;
 		double w = this.w * invNorm;
-		dest.set(w * other.x() + x * other.w() + y * other.z() - z * other.y(), w * other.y() - x * other.z() + y * other.w() + z * other.x(), w * other.z() + x * other.y() - y * other.x() + z
-				* other.w(), w * other.w() - x * other.x() - y * other.y() - z * other.z());
+		dest.set(w * other.x() + x * other.w() + y * other.z() - z * other.y(), w * other.y() - x * other.z() + y * other.w() + z * other.x(),
+				w * other.z() + x * other.y() - y * other.x() + z * other.w(), w * other.w() - x * other.x() - y * other.y() - z * other.z());
 		return dest;
 	}
 
@@ -1994,9 +1994,8 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		x = fromDirY * toDirZ - fromDirZ * toDirY;
 		y = fromDirZ * toDirX - fromDirX * toDirZ;
 		z = fromDirX * toDirY - fromDirY * toDirX;
-		w =
-				Math.sqrt((fromDirX * fromDirX + fromDirY * fromDirY + fromDirZ * fromDirZ) * (toDirX * toDirX + toDirY * toDirY + toDirZ * toDirZ))
-						+ (fromDirX * toDirX + fromDirY * toDirY + fromDirZ * toDirZ);
+		w = Math.sqrt((fromDirX * fromDirX + fromDirY * fromDirY + fromDirZ * fromDirZ) * (toDirX * toDirX + toDirY * toDirY + toDirZ * toDirZ))
+				+ (fromDirX * toDirX + fromDirY * toDirY + fromDirZ * toDirZ);
 		double invNorm = 1.0 / Math.sqrt(x * x + y * y + z * z + w * w);
 		if (Double.isInfinite(invNorm)) {
 			// Rotation is ambiguous: Find appropriate rotation axis (1. try toDir x +Z)
@@ -2045,9 +2044,8 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		double x = fromDirY * toDirZ - fromDirZ * toDirY;
 		double y = fromDirZ * toDirX - fromDirX * toDirZ;
 		double z = fromDirX * toDirY - fromDirY * toDirX;
-		double w =
-				Math.sqrt((fromDirX * fromDirX + fromDirY * fromDirY + fromDirZ * fromDirZ) * (toDirX * toDirX + toDirY * toDirY + toDirZ * toDirZ))
-						+ (fromDirX * toDirX + fromDirY * toDirY + fromDirZ * toDirZ);
+		double w = Math.sqrt((fromDirX * fromDirX + fromDirY * fromDirY + fromDirZ * fromDirZ) * (toDirX * toDirX + toDirY * toDirY + toDirZ * toDirZ))
+				+ (fromDirX * toDirX + fromDirY * toDirY + fromDirZ * toDirZ);
 		double invNorm = 1.0 / Math.sqrt(x * x + y * y + z * z + w * w);
 		if (Double.isInfinite(invNorm)) {
 			// Rotation is ambiguous: Find appropriate rotation axis (1. try toDir x +Z)
@@ -2070,8 +2068,8 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		z *= invNorm;
 		w *= invNorm;
 		/* Multiply */
-		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x
-				- this.y * y - this.z * z);
+		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w,
+				this.w * w - this.x * x - this.y * y - this.z * z);
 		return dest;
 	}
 
@@ -2606,8 +2604,8 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		double y = cx * sycz - sx * cysz;
 		double z = cx * cysz + sx * sycz;
 		// right-multiply
-		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x
-				- this.y * y - this.z * z);
+		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w,
+				this.w * w - this.x * x - this.y * y - this.z * z);
 		return dest;
 	}
 
@@ -2653,8 +2651,8 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		double y = cx * sycz + sx * cysz;
 		double z = cx * cysz - sx * sycz;
 		// right-multiply
-		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x
-				- this.y * y - this.z * z);
+		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w,
+				this.w * w - this.x * x - this.y * y - this.z * z);
 		return dest;
 	}
 
@@ -2700,8 +2698,8 @@ public class Quaterniond implements Externalizable, Quaterniondc {
 		double z = yw * sz - yz * cz;
 		double w = yw * cz + yz * sz;
 		// right-multiply
-		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x
-				- this.y * y - this.z * z);
+		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w,
+				this.w * w - this.x * x - this.y * y - this.z * z);
 		return dest;
 	}
 

@@ -10,12 +10,13 @@ public class Animator {
 	private double fadeInTime;
 
 	private boolean looping;
-	
+
 	private double speed;
 
 	public Animator(Animation animation) {
 		this(animation, 1);
 	}
+
 	public Animator(Animation animation, double speed) {
 		this.animation = animation;
 		currentTime = 0;

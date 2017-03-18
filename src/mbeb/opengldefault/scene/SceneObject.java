@@ -2,11 +2,11 @@ package mbeb.opengldefault.scene;
 
 import java.util.*;
 
+import org.joml.*;
+
 import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.rendering.shader.*;
-
-import org.joml.*;
 
 /**
  * A (potentially) complex object inside a scene, with transformations
@@ -228,7 +228,7 @@ public class SceneObject implements BoundingBox.Owner {
 	 */
 	public BoundingBox reCalculateBoundingBox() {
 		box = getRenderableBoundingBox();
-		
+
 		for (SceneObject o : getSubObjects()) {
 			adjustBoundingBoxFor(o);
 		}
@@ -249,14 +249,13 @@ public class SceneObject implements BoundingBox.Owner {
 
 	//</editor-fold>
 
-	
 	public BoneTransformation getParentGlobalTranform() {
 		if (parent == null) {
 			return BoneTransformation.identity();
 		}
 		return parent.getGLobalTransformation();
 	}
-	
+
 	/**
 	 * Getter for the global Transformation
 	 *

@@ -1,10 +1,10 @@
 package mbeb.opengldefault.rendering.renderable;
 
-import mbeb.opengldefault.animation.Bone;
-import mbeb.opengldefault.animation.Pose;
+import org.joml.*;
+
+import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.scene.*;
-import org.joml.Matrix4f;
 
 /**
  * something that can be rendered into a scene
@@ -16,19 +16,20 @@ public interface IRenderable {
 
 	default void update(double deltaTime) {
 	}
-	
+
 	/**
 	 * a static transformation on this Renderable
-	 * @return 
+	 * 
+	 * @return
 	 */
 	default Matrix4f getTransform() {
 		return new Matrix4f();
 	}
-	
+
 	default boolean hasAnimations() {
 		return getCurrentPose() != null;
 	}
-	
+
 	default Pose getCurrentPose() {
 		return null;
 	}

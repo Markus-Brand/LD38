@@ -1,11 +1,10 @@
 package mbeb.opengldefault.scene.entities;
 
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
-import mbeb.opengldefault.scene.behaviour.IBehaviour;
+import org.joml.*;
 
-import org.joml.Vector3f;
+import mbeb.opengldefault.scene.behaviour.*;
 
 /**
  * An abstract Entity that can have Behaviours
@@ -17,6 +16,7 @@ public abstract class Entity {
 	/**
 	 * Contains a Behaviour and a priority. The class is used to sort the Behaviours
 	 * Note: this class has a natural ordering that is inconsistent with equals.
+	 * 
 	 * @author Markus
 	 */
 	protected class PrioritizedBehaviour implements Comparable<PrioritizedBehaviour> {

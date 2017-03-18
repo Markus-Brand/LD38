@@ -1,14 +1,9 @@
 package mbeb.opengldefault.rendering.shader;
 
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Scanner;
-import mbeb.opengldefault.logging.Log;
+import java.io.*;
+import java.util.*;
+
+import mbeb.opengldefault.logging.*;
 
 /**
  * Parse the source code for one component of a {@link Shader} - Object
@@ -170,10 +165,10 @@ public class ShaderPreprocessor {
 		private static String loadSource(final String path) {
 			try {
 				InputStream shaderURL = ShaderPreprocessor.class.getResourceAsStream("/mbeb/opengldefault/shader/" + path);
-				try (Scanner sc = new Scanner(shaderURL, "UTF-8")) {
+				try(Scanner sc = new Scanner(shaderURL, "UTF-8")) {
 					return sc.useDelimiter("\\A").next();
 				}
-			} catch (final Exception ex) {
+			} catch(final Exception ex) {
 				Log.error(TAG, "Loading shader source failed:" + path + "\n", ex);
 				return "";
 			}

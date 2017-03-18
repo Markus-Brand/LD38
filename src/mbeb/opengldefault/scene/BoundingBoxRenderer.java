@@ -1,87 +1,83 @@
 package mbeb.opengldefault.scene;
 
-import java.nio.FloatBuffer;
-import mbeb.opengldefault.animation.Bone;
-import mbeb.opengldefault.animation.Pose;
+import java.nio.*;
 
-import org.joml.Matrix4f;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
+import org.joml.*;
+import org.lwjgl.*;
+import org.lwjgl.opengl.*;
 
-import mbeb.opengldefault.camera.ICamera;
-import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.rendering.renderable.StaticMeshes;
-import mbeb.opengldefault.rendering.shader.Shader;
-import org.joml.Vector3f;
+import mbeb.opengldefault.animation.*;
+import mbeb.opengldefault.camera.*;
+import mbeb.opengldefault.logging.*;
+import mbeb.opengldefault.rendering.renderable.*;
+import mbeb.opengldefault.rendering.shader.*;
 
 public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 
 	private static final String TAG = "BoundingBoxRenderer";
-	
+
 	public static final boolean RENDER_BONE_BOXES = true;
 
 	private static Shader shader;
 
 	static {
 		shader = new Shader("boundingbox.vert", "boundingbox.frag");
-		shader.addUniformBlockIndex(1, "Matrices");
+		shader.addUniformBlockIndex("Matrices");
 		shader.setDrawMode(GL11.GL_LINES);
 	}
 
-	public BoundingBoxRenderer(SceneObject root, ICamera cam) {
+	public BoundingBoxRenderer(final SceneObject root, final ICamera cam) {
 		super(root, cam);
 	}
 
-	private Matrix4f getBoxTransformFor(BoundingBox.Owner obj) {
+	private Matrix4f getBoxTransformFor(final BoundingBox.Owner obj) {
 		if (obj.getBoundingBox().isEmpty()) {
 			return new Matrix4f();
 		}
-		return new Matrix4f()
-				.translate(obj.getBoundingBox().getLocalStart())
-				.scale(obj.getBoundingBox().getLocalSize());
+		return new Matrix4f().translate(obj.getBoundingBox().getLocalStart()).scale(obj.getBoundingBox().getLocalSize());
 	}
-	
+
 	/**
 	 * render a single objects bounding box
+	 * 
 	 * @param object
-	 * @param boundingBoxTransform 
+	 * @param boundingBoxTransform
 	 */
-	private void renderBox(BoundingBox.Owner object, Vector3f boxColor, Matrix4f boundingBoxTransform){
+	private void renderBox(final BoundingBox.Owner object, final Vector3f boxColor, final Matrix4f boundingBoxTransform) {
 		if (object.getBoundingBox().isEmpty()) {
 			return;
 		}
-		Matrix4f localTrans = getBoxTransformFor(object);
-		
+		final Matrix4f localTrans = getBoxTransformFor(object);
+
 		trySettingModelUniform(boundingBoxTransform.mul(localTrans, new Matrix4f()));
 		GL20.glUniform3f(shader.getUniform("boxColor"), boxColor.x, boxColor.y, boxColor.z);
 		StaticMeshes.getLineCube().render(shader);
 	}
-	
+
 	@Override
-	public void renderSelf(SceneObject object, Matrix4f transform) {
+	public void renderSelf(final SceneObject object, final Matrix4f transform) {
 		shader.use();
-		
+
 		renderBox(object, colorFor(object.isSelected()), transform);
 		if (RENDER_BONE_BOXES && object.getRenderable() != null && object.getRenderable().hasAnimations()) {
-			Pose pose = object.getRenderable().getCurrentPose();
+			final Pose pose = object.getRenderable().getCurrentPose();
 			renderBoneBoxes(pose.getSkeleton(), pose, transform.mul(pose.getTransform()));
 		}
 	}
-	
+
 	/**
 	 * render the local boundingBoxes for a skeleton
 	 */
-	private void renderBoneBoxes(Bone skeleton, Pose pose, Matrix4f parentTransform) {
-		Matrix4f boneTransform = pose.getRaw(skeleton.getName()).asMatrix();
-		Matrix4f transform = parentTransform.mul(boneTransform, new Matrix4f());
+	private void renderBoneBoxes(final Bone skeleton, final Pose pose, final Matrix4f parentTransform) {
+		final Matrix4f boneTransform = pose.getRaw(skeleton.getName()).asMatrix();
+		final Matrix4f transform = parentTransform.mul(boneTransform, new Matrix4f());
 		renderBox(skeleton, new Vector3f(1, 1, 0), transform);
-		for (Bone childBone : skeleton.getChildren()) {
+		for (final Bone childBone : skeleton.getChildren()) {
 			renderBoneBoxes(childBone, pose, transform);
 		}
 	}
-	
-	private void trySettingModelUniform(Matrix4f transform) {
+
+	private void trySettingModelUniform(final Matrix4f transform) {
 		final int modelUniform = shader.getUniform(ModelMatrixUniformName, false);
 		if (modelUniform >= 0) {
 			//only if shader wants the model matrix
@@ -90,8 +86,8 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 			GLErrors.checkForError(TAG, "glUniformMatrix4fv");
 		}
 	}
-	
-	private Vector3f colorFor(boolean selected) {
+
+	private Vector3f colorFor(final boolean selected) {
 		return selected == true ? new Vector3f(1, 0, 0) : new Vector3f(0, 1, 0);
 	}
 }

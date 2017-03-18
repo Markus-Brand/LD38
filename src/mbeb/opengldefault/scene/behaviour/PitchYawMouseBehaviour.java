@@ -1,11 +1,13 @@
 package mbeb.opengldefault.scene.behaviour;
 
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-
-import mbeb.opengldefault.controls.Mouse;
-import mbeb.opengldefault.scene.entities.Entity;
 import static org.lwjgl.glfw.GLFW.*;
+
+import java.lang.Math;
+
+import org.joml.*;
+
+import mbeb.opengldefault.controls.*;
+import mbeb.opengldefault.scene.entities.*;
 
 /**
  * A Behaviour that translates Mouse input to a pitch and yaw value to set as the direction of an Entity

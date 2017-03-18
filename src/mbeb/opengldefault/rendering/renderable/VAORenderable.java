@@ -7,13 +7,13 @@ import static org.lwjgl.opengl.GL30.*;
 
 import java.nio.*;
 
+import org.joml.*;
+import org.lwjgl.*;
+
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.io.*;
 import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.scene.*;
-import org.joml.Matrix4f;
-
-import org.lwjgl.*;
 
 /**
  * Leaf Renderable - an actual OpenGL-VAO that can be rendered
@@ -82,7 +82,8 @@ public class VAORenderable implements IRenderable {
 
 	/**
 	 * this meshes Transformation
-	 * @param transform 
+	 * 
+	 * @param transform
 	 */
 	public void setTransform(Matrix4f transform) {
 		this.transform = transform;

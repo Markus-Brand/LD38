@@ -6,15 +6,16 @@ import static org.lwjgl.opengl.GL31.*;
 
 import java.nio.*;
 
-import mbeb.opengldefault.logging.*;
-
 import org.joml.*;
 import org.lwjgl.*;
 
+import mbeb.opengldefault.logging.*;
+import mbeb.opengldefault.rendering.shader.*;
+
 public class Camera implements ICamera {
-	
+
 	public static final float FOV_ANGLE = 70;
-	public static final float FOV = (float)java.lang.Math.toRadians(FOV_ANGLE);
+	public static final float FOV = (float) java.lang.Math.toRadians(FOV_ANGLE);
 	public static final float NEAR_PLANE = 0.1f;
 	public static final float FAR_PLANE = 1000;
 
@@ -43,9 +44,11 @@ public class Camera implements ICamera {
 	 * Basic Camera Constructor. Sets the projection to a default perspective
 	 * projection and the view to Camera looking from origin along positive z
 	 * direction.
-	 * @param aspectRation the aspect ratio of the camera
+	 *
+	 * @param aspectRation
+	 *            the aspect ratio of the camera
 	 */
-	public Camera(float aspectRation) {
+	public Camera(final float aspectRation) {
 		projection = new Matrix4f();
 		view = new Matrix4f();
 		projectionView = null;
@@ -60,14 +63,14 @@ public class Camera implements ICamera {
 	}
 
 	@Override
-	public void update(double deltaTime) {
+	public void update(final double deltaTime) {
 		updateView();
 	}
 
 	private void updateView() {
-		Matrix4f newView = new Matrix4f();
+		final Matrix4f newView = new Matrix4f();
 
-		Vector3f lookCenter = getPosition().add(getViewDirection(), new Vector3f());
+		final Vector3f lookCenter = getPosition().add(getViewDirection(), new Vector3f());
 		newView.lookAt(getPosition(), lookCenter, new Vector3f(0, 1, 0));
 
 		setView(newView);
@@ -120,7 +123,7 @@ public class Camera implements ICamera {
 			GLErrors.checkForError(TAG, "glBindBuffer");
 			glBufferData(GL_UNIFORM_BUFFER, 256, GL_DYNAMIC_DRAW);
 			GLErrors.checkForError(TAG, "glBufferData");
-			glBindBufferBase(GL_UNIFORM_BUFFER, 1, UBO);
+			glBindBufferBase(GL_UNIFORM_BUFFER, UBOManager.getUBOID(UBOManager.MATRICES), UBO);
 			GLErrors.checkForError(TAG, "glBindBufferBase");
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
@@ -168,13 +171,13 @@ public class Camera implements ICamera {
 	}
 
 	@Override
-	public Vector3f getPosOnScreen(Vector3f pos) {
+	public Vector3f getPosOnScreen(final Vector3f pos) {
 		return getPosOnScreen(new Vector4f(pos.x, pos.y, pos.z, 1));
 	}
 
 	@Override
-	public Vector3f getPosOnScreen(Vector4f pos) {
-		Vector4f res = pos.mul(getProjectionView());
+	public Vector3f getPosOnScreen(final Vector4f pos) {
+		final Vector4f res = pos.mul(getProjectionView());
 		return new Vector3f(res.x / res.w, res.y / res.w, res.z / res.w);
 	}
 }

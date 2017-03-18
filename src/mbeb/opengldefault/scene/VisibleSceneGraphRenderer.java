@@ -1,8 +1,8 @@
 package mbeb.opengldefault.scene;
 
-import mbeb.opengldefault.camera.*;
-
 import org.joml.*;
+
+import mbeb.opengldefault.camera.*;
 
 /**
  * only renders the visible part of the sceneGraph

@@ -1,30 +1,25 @@
 package mbeb.opengldefault.game;
 
-import java.util.ArrayList;
-import java.util.Random;
-import mbeb.opengldefault.animation.AnimatedRenderable;
 import static org.lwjgl.opengl.GL11.*;
 
+import java.awt.*;
+import java.util.*;
 
+import org.joml.*;
+
+import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.camera.*;
-import mbeb.opengldefault.curves.BezierCurve;
-import mbeb.opengldefault.curves.BezierCurve.ControlPointInputMode;
+import mbeb.opengldefault.curves.*;
+import mbeb.opengldefault.curves.BezierCurve.*;
+import mbeb.opengldefault.light.*;
 import mbeb.opengldefault.logging.*;
-import mbeb.opengldefault.openglcontext.*;
 import mbeb.opengldefault.rendering.io.*;
 import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.rendering.textures.*;
 import mbeb.opengldefault.scene.*;
-import mbeb.opengldefault.scene.behaviour.BezierBehaviour;
-import mbeb.opengldefault.scene.behaviour.FollowingBehaviour;
-import mbeb.opengldefault.scene.behaviour.LimitedDistanceBehaviour;
-import mbeb.opengldefault.scene.behaviour.PlayerControlBehaviour;
-import mbeb.opengldefault.scene.entities.CameraEntity;
-import mbeb.opengldefault.scene.entities.Entity;
-import mbeb.opengldefault.scene.entities.SceneEntity;
-
-import org.joml.*;
+import mbeb.opengldefault.scene.behaviour.*;
+import mbeb.opengldefault.scene.entities.*;
 
 /**
  * Object to characterize a whole game
@@ -32,13 +27,18 @@ import org.joml.*;
 public class BunnyGame extends Game {
 	/** Class Name Tag */
 	private static final String TAG = "BunnyGame";
-	
+
 	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1);
-	
+
 	private float timePassed;
 
-	protected ICamera cam;
+	protected ICamera camera;
 	Scene bunnyScene;
+	PointLight pl;
+	DirectionalLight dl;
+	SpotLight sl;
+	double timepassed = 0;
+	ArrayList<Light> lights = new ArrayList<>();
 
 	BezierCurve curve;
 
@@ -51,30 +51,31 @@ public class BunnyGame extends Game {
 		timePassed = 0;
 		final ArrayList<Vector3f> controlPoints = new ArrayList<>();
 
-		Random random = new Random();
+		final Random random = new Random();
 		for (int i = 0; i < 10; i++) {
 			controlPoints.add(new Vector3f(random.nextInt(51) - 25, random.nextInt(51) - 25, random.nextInt(51) - 25));
 		}
 		curve = new BezierCurve(controlPoints, ControlPointInputMode.CAMERAPOINTSCIRCULAR, true);
 
-		cam = new Camera(getContext().getAspectRatio());
+		camera = new Camera(getContext().getAspectRatio());
 
-		camEntity = new CameraEntity(cam);
+		camEntity = new CameraEntity(camera);
 
 		final Skybox skybox = new Skybox("skybox/mountain");
 
-		bunnyScene = new Scene(cam, skybox);
+		bunnyScene = new Scene(camera, skybox);
 
-		AnimatedRenderable bunnyAnim = new ObjectLoader().loadFromFileAnim("ohrenFlackern.fbx");
+		final AnimatedRenderable bunnyAnim = new ObjectLoader().loadFromFileAnim("ohrenFlackern.fbx");
 		bunnyAnim.getAnimatedMesh().setTransform(MeshFlip);
-		IRenderable bunnyTextured = new TexturedRenderable(bunnyAnim, new Texture("bunny_2d.png"));
+		final IRenderable bunnyTextured = new TexturedRenderable(bunnyAnim, new Texture("bunny_2d.png"));
 
 		final Shader curveShader = new Shader("bezier.vert", "bezier.frag", "bezier.geom");
-		curveShader.addUniformBlockIndex(1, "Matrices");
+		curveShader.addUniformBlockIndex(UBOManager.MATRICES);
 		curveShader.setDrawMode(GL_LINES);
 
-		final Shader defaultShader = new Shader("boneAnimation.vert", "phong.frag");
-		defaultShader.addUniformBlockIndex(1, "Matrices");
+		final Shader defaultShader = new Shader("boneAnimation.vert", "basic.frag");
+		bunnyScene.getLightManager().addShader(defaultShader);
+		defaultShader.addUniformBlockIndex(UBOManager.MATRICES);
 
 		bunny0 = new SceneObject(bunnyTextured);
 		bunny1 = new SceneObject(bunnyTextured);
@@ -115,28 +116,37 @@ public class BunnyGame extends Game {
 
 		bunnyScene.getSceneGraph().setShader(defaultShader);
 
+		pl = new PointLight(Color.GREEN, new Vector3f(0, 10, 0), 1000);
+		bunnyScene.getLightManager().addLight(pl);
+
+		dl = new DirectionalLight(Color.GREEN, new Vector3f(1, 0.5f, 0));
+		bunnyScene.getLightManager().addLight(dl);
+
+		sl = new SpotLight(Color.ORANGE, new Vector3f(0, -0.25f, 0), new Vector3f(0, 1, 0), 10, 5, 1000);
+		bunnyScene.getLightManager().addLight(sl);
+
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
-		
+
 		new Thread() {
 
 			@Override
 			public void run() {
 				try {
 					Thread.sleep(3000);
-				} catch (InterruptedException ex) {
+				} catch(final InterruptedException ex) {
 					ex.printStackTrace();
 				}
 				bunnyAnim.playAnimation("OhrenFlackern1", 4);
 				try {
 					Thread.sleep(3000);
-				} catch (InterruptedException ex) {
+				} catch(final InterruptedException ex) {
 					ex.printStackTrace();
 				}
 				bunnyAnim.playAnimation("HeadBang", 4);
 				try {
 					Thread.sleep(3000);
-				} catch (InterruptedException ex) {
+				} catch(final InterruptedException ex) {
 					ex.printStackTrace();
 				}
 				bunnyAnim.playAnimation("OhrenFlackern2", 4);
@@ -146,6 +156,7 @@ public class BunnyGame extends Game {
 
 	@Override
 	public void update(final double deltaTime) {
+
 		timePassed += deltaTime;
 
 		mainBunny.update(deltaTime);
@@ -154,6 +165,9 @@ public class BunnyGame extends Game {
 		followingBunny3.update(deltaTime);
 		//followingBunny4.update(deltaTime);
 		camEntity.update(deltaTime);
+
+		pl.setColor(new Color((float) java.lang.Math.sin(timepassed) / 2 + 0.5f, (float) 1.0, (float) java.lang.Math.cos(timepassed) / 2 + 0.5f));
+		pl.setPosition(new Vector3f((float) java.lang.Math.sin(timepassed) * 5, 10, (float) java.lang.Math.cos(timepassed) * 5));
 
 		bunnyScene.update(deltaTime);
 	}
@@ -167,7 +181,7 @@ public class BunnyGame extends Game {
 
 		glViewport(0, 0, getContext().getFramebufferWidth(), getContext().getFramebufferHeight());
 		GLErrors.checkForError(TAG, "glViewport");
-		
+
 		bunnyScene.render(true); //bunnyScene.render(); to render without BoundingBoxes
 	}
 

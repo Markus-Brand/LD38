@@ -1,11 +1,8 @@
 package mbeb.opengldefault.scene.entities;
 
-import mbeb.opengldefault.scene.SceneObject;
-import org.joml.Matrix4f;
+import org.joml.*;
 
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import mbeb.opengldefault.scene.*;
 
 /**
  * Adapter class that enables a {@link SceneObject} to be interpreted as {@link Entity}
@@ -32,7 +29,7 @@ public class SceneEntity extends Entity {
 	@Override
 	public void setPosition(Vector3f position) {
 		Matrix4f inverseMatrix = sceneObject.getParentGlobalTranform().asMatrix().invert(new Matrix4f());
-		sceneObject.getTransformation().setPosition(inverseMatrix.transform(new Vector4f(position, 1)));	
+		sceneObject.getTransformation().setPosition(inverseMatrix.transform(new Vector4f(position, 1)));
 	}
 
 	@Override

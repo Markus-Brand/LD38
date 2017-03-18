@@ -7,13 +7,13 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 
-import mbeb.opengldefault.controls.*;
-import mbeb.opengldefault.game.*;
-import mbeb.opengldefault.logging.*;
-
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
+
+import mbeb.opengldefault.controls.*;
+import mbeb.opengldefault.game.*;
+import mbeb.opengldefault.logging.*;
 
 public class OpenGLContext {
 
@@ -74,7 +74,8 @@ public class OpenGLContext {
 	/**
 	 * Init the OpenGL context
 	 *
-	 * @param args The command line arguments
+	 * @param args
+	 *            The command line arguments
 	 */
 	private void init(String[] args) {
 		evaluateCommandLineArguments(args);
@@ -83,7 +84,7 @@ public class OpenGLContext {
 		createWindow("Test window", true, getVideoModeWidth(), getVideoModeHeight());
 		GL.createCapabilities();
 		GLErrors.checkForError(TAG, "createCapabilities");
-		
+
 		printOpenGLInformation();
 		game.setContext(this);
 		game.init();
@@ -92,7 +93,7 @@ public class OpenGLContext {
 	/**
 	 * Print OpenGL version and supported extensions
 	 */
-	private void printOpenGLInformation(){
+	private void printOpenGLInformation() {
 		Log.log(TAG, "OpenGL version: " + GL11.glGetString(GL11.GL_VERSION));
 		Log.log(TAG, "Extensions supported:");
 		int num = GL11.glGetInteger(GL30.GL_NUM_EXTENSIONS);
@@ -108,7 +109,7 @@ public class OpenGLContext {
 	 */
 	private void loop() {
 		double lastTime = glfwGetTime();
-		while (!glfwWindowShouldClose(window)) {
+		while(!glfwWindowShouldClose(window)) {
 
 			glfwSwapBuffers(window); // swap the color buffers
 			// Poll for window events. The key callback above will only be
@@ -148,7 +149,7 @@ public class OpenGLContext {
 		Log.closeLogFile();
 		try {
 			Files.walk(new File("res").toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
-		} catch (IOException ex) {
+		} catch(IOException ex) {
 			Log.log(TAG, ex.getMessage() + " - unable to delete old res-directory");
 		}
 	}
@@ -156,10 +157,14 @@ public class OpenGLContext {
 	/**
 	 * creates the GLFW Window
 	 *
-	 * @param title windows title
-	 * @param fullscreen is the window fullscreen?
-	 * @param width window framebufferWidth
-	 * @param height window framebufferHeight
+	 * @param title
+	 *            windows title
+	 * @param fullscreen
+	 *            is the window fullscreen?
+	 * @param width
+	 *            window framebufferWidth
+	 * @param height
+	 *            window framebufferHeight
 	 */
 	private void createWindow(String title, boolean fullscreen, int width, int height) {
 		// Create the window
@@ -269,13 +274,14 @@ public class OpenGLContext {
 	/**
 	 * Sets Debug Mode
 	 *
-	 * @param args command line arguments
+	 * @param args
+	 *            command line arguments
 	 */
 	private static void evaluateCommandLineArguments(String[] args) {
 		LogMode mode = LogMode.CONSOLE;
 		for (int i = 1; i < args.length; i++) {
 			String arg = args[i];
-			switch (arg) {
+			switch(arg) {
 				case OPTION_LOG_CONSOLE:
 					mode = LogMode.CONSOLE;
 					break;

@@ -1,4 +1,4 @@
-//size 80
+//size 64
 struct SpotLight{
 	vec3 position;
 	vec3 direction;
