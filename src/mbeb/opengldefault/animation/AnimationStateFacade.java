@@ -107,6 +107,31 @@ public class AnimationStateFacade {
 	public void setSpeed(String presetName, double speed) {
 		getPreset(presetName).setSpeed(speed);
 	}
+
+	/**
+	 * smoothly slide the speed parameter to the given value
+	 * @param presetName
+	 * @param target the speed to slide to
+	 * @param deltaTime time since last call of this method
+	 */
+	public void slideSpeed(String presetName, double target, double deltaTime) {
+		AnimatorPreset preset = getPreset(presetName);
+		preset.setSpeed(slideParameter(preset.getSpeed(), target, deltaTime));
+	}
+
+	/**
+	 * private function to slide a parameter to a given target, by the strength calculated from deltaTime
+	 * @param current
+	 * @param target
+	 * @param deltaTime
+	 * @return
+	 */
+	private double slideParameter(double current, double target, double deltaTime) {
+		final double slideSpeedAdjustment = 5;
+		double factor = 1d - (1d / ((deltaTime * slideSpeedAdjustment) + 1d));
+		double newValue = target * factor + current * (1 - factor);
+		return newValue;
+	}
 		
 //endregion
 	
@@ -114,12 +139,7 @@ public class AnimationStateFacade {
 	 * remove all the Animators from the runningAnimations-Map that have ended already
 	 */
 	private void clearRunningAnimations() {
-		Iterator<Map.Entry<String, Animator>> it = runningAnimations.entrySet().iterator();
-		while (it.hasNext()) {
-			if (it.next().getValue().hasEnded()) {
-				it.remove();
-			}
-		}
+		runningAnimations.entrySet().removeIf(entry -> entry.getValue().hasEnded());
 	}
 	
 	/**
