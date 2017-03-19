@@ -7,7 +7,7 @@ import org.joml.Vector4f;
 
 /**
  * A CircleBar {@link GUIElement}, like the Stamina Meter in Zelda BotW
- * 
+ *
  * @author Markus
  */
 public class CircleBar extends GUIElement {
@@ -34,10 +34,11 @@ public class CircleBar extends GUIElement {
 	}
 
 	@Override
-	public void writeToBuffer(FloatBuffer buffer, int offset) {
+	public int writeToBuffer(FloatBuffer buffer, int offset) {
 		getModelMatrix().get(offset, buffer);
 		int offsetByMatrix = 16;
 		new Vector4f(progress).get(offset + offsetByMatrix, buffer);
+		return 20;
 	}
 
 }

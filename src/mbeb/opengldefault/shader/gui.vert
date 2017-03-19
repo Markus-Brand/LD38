@@ -9,5 +9,5 @@ out vec3 pos;
 void main(){ 
 	pos = vec3(model * vec4(position, 1.0f));
 	gl_Position = vec4(pos, 1);
-	tex = texCoord.xy / offset.y + offset.zw;
+	tex = texCoord.xy / offset.xy + offset.zw;
 }

@@ -99,11 +99,10 @@ public class GUI implements IRenderable {
 	 */
 	private FloatBuffer getFloatBuffer() {
 		int bufferSize = stride / FLOAT_SIZE;
-		FloatBuffer buffer = BufferUtils.createFloatBuffer(elements.size() * bufferSize);
+		FloatBuffer buffer = BufferUtils.createFloatBuffer(getElementsSize() * bufferSize);
 		int offset = 0;
 		for (GUIElement guiElement : elements) {
-			guiElement.writeToBuffer(buffer, offset);
-			offset += bufferSize;
+			offset += guiElement.writeToBuffer(buffer, offset);
 		}
 		return buffer;
 	}
@@ -144,13 +143,25 @@ public class GUI implements IRenderable {
 		glDepthFunc(GL_LEQUAL);
 		GLErrors.checkForError(TAG, "glDepthFunc");
 		renderable.bind();
-		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, elements.size());
+		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, getElementsSize());
 		GLErrors.checkForError(TAG, "glDrawElementsInstanced");
 		renderable.unbind();
 		glDepthFunc(GL_LESS);
 		GLErrors.checkForError(TAG, "glDepthFunc");
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		GLErrors.checkForError(TAG, "glBindBuffer");
+	}
+
+	public int getElementsSize() {
+		int numElements = 0;
+		for (GUIElement element : elements) {
+			if (element instanceof CombinedGUIElement) {
+				numElements += ((CombinedGUIElement) element).getElements().size();
+			} else {
+				numElements++;
+			}
+		}
+		return numElements;
 	}
 
 	@Override

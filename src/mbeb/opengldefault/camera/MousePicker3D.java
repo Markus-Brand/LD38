@@ -1,7 +1,6 @@
 package mbeb.opengldefault.camera;
 
 import mbeb.opengldefault.controls.Mouse;
-import mbeb.opengldefault.openglcontext.OpenGLContext;
 import mbeb.opengldefault.scene.SceneObject;
 
 import org.joml.Matrix4f;
@@ -9,11 +8,11 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-public class MousePicker {
+public class MousePicker3D {
 	private Vector3f ray;
 	private final ICamera camera;
 
-	public MousePicker(final ICamera camera) {
+	public MousePicker3D(final ICamera camera) {
 		this.camera = camera;
 	}
 
@@ -26,18 +25,11 @@ public class MousePicker {
 	}
 
 	private void calculateRay() {
-		Vector2f mousePos = Mouse.getPos();
-		Vector2f normalizedDeviceCoordinates = getNormalizedDeviceCoordinates(mousePos);
+		Vector2f normalizedDeviceCoordinates = Mouse.getNormalizedDeviceCoordinates();
 		Vector4f clipCoordinates = new Vector4f(normalizedDeviceCoordinates.x, normalizedDeviceCoordinates.y, -1, 1);
 		Vector4f eyeSpaceCoordinates = getEyeSpaceCoordinates(clipCoordinates);
 		Vector3f worldSpaceCoordinates = getWorldSpaceCoordinates(eyeSpaceCoordinates);
 		ray = worldSpaceCoordinates;
-	}
-
-	private Vector2f getNormalizedDeviceCoordinates(Vector2f mousePosition) {
-		return new Vector2f(
-				2 * mousePosition.x / OpenGLContext.getVideoModeWidth() - 1,
-				-(2 * mousePosition.y / OpenGLContext.getVideoModeHeight() - 1));
 	}
 
 	private Vector3f getWorldSpaceCoordinates(Vector4f eyeSpaceCoordinates) {

@@ -15,7 +15,7 @@ public class Scene {
 	private final SceneObject sceneGraphRoot;
 	private ICamera camera;
 	private Skybox skybox;
-	private MousePicker picker;
+	private MousePicker3D picker;
 
 	public Scene(ICamera cam) {
 		this(cam, null);
@@ -27,7 +27,7 @@ public class Scene {
 		this.sceneGraphRoot = new SceneObject();
 		renderer = new VisibleSceneGraphRenderer(sceneGraphRoot, cam);
 		boundingBoxRenderer = new BoundingBoxRenderer(sceneGraphRoot, cam);
-		picker = new MousePicker(camera);
+		picker = new MousePicker3D(camera);
 	}
 
 	public SceneObject getSceneGraph() {

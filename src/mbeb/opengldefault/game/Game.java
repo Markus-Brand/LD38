@@ -1,19 +1,26 @@
 package mbeb.opengldefault.game;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import mbeb.opengldefault.openglcontext.OpenGLContext;
 
 public abstract class Game {
-	
-	private OpenGLContext context = null;
 
-	public OpenGLContext getContext() {
-		return context;
+	private GameStates currentGameState;
+
+	private Map<GameStates, GameState> gameStates;
+
+	protected void addGameState(GameStates key, GameState newGameState) {
+		newGameState.init();
+		if (gameStates == null) {
+			gameStates = new HashMap<>();
+			currentGameState = key;
+			newGameState.open();
+		}
+		gameStates.put(key, newGameState);
 	}
 
-	public void setContext(OpenGLContext context) {
-		this.context = context;
-	}
-	
 	/**
 	 * Init the Game here. The OpenGL context is already created at this Point.
 	 */
@@ -25,15 +32,40 @@ public abstract class Game {
 	 * @param deltaTime
 	 *            time that passed since the last update
 	 */
-	public abstract void update(double deltaTime);
+	public void update(double deltaTime) {
+		GameState currentState = getCurrentState();
+		currentState.update(deltaTime);
+		if (!currentState.isActive()) {
+			currentGameState = currentState.getNextState();
+			currentState.resetNextGameState();
+			if (currentGameState == GameStates.EXIT) {
+				OpenGLContext.close();
+			} else {
+				getCurrentState().open();
+			}
+		}
+	}
 
 	/**
 	 * Rendering entry point of a update cycle
 	 */
-	public abstract void render();
+	public void render() {
+		GameState currentState = getCurrentState();
+		if (currentState != null) {
+			currentState.render();
+		}
+	}
+
+	private GameState getCurrentState() {
+		return gameStates.get(currentGameState);
+	}
 
 	/**
 	 * Clear the Game. The game will close after this method is called.
 	 */
-	public abstract void clear();
+	public void clear() {
+		for (GameState state : gameStates.values()) {
+			state.clear();
+		}
+	}
 }

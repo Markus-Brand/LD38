@@ -5,7 +5,6 @@ import org.joml.Vector3f;
 
 import mbeb.opengldefault.controls.Mouse;
 import mbeb.opengldefault.scene.entities.Entity;
-import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * A Behaviour that translates Mouse input to a pitch and yaw value to set as the direction of an Entity
@@ -44,9 +43,9 @@ public class PitchYawMouseBehaviour implements IBehaviour {
 
 		lastMousePos = new Vector2f(Mouse.getPos());
 
-		if (!Mouse.isDown(GLFW_MOUSE_BUTTON_1)) {
+		/*if (!Mouse.isDown(GLFW_MOUSE_BUTTON_1)) {
 			return;
-		}
+		}*/
 
 		delta.mul(rotationSpeed);
 

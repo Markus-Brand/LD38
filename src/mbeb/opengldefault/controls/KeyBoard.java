@@ -4,7 +4,7 @@ public class KeyBoard {
 
 	/** Class Name Tag */
 	private static final String TAG = "KeyBoard";
-	
+
 	private KeyBoard() {
 		//should never be instantiated
 	}
@@ -12,7 +12,7 @@ public class KeyBoard {
 	/**
 	 * Boolean array of all of the keys
 	 */
-	private static final boolean[] keys;
+	private static boolean[] keys;
 
 	static {
 		keys = new boolean[1024];
@@ -59,5 +59,9 @@ public class KeyBoard {
 			return false;
 		}
 		return keys[keyCode];
+	}
+
+	public static void releaseAll() {
+		keys = new boolean[1024];
 	}
 }

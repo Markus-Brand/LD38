@@ -20,7 +20,7 @@ public class AtlasGUI extends GUI {
 	 */
 	private Texture atlas;
 
-	public AtlasGUI(int atlasSize, String atlasName) {
+	public AtlasGUI(String atlasName) {
 		super();
 		atlas = new Texture(atlasName);
 		//Store a Matrix and the offset Vector from {@link AtlasGUIElement}

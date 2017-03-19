@@ -1,7 +1,6 @@
 package mbeb.opengldefault.gui;
 
 import java.nio.FloatBuffer;
-
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -13,15 +12,7 @@ import org.joml.Vector3f;
  */
 public abstract class GUIElement {
 
-	/**
-	 * position of the downLeft corner
-	 */
-	private Vector2f position;
-
-	/**
-	 * Size of the GUI Element
-	 */
-	private Vector2f size;
+	private Rectangle bounding;
 
 	/**
 	 * Has data changed?
@@ -29,8 +20,7 @@ public abstract class GUIElement {
 	private boolean dirty;
 
 	public GUIElement(Vector2f position, Vector2f size) {
-		this.position = position;
-		this.size = size;
+		bounding = new Rectangle(position, size);
 		dirty = true;
 	}
 
@@ -85,25 +75,25 @@ public abstract class GUIElement {
 	 */
 	public GUIElement setPositionRelativeTo(Vector2f boundingStart, Vector2f boundingSize, float relativeX,
 			float relativeY) {
-		Vector2f maxPosition = boundingStart.add(boundingSize.sub(size, new Vector2f()), new Vector2f());
+		Vector2f maxPosition = boundingStart.add(boundingSize.sub(bounding.getSize(), new Vector2f()), new Vector2f());
 		setPosition(boundingStart.lerp(maxPosition, new Vector2f(relativeX, relativeY), new Vector2f()));
 		return this;
 	}
 
 	public Vector2f getPosition() {
-		return position;
+		return bounding.getPosition();
 	}
 
 	public void setPosition(Vector2f position) {
-		this.position = position;
+		bounding.setPosition(position);
 	}
 
 	public Vector2f getSize() {
-		return size;
+		return bounding.getSize();
 	}
 
 	public void setSize(Vector2f size) {
-		this.size = size;
+		bounding.setSize(size);
 	}
 
 	/**
@@ -111,10 +101,10 @@ public abstract class GUIElement {
 	 *
 	 * @return
 	 */
-	public Matrix4f getModelMatrix() {
+	protected Matrix4f getModelMatrix() {
 		return new Matrix4f().
-				translate(new Vector3f(position.x, position.y, 0)).
-				scale(new Vector3f(size.x, size.y, 1));
+				translate(new Vector3f(getPosition().x, getPosition().y, 0)).
+				scale(new Vector3f(getSize().x, getSize().y, 1));
 	}
 
 	/**
@@ -125,8 +115,9 @@ public abstract class GUIElement {
 	 * @param offset
 	 *            offset of the data within the buffer
 	 */
-	public void writeToBuffer(FloatBuffer buffer, int offset) {
+	public int writeToBuffer(FloatBuffer buffer, int offset) {
 		getModelMatrix().get(offset, buffer);
+		return 16;
 	}
 
 	/**
@@ -146,5 +137,17 @@ public abstract class GUIElement {
 
 	public void setClean() {
 		this.dirty = false;
+	}
+
+	public boolean contains(Vector2f point) {
+		return bounding.contains(point);
+	}
+
+	public Rectangle getBounding() {
+		return bounding;
+	}
+
+	public void setBounding(Rectangle bounding) {
+		this.bounding = bounding;
 	}
 }

@@ -24,14 +24,26 @@ public class AtlasGUIElement extends GUIElement {
 	private int atlasIndex;
 
 	/**
-	 * Size of the texture atlas
+	 * Width of the texture atlas
 	 */
-	private int atlasSize;
+	private int atlasWidth;
+	/**
+	 * Height of the texture atlas
+	 */
+	private int atlasHeight;
+
+	public AtlasGUIElement(int atlasIndex, int atlasWidth, int atlasHeight, Vector2f position, Vector2f size) {
+		super(position, size);
+		this.atlasIndex = atlasIndex;
+		this.atlasWidth = atlasWidth;
+		this.atlasHeight = atlasHeight;
+	}
 
 	public AtlasGUIElement(int atlasIndex, int atlasSize, Vector2f position, Vector2f size) {
 		super(position, size);
 		this.atlasIndex = atlasIndex;
-		this.atlasSize = atlasSize;
+		this.atlasWidth = atlasSize;
+		this.atlasHeight = atlasSize;
 	}
 
 	public AtlasGUIElement(int atlasIndex, int atlasSize) {
@@ -58,17 +70,18 @@ public class AtlasGUIElement extends GUIElement {
 	 *            size of the atlas
 	 * @return generated Vector
 	 */
-	public Vector4f getOffset(int atlasSize) {
-		float row = atlasIndex / atlasSize / (float) atlasSize;
-		float column = atlasIndex % atlasSize / (float) atlasSize;
-		return new Vector4f(atlasIndex, atlasSize, column, row);
+	public Vector4f getOffset() {
+		float row = (atlasHeight - atlasIndex / atlasWidth - 1) / (float) atlasHeight;
+		float column = atlasIndex % atlasWidth / (float) atlasWidth;
+		return new Vector4f(atlasWidth, atlasHeight, column, row);
 	}
 
 	@Override
-	public void writeToBuffer(FloatBuffer buffer, int offset) {
+	public int writeToBuffer(FloatBuffer buffer, int offset) {
 		getModelMatrix().get(offset, buffer);
 		int offsetByMatrix = 16;
-		getOffset(atlasSize).get(offset + offsetByMatrix, buffer);
+		getOffset().get(offset + offsetByMatrix, buffer);
+		return 20;
 	}
 
 	@Override

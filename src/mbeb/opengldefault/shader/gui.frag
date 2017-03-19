@@ -5,5 +5,7 @@ in vec3 pos;
 uniform sampler2D u_texture;
 
 void main(){
-	gl_FragColor = texture(u_texture, tex);
+	vec4 sampledColor = texture(u_texture, tex);
+	if(sampledColor.a < 0.5) discard;
+	gl_FragColor = sampledColor;
 }
