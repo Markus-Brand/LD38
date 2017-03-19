@@ -11,6 +11,9 @@ import java.text.*;
 import java.util.*;
 import java.util.regex.*;
 
+import com.sun.tools.internal.jxc.ap.Const;
+import mbeb.opengldefault.constants.Constants;
+import org.joml.*;
 import org.lwjgl.*;
 import org.lwjgl.opengl.*;
 
@@ -170,8 +173,7 @@ public class Shader {
 	/**
 	 * Adds a Uniform Buffer Block to the Shader
 	 *
-	 * @param index
-	 * @param name
+	 * @param UBOName the name of the UBO to add
 	 */
 	public void addUniformBlockIndex(final String UBOName) {
 		final int index = UBOManager.getUBOID(UBOName);
@@ -232,6 +234,177 @@ public class Shader {
 		return location;
 	}
 
+	//<editor-fold desc="UNIFORM-SETTERS">
+	/**
+	 * Sets the value of the given uniform to the given integer array
+	 * @param name the name of the uniform
+	 * @param value the integer array
+	 * @return the location of the set uniform or -1 if an error ocurred
+	 */
+	public int setUniform(final String name, final int[] value) {
+		ensureCompiled();
+		final int uniformLocation = getUniform(name);
+		glUniform1iv(uniformLocation, value);
+		return GLErrors.checkForError(TAG, "setUniformIntArray") ? -1 : uniformLocation;
+	}
+
+	/**
+	 * Sets the value of the given uniform to the given integer
+	 * @param name the name of the uniform
+	 * @param value the integer
+	 * @return the location of the set uniform or -1 if an error ocurred
+	 */
+	public int setUniform(final String name, final int value) {
+		return setUniform(name, new int[]{ value });
+	}
+
+	/**
+	 * Sets the value of the given uniform to the given float array
+	 * @param name the name of the uniform
+	 * @param value the float array
+	 * @return the location of the set uniform or -1 if an error ocurred
+	 */
+	public int setUniform(final String name, final float[] value) {
+		ensureCompiled();
+		final int uniformLocation = getUniform(name);
+		glUniform1fv(uniformLocation, value);
+		return GLErrors.checkForError(TAG, "setUniformFloatArray") ? -1 : uniformLocation;
+	}
+
+	/**
+	 * Sets the value of the given uniform to the given float
+	 * @param name the name of the uniform
+	 * @param value the float
+	 * @return the location of the set uniform or -1 if an error ocurred
+	 */
+	public int setUniform(final String name, final float value) {
+		return setUniform(name, new float[]{ value });
+	}
+
+	/**
+	 * Sets the value of the given uniform to the given vec2
+	 * @param name the name of the uniform
+	 * @param value the vec2
+	 * @return the location of the set uniform or -1 if an error ocurred
+	 */
+	public int setUniform(final String name, final Vector2f value) {
+		ensureCompiled();
+		final int uniformLocation = getUniform(name);
+		FloatBuffer vectorBuffer = BufferUtils.createFloatBuffer(Constants.VEC2_COMPONENTS);
+		value.get(vectorBuffer);
+		glUniform2fv(uniformLocation, vectorBuffer);
+		return GLErrors.checkForError(TAG, "setUniformVector2f") ? -1 : uniformLocation;
+	}
+
+	/**
+	 * Sets the value of the given uniform to the given vec3
+	 * @param name the name of the uniform
+	 * @param value the vec3
+	 * @return the location of the set uniform or -1 if an error ocurred
+	 */
+	public int setUniform(final String name, final Vector3f value) {
+		ensureCompiled();
+		final int uniformLocation = getUniform(name);
+		FloatBuffer vectorBuffer = BufferUtils.createFloatBuffer(Constants.VEC3_COMPONENTS);
+		value.get(vectorBuffer);
+		glUniform3fv(uniformLocation, vectorBuffer);
+		return GLErrors.checkForError(TAG, "setUniformVector3f") ? -1 : uniformLocation;
+	}
+
+	/**
+	 * Sets the value of the given uniform to the given vec4
+	 * @param name the name of the uniform
+	 * @param value the vec4
+	 * @return the location of the set uniform or -1 if an error ocurred
+	 */
+	public int setUniform(final String name, final Vector4f value) {
+		ensureCompiled();
+		final int uniformLocation = getUniform(name);
+		FloatBuffer vectorBuffer = BufferUtils.createFloatBuffer(Constants.VEC4_COMPONENTS);
+		value.get(vectorBuffer);
+		glUniform4fv(uniformLocation, vectorBuffer);
+		return GLErrors.checkForError(TAG, "setUniformVector4f") ? -1 : uniformLocation;
+	}
+
+	/**
+	 * Sets the value of the given uniform the the given array of 3x3 matrices and transposes them if transpose is true.
+	 * @param name the name of the uniform
+	 * @param value the array of matrices
+	 * @param transpose whether to transpose the matrices
+	 * @return the location of the set uniform or -1 if an error ocurred
+	 */
+	public int setUniform(final String name, final Matrix3f[] value, final boolean transpose) {
+		ensureCompiled();
+		final int uniformLocation = getUniform(name);
+		FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(value.length * Constants.MAT3_COMPONENTS);
+		for (int i = 0; i < value.length; i++) {
+			Matrix3f matrix = value[i];
+			matrix.get(i * Constants.MAT3_COMPONENTS, matrixBuffer);
+		}
+		glUniformMatrix3fv(uniformLocation, transpose, matrixBuffer);
+		return GLErrors.checkForError(TAG, "setUniformMatrix3fArray") ? -1 : uniformLocation;
+	}
+
+	/**
+	 * Sets the value of the given uniform the the given array of 3x3 matrices.
+	 * @param name the name of the uniform
+	 * @param value the array of matrices
+	 * @return the location of the set uniform or -1 if an error ocurred
+	 */
+	public int setUniform(final String name, final Matrix3f[] value) {
+		return setUniform(name, value, false);
+	}
+
+	/**
+	 * Sets the value of the given uniform the the given 3x3 matrix.
+	 * @param name the name of the uniform
+	 * @param value the matrix
+	 * @return the location of the set uniform or -1 if an error ocurred
+	 */
+	public int setUniform(final String name, final Matrix3f value) {
+		return setUniform(name, new Matrix3f[]{ value }, false);
+	}
+
+	/**
+	 * Sets the value of the given uniform the the given array of 4x4 matrices and transposes them if transpose is true.
+	 * @param name the name of the uniform
+	 * @param value the array of matrices
+	 * @param transpose whether to transpose the matrices
+	 * @return the location of the set uniform or -1 if an error ocurred
+	 */
+	public int setUniform(final String name, final Matrix4f[] value, final boolean transpose) {
+		ensureCompiled();
+		final int uniformLocation = getUniform(name);
+		FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(Constants.MAT4_COMPONENTS * value.length);
+		for (int i = 0; i < value.length; i++) {
+			Matrix4f matrix = value[i];
+			matrix.get(i * Constants.MAT4_COMPONENTS, matrixBuffer);
+		}
+		glUniformMatrix4fv(uniformLocation, transpose, matrixBuffer);
+		return GLErrors.checkForError(TAG, "setUniformMatrix4fArray") ? -1 : uniformLocation;
+	}
+
+	/**
+	 * Sets the value of the given uniform the the given array of 4x4 matrices.
+	 * @param name the name of the uniform
+	 * @param value the array of matrices
+	 * @return the location of the set uniform or -1 if an error ocurred
+	 */
+	public int setUniform(final String name, final Matrix4f[] value) {
+		return setUniform(name, value, false);
+	}
+
+	/**
+	 * Sets the value of the given uniform the the given 4x4 matrix.
+	 * @param name the name of the uniform
+	 * @param value the matrix
+	 * @return the location of the set uniform or -1 if an error ocurred
+	 */
+	public int setUniform(final String name, final Matrix4f value) {
+		return setUniform(name, new Matrix4f[]{ value }, false);
+	}
+	//</editor-fold>
+
 	public String getParameter(final String name) {
 		return preprocessor.getParameter(name);
 	}
@@ -269,8 +442,6 @@ public class Shader {
 	 * Compiles Vertex Shader
 	 * TODO unify compile<i>name</i>shader calls
 	 *
-	 * @param paramString
-	 *            Shader Header
 	 * @return vertex shader object
 	 */
 	private int compileVertexShader() {
@@ -295,8 +466,6 @@ public class Shader {
 	/**
 	 * Compiles Fragment Shader
 	 *
-	 * @param paramString
-	 *            Shader Header
 	 * @return fragment shader object
 	 */
 	private int compileFragmentShader() {
@@ -316,8 +485,6 @@ public class Shader {
 	/**
 	 * Compiles Geometry Shader
 	 *
-	 * @param paramString
-	 *            Shader Header
 	 * @return geometry shader object
 	 */
 	private int compileGeometryShader() {
@@ -340,8 +507,6 @@ public class Shader {
 	/**
 	 * Compiles Tessellation Control Shader
 	 *
-	 * @param paramString
-	 *            Shader Header
 	 * @return tessellation control shader object
 	 */
 	private int compileTesControlShader() {
@@ -364,8 +529,6 @@ public class Shader {
 	/**
 	 * Compiles Tessellation Evaluation Shader
 	 *
-	 * @param paramString
-	 *            Shader Header
 	 * @return tessellation evaluation shader object
 	 */
 	private int compileTesEvalShader() {

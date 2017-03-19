@@ -2,6 +2,7 @@ package mbeb.opengldefault.scene;
 
 import java.nio.*;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import mbeb.opengldefault.constants.Constants;
 import org.joml.*;
 import org.lwjgl.*;
@@ -51,7 +52,7 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 		final Matrix4f localTrans = getBoxTransformFor(object);
 
 		trySettingModelUniform(boundingBoxTransform.mul(localTrans, new Matrix4f()));
-		GL20.glUniform3f(shader.getUniform("boxColor"), boxColor.x, boxColor.y, boxColor.z);
+		shader.setUniform("boxColor", boxColor);
 		StaticMeshes.getLineCube().render(shader);
 	}
 
@@ -79,13 +80,7 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 	}
 
 	private void trySettingModelUniform(final Matrix4f transform) {
-		final int modelUniform = shader.getUniform(ModelMatrixUniformName, false);
-		if (modelUniform >= 0) {
-			//only if shader wants the model matrix
-			final FloatBuffer buffer = BufferUtils.createFloatBuffer(Constants.MAT4_COMPONENTS);
-			GL20.glUniformMatrix4fv(modelUniform, false, transform.get(buffer));
-			GLErrors.checkForError(TAG, "glUniformMatrix4fv");
-		}
+		shader.setUniform(ModelMatrixUniformName, transform);
 	}
 
 	private Vector3f colorFor(final boolean selected) {

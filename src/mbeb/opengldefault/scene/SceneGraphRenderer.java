@@ -75,26 +75,15 @@ public class SceneGraphRenderer {
 		final Shader shader = object.getShader();
 		shader.use();
 		if (object.hasOwnShader()) {
-			//update camera on first object with this shader only
-			final int viewPosUniform = shader.getUniform(ViewPosUniformName, false);
-			if (viewPosUniform >= 0) {
-				final Vector3f pos = cam.getPosition();
-				GL20.glUniform3f(viewPosUniform, pos.x, pos.y, pos.z);
-				GLErrors.checkForError(TAG, "glUniform3f");
-			}
+			final Vector3f pos = cam.getPosition();
+			shader.setUniform(ViewPosUniformName, pos);
 		}
 		final IRenderable renderable = object.getRenderable();
 		if (renderable == null) {
 			return;
 		}
-		final int modelUniform = shader.getUniform(ModelMatrixUniformName, false);
-		if (modelUniform >= 0) {
-			//only if shader wants the model matrix
-			final Matrix4f model = transform.mul(renderable.getTransform());
-			final FloatBuffer buffer = BufferUtils.createFloatBuffer(Constants.MAT4_COMPONENTS);
-			GL20.glUniformMatrix4fv(modelUniform, false, model.get(buffer));
-			GLErrors.checkForError(TAG, "glUniformMatrix4fv");
-		}
+		final Matrix4f model = transform.mul(renderable.getTransform());
+		shader.setUniform(ModelMatrixUniformName, model);
 
 		renderable.render(shader);
 	}
