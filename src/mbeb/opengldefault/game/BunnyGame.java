@@ -34,9 +34,10 @@ public class BunnyGame extends Game {
 
 	protected ICamera camera;
 	Scene bunnyScene;
-	PointLight pl;
-	DirectionalLight dl;
+	//PointLight pl;
+	//DirectionalLight dl;
 	SpotLight sl;
+
 	double timepassed = 0;
 	ArrayList<Light> lights = new ArrayList<>();
 
@@ -44,7 +45,7 @@ public class BunnyGame extends Game {
 
 	SceneObject bunny0, bunny1, bunny2, bunny3, bunny4, curveObj;
 
-	Entity mainBunny, followingBunny1, followingBunny2, followingBunny3, followingBunny4, camEntity;
+	Entity mainBunny, followingBunny1, followingBunny2, followingBunny3, followingBunny4, camEntity, spotLightEntity;
 
 	@Override
 	public void init() {
@@ -116,14 +117,16 @@ public class BunnyGame extends Game {
 
 		bunnyScene.getSceneGraph().setShader(defaultShader);
 
-		pl = new PointLight(Color.GREEN, new Vector3f(0, 10, 0), 1000);
-		bunnyScene.getLightManager().addLight(pl);
+		//pl = new PointLight(Color.GREEN, new Vector3f(0, 10, 0), 1000);
+		//bunnyScene.getLightManager().addLight(pl);
+		//dl = new DirectionalLight(Color.GREEN, new Vector3f(1, 0.5f, 0));
+		//bunnyScene.getLightManager().addLight(dl);
 
-		dl = new DirectionalLight(Color.GREEN, new Vector3f(1, 0.5f, 0));
-		bunnyScene.getLightManager().addLight(dl);
-
-		sl = new SpotLight(Color.ORANGE, new Vector3f(0, -0.25f, 0), new Vector3f(0, 1, 0), 10, 5, 1000);
+		sl = new SpotLight(Color.ORANGE, new Vector3f(0, -0.25f, 0), new Vector3f(0, 1, 0), 5, 10, 1000);
 		bunnyScene.getLightManager().addLight(sl);
+		spotLightEntity = new SpotLightEntity(sl);
+		spotLightEntity.addBehaviour(1, new FollowingBehaviour(followingBunny3, 3f).limited(5));
+		spotLightEntity.addBehaviour(9001, new FollowingBehaviour(followingBunny3, 7.6f));
 
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
@@ -166,9 +169,9 @@ public class BunnyGame extends Game {
 		//followingBunny4.update(deltaTime);
 		camEntity.update(deltaTime);
 
-		pl.setColor(new Color((float) java.lang.Math.sin(timepassed) / 2 + 0.5f, (float) 1.0, (float) java.lang.Math.cos(timepassed) / 2 + 0.5f));
-		pl.setPosition(new Vector3f((float) java.lang.Math.sin(timepassed) * 5, 10, (float) java.lang.Math.cos(timepassed) * 5));
-
+		//pl.setColor(new Color((float) java.lang.Math.sin(timepassed) / 2 + 0.5f, (float) 1.0, (float) java.lang.Math.cos(timepassed) / 2 + 0.5f));
+		//pl.setPosition(new Vector3f((float) java.lang.Math.sin(timepassed) * 5, 10, (float) java.lang.Math.cos(timepassed) * 5));
+		spotLightEntity.update(deltaTime);
 		bunnyScene.update(deltaTime);
 	}
 
