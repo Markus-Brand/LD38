@@ -78,7 +78,7 @@ public abstract class LightTypeManager {
 	}
 
 	/**
-	 * @return number of bytes which are needed to store theLight capacity
+	 * @return number of bytes which are needed to store the light capacity
 	 */
 	private int getBufferSize() {
 		return lightCapacity * lightBlockSize * Constants.BLOCK_SIZE;

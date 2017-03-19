@@ -73,7 +73,7 @@ public class Constants {
 	 */
 	public static final int MAT3_BLOCK_COMPONENTS = 12;
 	/**
-	 * The size of a mat3 in bytes (while filling a block
+	 * The size of a mat3 in bytes (while filling a block)
 	 */
 	public static final int MAT3_BLOCK_SIZE = MAT3_BLOCK_COMPONENTS * FLOAT_SIZE;
 	/**

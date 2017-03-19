@@ -1,15 +1,10 @@
 package mbeb.opengldefault.scene;
 
-import java.nio.*;
 import java.util.*;
 
-import mbeb.opengldefault.constants.Constants;
 import org.joml.*;
-import org.lwjgl.*;
-import org.lwjgl.opengl.*;
 
 import mbeb.opengldefault.camera.*;
-import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.rendering.shader.*;
 
@@ -24,7 +19,7 @@ public class SceneGraphRenderer {
 	private static final String TAG = "SceneGraphRenderer";
 
 	protected final SceneObject root;
-	protected final ICamera cam;
+	protected final ICamera camera;
 
 	/**
 	 * create a new renderer for the given SceneGraph and Camera
@@ -34,7 +29,7 @@ public class SceneGraphRenderer {
 	 */
 	public SceneGraphRenderer(final SceneObject root, final ICamera cam) {
 		this.root = root;
-		this.cam = cam;
+		this.camera = cam;
 	}
 
 	/**
@@ -75,8 +70,8 @@ public class SceneGraphRenderer {
 		final Shader shader = object.getShader();
 		shader.use();
 		if (object.hasOwnShader()) {
-			final Vector3f pos = cam.getPosition();
-			shader.setUniform(ViewPosUniformName, pos, true);
+			final Vector3f position = camera.getPosition();
+			shader.setUniform(ViewPosUniformName, position, true);
 		}
 		final IRenderable renderable = object.getRenderable();
 		if (renderable == null) {

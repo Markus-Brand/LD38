@@ -341,7 +341,7 @@ public class Shader {
 	}
 
 	/**
-	 * Sets the value of the given uniform the the given array of 3x3 matrices and transposes them if transpose is true.
+	 * Sets the value of the given uniform the given array of 3x3 matrices and transposes them if transpose is true.
 	 * @param name the name of the uniform
 	 * @param value the array of matrices
 	 * @param transpose whether to transpose the matrices
@@ -360,7 +360,7 @@ public class Shader {
 	}
 
 	/**
-	 * Sets the value of the given uniform the the given array of 3x3 matrices.
+	 * Sets the value of the given uniform the given array of 3x3 matrices.
 	 * @param name the name of the uniform
 	 * @param value the array of matrices
 	 * @return the location of the set uniform or -1 if an error ocurred
@@ -370,7 +370,7 @@ public class Shader {
 	}
 
 	/**
-	 * Sets the value of the given uniform the the given 3x3 matrix.
+	 * Sets the value of the given uniform the given 3x3 matrix.
 	 * @param name the name of the uniform
 	 * @param value the matrix
 	 * @return the location of the set uniform or -1 if an error ocurred
@@ -380,7 +380,7 @@ public class Shader {
 	}
 
 	/**
-	 * Sets the value of the given uniform the the given array of 4x4 matrices and transposes them if transpose is true.
+	 * Sets the value of the given uniform the given array of 4x4 matrices and transposes them if transpose is true.
 	 * @param name the name of the uniform
 	 * @param value the array of matrices
 	 * @param transpose whether to transpose the matrices
@@ -404,7 +404,7 @@ public class Shader {
 	}
 
 	/**
-	 * Attempts the value of the given uniform the the given array of 4x4 matrices.
+	 * Attempts the value of the given uniform the given array of 4x4 matrices.
 	 * @param name the name of the uniform
 	 * @param value the array of matrices
 	 * @return the location of the set uniform or -1 if an error ocurred
@@ -414,7 +414,7 @@ public class Shader {
 	}
 
 	/**
-	 * Attempts the value of the given uniform the the given 4x4 matrix.
+	 * Attempts the value of the given uniform the given 4x4 matrix.
 	 * @param name the name of the uniform
 	 * @param value the matrix
 	 * @param onlyTry whether the shader shuld only attempt to set the uniform
@@ -425,7 +425,7 @@ public class Shader {
 	}
 
 	/**
-	 * Attempts the value of the given uniform the the given 4x4 matrix.
+	 * Attempts the value of the given uniform the given 4x4 matrix.
 	 * @param name the name of the uniform
 	 * @param value the matrix
 	 * @return the location of the set uniform or -1 if an error ocurred
