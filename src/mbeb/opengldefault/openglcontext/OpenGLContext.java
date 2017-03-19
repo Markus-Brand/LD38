@@ -135,7 +135,7 @@ public class OpenGLContext {
 			double deltaTime = thisTime - lastTime;
 			lastTime = thisTime;
 
-			//Debug.log((int) (1 / deltaTime) + "fps");
+			//Log.log(TAG, (int) (1 / deltaTime) + "fps");
 			game.update(deltaTime);
 			game.render();
 		}

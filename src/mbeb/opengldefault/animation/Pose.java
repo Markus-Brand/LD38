@@ -31,6 +31,9 @@ public class Pose {
 	private Bone skeleton;
 	private Matrix4f transform;
 
+	/** the applied bone matrices */
+	private BoneState[] convertedData = null;
+
 	public Pose(Bone skeleton, Matrix4f transform) {
 		this.skeleton = skeleton;
 		this.transform = transform;
@@ -160,12 +163,35 @@ public class Pose {
 
 	/**
 	 * get the Transformation of a Bone
-	 * 
-	 * @param name
+	 *
 	 * @return
 	 */
-	public Matrix4f get(String name) {
-		return getRaw(name).asMatrix().mul(transform, new Matrix4f());
+	public BoneState get(int boneID) {
+		return getConvertedData()[boneID];
+	}
+
+	public BoneState[] getConvertedData() {
+		if (convertedData == null) {
+			convertedData = new BoneState[skeleton.boneCount()];
+			convertData(transform, skeleton);
+		}
+		return convertedData;
+	}
+
+	private void convertData(Matrix4f parent, Bone bone) {
+		if (bone.getIndex() < 0) {
+			return;
+		}
+
+		Matrix4f currentLocalBoneTransform = getRaw(bone.getName()).asMatrix();
+		Matrix4f currentBoneTransform = parent.mul(currentLocalBoneTransform, new Matrix4f());
+
+		for (Bone child : bone.getChildren()) {
+			convertData(currentBoneTransform, child);
+		}
+
+		Matrix4f combined = currentBoneTransform.mul(bone.getInverseBindTransform(), new Matrix4f());
+		convertedData[bone.getIndex()] = new BoneState(bone, currentLocalBoneTransform, currentBoneTransform, combined);
 	}
 
 	/**
@@ -178,40 +204,17 @@ public class Pose {
 	 */
 	public void setUniformData(Shader shader, String uniformName) {
 		float[] data = new float[FLOATS_PER_MAT4 * skeleton.boneCount()];
-		setUniformData(transform, skeleton, data);
+		BoneState[] transforms = getConvertedData();
+
+		for (int b = 0; b < transforms.length; b++) {
+			transforms[b].getCombinedBoneTransform().get(data, b * FLOATS_PER_MAT4);
+		}
 
 		FloatBuffer buf = BufferUtils.createFloatBuffer(data.length);
 		buf.put(data);
 		buf.flip();
 
-		String thisUniform = uniformName;
-
-		glUniformMatrix4fv(shader.getUniform(thisUniform), false, buf);
+		glUniformMatrix4fv(shader.getUniform(uniformName), false, buf);
 		GLErrors.checkForError(TAG, "glUniformMatrix4fv");
-	}
-
-	/**
-	 * save a sub-bone of this pose to the given data-array
-	 *
-	 * @param parent
-	 *            the parent pose transformation
-	 * @param bone
-	 *            the current bone to recurively add
-	 * @param data
-	 *            the float array to store matrices into
-	 */
-	private void setUniformData(Matrix4f parent, Bone bone, float[] data) {
-		if (bone.getIndex() < 0) {
-			return;
-		}
-		Matrix4f currentLocalBoneTransform = getRaw(bone.getName()).asMatrix();
-		Matrix4f currentBoneTransform = parent.mul(currentLocalBoneTransform, new Matrix4f());
-		for (Bone child : bone.getChildren()) {
-			setUniformData(currentBoneTransform, child, data);
-		}
-
-		Matrix4f combined = currentBoneTransform.mul(bone.getInverseBindTransform(), new Matrix4f());
-		int offset = 16 * bone.getIndex();
-		combined.get(data, offset);
 	}
 }

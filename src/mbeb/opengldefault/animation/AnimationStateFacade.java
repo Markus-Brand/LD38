@@ -44,7 +44,7 @@ public class AnimationStateFacade implements IRenderableHolder {
 	 * @return the renderable to add into the SceneGraph
 	 */
 	@Override
-	public IRenderable getRenderable() {
+	public AnimatedRenderable getRenderable() {
 		return renderable;
 	}
 

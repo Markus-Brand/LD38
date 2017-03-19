@@ -12,6 +12,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.awt.*;
 
+import mbeb.opengldefault.scene.behaviour.*;
 import org.joml.*;
 
 import mbeb.opengldefault.camera.*;
@@ -25,9 +26,6 @@ import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.rendering.textures.*;
 import mbeb.opengldefault.scene.*;
-import mbeb.opengldefault.scene.behaviour.BezierBehaviour;
-import mbeb.opengldefault.scene.behaviour.FollowingBehaviour;
-import mbeb.opengldefault.scene.behaviour.PlayerControlBehaviour;
 import mbeb.opengldefault.scene.entities.CameraEntity;
 import mbeb.opengldefault.scene.entities.Entity;
 import mbeb.opengldefault.scene.entities.SceneEntity;
@@ -58,7 +56,7 @@ public class BunnyGame extends Game {
 
 	SceneObject playerObj, bunny0, bunny1, bunny2, bunny3, bunny4, curveObj;
 
-	Entity mainBunny, followingBunny1, followingBunny2, followingBunny3, followingBunny4, camEntity;
+	Entity mainBunny, followingBunny1, followingBunny2, followingBunny3, followingBunny4, camEntity, playerEntity;
 
 	@Override
 	public void init() {
@@ -103,6 +101,7 @@ public class BunnyGame extends Game {
 		bunny3 = new SceneObject(new TexturedRenderable(animBunny, bunnyTexture));
 		bunny4 = new SceneObject(new TexturedRenderable(animBunny, bunnyTexture));
 
+		playerEntity = new SceneEntity(playerObj);
 		mainBunny = new SceneEntity(bunny0);
 		followingBunny1 = new SceneEntity(bunny1);
 		followingBunny2 = new SceneEntity(bunny2);
@@ -123,7 +122,9 @@ public class BunnyGame extends Game {
 		followingBunny4.addBehaviour(1, new FollowingBehaviour(followingBunny3, 3f).limited(5));
 		followingBunny4.addBehaviour(2, new FollowingBehaviour(followingBunny3, 7.6f));
 
-		camEntity.addBehaviour(1, new PlayerControlBehaviour());
+		camEntity.addBehaviour(1, new CombinedBehaviour(
+				new BoneTrackingBehaviour(playerObj, animPlayer.getRenderable(), "Hand.L", new Vector3f(0, 0.5f, 0)),
+				new PitchYawMouseBehaviour()));
 
 		curveObj = new SceneObject(new BezierCurveRenderable(curve));
 		curveObj.setShader(curveShader);
