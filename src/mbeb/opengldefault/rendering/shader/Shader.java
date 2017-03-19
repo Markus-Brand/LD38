@@ -238,7 +238,7 @@ public class Shader {
 	 * Sets the value of the given uniform to the given integer array
 	 * @param name the name of the uniform
 	 * @param value the integer array
-	 * @return the location of the set uniform or -1 if an error ocurred
+	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final int[] value) {
 		ensureCompiled();
@@ -251,7 +251,7 @@ public class Shader {
 	 * Sets the value of the given uniform to the given integer
 	 * @param name the name of the uniform
 	 * @param value the integer
-	 * @return the location of the set uniform or -1 if an error ocurred
+	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final int value) {
 		return setUniform(name, new int[]{ value });
@@ -261,7 +261,7 @@ public class Shader {
 	 * Sets the value of the given uniform to the given float array
 	 * @param name the name of the uniform
 	 * @param value the float array
-	 * @return the location of the set uniform or -1 if an error ocurred
+	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final float[] value) {
 		ensureCompiled();
@@ -274,7 +274,7 @@ public class Shader {
 	 * Sets the value of the given uniform to the given float
 	 * @param name the name of the uniform
 	 * @param value the float
-	 * @return the location of the set uniform or -1 if an error ocurred
+	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final float value) {
 		return setUniform(name, new float[]{ value });
@@ -284,7 +284,7 @@ public class Shader {
 	 * Sets the value of the given uniform to the given vec2
 	 * @param name the name of the uniform
 	 * @param value the vec2
-	 * @return the location of the set uniform or -1 if an error ocurred
+	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Vector2f value) {
 		ensureCompiled();
@@ -300,7 +300,7 @@ public class Shader {
 	 * @param name the name of the uniform
 	 * @param value the vec3
 	 * @param onlyTry whether the shader should only attempt to set the uniform
-	 * @return the location of the set uniform or -1 if an error ocurred
+	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Vector3f value, final boolean onlyTry) {
 		ensureCompiled();
@@ -319,7 +319,7 @@ public class Shader {
 	 * Attempts to set the given uniform to the given vec3
 	 * @param name the name of the uniform
 	 * @param value the vec3
-	 * @return the location of the set uniform or -1 if an error ocurred
+	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Vector3f value) {
 		return setUniform(name, value, false);
@@ -329,7 +329,7 @@ public class Shader {
 	 * Sets the value of the given uniform to the given vec4
 	 * @param name the name of the uniform
 	 * @param value the vec4
-	 * @return the location of the set uniform or -1 if an error ocurred
+	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Vector4f value) {
 		ensureCompiled();
@@ -345,7 +345,7 @@ public class Shader {
 	 * @param name the name of the uniform
 	 * @param value the array of matrices
 	 * @param transpose whether to transpose the matrices
-	 * @return the location of the set uniform or -1 if an error ocurred
+	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Matrix3f[] value, final boolean transpose) {
 		ensureCompiled();
@@ -363,7 +363,7 @@ public class Shader {
 	 * Sets the value of the given uniform the given array of 3x3 matrices.
 	 * @param name the name of the uniform
 	 * @param value the array of matrices
-	 * @return the location of the set uniform or -1 if an error ocurred
+	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Matrix3f[] value) {
 		return setUniform(name, value, false);
@@ -373,7 +373,7 @@ public class Shader {
 	 * Sets the value of the given uniform the given 3x3 matrix.
 	 * @param name the name of the uniform
 	 * @param value the matrix
-	 * @return the location of the set uniform or -1 if an error ocurred
+	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Matrix3f value) {
 		return setUniform(name, new Matrix3f[]{ value }, false);
@@ -385,7 +385,7 @@ public class Shader {
 	 * @param value the array of matrices
 	 * @param transpose whether to transpose the matrices
 	 * @param onlyTry whether the shader shuld only attempt to set the uniform
-	 * @return the location of the set uniform or -1 if an error ocurred
+	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Matrix4f[] value, final boolean transpose, final boolean onlyTry) {
 		ensureCompiled();
@@ -407,7 +407,7 @@ public class Shader {
 	 * Attempts the value of the given uniform the given array of 4x4 matrices.
 	 * @param name the name of the uniform
 	 * @param value the array of matrices
-	 * @return the location of the set uniform or -1 if an error ocurred
+	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Matrix4f[] value) {
 		return setUniform(name, value, false, false);
@@ -418,7 +418,7 @@ public class Shader {
 	 * @param name the name of the uniform
 	 * @param value the matrix
 	 * @param onlyTry whether the shader shuld only attempt to set the uniform
-	 * @return the location of the set uniform or -1 if an error ocurred
+	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Matrix4f value, final boolean onlyTry) {
 		return setUniform(name, new Matrix4f[]{ value }, false, onlyTry);
@@ -428,7 +428,7 @@ public class Shader {
 	 * Attempts the value of the given uniform the given 4x4 matrix.
 	 * @param name the name of the uniform
 	 * @param value the matrix
-	 * @return the location of the set uniform or -1 if an error ocurred
+	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Matrix4f value) {
 		return setUniform(name, value, false);

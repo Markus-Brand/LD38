@@ -25,11 +25,11 @@ public class SceneGraphRenderer {
 	 * create a new renderer for the given SceneGraph and Camera
 	 *
 	 * @param root
-	 * @param cam
+	 * @param camera
 	 */
-	public SceneGraphRenderer(final SceneObject root, final ICamera cam) {
+	public SceneGraphRenderer(final SceneObject root, final ICamera camera) {
 		this.root = root;
-		this.camera = cam;
+		this.camera = camera;
 	}
 
 	/**
