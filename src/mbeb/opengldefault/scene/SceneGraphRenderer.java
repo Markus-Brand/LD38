@@ -1,14 +1,10 @@
 package mbeb.opengldefault.scene;
 
-import java.nio.*;
 import java.util.*;
 
 import org.joml.*;
-import org.lwjgl.*;
-import org.lwjgl.opengl.*;
 
 import mbeb.opengldefault.camera.*;
-import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.rendering.shader.*;
 
@@ -23,17 +19,17 @@ public class SceneGraphRenderer {
 	private static final String TAG = "SceneGraphRenderer";
 
 	protected final SceneObject root;
-	protected final ICamera cam;
+	protected final ICamera camera;
 
 	/**
 	 * create a new renderer for the given SceneGraph and Camera
 	 *
 	 * @param root
-	 * @param cam
+	 * @param camera
 	 */
-	public SceneGraphRenderer(final SceneObject root, final ICamera cam) {
+	public SceneGraphRenderer(final SceneObject root, final ICamera camera) {
 		this.root = root;
-		this.cam = cam;
+		this.camera = camera;
 	}
 
 	/**
@@ -74,26 +70,15 @@ public class SceneGraphRenderer {
 		final Shader shader = object.getShader();
 		shader.use();
 		if (object.hasOwnShader()) {
-			//update camera on first object with this shader only
-			final int viewPosUniform = shader.getUniform(ViewPosUniformName, false);
-			if (viewPosUniform >= 0) {
-				final Vector3f pos = cam.getPosition();
-				GL20.glUniform3f(viewPosUniform, pos.x, pos.y, pos.z);
-				GLErrors.checkForError(TAG, "glUniform3f");
-			}
+			final Vector3f position = camera.getPosition();
+			shader.setUniform(ViewPosUniformName, position, true);
 		}
 		final IRenderable renderable = object.getRenderable();
 		if (renderable == null) {
 			return;
 		}
-		final int modelUniform = shader.getUniform(ModelMatrixUniformName, false);
-		if (modelUniform >= 0) {
-			//only if shader wants the model matrix
-			final Matrix4f model = transform.mul(renderable.getTransform());
-			final FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
-			GL20.glUniformMatrix4fv(modelUniform, false, model.get(buffer));
-			GLErrors.checkForError(TAG, "glUniformMatrix4fv");
-		}
+		final Matrix4f model = transform.mul(renderable.getTransform());
+		shader.setUniform(ModelMatrixUniformName, model, true);
 
 		renderable.render(shader);
 	}

@@ -6,6 +6,7 @@ import java.nio.*;
 import java.util.*;
 import java.util.concurrent.atomic.*;
 
+import mbeb.opengldefault.constants.Constants;
 import org.joml.*;
 import org.lwjgl.*;
 
@@ -164,15 +165,10 @@ public class Pose {
 	 *            the uniform to store pose-data
 	 */
 	public void setUniformData(Shader shader, String uniformName) {
-		float[] data = new float[16 * skeleton.boneCount()];
+		Matrix4f[] data = new Matrix4f[skeleton.boneCount()];
 		setUniformData(transform, skeleton, data);
 
-		FloatBuffer buf = BufferUtils.createFloatBuffer(data.length);
-		buf.put(data);
-		buf.flip();
-
-		String thisUniform = uniformName;
-		glUniformMatrix4fv(shader.getUniform(thisUniform), false, buf);
+		shader.setUniform(uniformName, data);
 	}
 
 	/**
@@ -185,7 +181,7 @@ public class Pose {
 	 * @param data
 	 *            the float array to store matrices into
 	 */
-	private void setUniformData(Matrix4f parent, Bone bone, float[] data) {
+	private void setUniformData(Matrix4f parent, Bone bone, Matrix4f[] data) {
 		Matrix4f currentLocalBoneTransform = getRaw(bone.getName()).asMatrix();
 		Matrix4f currentBoneTransform = parent.mul(currentLocalBoneTransform, new Matrix4f());
 		for (Bone child : bone.getChildren()) {
@@ -193,7 +189,6 @@ public class Pose {
 		}
 
 		Matrix4f combined = currentBoneTransform.mul(bone.getInverseBindTransform(), new Matrix4f());
-		int offset = 16 * bone.getIndex();
-		combined.get(data, offset);
+		data[bone.getIndex()] = combined;
 	}
 }

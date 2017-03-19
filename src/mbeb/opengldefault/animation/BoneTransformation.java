@@ -1,5 +1,6 @@
 package mbeb.opengldefault.animation;
 
+import mbeb.opengldefault.constants.Constants;
 import org.joml.*;
 import org.lwjgl.assimp.*;
 
@@ -159,7 +160,7 @@ public class BoneTransformation {
 		Matrix4f diff = this.asMatrix().sub(other, new Matrix4f());
 
 		float distance = 0;
-		for (Float f : diff.get(new float[16])) {
+		for (Float f : diff.get(new float[Constants.MAT4_COMPONENTS])) {
 			distance += java.lang.Math.abs(f);
 		}
 		return distance < epsilon;
