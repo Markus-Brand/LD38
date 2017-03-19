@@ -138,17 +138,19 @@ public class BunnyGame extends Game {
 
 		bunnyScene.getSceneGraph().setShader(defaultShader);
 
-		pl = new PointLight(Color.GREEN, new Vector3f(0, 10, 0), 1000);
+		pl = new PointLight(Color.GREEN, new Vector3f(0, 10, 0), 50);
 		bunnyScene.getLightManager().addLight(pl);
 
-		dl = new DirectionalLight(Color.GREEN, new Vector3f(1, 0.5f, 0));
+		dl = new DirectionalLight(new Vector3f(1.0f, 0.7f, 0.2f).mul(0.2f), new Vector3f(0.2f, -1f, 0));
 		bunnyScene.getLightManager().addLight(dl);
 
-		sl = new SpotLight(Color.ORANGE, new Vector3f(0, -0.25f, 0), new Vector3f(0, 1, 0), 10, 5, 1000);
-		bunnyScene.getLightManager().addLight(sl);
+		sl = new SpotLight(Color.ORANGE, new Vector3f(0, -0.25f, 0), new Vector3f(0, 1, 0), 10, 5, 1);
+		//bunnyScene.getLightManager().addLight(sl);
 
 		glEnable(GL_CULL_FACE);
+		GLErrors.checkForError(TAG, "glEnable");
 		glEnable(GL_DEPTH_TEST);
+		GLErrors.checkForError(TAG, "glEnable");
 
 		animPlayer.registerAnimation("jogging", "running", 25, 2, 0.5);
 		animPlayer.registerAnimation("hat", "wave", 10, 0.5, 0.5);

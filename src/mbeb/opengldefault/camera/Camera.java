@@ -126,6 +126,7 @@ public class Camera implements ICamera {
 			glBindBufferBase(GL_UNIFORM_BUFFER, UBOManager.getUBOID(UBOManager.MATRICES), UBO);
 			GLErrors.checkForError(TAG, "glBindBufferBase");
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
+			GLErrors.checkForError(TAG, "glBindBuffer");
 
 		}
 		return UBO;
@@ -137,17 +138,21 @@ public class Camera implements ICamera {
 		GLErrors.checkForError(TAG, "glBindBuffer");
 		final FloatBuffer projectionBuffer = BufferUtils.createFloatBuffer(16);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, getProjection().get(projectionBuffer));
+		GLErrors.checkForError(TAG, "glBufferSubData");
 
 		final FloatBuffer viewBuffer = BufferUtils.createFloatBuffer(16);
 		glBufferSubData(GL_UNIFORM_BUFFER, 64, getView().get(viewBuffer));
+		GLErrors.checkForError(TAG, "glBufferSubData");
 
 		final FloatBuffer projectionViewBuffer = BufferUtils.createFloatBuffer(16);
 		glBufferSubData(GL_UNIFORM_BUFFER, 128, getProjectionView().get(projectionViewBuffer));
+		GLErrors.checkForError(TAG, "glBufferSubData");
 
 		final FloatBuffer skyboxViewBuffer = BufferUtils.createFloatBuffer(16);
 		glBufferSubData(GL_UNIFORM_BUFFER, 192, getSkyboxView().get(skyboxViewBuffer));
 		GLErrors.checkForError(TAG, "glBufferSubData");
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		GLErrors.checkForError(TAG, "glBindBuffer");
 	}
 
 	@Override

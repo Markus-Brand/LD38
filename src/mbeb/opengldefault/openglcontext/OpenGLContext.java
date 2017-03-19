@@ -95,11 +95,14 @@ public class OpenGLContext {
 	 */
 	private void printOpenGLInformation() {
 		Log.log(TAG, "OpenGL version: " + GL11.glGetString(GL11.GL_VERSION));
+		GLErrors.checkForError(TAG, "glGetString");
 		Log.log(TAG, "Extensions supported:");
 		int num = GL11.glGetInteger(GL30.GL_NUM_EXTENSIONS);
+		GLErrors.checkForError(TAG, "glGetInteger");
 
 		for (int i = 0; i < num; i++) {
 			String extension = GL30.glGetStringi(GL11.GL_EXTENSIONS, i);
+			GLErrors.checkForError(TAG, "glGetString");
 			Log.log(TAG, extension);
 		}
 	}

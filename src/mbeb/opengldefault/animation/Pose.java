@@ -6,6 +6,7 @@ import java.nio.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.logging.Log;
 import mbeb.opengldefault.rendering.shader.*;
 import java.util.concurrent.atomic.*;
@@ -186,6 +187,7 @@ public class Pose {
 		String thisUniform = uniformName;
 
 		glUniformMatrix4fv(shader.getUniform(thisUniform), false, buf);
+		GLErrors.checkForError(TAG, "glUniformMatrix4fv");
 	}
 
 	/**
