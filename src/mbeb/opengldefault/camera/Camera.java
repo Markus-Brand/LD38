@@ -6,6 +6,7 @@ import static org.lwjgl.opengl.GL31.*;
 
 import java.nio.*;
 
+import mbeb.opengldefault.constants.Constants;
 import org.joml.*;
 import org.lwjgl.*;
 
@@ -135,16 +136,16 @@ public class Camera implements ICamera {
 	public void updateUniformBlock() {
 		glBindBuffer(GL_UNIFORM_BUFFER, getUBO());
 		GLErrors.checkForError(TAG, "glBindBuffer");
-		final FloatBuffer projectionBuffer = BufferUtils.createFloatBuffer(16);
+		final FloatBuffer projectionBuffer = BufferUtils.createFloatBuffer(Constants.MAT4_COMPONENTS);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, getProjection().get(projectionBuffer));
 
-		final FloatBuffer viewBuffer = BufferUtils.createFloatBuffer(16);
+		final FloatBuffer viewBuffer = BufferUtils.createFloatBuffer(Constants.MAT4_COMPONENTS);
 		glBufferSubData(GL_UNIFORM_BUFFER, 64, getView().get(viewBuffer));
 
-		final FloatBuffer projectionViewBuffer = BufferUtils.createFloatBuffer(16);
+		final FloatBuffer projectionViewBuffer = BufferUtils.createFloatBuffer(Constants.MAT4_COMPONENTS);
 		glBufferSubData(GL_UNIFORM_BUFFER, 128, getProjectionView().get(projectionViewBuffer));
 
-		final FloatBuffer skyboxViewBuffer = BufferUtils.createFloatBuffer(16);
+		final FloatBuffer skyboxViewBuffer = BufferUtils.createFloatBuffer(Constants.MAT4_COMPONENTS);
 		glBufferSubData(GL_UNIFORM_BUFFER, 192, getSkyboxView().get(skyboxViewBuffer));
 		GLErrors.checkForError(TAG, "glBufferSubData");
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);

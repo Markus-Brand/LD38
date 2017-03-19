@@ -2,6 +2,7 @@ package mbeb.opengldefault.scene;
 
 import java.nio.*;
 
+import mbeb.opengldefault.constants.Constants;
 import org.joml.*;
 import org.lwjgl.*;
 import org.lwjgl.opengl.*;
@@ -81,7 +82,7 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 		final int modelUniform = shader.getUniform(ModelMatrixUniformName, false);
 		if (modelUniform >= 0) {
 			//only if shader wants the model matrix
-			final FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
+			final FloatBuffer buffer = BufferUtils.createFloatBuffer(Constants.MAT4_COMPONENTS);
 			GL20.glUniformMatrix4fv(modelUniform, false, transform.get(buffer));
 			GLErrors.checkForError(TAG, "glUniformMatrix4fv");
 		}

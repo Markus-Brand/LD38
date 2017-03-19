@@ -8,6 +8,7 @@ import java.nio.*;
 import java.util.*;
 import java.util.concurrent.atomic.*;
 
+import mbeb.opengldefault.constants.Constants;
 import org.lwjgl.*;
 
 import mbeb.opengldefault.logging.*;
@@ -23,8 +24,6 @@ public abstract class LightTypeManager {
 	/** Class Name Tag */
 	private static final String TAG = "LightTypeManager";
 
-	/** 1 Block = four 32bit floats = 16byte */
-	private static int BYTES_PER_BLOCK = 16;
 	/** stores UBO Name */
 	protected String UBOBaseName;
 	/** stores UBO identifier */
@@ -65,7 +64,7 @@ public abstract class LightTypeManager {
 		glBindBuffer(GL_UNIFORM_BUFFER, UBO);
 		GLErrors.checkForError(TAG, "glBindBuffer");
 
-		glBufferData(GL_UNIFORM_BUFFER, getBufferSize() + 16, GL_STATIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, getBufferSize() + Constants.BLOCK_SIZE, GL_STATIC_DRAW);
 		GLErrors.checkForError(TAG, "glBufferData");
 
 		glBindBufferBase(GL_UNIFORM_BUFFER, UBOBaseID, UBO);
@@ -82,7 +81,7 @@ public abstract class LightTypeManager {
 	 * @return number of bytes which are needed to store theLight capacity
 	 */
 	private int getBufferSize() {
-		return lightCapacity * lightBlockSize * BYTES_PER_BLOCK;
+		return lightCapacity * lightBlockSize * Constants.BLOCK_SIZE;
 	}
 
 	/**
@@ -111,7 +110,7 @@ public abstract class LightTypeManager {
 			dataBuffer.put(light.getData());
 		});
 		dataBuffer.flip();
-		glBufferSubData(GL_UNIFORM_BUFFER, 16, dataBuffer);
+		glBufferSubData(GL_UNIFORM_BUFFER, Constants.BLOCK_SIZE, dataBuffer);
 		GLErrors.checkForError(TAG, "glBufferSubData");
 	}
 
@@ -152,7 +151,7 @@ public abstract class LightTypeManager {
 	 * @return offset in the Buffer for the graphics card
 	 */
 	private int getTotalBufferOffset(final int lightIndex) {
-		return lightIndex * lightBlockSize * BYTES_PER_BLOCK;
+		return lightIndex * lightBlockSize * Constants.BLOCK_SIZE;
 	}
 
 	/**
@@ -170,7 +169,7 @@ public abstract class LightTypeManager {
 		lightBuffer.put(light.getData());
 		lightBuffer.flip();
 
-		final int bufferSizeStorageSpace = BYTES_PER_BLOCK; //one block reserved space for this at the beginning of the UBO
+		final int bufferSizeStorageSpace = Constants.BLOCK_SIZE; //one block reserved space for this at the beginning of the UBO
 		glBufferSubData(GL_UNIFORM_BUFFER, bufferSizeStorageSpace + offset, lightBuffer);
 		GLErrors.checkForError(TAG, "glBufferSubData");
 

@@ -3,6 +3,7 @@ package mbeb.opengldefault.scene;
 import java.nio.*;
 import java.util.*;
 
+import mbeb.opengldefault.constants.Constants;
 import org.joml.*;
 import org.lwjgl.*;
 import org.lwjgl.opengl.*;
@@ -90,7 +91,7 @@ public class SceneGraphRenderer {
 		if (modelUniform >= 0) {
 			//only if shader wants the model matrix
 			final Matrix4f model = transform.mul(renderable.getTransform());
-			final FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
+			final FloatBuffer buffer = BufferUtils.createFloatBuffer(Constants.MAT4_COMPONENTS);
 			GL20.glUniformMatrix4fv(modelUniform, false, model.get(buffer));
 			GLErrors.checkForError(TAG, "glUniformMatrix4fv");
 		}

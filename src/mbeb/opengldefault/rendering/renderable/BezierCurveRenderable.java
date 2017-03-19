@@ -2,6 +2,7 @@ package mbeb.opengldefault.rendering.renderable;
 
 import java.nio.*;
 
+import mbeb.opengldefault.constants.Constants;
 import org.joml.*;
 import org.lwjgl.*;
 import org.lwjgl.opengl.*;
@@ -64,14 +65,14 @@ public class BezierCurveRenderable implements IRenderable {
 
 		int modelUniform = shader.getUniform("bernstein");
 
-		final FloatBuffer bernsteinBuffer = BufferUtils.createFloatBuffer(16);
+		final FloatBuffer bernsteinBuffer = BufferUtils.createFloatBuffer(Constants.MAT4_COMPONENTS);
 		GL20.glUniformMatrix4fv(modelUniform, false, curve.bernstein().get(bernsteinBuffer));
 		GLErrors.checkForError(TAG, "glUniformMatrix4fv");
 
 		for (final Matrix4f bezierMatrix : curve.getBezierMatrices()) {
 			modelUniform = shader.getUniform("bezier");
 
-			final FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
+			final FloatBuffer buffer = BufferUtils.createFloatBuffer(Constants.MAT4_COMPONENTS);
 			GL20.glUniformMatrix4fv(modelUniform, false, bezierMatrix.get(buffer));
 			GLErrors.checkForError(TAG, "glUniformMatrix4fv");
 
