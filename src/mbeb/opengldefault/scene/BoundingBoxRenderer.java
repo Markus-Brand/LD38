@@ -80,10 +80,10 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 	}
 
 	private void trySettingModelUniform(final Matrix4f transform) {
-		shader.setUniform(ModelMatrixUniformName, transform);
+		shader.setUniform(ModelMatrixUniformName, transform, true);
 	}
 
 	private Vector3f colorFor(final boolean selected) {
-		return selected == true ? new Vector3f(1, 0, 0) : new Vector3f(0, 1, 0);
+		return selected ? new Vector3f(1, 0, 0) : new Vector3f(0, 1, 0);
 	}
 }

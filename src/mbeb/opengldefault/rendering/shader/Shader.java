@@ -299,15 +299,30 @@ public class Shader {
 	 * Sets the value of the given uniform to the given vec3
 	 * @param name the name of the uniform
 	 * @param value the vec3
+	 * @param onlyTry whether the shader should only attempt to set the uniform
+	 * @return the location of the set uniform or -1 if an error ocurred
+	 */
+	public int setUniform(final String name, final Vector3f value, final boolean onlyTry) {
+		ensureCompiled();
+		final int uniformLocation = getUniform(name, !onlyTry);
+		if (!onlyTry || uniformLocation >= 0) {
+			FloatBuffer vectorBuffer = BufferUtils.createFloatBuffer(Constants.VEC3_COMPONENTS);
+			value.get(vectorBuffer);
+			glUniform3fv(uniformLocation, vectorBuffer);
+			return GLErrors.checkForError(TAG, "setUniformVector3f") ? -1 : uniformLocation;
+		} else {
+			return uniformLocation;
+		}
+	}
+
+	/**
+	 * Attempts to set the given uniform to the given vec3
+	 * @param name the name of the uniform
+	 * @param value the vec3
 	 * @return the location of the set uniform or -1 if an error ocurred
 	 */
 	public int setUniform(final String name, final Vector3f value) {
-		ensureCompiled();
-		final int uniformLocation = getUniform(name);
-		FloatBuffer vectorBuffer = BufferUtils.createFloatBuffer(Constants.VEC3_COMPONENTS);
-		value.get(vectorBuffer);
-		glUniform3fv(uniformLocation, vectorBuffer);
-		return GLErrors.checkForError(TAG, "setUniformVector3f") ? -1 : uniformLocation;
+		return setUniform(name, value, false);
 	}
 
 	/**
@@ -369,38 +384,54 @@ public class Shader {
 	 * @param name the name of the uniform
 	 * @param value the array of matrices
 	 * @param transpose whether to transpose the matrices
+	 * @param onlyTry whether the shader shuld only attempt to set the uniform
 	 * @return the location of the set uniform or -1 if an error ocurred
 	 */
-	public int setUniform(final String name, final Matrix4f[] value, final boolean transpose) {
+	public int setUniform(final String name, final Matrix4f[] value, final boolean transpose, final boolean onlyTry) {
 		ensureCompiled();
-		final int uniformLocation = getUniform(name);
-		FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(Constants.MAT4_COMPONENTS * value.length);
-		for (int i = 0; i < value.length; i++) {
-			Matrix4f matrix = value[i];
-			matrix.get(i * Constants.MAT4_COMPONENTS, matrixBuffer);
+		final int uniformLocation = getUniform(name, !onlyTry);
+		if (!onlyTry || uniformLocation >= 0) {
+			FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(Constants.MAT4_COMPONENTS * value.length);
+			for (int i = 0; i < value.length; i++) {
+				Matrix4f matrix = value[i];
+				matrix.get(i * Constants.MAT4_COMPONENTS, matrixBuffer);
+			}
+			glUniformMatrix4fv(uniformLocation, transpose, matrixBuffer);
+			return GLErrors.checkForError(TAG, "setUniformMatrix4fArray") ? -1 : uniformLocation;
+		} else {
+			return uniformLocation;
 		}
-		glUniformMatrix4fv(uniformLocation, transpose, matrixBuffer);
-		return GLErrors.checkForError(TAG, "setUniformMatrix4fArray") ? -1 : uniformLocation;
 	}
 
 	/**
-	 * Sets the value of the given uniform the the given array of 4x4 matrices.
+	 * Attempts the value of the given uniform the the given array of 4x4 matrices.
 	 * @param name the name of the uniform
 	 * @param value the array of matrices
 	 * @return the location of the set uniform or -1 if an error ocurred
 	 */
 	public int setUniform(final String name, final Matrix4f[] value) {
-		return setUniform(name, value, false);
+		return setUniform(name, value, false, false);
 	}
 
 	/**
-	 * Sets the value of the given uniform the the given 4x4 matrix.
+	 * Attempts the value of the given uniform the the given 4x4 matrix.
+	 * @param name the name of the uniform
+	 * @param value the matrix
+	 * @param onlyTry whether the shader shuld only attempt to set the uniform
+	 * @return the location of the set uniform or -1 if an error ocurred
+	 */
+	public int setUniform(final String name, final Matrix4f value, final boolean onlyTry) {
+		return setUniform(name, new Matrix4f[]{ value }, false, onlyTry);
+	}
+
+	/**
+	 * Attempts the value of the given uniform the the given 4x4 matrix.
 	 * @param name the name of the uniform
 	 * @param value the matrix
 	 * @return the location of the set uniform or -1 if an error ocurred
 	 */
 	public int setUniform(final String name, final Matrix4f value) {
-		return setUniform(name, new Matrix4f[]{ value }, false);
+		return setUniform(name, value, false);
 	}
 	//</editor-fold>
 

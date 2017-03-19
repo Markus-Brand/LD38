@@ -76,14 +76,14 @@ public class SceneGraphRenderer {
 		shader.use();
 		if (object.hasOwnShader()) {
 			final Vector3f pos = cam.getPosition();
-			shader.setUniform(ViewPosUniformName, pos);
+			shader.setUniform(ViewPosUniformName, pos, true);
 		}
 		final IRenderable renderable = object.getRenderable();
 		if (renderable == null) {
 			return;
 		}
 		final Matrix4f model = transform.mul(renderable.getTransform());
-		shader.setUniform(ModelMatrixUniformName, model);
+		shader.setUniform(ModelMatrixUniformName, model, true);
 
 		renderable.render(shader);
 	}
