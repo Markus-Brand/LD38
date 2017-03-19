@@ -2,10 +2,12 @@ package mbeb.opengldefault.animation;
 
 import java.util.*;
 
+import org.joml.*;
+
+import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.scene.*;
-import org.joml.Matrix4f;
 
 /**
  * an animatedMesh together with some animation-state
@@ -41,12 +43,7 @@ public class AnimatedRenderable implements IRenderable {
 		getCurrentAnimations().forEach((Animator anim) -> anim.update(deltaTime));
 
 		//delete all animators from the list that have finished their animation
-		for (int a = 0; a < getCurrentAnimations().size(); a++) {
-			if (getCurrentAnimations().get(a).hasEnded()) {
-				getCurrentAnimations().remove(a);
-				a--;
-			}
-		}
+		getCurrentAnimations().removeIf(Animator::hasEnded);
 
 		mesh.update(deltaTime);
 		animatedBoundingBox = null;
@@ -61,7 +58,7 @@ public class AnimatedRenderable implements IRenderable {
 	}
 
 	public void playAnimation(Animator animator) {
-		synchronized (animatorLock) {
+		synchronized(animatorLock) {
 			getCurrentAnimations().add(animator);
 		}
 	}
@@ -69,18 +66,18 @@ public class AnimatedRenderable implements IRenderable {
 	@Override
 	public BoundingBox getBoundingBox() {
 		if (animatedBoundingBox == null) {
-			animatedBoundingBox = adjustWith(
-					new BoundingBox.Empty(),
-					mesh.getSkeleton(),
-					getCurrentPose().getTransform());
+			animatedBoundingBox = adjustWith(new BoundingBox.Empty(), mesh.getSkeleton(), getCurrentPose().getTransform());
 		}
 		return animatedBoundingBox;
 	}
-	
+
 	/**
 	 * adjust the boundingBox recursively for a given skeleton
-	 * @param box the initial box
-	 * @param bone the skeleton to insert into the box
+	 * 
+	 * @param box
+	 *            the initial box
+	 * @param bone
+	 *            the skeleton to insert into the box
 	 * @param parentTransform
 	 * @return a larger box
 	 */
@@ -98,7 +95,7 @@ public class AnimatedRenderable implements IRenderable {
 		for (Bone childBone : bone.getChildren()) {
 			box = adjustWith(box, childBone, transform);
 		}
-		
+
 		return box;
 	}
 

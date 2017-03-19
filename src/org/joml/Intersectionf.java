@@ -945,8 +945,8 @@ public class Intersectionf {
 	 *         or {@link #POINT_ON_TRIANGLE_EDGE} if the intersection point lies on an edge;
 	 *         or <tt>-1</tt> if no intersection
 	 */
-	public static int intersectSweptSphereTriangle(float centerX, float centerY, float centerZ, float radius, float velX, float velY, float velZ, float v0X, float v0Y, float v0Z, float v1X,
-			float v1Y, float v1Z, float v2X, float v2Y, float v2Z, float epsilon, float maxT, Vector4f pointAndTime) {
+	public static int intersectSweptSphereTriangle(float centerX, float centerY, float centerZ, float radius, float velX, float velY, float velZ, float v0X, float v0Y, float v0Z, float v1X, float v1Y,
+			float v1Z, float v2X, float v2Y, float v2Z, float epsilon, float maxT, Vector4f pointAndTime) {
 		float v10X = v1X - v0X;
 		float v10Y = v1Y - v0Y;
 		float v10Z = v1Z - v0Z;
@@ -1586,8 +1586,8 @@ public class Intersectionf {
 	 *         if the line segment intersects two sides of the axis-aligned box
 	 *         or lies on an edge or a side of the box
 	 */
-	public static int
-			intersectLineSegmentAab(float p0X, float p0Y, float p0Z, float p1X, float p1Y, float p1Z, float minX, float minY, float minZ, float maxX, float maxY, float maxZ, Vector2f result) {
+	public static int intersectLineSegmentAab(float p0X, float p0Y, float p0Z, float p1X, float p1Y, float p1Z, float minX, float minY, float minZ, float maxX, float maxY, float maxZ,
+			Vector2f result) {
 		float dirX = p1X - p0X, dirY = p1Y - p0Y, dirZ = p1Z - p0Z;
 		float invDirX = 1.0f / dirX, invDirY = 1.0f / dirY, invDirZ = 1.0f / dirZ;
 		float tNear, tFar, tymin, tymax, tzmin, tzmax;

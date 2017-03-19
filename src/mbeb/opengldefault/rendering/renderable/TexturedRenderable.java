@@ -1,11 +1,11 @@
 package mbeb.opengldefault.rendering.renderable;
 
-import mbeb.opengldefault.animation.Bone;
-import mbeb.opengldefault.animation.Pose;
+import org.joml.*;
+
+import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.rendering.textures.*;
 import mbeb.opengldefault.scene.*;
-import org.joml.Matrix4f;
 
 /**
  * A renderable with its own texture
@@ -20,8 +20,8 @@ public class TexturedRenderable implements IRenderable {
 	/** a texture to bind before rendering */
 	private Texture texture;
 
-	public TexturedRenderable(IRenderable renderable, Texture texture) {
-		this.renderable = renderable;
+	public TexturedRenderable(IRenderableHolder renderable, Texture texture) {
+		this.renderable = renderable.getRenderable();
 		this.texture = texture;
 	}
 

@@ -1,10 +1,10 @@
 package mbeb.opengldefault.scene.behaviour;
 
-import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
+import org.joml.*;
+import org.lwjgl.glfw.*;
 
-import mbeb.opengldefault.controls.KeyBoard;
-import mbeb.opengldefault.scene.entities.Entity;
+import mbeb.opengldefault.controls.*;
+import mbeb.opengldefault.scene.entities.*;
 
 /**
  * A Behaviour that makes a Entity fly along its viewDirection by using KeyBoard Input

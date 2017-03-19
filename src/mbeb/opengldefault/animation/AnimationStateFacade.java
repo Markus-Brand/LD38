@@ -5,11 +5,12 @@ import java.util.Iterator;
 import java.util.Map;
 import mbeb.opengldefault.logging.Log;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
+import mbeb.opengldefault.rendering.renderable.IRenderableHolder;
 
 /**
  * A manager wrapping an AnimatedRenderable having convenience functions to control Animations
  */
-public class AnimationStateFacade {
+public class AnimationStateFacade implements IRenderableHolder {
 	
 	private static final String TAG = "AnimationStateFacade";
 	
@@ -42,6 +43,7 @@ public class AnimationStateFacade {
 	/**
 	 * @return the renderable to add into the SceneGraph
 	 */
+	@Override
 	public IRenderable getRenderable() {
 		return renderable;
 	}
@@ -69,12 +71,12 @@ public class AnimationStateFacade {
 	 * @return 
 	 */
 	private AnimatorPreset getPreset(String name) {
-		Log.assertIfFalse(TAG, presets.containsKey(name), "No Preset called \"" + name + "\" found!");
+		Log.assertTrue(TAG, presets.containsKey(name), "No Preset called \"" + name + "\" found!");
 		return presets.get(name);
 	}
 	
 	private void registerAnimation(String name, AnimatorPreset preset) {
-		Log.assertIfTrue(TAG, presets.containsKey(name), "A preset with this name is already registered");
+		Log.assertFalse(TAG, presets.containsKey(name), "A preset with this name is already registered");
 		presets.put(name, preset);
 	}
 	

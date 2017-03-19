@@ -68,8 +68,8 @@ public class PolygonsIntersection {
 		float childrenMinMax;
 		IntervalTreeNode left;
 		IntervalTreeNode right;
-		List/* <Interval> */byBeginning;
-		List/* <Interval> */byEnding;
+		List/* <Interval> */ byBeginning;
+		List/* <Interval> */ byEnding;
 
 		static boolean computeEvenOdd(float[] verticesXY, Interval ival, float x, float y, boolean evenOdd, BitSet inPolys) {
 			boolean newEvenOdd = evenOdd;

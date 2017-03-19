@@ -1,8 +1,8 @@
 package mbeb.opengldefault.scene.behaviour;
 
-import org.joml.Vector3f;
+import org.joml.*;
 
-import mbeb.opengldefault.scene.entities.Entity;
+import mbeb.opengldefault.scene.entities.*;
 
 /**
  * A Behaviour that makes a Entity follow another Entity
@@ -28,7 +28,7 @@ public class FollowingBehaviour extends ReferenceEntityBehaviour {
 		if (direction.length() == 0) {
 			return;
 		}
-		
+
 		if (direction.length() > distance) {
 			direction.normalize().mul(distance);
 		}

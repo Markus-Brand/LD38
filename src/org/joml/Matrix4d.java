@@ -3083,8 +3083,8 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 	public double determinant() {
 		if ((properties & PROPERTY_AFFINE) != 0)
 			return determinantAffine();
-		return (m00 * m11 - m01 * m10) * (m22 * m33 - m23 * m32) + (m02 * m10 - m00 * m12) * (m21 * m33 - m23 * m31) + (m00 * m13 - m03 * m10) * (m21 * m32 - m22 * m31) + (m01 * m12 - m02 * m11)
-				* (m20 * m33 - m23 * m30) + (m03 * m11 - m01 * m13) * (m20 * m32 - m22 * m30) + (m02 * m13 - m03 * m12) * (m20 * m31 - m21 * m30);
+		return (m00 * m11 - m01 * m10) * (m22 * m33 - m23 * m32) + (m02 * m10 - m00 * m12) * (m21 * m33 - m23 * m31) + (m00 * m13 - m03 * m10) * (m21 * m32 - m22 * m31)
+				+ (m01 * m12 - m02 * m11) * (m20 * m33 - m23 * m30) + (m03 * m11 - m01 * m13) * (m20 * m32 - m22 * m30) + (m02 * m13 - m03 * m12) * (m20 * m31 - m21 * m30);
 	}
 
 	/* (non-Javadoc)
@@ -3276,8 +3276,8 @@ public class Matrix4d implements Externalizable, Matrix4dc {
 		double vm30 = -view.m00() * view.m30() - view.m01() * view.m31() - view.m02() * view.m32();
 		double vm31 = -view.m10() * view.m30() - view.m11() * view.m31() - view.m12() * view.m32();
 		double vm32 = -view.m20() * view.m30() - view.m21() * view.m31() - view.m22() * view.m32();
-		dest.set(view.m00() * pm00, view.m10() * pm00, view.m20() * pm00, 0.0, view.m01() * pm11, view.m11() * pm11, view.m21() * pm11, 0.0, vm30 * pm23, vm31 * pm23, vm32 * pm23, pm23, view.m02()
-				* pm32 + vm30 * pm33, view.m12() * pm32 + vm31 * pm33, view.m22() * pm32 + vm32 * pm33, pm33);
+		dest.set(view.m00() * pm00, view.m10() * pm00, view.m20() * pm00, 0.0, view.m01() * pm11, view.m11() * pm11, view.m21() * pm11, 0.0, vm30 * pm23, vm31 * pm23, vm32 * pm23, pm23,
+				view.m02() * pm32 + vm30 * pm33, view.m12() * pm32 + vm31 * pm33, view.m22() * pm32 + vm32 * pm33, pm33);
 		dest.properties = 0;
 		return dest;
 	}

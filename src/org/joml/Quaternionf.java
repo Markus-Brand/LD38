@@ -1365,8 +1365,8 @@ public class Quaternionf implements Externalizable, Quaternionfc {
 	 * @see org.joml.Quaternionfc#premul(org.joml.Quaternionfc, org.joml.Quaternionf)
 	 */
 	public Quaternionf premul(Quaternionfc q, Quaternionf dest) {
-		dest.set(q.w() * x + q.x() * w + q.y() * z - q.z() * y, q.w() * y - q.x() * z + q.y() * w + q.z() * x, q.w() * z + q.x() * y - q.y() * x + q.z() * w, q.w() * w - q.x() * x - q.y() * y - q.z()
-				* z);
+		dest.set(q.w() * x + q.x() * w + q.y() * z - q.z() * y, q.w() * y - q.x() * z + q.y() * w + q.z() * x, q.w() * z + q.x() * y - q.y() * x + q.z() * w,
+				q.w() * w - q.x() * x - q.y() * y - q.z() * z);
 		return dest;
 	}
 
@@ -1440,8 +1440,8 @@ public class Quaternionf implements Externalizable, Quaternionfc {
 		float num10 = this.w * num;
 		float num11 = this.w * num2;
 		float num12 = this.w * num3;
-		dest.set((1.0f - (num5 + num6)) * x + (num7 - num12) * y + (num8 + num11) * z, (num7 + num12) * x + (1.0f - (num4 + num6)) * y + (num9 - num10) * z, (num8 - num11) * x + (num9 + num10) * y
-				+ (1.0f - (num4 + num5)) * z);
+		dest.set((1.0f - (num5 + num6)) * x + (num7 - num12) * y + (num8 + num11) * z, (num7 + num12) * x + (1.0f - (num4 + num6)) * y + (num9 - num10) * z,
+				(num8 - num11) * x + (num9 + num10) * y + (1.0f - (num4 + num5)) * z);
 		return dest;
 	}
 
@@ -1468,8 +1468,8 @@ public class Quaternionf implements Externalizable, Quaternionfc {
 		float num10 = this.w * num;
 		float num11 = this.w * num2;
 		float num12 = this.w * num3;
-		dest.set((1.0f - (num5 + num6)) * x + (num7 - num12) * y + (num8 + num11) * z, (num7 + num12) * x + (1.0f - (num4 + num6)) * y + (num9 - num10) * z, (num8 - num11) * x + (num9 + num10) * y
-				+ (1.0f - (num4 + num5)) * z, dest.w);
+		dest.set((1.0f - (num5 + num6)) * x + (num7 - num12) * y + (num8 + num11) * z, (num7 + num12) * x + (1.0f - (num4 + num6)) * y + (num9 - num10) * z,
+				(num8 - num11) * x + (num9 + num10) * y + (1.0f - (num4 + num5)) * z, dest.w);
 		return dest;
 	}
 
@@ -1506,8 +1506,8 @@ public class Quaternionf implements Externalizable, Quaternionfc {
 		float y = -b.y() * invNorm;
 		float z = -b.z() * invNorm;
 		float w = b.w() * invNorm;
-		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x
-				- this.y * y - this.z * z);
+		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w,
+				this.w * w - this.x * x - this.y * y - this.z * z);
 		return dest;
 	}
 
@@ -1601,8 +1601,8 @@ public class Quaternionf implements Externalizable, Quaternionfc {
 		float y = cx * sycz - sx * cysz;
 		float z = cx * cysz + sx * sycz;
 		// right-multiply
-		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x
-				- this.y * y - this.z * z);
+		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w,
+				this.w * w - this.x * x - this.y * y - this.z * z);
 		return dest;
 	}
 
@@ -1648,8 +1648,8 @@ public class Quaternionf implements Externalizable, Quaternionfc {
 		float y = cx * sycz + sx * cysz;
 		float z = cx * cysz - sx * sycz;
 		// right-multiply
-		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x
-				- this.y * y - this.z * z);
+		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w,
+				this.w * w - this.x * x - this.y * y - this.z * z);
 		return dest;
 	}
 
@@ -1695,8 +1695,8 @@ public class Quaternionf implements Externalizable, Quaternionfc {
 		float z = yw * sz - yz * cz;
 		float w = yw * cz + yz * sz;
 		// right-multiply
-		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x
-				- this.y * y - this.z * z);
+		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w,
+				this.w * w - this.x * x - this.y * y - this.z * z);
 		return dest;
 	}
 
@@ -2295,8 +2295,8 @@ public class Quaternionf implements Externalizable, Quaternionfc {
 			}
 		}
 		/* Multiply */
-		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x
-				- this.y * y - this.z * z);
+		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w,
+				this.w * w - this.x * x - this.y * y - this.z * z);
 		return dest;
 	}
 
@@ -2328,9 +2328,8 @@ public class Quaternionf implements Externalizable, Quaternionfc {
 		x = fromDirY * toDirZ - fromDirZ * toDirY;
 		y = fromDirZ * toDirX - fromDirX * toDirZ;
 		z = fromDirX * toDirY - fromDirY * toDirX;
-		w =
-				(float) Math.sqrt((fromDirX * fromDirX + fromDirY * fromDirY + fromDirZ * fromDirZ) * (toDirX * toDirX + toDirY * toDirY + toDirZ * toDirZ))
-						+ (fromDirX * toDirX + fromDirY * toDirY + fromDirZ * toDirZ);
+		w = (float) Math.sqrt((fromDirX * fromDirX + fromDirY * fromDirY + fromDirZ * fromDirZ) * (toDirX * toDirX + toDirY * toDirY + toDirZ * toDirZ))
+				+ (fromDirX * toDirX + fromDirY * toDirY + fromDirZ * toDirZ);
 		float invNorm = (float) (1.0 / Math.sqrt(x * x + y * y + z * z + w * w));
 		if (Float.isInfinite(invNorm)) {
 			// Rotation is ambiguous: Find appropriate rotation axis (1. try toDir x +Z)
@@ -2379,9 +2378,8 @@ public class Quaternionf implements Externalizable, Quaternionfc {
 		float x = fromDirY * toDirZ - fromDirZ * toDirY;
 		float y = fromDirZ * toDirX - fromDirX * toDirZ;
 		float z = fromDirX * toDirY - fromDirY * toDirX;
-		float w =
-				(float) Math.sqrt((fromDirX * fromDirX + fromDirY * fromDirY + fromDirZ * fromDirZ) * (toDirX * toDirX + toDirY * toDirY + toDirZ * toDirZ))
-						+ (fromDirX * toDirX + fromDirY * toDirY + fromDirZ * toDirZ);
+		float w = (float) Math.sqrt((fromDirX * fromDirX + fromDirY * fromDirY + fromDirZ * fromDirZ) * (toDirX * toDirX + toDirY * toDirY + toDirZ * toDirZ))
+				+ (fromDirX * toDirX + fromDirY * toDirY + fromDirZ * toDirZ);
 		float invNorm = (float) (1.0 / Math.sqrt(x * x + y * y + z * z + w * w));
 		if (Float.isInfinite(invNorm)) {
 			// Rotation is ambiguous: Find appropriate rotation axis (1. try toDir x +Z)
@@ -2404,8 +2402,8 @@ public class Quaternionf implements Externalizable, Quaternionfc {
 		z *= invNorm;
 		w *= invNorm;
 		/* Multiply */
-		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w, this.w * w - this.x * x
-				- this.y * y - this.z * z);
+		dest.set(this.w * x + this.x * w + this.y * z - this.z * y, this.w * y - this.x * z + this.y * w + this.z * x, this.w * z + this.x * y - this.y * x + this.z * w,
+				this.w * w - this.x * x - this.y * y - this.z * z);
 		return dest;
 	}
 
@@ -2529,8 +2527,8 @@ public class Quaternionf implements Externalizable, Quaternionfc {
 		//                 (float) (dqW * z + dqX * y - dqY * x + dqZ * w),
 		//                 (float) (dqW * w - dqX * x - dqY * y - dqZ * z));
 		/* Post-multiplication (like matrices multiply) */
-		dest.set((float) (w * dqX + x * dqW + y * dqZ - z * dqY), (float) (w * dqY - x * dqZ + y * dqW + z * dqX), (float) (w * dqZ + x * dqY - y * dqX + z * dqW), (float) (w * dqW - x * dqX - y
-				* dqY - z * dqZ));
+		dest.set((float) (w * dqX + x * dqW + y * dqZ - z * dqY), (float) (w * dqY - x * dqZ + y * dqW + z * dqX), (float) (w * dqZ + x * dqY - y * dqX + z * dqW),
+				(float) (w * dqW - x * dqX - y * dqY - z * dqZ));
 		return dest;
 	}
 
@@ -2918,8 +2916,8 @@ public class Quaternionf implements Externalizable, Quaternionfc {
 		float y = -this.y * invNorm;
 		float z = -this.z * invNorm;
 		float w = this.w * invNorm;
-		dest.set(w * other.x + x * other.w + y * other.z - z * other.y, w * other.y - x * other.z + y * other.w + z * other.x, w * other.z + x * other.y - y * other.x + z * other.w, w * other.w - x
-				* other.x - y * other.y - z * other.z);
+		dest.set(w * other.x + x * other.w + y * other.z - z * other.y, w * other.y - x * other.z + y * other.w + z * other.x, w * other.z + x * other.y - y * other.x + z * other.w,
+				w * other.w - x * other.x - y * other.y - z * other.z);
 		return dest;
 	}
 

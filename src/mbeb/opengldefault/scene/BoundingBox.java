@@ -1,9 +1,9 @@
 package mbeb.opengldefault.scene;
 
-import mbeb.opengldefault.camera.*;
-import mbeb.opengldefault.logging.Log;
-
 import org.joml.*;
+
+import mbeb.opengldefault.camera.*;
+import mbeb.opengldefault.logging.*;
 
 /**
  * A simple struct defining a box-like area in the world
@@ -11,12 +11,13 @@ import org.joml.*;
 public class BoundingBox {
 
 	private static final String TAG = "BoundingBox";
-	
+
 	/**
 	 * An interface for Objects that have a BoundingBox
 	 */
 	public interface Owner {
 		BoundingBox getBoundingBox();
+
 		default void setBoundingBox(BoundingBox newBox) {
 			Log.error(TAG + ".Owner", "Setting of BoundingBox not implemented here.");
 		}
@@ -109,7 +110,7 @@ public class BoundingBox {
 
 		return this;
 	}
-	
+
 	public boolean isEmpty() {
 		return false;
 	}
@@ -227,8 +228,7 @@ public class BoundingBox {
 
 	private BoundingBox getGlobalBoundinBox(final Matrix4f parentTransform) {
 		final Vector4f[] globalCorners = getGlobalCorners(parentTransform);
-		float minX = globalCorners[0].x, minY = globalCorners[0].y, minZ = globalCorners[0].z, maxX =
-				globalCorners[0].x, maxY = globalCorners[0].y, maxZ = globalCorners[0].z;
+		float minX = globalCorners[0].x, minY = globalCorners[0].y, minZ = globalCorners[0].z, maxX = globalCorners[0].x, maxY = globalCorners[0].y, maxZ = globalCorners[0].z;
 
 		for (Vector4f globalCorner : globalCorners) {
 			minX = java.lang.Math.min(globalCorner.x, minX);
@@ -264,8 +264,7 @@ public class BoundingBox {
 		return getLocalStart().add(getLocalSize(), new Vector3f());
 	}
 
-	public boolean intersectsRay(Vector3f origin, Vector3f direction, Matrix4f parentTransform)
-	{
+	public boolean intersectsRay(Vector3f origin, Vector3f direction, Matrix4f parentTransform) {
 		BoundingBox globalBB = getGlobalBoundinBox(parentTransform);
 		Vector3f min = globalBB.getLocalStart();
 		Vector3f max = globalBB.getLocalEnd();

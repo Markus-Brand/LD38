@@ -1,5 +1,5 @@
 //size 32
-struct DirLight{
+struct DirectionalLight{
 	vec3 direction;
 	vec3 color;
 };

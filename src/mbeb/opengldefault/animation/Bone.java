@@ -1,35 +1,37 @@
 package mbeb.opengldefault.animation;
 
 import java.util.*;
-import java.util.function.Consumer;
-import mbeb.opengldefault.logging.Log;
-import mbeb.opengldefault.scene.BoundingBox;
+import java.util.function.*;
 
 import org.joml.*;
+
+import mbeb.opengldefault.logging.*;
+import mbeb.opengldefault.scene.*;
 
 /**
  * a bone inside a mesh
  */
 public class Bone implements BoundingBox.Owner {
-	
+
 	private static final String TAG = "Bone";
-	
+
 	private final String name;
 	private int index;
-	
+
 	/** the inverse bind transform of the bone as given by Ai */
 	private Matrix4f inverseBindTransform;
 	/** boneTransformation in bind pose */
 	private Matrix4f defaultBoneTransform;
-	
+
 	private BoundingBox boundingBox;
-	
+
 	private List<Bone> children;
 
 	/**
 	 * create a new bone with given name and index
+	 * 
 	 * @param name
-	 * @param index 
+	 * @param index
 	 */
 	public Bone(String name, int index) {
 		this.name = name;
@@ -61,7 +63,9 @@ public class Bone implements BoundingBox.Owner {
 
 	/**
 	 * re-set the index of this bone to another value
-	 * @param index the new index of this bone
+	 * 
+	 * @param index
+	 *            the new index of this bone
 	 */
 	public void setIndex(int index) {
 		this.index = index;
@@ -74,10 +78,12 @@ public class Bone implements BoundingBox.Owner {
 	public int getIndex() {
 		return index;
 	}
-	
+
 	/**
 	 * breadth-first search for a bone with given name
-	 * @param name the name to search for
+	 * 
+	 * @param name
+	 *            the name to search for
 	 * @return a Bone-object or null when no bone matched the name
 	 */
 	public Bone firstBoneNamed(String name) {
@@ -93,10 +99,12 @@ public class Bone implements BoundingBox.Owner {
 		Log.log(TAG, "cant find any bone named \"" + name + "\"");
 		return null;
 	}
-	
+
 	/**
 	 * breadth-first search for a bone with given id
-	 * @param index the id to search for
+	 * 
+	 * @param index
+	 *            the id to search for
 	 * @return a Bone-object or null when no bone matched the name
 	 */
 	public Bone firstBoneWithIndex(int index) {
@@ -135,10 +143,11 @@ public class Bone implements BoundingBox.Owner {
 	public int boneCount() {
 		return 1 + getChildren().stream().map(Bone::boneCount).reduce(0, Integer::sum);
 	}
-	
+
 	/**
 	 * perform an action for every bone in this skeleton
-	 * @param action 
+	 * 
+	 * @param action
 	 */
 	public void foreach(Consumer<Bone> action) {
 		action.accept(this);

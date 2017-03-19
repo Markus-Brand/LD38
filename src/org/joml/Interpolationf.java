@@ -262,8 +262,8 @@ public class Interpolationf {
 	 *            will hold the interpolation result
 	 * @return dest
 	 */
-	public static Vector3f interpolateTriangle(float v0X, float v0Y, float f0X, float f0Y, float f0Z, float v1X, float v1Y, float f1X, float f1Y, float f1Z, float v2X, float v2Y, float f2X,
-			float f2Y, float f2Z, float x, float y, Vector3f dest) {
+	public static Vector3f interpolateTriangle(float v0X, float v0Y, float f0X, float f0Y, float f0Z, float v1X, float v1Y, float f1X, float f1Y, float f1Z, float v2X, float v2Y, float f2X, float f2Y,
+			float f2Z, float x, float y, Vector3f dest) {
 		// compute interpolation factors
 		Vector3f t = dest;
 		interpolationFactorsTriangle(v0X, v0Y, v1X, v1Y, v2X, v2Y, x, y, t);

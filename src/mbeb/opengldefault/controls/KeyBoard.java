@@ -4,7 +4,7 @@ public class KeyBoard {
 
 	/** Class Name Tag */
 	private static final String TAG = "KeyBoard";
-	
+
 	private KeyBoard() {
 		//should never be instantiated
 	}

@@ -1,6 +1,5 @@
 package mbeb.opengldefault.animation;
 
-
 import static org.lwjgl.opengl.GL20.*;
 
 import java.nio.*;
@@ -9,9 +8,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import mbeb.opengldefault.logging.Log;
 import mbeb.opengldefault.rendering.shader.*;
+import java.util.concurrent.atomic.*;
 
 import org.joml.*;
 import org.lwjgl.*;
+
+import mbeb.opengldefault.rendering.shader.*;
 
 /**
  * orientations of a bone-construct
@@ -19,6 +21,7 @@ import org.lwjgl.*;
 public class Pose {
 
 	private static final String TAG = "Pose";
+	private static final int FLOATS_PER_MAT4 = 16;
 
 	/** A BoneTransformation for each bone */
 	private Map<String, BoneTransformation> boneTransforms = new HashMap<>();
@@ -55,7 +58,8 @@ public class Pose {
 	/**
 	 * merge the Bonetransforms of the other pose into this one
 	 *
-	 * @param other where to read BoneTransformations from
+	 * @param other
+	 *            where to read BoneTransformations from
 	 */
 	public void mergeWith(Pose other) {
 		for (Map.Entry<String, BoneTransformation> transform : other.boneTransforms.entrySet()) {
@@ -84,7 +88,7 @@ public class Pose {
 	 * @param before the pose to alter
 	 */
 	public void mixInto(final double ownStrength, final Pose before) {
-		Log.assertIfEquals(TAG, this.skeleton, before.skeleton, "Cannot merge poses with different skeletons");
+		Log.assertEqual(TAG, this.skeleton, before.skeleton, "Cannot merge poses with different skeletons");
 
 		for (Map.Entry<String, BoneTransformation> beforeSet : before.boneTransforms.entrySet()) {
 			String key = beforeSet.getKey();
@@ -130,7 +134,7 @@ public class Pose {
 		}
 
 		assert p1.skeleton == p2.skeleton;
-		Log.assertIfEquals(TAG, p1.skeleton, p2.skeleton, "Cannot lerp poses with different skeletons");
+		Log.assertEqual(TAG, p1.skeleton, p2.skeleton, "Cannot lerp poses with different skeletons");
 
 		Pose result = new Pose(p1.skeleton, p1.transform);
 		result.bonePriorities = p1.bonePriorities;
@@ -152,11 +156,12 @@ public class Pose {
 	public BoneTransformation getRaw(String boneName) {
 		return boneTransforms.get(boneName);
 	}
-	
+
 	/**
-	 * get the Treansformation of a Bone
+	 * get the Transformation of a Bone
+	 * 
 	 * @param name
-	 * @return 
+	 * @return
 	 */
 	public Matrix4f get(String name) {
 		return getRaw(name).asMatrix().mul(transform, new Matrix4f());
@@ -165,11 +170,13 @@ public class Pose {
 	/**
 	 * save this pose's data to the specified uniform
 	 *
-	 * @param shader the shader to set the uniform to
-	 * @param uniformName the uniform to store pose-data
+	 * @param shader
+	 *            the shader to set the uniform to
+	 * @param uniformName
+	 *            the uniform to store pose-data
 	 */
 	public void setUniformData(Shader shader, String uniformName) {
-		float[] data = new float[16 * skeleton.boneCount()];
+		float[] data = new float[FLOATS_PER_MAT4 * skeleton.boneCount()];
 		setUniformData(transform, skeleton, data);
 
 		FloatBuffer buf = BufferUtils.createFloatBuffer(data.length);
@@ -184,9 +191,12 @@ public class Pose {
 	/**
 	 * save a sub-bone of this pose to the given data-array
 	 *
-	 * @param parent the parent pose transformation
-	 * @param bone the current bone to recurively add
-	 * @param data the float array to store matrices into
+	 * @param parent
+	 *            the parent pose transformation
+	 * @param bone
+	 *            the current bone to recurively add
+	 * @param data
+	 *            the float array to store matrices into
 	 */
 	private void setUniformData(Matrix4f parent, Bone bone, float[] data) {
 		if (bone.getIndex() < 0) {

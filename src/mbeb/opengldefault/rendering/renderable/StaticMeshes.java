@@ -1,9 +1,9 @@
 package mbeb.opengldefault.rendering.renderable;
 
+import org.joml.*;
+
 import mbeb.opengldefault.rendering.io.*;
 import mbeb.opengldefault.scene.*;
-
-import org.joml.*;
 
 /**
  * Provides static Meshes
@@ -77,15 +77,16 @@ public class StaticMeshes {
 
 	/**
 	 * a Cube from (0,0,0) to (1,1,1) that can be rendered with GL_LINES
-	 * @return 
+	 * 
+	 * @return
 	 */
 	public static IRenderable getLineCube() {
 		if (lineCube == null) {
-			
+
 			BoundingBox uniformBox = new BoundingBox.Empty();
 			uniformBox = uniformBox.extendTo(new Vector3f(0, 0, 0));
 			uniformBox = uniformBox.extendTo(new Vector3f(1, 1, 1));
-			
+
 			Vector3f[] corners = uniformBox.getLocalCorners();
 
 			float[] data = new float[corners.length * 3];
@@ -96,11 +97,9 @@ public class StaticMeshes {
 				data[index++] = corner.z;
 			}
 
-			final int[] indexData = {0, 1, 1, 3, 3, 2, 2, 0,
-				0, 4, 1, 5, 2, 6, 3, 7,
-				4, 5, 5, 7, 7, 6, 6, 4};
+			final int[] indexData = {0, 1, 1, 3, 3, 2, 2, 0, 0, 4, 1, 5, 2, 6, 3, 7, 4, 5, 5, 7, 7, 6, 6, 4};
 
-			lineCube = new VAORenderable(data, indexData, new DataFragment[]{DataFragment.POSITION}, uniformBox);
+			lineCube = new VAORenderable(data, indexData, new DataFragment[] {DataFragment.POSITION}, uniformBox);
 		}
 		return lineCube;
 	}

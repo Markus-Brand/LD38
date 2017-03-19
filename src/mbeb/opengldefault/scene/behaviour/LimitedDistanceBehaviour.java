@@ -1,6 +1,6 @@
 package mbeb.opengldefault.scene.behaviour;
 
-import mbeb.opengldefault.scene.entities.Entity;
+import mbeb.opengldefault.scene.entities.*;
 
 /**
  * A Behaviour that only applies if a Reference Entity is near enough
@@ -26,7 +26,6 @@ public class LimitedDistanceBehaviour implements IBehaviour {
 
 	@Override
 	public boolean triggers(Entity entity) {
-		return behaviour.triggers(entity)
-				&& entity.getPosition().distance(behaviour.getReference().getPosition()) < distance;
+		return behaviour.triggers(entity) && entity.getPosition().distance(behaviour.getReference().getPosition()) < distance;
 	}
 }
