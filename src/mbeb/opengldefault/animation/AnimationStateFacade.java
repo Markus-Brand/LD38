@@ -21,12 +21,20 @@ public class AnimationStateFacade {
 	/** the running instances of presets */
 	private Map<String, Animator> runningAnimations;
 
+	/**
+	 * create a new AnimationStateFacade around an AnimatedRenderable-instance.
+	 * @param renderable the AnimatedRenderable, who's state to control
+	 */
 	public AnimationStateFacade(AnimatedRenderable renderable) {
 		this.renderable = renderable;
 		presets = new HashMap<>();
 		runningAnimations = new HashMap<>();
 	}
 
+	/**
+	 * create a new AnimationStateFacade around a new renderable instance from the given mesh
+	 * @param mesh the AnimatedMesh to create a new AnimatedRenderable-instance from
+	 */
 	public AnimationStateFacade(AnimatedMesh mesh) {
 		this(new AnimatedRenderable(mesh));
 	}
@@ -37,7 +45,22 @@ public class AnimationStateFacade {
 	public IRenderable getRenderable() {
 		return renderable;
 	}
-	
+
+	/**
+	 * Getter for the clean set of running animations
+	 * @return
+	 */
+	private Map<String, Animator> getRunningAnimations() {
+		clearRunningAnimations();
+		return runningAnimations;
+	}
+	/**
+	 * remove all the Animators from the runningAnimations-Map that have ended already
+	 */
+	private void clearRunningAnimations() {
+		runningAnimations.entrySet().removeIf(entry -> entry.getValue().hasEnded());
+	}
+
 //region Animation Preset registration
 
 	/**
@@ -72,10 +95,10 @@ public class AnimationStateFacade {
 	}
 	
 	/**
-	 * register an "Animation Preset". This is basically an Animation with additional data (see AnimatorPreset-class).
+	 * register an "Animation Preset". This is basically an {@link Animation} with additional data (see {@link AnimatorPreset}).
 	 * The presetName is the replacement for an actual object reference
 	 * @param presetName the name this preset should have (to operate on it later on)
-	 * @param animationName the name of the Animation to play
+	 * @param animationName the name of the animation to play
 	 * @param speed the speed of the animation
 	 * @param fadeInTime how long to fade in the animation (in seconds)
 	 * @param fadeOutTime how long to fade out the animation (in seconds)
@@ -90,10 +113,10 @@ public class AnimationStateFacade {
 	/**
 	 * copy a formerly registered preset on some other object to myself
 	 * @param presetName the name of the preset to copy
-	 * @param from the AnimationStateFacade to copy from
+	 * @param reference the AnimationStateFacade to copy from
 	 */
-	public void copyPreset(String presetName, AnimationStateFacade from) {
-		registerAnimation(presetName, from.getPreset(presetName));
+	public void copyPreset(String presetName, AnimationStateFacade reference) {
+		registerAnimation(presetName, reference.getPreset(presetName));
 	}
 //endregion
 	
@@ -120,43 +143,34 @@ public class AnimationStateFacade {
 	}
 
 	/**
-	 * private function to slide a parameter to a given target, by the strength calculated from deltaTime
+	 * internal function to slide a parameter to a given target, by the strength calculated from deltaTime
 	 * @param current
 	 * @param target
 	 * @param deltaTime
 	 * @return
 	 */
 	private double slideParameter(double current, double target, double deltaTime) {
-		final double slideSpeedAdjustment = 5;
-		double factor = 1d - (1d / ((deltaTime * slideSpeedAdjustment) + 1d));
-		double newValue = target * factor + current * (1 - factor);
-		return newValue;
+		double factor = 1 / (deltaTime + 1);
+		return target * (1 - factor) + current * factor;
 	}
 		
 //endregion
-	
-	/**
-	 * remove all the Animators from the runningAnimations-Map that have ended already
-	 */
-	private void clearRunningAnimations() {
-		runningAnimations.entrySet().removeIf(entry -> entry.getValue().hasEnded());
-	}
+
 	
 	/**
 	 * @param presetName
 	 * @return true exactly when this preset is currently running
 	 */
 	public boolean isRunning(String presetName) {
-		clearRunningAnimations();
-		return runningAnimations.containsKey(presetName);
+		return getRunningAnimations().containsKey(presetName);
 	}
 	
 	/**
 	 * @param presetName
-	 * @return true only when this preset is running and hasn't started fading out yet.
+	 * @return true only if this preset is running and hasn't started fading out yet.
 	 */
 	public boolean isRunningNotFadingOut(String presetName) {
-		return isRunning(presetName) && !runningAnimations.get(presetName).isFadingOut();
+		return isRunning(presetName) && !getRunningAnimations().get(presetName).isFadingOut();
 	}
 	
 	/**
@@ -166,7 +180,7 @@ public class AnimationStateFacade {
 	public void ensureRunning(String presetName) {
 		if (!isRunning(presetName)) {
 			Animator newAnimation = new Animator(getPreset(presetName));
-			runningAnimations.put(presetName, newAnimation);
+			getRunningAnimations().put(presetName, newAnimation);
 			renderable.playAnimation(newAnimation);
 		}
 	}
@@ -174,14 +188,14 @@ public class AnimationStateFacade {
 	/**
 	 * make sure that an Animation (formerly registered) does not run. Stop it if needed (but still fade it out if wanted)
 	 * @param presetName the <code>presetName</code> of the Animation
-	 * @param hardAbort true to start fadeOut instantly, false to keep it running to the end
+	 * @param hardAbort true to start fading out instantly, false to keep it running until the end
 	 */
 	public void ensureStopped(String presetName, boolean hardAbort) {
 		if (isRunningNotFadingOut(presetName)) {
 			if (hardAbort) {
-				runningAnimations.get(presetName).stop();
+				getRunningAnimations().get(presetName).stop();
 			} else {
-				runningAnimations.get(presetName).stopAtEnd();
+				getRunningAnimations().get(presetName).stopAtEnd();
 			}
 		}
 	}
@@ -189,14 +203,15 @@ public class AnimationStateFacade {
 	/**
 	 * see overloaded function. <code>hardAbort = true</code>
 	 * @param presetName
-	 * @param running 
+	 * @param running
+	 * @see #ensureRunning(String, boolean)
 	 */
 	public void ensureRunning(String presetName, boolean running) {
 		ensureRunning(presetName, running, true);
 	}
 	
 	/**
-	 * call ensureRunning(String) or ensureStopped(String) based on the condition
+	 * call {@link #ensureRunning(String)} or {@link #ensureStopped(String, boolean)} based on the condition
 	 * @param presetName the <code>presetName</code> of the Animation
 	 * @param running whether or not this Animation should be running at the moment
 	 * @param hardAbort whether to actually cancel an animation mid-run

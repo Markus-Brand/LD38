@@ -156,22 +156,6 @@ public class BoneTransformation {
 	public Vector3f getScale() {
 		return scale;
 	}
-	
-	/**
-	 * check if this transformation is nearly the same as a provided matrix
-	 * @param other other matrix to check
-	 * @param epsilon the tolerance
-	 * @return whether the difference lies within tolerance
-	 */
-	public boolean isSameAs(Matrix4f other, float epsilon) {
-		Matrix4f diff = this.asMatrix().sub(other, new Matrix4f());
-
-		float distance = 0;
-		for (Float f: diff.get(new float[16])) {
-			distance += java.lang.Math.abs(f);
-		}
-		return distance < epsilon;
-	}
 
 	public void setScale(Vector3f scale) {
 		this.scale = scale;

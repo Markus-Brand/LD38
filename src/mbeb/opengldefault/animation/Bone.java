@@ -149,11 +149,11 @@ public class Bone implements BoundingBox.Owner {
 
 	@Override
 	public String toString() {
-		return getName() + " - " + getIndex() + "(total " + boneCount() + ")";
+		return getName() + " - " + getIndex() + " (total " + boneCount() + ")";
 	}
 
 	public void printRecursive(String pre) {
-		System.out.println(pre + getName() + " - " + getIndex());
+		System.out.println(pre + this);
 
 		for (Bone child: getChildren()) {
 			child.printRecursive(pre + "  |");

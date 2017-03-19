@@ -7,18 +7,18 @@ public class Animator {
 
 	private final AnimatorPreset preset;
 	private double currentTime;
-	private double currentTotalTime;
+	private double totalRunningTime;
 	private Double stopTimestamp;
 
 	public Animator(AnimatorPreset preset) {
 		this.preset = preset;
 		currentTime = 0.001;
-		currentTotalTime = 0.001;
+		totalRunningTime = 0.001;
 	}
 
 	public void update(double deltaTime) {
 		currentTime += deltaTime * preset.getSpeed();
-		currentTotalTime += deltaTime * preset.getSpeed();
+		totalRunningTime += deltaTime * preset.getSpeed();
 	}
 
 	public AnimatorPreset getPreset() {
@@ -36,7 +36,7 @@ public class Animator {
 		if (isFadingOut()) {
 			return;
 		}
-		stopTimestamp = currentTotalTime;
+		stopTimestamp = totalRunningTime;
 	}
 	
 	/**
@@ -46,9 +46,9 @@ public class Animator {
 		if (isFadingOut()) {
 			return;
 		}
-		//set the stopTimeStamp so that fading out stops exactly on a loop restart
+		//set the stopTimestamp so that fading out stops exactly on a loop restart
 		double loopSize = getAnimation().getKeyFrameDistance();
-		double endStamp = currentTotalTime + preset.getActualFadeOutTime();
+		double endStamp = totalRunningTime + preset.getActualFadeOutTime();
 		endStamp = (((int)(endStamp / loopSize)) + 1) * loopSize;
 		endStamp -= preset.getActualFadeOutTime();
 		stopTimestamp = endStamp;
@@ -63,7 +63,7 @@ public class Animator {
 	 * @return true whether this animator is at its end
 	 */
 	public boolean hasEnded() {
-		if (stopTimestamp != null && stopTimestamp + preset.getActualFadeOutTime() < currentTotalTime) {
+		if (stopTimestamp != null && stopTimestamp + preset.getActualFadeOutTime() < totalRunningTime) {
 			return true; //finished fading out
 		}
 		return false;
@@ -75,13 +75,13 @@ public class Animator {
 	public double getCurrentStrength() {
 		double strength = preset.getIntensity();
 
-		double fadeInFactor = currentTotalTime / preset.getActualFadeInTime();
+		double fadeInFactor = totalRunningTime / preset.getActualFadeInTime();
 		if (fadeInFactor < 1) {
 			strength *= fadeInFactor;
 		}
 
-		if (stopTimestamp != null && stopTimestamp <= currentTotalTime) {
-			double fadeOutFactor = 1 - (currentTotalTime - stopTimestamp) / preset.getActualFadeOutTime();
+		if (stopTimestamp != null && stopTimestamp <= totalRunningTime) {
+			double fadeOutFactor = 1 - (totalRunningTime - stopTimestamp) / preset.getActualFadeOutTime();
 			strength *= fadeOutFactor;
 		}
 

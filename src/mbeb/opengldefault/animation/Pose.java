@@ -7,6 +7,7 @@ import java.nio.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import mbeb.opengldefault.logging.Log;
 import mbeb.opengldefault.rendering.shader.*;
 
 import org.joml.*;
@@ -16,6 +17,8 @@ import org.lwjgl.*;
  * orientations of a bone-construct
  */
 public class Pose {
+
+	private static final String TAG = "Pose";
 
 	/** A BoneTransformation for each bone */
 	private Map<String, BoneTransformation> boneTransforms = new HashMap<>();
@@ -65,8 +68,8 @@ public class Pose {
 	}
 
 	public int getBonePriority(String boneName) {
-		Integer prio = bonePriorities.get(boneName);
-		return (prio != null) ? prio : 0;
+		Integer priority = bonePriorities.get(boneName);
+		return (priority != null) ? priority : 0;
 	}
 
 	public void setBonePriority(String boneName, int value) {
@@ -81,11 +84,10 @@ public class Pose {
 	 * @param before the pose to alter
 	 */
 	public void mixInto(final double ownStrength, final Pose before) {
-		assert before.skeleton == this.skeleton;
+		Log.assertIfEquals(TAG, this.skeleton, before.skeleton, "Cannot merge poses with different skeletons");
 
 		for (Map.Entry<String, BoneTransformation> beforeSet : before.boneTransforms.entrySet()) {
 			String key = beforeSet.getKey();
-			Bone b = skeleton.firstBoneNamed(key);
 			BoneTransformation beforeTransform = beforeSet.getValue();
 
 			if (getBonePriority(key) > before.getBonePriority(key)) {
@@ -100,22 +102,6 @@ public class Pose {
 				before.bonePriorities.put(key, getBonePriority(key));
 			}
 		}
-	}
-
-	/**
-	 * @return how many bones are actually animated, in percent
-	 */
-	public float getAnimationAmount() {
-		AtomicInteger sum = new AtomicInteger();
-
-		skeleton.foreach((Bone b) -> {
-			Matrix4f defTrans = b.getDefaultBoneTransform();
-			if (!boneTransforms.get(b.getName()).isSameAs(defTrans, 0.001f)) {
-				sum.incrementAndGet();
-			}
-		});
-
-		return sum.get() / (float) skeleton.boneCount();
 	}
 
 	@Override
@@ -144,6 +130,7 @@ public class Pose {
 		}
 
 		assert p1.skeleton == p2.skeleton;
+		Log.assertIfEquals(TAG, p1.skeleton, p2.skeleton, "Cannot lerp poses with different skeletons");
 
 		Pose result = new Pose(p1.skeleton, p1.transform);
 		result.bonePriorities = p1.bonePriorities;
@@ -190,6 +177,7 @@ public class Pose {
 		buf.flip();
 
 		String thisUniform = uniformName;
+
 		glUniformMatrix4fv(shader.getUniform(thisUniform), false, buf);
 	}
 

@@ -84,7 +84,7 @@ public class OpenGLContext {
 		GL.createCapabilities();
 		GLErrors.checkForError(TAG, "createCapabilities");
 		
-		//printOpenGLInformation();
+		printOpenGLInformation();
 		game.setContext(this);
 		game.init();
 	}

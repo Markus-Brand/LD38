@@ -1,7 +1,7 @@
 package mbeb.opengldefault.animation;
 
 /**
- * An Animation with additinal information that doesn't come from the file (like fade in / out times and a playback speed)
+ * An Animation with additional information that doesn't come from the file (like fade in / out times and a playback speed)
  */
 public class AnimatorPreset {
 	
