@@ -21,6 +21,8 @@ public class BoneTrackingBehaviour implements IBehaviour {
 	/** a position in local bone space (0^3 to be exactly at the bones origin) */
 	private Vector3f localPosition;
 
+	private Vector3f localDirection = new Vector3f(0, 1, 0);
+
 	public BoneTrackingBehaviour(SceneObject animatedObject, AnimatedRenderable renderable, String boneName) {
 		this(animatedObject, renderable, boneName, new Vector3f());
 	}
@@ -39,10 +41,13 @@ public class BoneTrackingBehaviour implements IBehaviour {
 
 		Matrix4f finalTrans = parentTrans.mul(boneTrans, new Matrix4f());
 
-		Vector4f target4 = finalTrans.transform(new Vector4f(localPosition, 1));
-		Vector3f target3 = new Vector3f(target4.x, target4.y, target4.z);
+		Vector4f globalPosition = finalTrans.transform(new Vector4f(localPosition, 1));
+		entity.setPosition(new Vector3f(globalPosition.x, globalPosition.y, globalPosition.z));
 
-		entity.setPosition(target3);
+		Vector4f globalDirection = finalTrans.transform(new Vector4f(localDirection, 1)).sub(globalPosition, new Vector4f());
+		Vector3f globalDirection3 = new Vector3f(globalDirection.x, globalDirection.y, globalDirection.z).normalize();
+		System.out.println(globalDirection3);
+		entity.setDirection(globalDirection3);
 	}
 
 	@Override

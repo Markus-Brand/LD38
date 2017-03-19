@@ -12,7 +12,7 @@ uniform sampler2D u_texture;
 #include modules/Struct_PointLight.glsl
 #include modules/Struct_SpotLight.glsl
 
-float ambientStrength = 0.04f;
+float ambientStrength = 0.4f;
 float specularStrength = 2.5f;
 float reflectionStrength = 0.4f;
 

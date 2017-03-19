@@ -251,7 +251,7 @@ public class TextureCache {
 		// copy data to the buffer
 		for (int y = 0; y < image.getHeight(); y++) {
 			for (int x = 0; x < image.getWidth(); x++) {
-				int pixel = pixels[y * image.getWidth() + x];
+				int pixel = pixels[(image.getHeight() - y - 1) * image.getWidth() + x];
 				buffer.put((byte) (pixel >> 16 & 0xFF)); // Red component
 				buffer.put((byte) (pixel >> 8 & 0xFF)); // Green component
 				buffer.put((byte) (pixel & 0xFF)); // Blue component
