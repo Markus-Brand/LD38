@@ -1,5 +1,10 @@
 package mbeb.opengldefault.game;
 
+/**
+ * Interface for a GameState
+ *
+ * @author Markus
+ */
 public interface GameState {
 
 	/**
@@ -25,13 +30,29 @@ public interface GameState {
 	 */
 	public abstract void clear();
 
+	/**
+	 * Getter for the nextGameState
+	 *
+	 * @return the nextGameState
+	 */
 	public abstract GameStates getNextState();
 
+	/**
+	 * The GameState is active if the nextGameState is null
+	 *
+	 * @return
+	 */
 	public default boolean isActive() {
 		return getNextState() == null;
 	}
 
+	/**
+	 * Resets the nextGameState parameter to null
+	 */
 	public abstract void resetNextGameState();
 
+	/**
+	 * Gets called once if the GameState was just opened
+	 */
 	public abstract void open();
 }

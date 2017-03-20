@@ -1,16 +1,32 @@
 package mbeb.opengldefault.game;
 
 import java.util.HashMap;
+
 import java.util.Map;
 
 import mbeb.opengldefault.openglcontext.OpenGLContext;
 
+/**
+ * Abstract class to characterize a whole game
+ */
 public abstract class Game {
 
+	/**
+	 * Current GameState
+	 */
 	private GameStates currentGameState;
 
+	/**
+	 * Mapping from the GamaStates enum to the actual GameState
+	 */
 	private Map<GameStates, GameState> gameStates;
 
+	/**
+	 * Adds a GameStates -> GameState mapping entry. The first GameState to add will be the startup entry per default
+	 *
+	 * @param key
+	 * @param newGameState
+	 */
 	protected void addGameState(GameStates key, GameState newGameState) {
 		newGameState.init();
 		if (gameStates == null) {
@@ -56,6 +72,11 @@ public abstract class Game {
 		}
 	}
 
+	/**
+	 * Getter for the current GameState
+	 *
+	 * @return the current GameState
+	 */
 	private GameState getCurrentState() {
 		return gameStates.get(currentGameState);
 	}

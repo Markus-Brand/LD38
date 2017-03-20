@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL33.glVertexAttribDivisor;
 
 import org.joml.Vector2f;
 
+import mbeb.opengldefault.constants.Constants;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.rendering.shader.Shader;
 import mbeb.opengldefault.rendering.textures.Texture;
@@ -34,12 +35,12 @@ public class AtlasGUI extends GUI {
 		this.atlasHeight = atlasHeight;
 		atlas = new Texture(atlasName);
 		//Store a Matrix and the offset Vector from {@link AtlasGUIElement}
-		stride = MAT4_SIZE + VEC4_SIZE;
+		stride = Constants.MAT4_COMPONENTS + Constants.VEC4_COMPONENTS;
 	}
 
 	/**
 	 * Adds a {@link AtlasGUIElement} to the GUI
-	 * 
+	 *
 	 * @param atlasIndex
 	 *            index in the Atlas {@link AtlasGUIElement#atlasIndex}
 	 * @param position
@@ -56,7 +57,7 @@ public class AtlasGUI extends GUI {
 
 	/**
 	 * Adds a {@link TextGUIElement} to the GUI
-	 * 
+	 *
 	 * @param text
 	 *            the displayed text
 	 * @param position
@@ -78,7 +79,7 @@ public class AtlasGUI extends GUI {
 
 		glEnableVertexAttribArray(7);
 		GLErrors.checkForError(TAG, "glEnableVertexAttribArray");
-		glVertexAttribPointer(7, 4, GL_FLOAT, false, stride, 4 * VEC4_SIZE);
+		glVertexAttribPointer(7, 4, GL_FLOAT, false, stride * Constants.FLOAT_SIZE, 4 * Constants.VEC2_SIZE);
 		GLErrors.checkForError(TAG, "glVertexAttribPointer");
 
 		glVertexAttribDivisor(7, 1);

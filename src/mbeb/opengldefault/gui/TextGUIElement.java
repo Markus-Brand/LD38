@@ -4,12 +4,26 @@ import mbeb.opengldefault.openglcontext.OpenGLContext;
 
 import org.joml.Vector2f;
 
+/**
+ * A {@link CombinedGUIElement} that is used to draw a String by using a {@link AtlasGUI}
+ * 
+ * @author Markus
+ */
 public class TextGUIElement extends CombinedGUIElement {
 
+	/**
+	 * Width and height of the Atlas
+	 */
 	private int atlasWidth, atlasHeight;
 
+	/**
+	 * Text that will be rendered
+	 */
 	private String text;
 
+	/**
+	 * Width of one character
+	 */
 	private float width;
 
 	public TextGUIElement(int atlasWidth, int atlasHeight, String text, Vector2f position, float width) {
@@ -18,26 +32,43 @@ public class TextGUIElement extends CombinedGUIElement {
 		this.text = text;
 		this.width = width;
 		setBounding(new Rectangle(position, new Vector2f()));
-		regenerate();
+		generateText();
 	}
 
+	/**
+	 * Setter for the text
+	 *
+	 * @param text
+	 *            new text
+	 */
 	public void setText(String text) {
 		this.text = text;
-		regenerate();
+		generateText();
 	}
 
 	@Override
 	public void setPosition(Vector2f position) {
 		super.setPosition(position);
-		regenerate();
+		generateText();
 	}
 
+	/**
+	 * Setter for one characters width
+	 *
+	 * @param width
+	 *            new width for one character
+	 */
 	public void setWidth(float width) {
 		this.width = width;
-		regenerate();
+		generateText();
 	}
 
-	public CombinedGUIElement regenerate() {
+	/**
+	 * Generates the Text by adding AtlasGUIElements into the List of elements for every character in the String
+	 *
+	 * @return
+	 */
+	public CombinedGUIElement generateText() {
 		Vector2f textPos = getPosition();
 		resetElements();
 		float xPos = textPos.x;

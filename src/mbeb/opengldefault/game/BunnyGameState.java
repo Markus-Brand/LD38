@@ -50,7 +50,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
-public class GameGameState implements GameState {
+public class BunnyGameState implements GameState {
 
 	private static final String TAG = "GameGameState";
 

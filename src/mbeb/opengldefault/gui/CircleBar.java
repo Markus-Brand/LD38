@@ -11,6 +11,9 @@ import org.joml.Vector4f;
  * @author Markus
  */
 public class CircleBar extends GUIElement {
+	/**
+	 * Progress of the bar. 0-1 to fill the bar and 1-2 for the color to get white
+	 */
 	float progress;
 
 	public CircleBar(Vector2f position, Vector2f size) {

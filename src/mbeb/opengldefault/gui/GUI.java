@@ -13,6 +13,7 @@ import java.nio.*;
 
 import org.lwjgl.BufferUtils;
 
+import mbeb.opengldefault.constants.Constants;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.StaticMeshes;
@@ -27,10 +28,6 @@ import mbeb.opengldefault.scene.BoundingBox;
  */
 public class GUI implements IRenderable {
 	private static final String TAG = "GUI";
-
-	protected static final int FLOAT_SIZE = 4;
-	protected static final int VEC4_SIZE = FLOAT_SIZE * 4;
-	protected static final int MAT4_SIZE = VEC4_SIZE * 4;
 
 	/**
 	 * GUIElements that get drawn with this GUI
@@ -64,7 +61,7 @@ public class GUI implements IRenderable {
 		elements = new ArrayList<>();
 		dirty = true;
 		setupBuffer();
-		this.stride = MAT4_SIZE;
+		this.stride = Constants.MAT4_COMPONENTS;
 		renderable = StaticMeshes.getNewGuiQuad();
 	}
 
@@ -98,7 +95,7 @@ public class GUI implements IRenderable {
 	 * @return the generated FloatBuffer
 	 */
 	private FloatBuffer getFloatBuffer() {
-		int bufferSize = stride / FLOAT_SIZE;
+		int bufferSize = stride;
 		FloatBuffer buffer = BufferUtils.createFloatBuffer(getElementsSize() * bufferSize);
 		int offset = 0;
 		for (GUIElement guiElement : elements) {
@@ -114,13 +111,13 @@ public class GUI implements IRenderable {
 	public void setupVAO() {
 		renderable.bind();
 		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 4, GL_FLOAT, false, stride, 0 * VEC4_SIZE);
+		glVertexAttribPointer(3, 4, GL_FLOAT, false, stride * Constants.FLOAT_SIZE, 0 * Constants.VEC4_SIZE);
 		glEnableVertexAttribArray(4);
-		glVertexAttribPointer(4, 4, GL_FLOAT, false, stride, 1 * VEC4_SIZE);
+		glVertexAttribPointer(4, 4, GL_FLOAT, false, stride * Constants.FLOAT_SIZE, 1 * Constants.VEC4_SIZE);
 		glEnableVertexAttribArray(5);
-		glVertexAttribPointer(5, 4, GL_FLOAT, false, stride, 2 * VEC4_SIZE);
+		glVertexAttribPointer(5, 4, GL_FLOAT, false, stride * Constants.FLOAT_SIZE, 2 * Constants.VEC4_SIZE);
 		glEnableVertexAttribArray(6);
-		glVertexAttribPointer(6, 4, GL_FLOAT, false, stride, 3 * VEC4_SIZE);
+		glVertexAttribPointer(6, 4, GL_FLOAT, false, stride * Constants.FLOAT_SIZE, 3 * Constants.VEC4_SIZE);
 		GLErrors.checkForError(TAG, "glVertexAttribPointer");
 
 		glVertexAttribDivisor(3, 1);
@@ -153,15 +150,7 @@ public class GUI implements IRenderable {
 	}
 
 	public int getElementsSize() {
-		int numElements = 0;
-		for (GUIElement element : elements) {
-			if (element instanceof CombinedGUIElement) {
-				numElements += ((CombinedGUIElement) element).getElements().size();
-			} else {
-				numElements++;
-			}
-		}
-		return numElements;
+		return elements.stream().mapToInt(element -> element.getNumElements()).sum();
 	}
 
 	@Override

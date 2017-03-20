@@ -2,6 +2,11 @@ package mbeb.opengldefault.gui;
 
 import org.joml.Vector2f;
 
+/**
+ * A class that represents a Rectangle
+ * 
+ * @author Markus
+ */
 public class Rectangle {
 
 	/**
@@ -19,31 +24,72 @@ public class Rectangle {
 		this.size = size;
 	}
 
+	/**
+	 * Getter for the Rectangles size
+	 * 
+	 * @return the Rectangles size
+	 */
 	public Vector2f getSize() {
 		return size;
 	}
 
+	/**
+	 * Getter for the Rectangles start position
+	 * 
+	 * @return the Rectangles start position
+	 */
 	public Vector2f getPosition() {
 		return position;
 	}
 
+	/**
+	 * Getter for the Rectangles end position
+	 * 
+	 * @return the Rectangles end position
+	 */
 	public Vector2f getEnd() {
 		return position.add(size, new Vector2f());
 	}
 
+	/**
+	 * Setter for the Rectangles size
+	 * 
+	 * @param size
+	 *            the new size
+	 */
 	public void setSize(Vector2f size) {
 		this.size = size;
 	}
 
+	/**
+	 * Setter for the Rectangles position
+	 * 
+	 * @param position
+	 *            the new position
+	 */
 	public void setPosition(Vector2f position) {
 		this.position = position;
 	}
 
+	/**
+	 * Tests if the Rectange contains a given point
+	 *
+	 * @param point
+	 *            input point
+	 * @return true if he point is within the Rectange
+	 */
 	public boolean contains(Vector2f point) {
 		return !(point.x < position.x || point.y < position.y || point.x > position.x + size.x || point.y > position.y
 				+ size.y);
 	}
 
+	/**
+	 * Calculates a Rectangle that contains both this and a reference Rectangle
+	 * 
+	 * @param other
+	 *            the reference Rectangle
+	 * @return the combined Rectangle
+	 */
 	public Rectangle extend(Rectangle other) {
 		float startX = Math.min(position.x, other.position.x);
 		float startY = Math.min(position.y, other.position.y);

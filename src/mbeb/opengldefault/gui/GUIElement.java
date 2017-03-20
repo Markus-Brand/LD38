@@ -80,25 +80,41 @@ public abstract class GUIElement {
 		return this;
 	}
 
+	/**
+	 * Getter for the position of the GUIElement
+	 *
+	 * @return the position of the GUIElement
+	 */
 	public Vector2f getPosition() {
 		return bounding.getPosition();
 	}
 
+	/**
+	 * Setter for the position of the GUIElement
+	 *
+	 * @param position
+	 *            the new position of the GUIElement
+	 */
 	public void setPosition(Vector2f position) {
-		if (bounding == null) {
-			bounding = new Rectangle(new Vector2f(), new Vector2f());
-		}
 		bounding.setPosition(position);
 	}
 
+	/**
+	 * Getter for the size of the GUIElement
+	 *
+	 * @return the size of the GUIElement
+	 */
 	public Vector2f getSize() {
 		return bounding.getSize();
 	}
 
+	/**
+	 * setter for the size of the GUIElement
+	 *
+	 * @param size
+	 *            the new size of the GUIElement
+	 */
 	public void setSize(Vector2f size) {
-		if (bounding == null) {
-			bounding = new Rectangle(new Vector2f(), new Vector2f());
-		}
 		bounding.setSize(size);
 	}
 
@@ -133,27 +149,65 @@ public abstract class GUIElement {
 	 */
 	public abstract void update(double deltaTime);
 
+	/**
+	 * is the GUIElement dirty?
+	 *
+	 * @return true if dirty
+	 */
 	public boolean isDirty() {
 		return dirty;
 	}
 
+	/**
+	 * Sets the dirty parameter to true
+	 */
 	public void setDirty() {
 		this.dirty = true;
 	}
 
+	/**
+	 * Sets the dirty parameter to false
+	 */
 	public void setClean() {
 		this.dirty = false;
 	}
 
+	/**
+	 * Tests if the GUIElement contains a given point
+	 *
+	 * @param point
+	 *            input point
+	 * @return true if he point is within the GUIElement
+	 */
 	public boolean contains(Vector2f point) {
 		return bounding.contains(point);
 	}
 
+	/**
+	 * Getter for the bounding of the GUIElement
+	 *
+	 * @return the bounding if the GUIElement
+	 */
 	public Rectangle getBounding() {
 		return bounding;
 	}
 
+	/**
+	 * Setter for the bounding of the GUIElement
+	 *
+	 * @param bounding
+	 *            the new bounding of the GUIElement
+	 */
 	public void setBounding(Rectangle bounding) {
 		this.bounding = bounding;
+	}
+
+	/**
+	 * Returns the number of GUIElements, that this GUIElement writes into the buffer
+	 * 
+	 * @return the number of GUIElements
+	 */
+	public int getNumElements() {
+		return 1;
 	}
 }

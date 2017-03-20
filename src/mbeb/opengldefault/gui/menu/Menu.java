@@ -10,10 +10,21 @@ import mbeb.opengldefault.game.GameStates;
 import mbeb.opengldefault.gui.AtlasGUI;
 import mbeb.opengldefault.gui.GUIElement;
 
+/**
+ * A {@link AtlasGUI} that represents a Menu by using a mapping from GUIElements to GameStates that represents buttons
+ * 
+ * @author Markus
+ */
 public class Menu extends AtlasGUI {
 
+	/**
+	 * The next GameState that will be called if this gameState isn't active any more. null if the gameState is active
+	 */
 	private GameStates nextGameState = null;
 
+	/**
+	 * Map for GUIElements that represent buttons to their resulting new GameState if pressed
+	 */
 	private Map<GUIElement, GameStates> buttons;
 
 	public Menu(String atlasName, int atlasWidth, int atlasHeight) {
@@ -21,6 +32,14 @@ public class Menu extends AtlasGUI {
 		buttons = new HashMap<>();
 	}
 
+	/**
+	 * Adds a Entry to the buttons Map
+	 *
+	 * @param element
+	 *            triggering element representing the button
+	 * @param destination
+	 *            Resulting GameState
+	 */
 	public void addButtonElement(GUIElement element, GameStates destination) {
 		buttons.put(element, destination);
 	}
@@ -38,10 +57,18 @@ public class Menu extends AtlasGUI {
 		}
 	}
 
+	/**
+	 * Getter for the nextGameState parameter
+	 *
+	 * @return the nextGameState parameter
+	 */
 	public GameStates getNextState() {
 		return nextGameState;
 	}
 
+	/**
+	 * Resets the nextGameState parameter to null
+	 */
 	public void resetNextGameState() {
 		nextGameState = null;
 	}

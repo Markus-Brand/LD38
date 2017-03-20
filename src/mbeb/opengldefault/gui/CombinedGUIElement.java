@@ -6,14 +6,28 @@ import java.util.List;
 
 import org.joml.Vector2f;
 
+/**
+ * A {@link GUIElement} that holds a List of {@link GUIElement}s. Good for managing text, for example
+ *
+ * @author Markus
+ */
 public class CombinedGUIElement extends GUIElement {
 
+	/**
+	 * The List of {@link GUIElement}s that are managed by this CombinedGUIElement
+	 */
 	private List<GUIElement> elements;
 
 	public CombinedGUIElement() {
 		resetElements();
 	}
 
+	/**
+	 * Adds a {@link GUIElement} and updates this elements Bounding
+	 *
+	 * @param element
+	 *            new {@link GUIElement}
+	 */
 	public void addGUIElement(GUIElement element) {
 		elements.add(element);
 		if (getBounding() == null) {
@@ -24,6 +38,9 @@ public class CombinedGUIElement extends GUIElement {
 		setDirty();
 	}
 
+	/**
+	 * Updates the position of this element and off all of the {@link GUIElement}s in the elements list
+	 */
 	@Override
 	public void setPosition(Vector2f position) {
 		Vector2f delta = position.sub(getPosition(), new Vector2f());
@@ -49,6 +66,11 @@ public class CombinedGUIElement extends GUIElement {
 		return totalOffset;
 	}
 
+	/**
+	 * Getter for the elements saved in this CombinedGUIElement
+	 *
+	 * @return the List of GUIElements
+	 */
 	public List<GUIElement> getElements() {
 		return elements;
 	}
@@ -58,18 +80,21 @@ public class CombinedGUIElement extends GUIElement {
 		if (super.isDirty()) {
 			return true;
 		}
-		for (GUIElement element : elements) {
-			if (element.isDirty()) {
-				return true;
-			}
-		}
-		return false;
+		return elements.stream().anyMatch(element -> element.isDirty());
 	}
 
+	/**
+	 * Resets the Elements and the bounding. Usefull for changing text, for example.
+	 */
 	public void resetElements() {
 		elements = new ArrayList<>();
 		setBounding(null);
 		setDirty();
+	}
+
+	@Override
+	public int getNumElements() {
+		return elements.size();
 	}
 
 }
