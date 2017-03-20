@@ -1,9 +1,10 @@
 package mbeb.opengldefault.rendering.renderable;
 
 import mbeb.opengldefault.animation.Pose;
+import org.joml.*;
+
 import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.scene.*;
-import org.joml.Matrix4f;
 
 /**
  * something that can be rendered into a scene

@@ -1,8 +1,10 @@
 package mbeb.opengldefault.scene;
 
+import org.joml.*;
+
 import mbeb.opengldefault.camera.*;
+import mbeb.opengldefault.light.*;
 import mbeb.opengldefault.rendering.renderable.*;
-import org.joml.Matrix4f;
 
 /**
  * A scene is an object in which objects live and the camera moves. There should
@@ -10,20 +12,22 @@ import org.joml.Matrix4f;
  */
 public class Scene {
 
-	private SceneGraphRenderer renderer;
-	private SceneGraphRenderer boundingBoxRenderer;
+	private final LightManager lightManager;
+	private final SceneGraphRenderer renderer;
+	private final SceneGraphRenderer boundingBoxRenderer;
 	private final SceneObject sceneGraphRoot;
-	private ICamera camera;
+	private final ICamera camera;
 	private Skybox skybox;
-	private MousePicker3D picker;
+	private final MousePicker3D picker;
 
-	public Scene(ICamera cam) {
+	public Scene(final ICamera cam) {
 		this(cam, null);
 	}
 
-	public Scene(ICamera cam, Skybox skybox) {
+	public Scene(final ICamera cam, final Skybox skybox) {
 		this.camera = cam;
 		this.skybox = skybox;
+		this.lightManager = new LightManager();
 		this.sceneGraphRoot = new SceneObject();
 		renderer = new VisibleSceneGraphRenderer(sceneGraphRoot, cam);
 		boundingBoxRenderer = new BoundingBoxRenderer(sceneGraphRoot, cam);
@@ -34,13 +38,18 @@ public class Scene {
 		return sceneGraphRoot;
 	}
 
-	public void update(double deltaTime) {
+	public LightManager getLightManager() {
+		return lightManager;
+	}
+
+	public void update(final double deltaTime) {
 		camera.update(deltaTime);
+		lightManager.update(deltaTime);
 		sceneGraphRoot.update(deltaTime);
 		picker.update(deltaTime);
 	}
 
-	public void setSkybox(Skybox skybox) {
+	public void setSkybox(final Skybox skybox) {
 		this.skybox = skybox;
 	}
 
@@ -48,7 +57,7 @@ public class Scene {
 		render(false);
 	}
 
-	public void render(boolean renderBoundingBoxes) {
+	public void render(final boolean renderBoundingBoxes) {
 		renderer.render();
 		picker.searchBoundingBoxes(sceneGraphRoot, new Matrix4f());
 		if (renderBoundingBoxes) {

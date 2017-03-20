@@ -2,11 +2,11 @@ package mbeb.opengldefault.scene;
 
 import java.util.*;
 
+import org.joml.*;
+
 import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.rendering.shader.*;
-
-import org.joml.*;
 
 /**
  * A (potentially) complex object inside a scene, with transformations

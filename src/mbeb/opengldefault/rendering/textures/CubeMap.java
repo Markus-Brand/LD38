@@ -3,6 +3,7 @@ package mbeb.opengldefault.rendering.textures;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL20.*;
+
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.shader.*;
 
@@ -39,7 +40,7 @@ public class CubeMap extends Texture {
 	public void bind(Shader shader, String uniformName) {
 		glBindTexture(GL_TEXTURE_CUBE_MAP, getTextureHandle());
 		GLErrors.checkForError(TAG, "glBindTexture");
-		glUniform1i(shader.getUniform(uniformName), getTextureHandle());
+		shader.setUniform(uniformName, getTextureHandle());
 		GLErrors.checkForError(TAG, "glUniform1i");
 	}
 }

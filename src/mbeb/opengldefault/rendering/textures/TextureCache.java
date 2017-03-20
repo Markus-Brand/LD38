@@ -12,9 +12,9 @@ import java.util.*;
 
 import javax.imageio.*;
 
-import mbeb.opengldefault.logging.*;
-
 import org.lwjgl.*;
+
+import mbeb.opengldefault.logging.*;
 
 /**
  * static methods for creating / using textures.

@@ -436,8 +436,8 @@ public class AxisAngle4f implements Externalizable {
 		double cos = Math.cos(angle);
 		double sin = Math.sin(angle);
 		float dot = x * v.x() + y * v.y() + z * v.z();
-		dest.set((float) (v.x() * cos + sin * (y * v.z() - z * v.y()) + (1.0 - cos) * dot * x), (float) (v.y() * cos + sin * (z * v.x() - x * v.z()) + (1.0 - cos) * dot * y), (float) (v.z() * cos
-				+ sin * (x * v.y() - y * v.x()) + (1.0 - cos) * dot * z));
+		dest.set((float) (v.x() * cos + sin * (y * v.z() - z * v.y()) + (1.0 - cos) * dot * x), (float) (v.y() * cos + sin * (z * v.x() - x * v.z()) + (1.0 - cos) * dot * y),
+				(float) (v.z() * cos + sin * (x * v.y() - y * v.x()) + (1.0 - cos) * dot * z));
 		return dest;
 	}
 
@@ -466,8 +466,8 @@ public class AxisAngle4f implements Externalizable {
 		double cos = Math.cos(angle);
 		double sin = Math.sin(angle);
 		float dot = x * v.x() + y * v.y() + z * v.z();
-		dest.set((float) (v.x() * cos + sin * (y * v.z() - z * v.y()) + (1.0 - cos) * dot * x), (float) (v.y() * cos + sin * (z * v.x() - x * v.z()) + (1.0 - cos) * dot * y), (float) (v.z() * cos
-				+ sin * (x * v.y() - y * v.x()) + (1.0 - cos) * dot * z), dest.w);
+		dest.set((float) (v.x() * cos + sin * (y * v.z() - z * v.y()) + (1.0 - cos) * dot * x), (float) (v.y() * cos + sin * (z * v.x() - x * v.z()) + (1.0 - cos) * dot * y),
+				(float) (v.z() * cos + sin * (x * v.y() - y * v.x()) + (1.0 - cos) * dot * z), dest.w);
 		return dest;
 	}
 

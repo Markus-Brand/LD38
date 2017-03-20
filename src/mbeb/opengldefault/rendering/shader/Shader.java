@@ -7,15 +7,16 @@ import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.opengl.GL40.*;
 
 import java.nio.*;
-import java.text.DecimalFormat;
+import java.text.*;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
-import mbeb.opengldefault.logging.*;
-
+import mbeb.opengldefault.constants.Constants;
+import org.joml.*;
 import org.lwjgl.*;
 import org.lwjgl.opengl.*;
+
+import mbeb.opengldefault.logging.*;
 
 /**
  * Shader Object used for rendering a {@link mbeb.opengldefault.rendering.renderable.IRenderable}
@@ -41,15 +42,15 @@ public class Shader {
 	/**
 	 * Geometry Shaders source code
 	 */
-	private String geometryPath;
+	private final String geometryPath;
 	/**
 	 * Tessellation Control Shaders source code
 	 */
-	private String tesControlPath;
+	private final String tesControlPath;
 	/**
 	 * Tessellation Evaluation Shaders source code
 	 */
-	private String tesEvalPath;
+	private final String tesEvalPath;
 	/**
 	 * Drawmode for the Renderables that get rendered by this shader
 	 */
@@ -58,7 +59,7 @@ public class Shader {
 	/**
 	 * handles current parameter set and offers precompilation of Shader-Files
 	 */
-	private ShaderPreprocessor preprocessor;
+	private final ShaderPreprocessor preprocessor;
 
 	/**
 	 * Uniform Blocks used in the shader. Will hold data like projection and
@@ -174,12 +175,13 @@ public class Shader {
 	/**
 	 * Adds a Uniform Buffer Block to the Shader
 	 *
-	 * @param index
-	 * @param name
+	 * @param UBOName
+	 *            the name of the UBO to add
 	 */
-	public void addUniformBlockIndex(final int index, final String name) {
-		uniformBlocks.put(index, name);
-		setUniformBlockIndex(index, name);
+	public void addUniformBlockIndex(final String UBOName) {
+		final int index = UBOManager.getUBOID(UBOName);
+		uniformBlocks.put(index, UBOName);
+		setUniformBlockIndex(index, UBOName);
 	}
 
 	/**
@@ -191,6 +193,7 @@ public class Shader {
 	private void setUniformBlockIndex(final int index, final String name) {
 		ensureCompiled();
 		final int uniformBlockIndex = glGetUniformBlockIndex(shaderProgram, name);
+		GLErrors.checkForError(TAG, "glGetUniformBlockIndex");
 		glUniformBlockBinding(shaderProgram, uniformBlockIndex, index);
 		GLErrors.checkForError(TAG, "glUniformBlockBinding");
 	}
@@ -229,10 +232,263 @@ public class Shader {
 		final int uniformLocation = glGetUniformLocation(shaderProgram, name);
 		GLErrors.checkForError(TAG, "glGetUniformLocation: " + (name != null ? name : "null"));
 		if (logAnError && uniformLocation < 0) {
-			Log.error(TAG, vertexPath + " GetUniform failed: " + name);
+			Log.error(TAG, "GetUniform failed: " + name);
 		}
 		return uniformLocation;
 	}
+
+	//<editor-fold desc="UNIFORM-SETTERS">
+	/**
+	 * Sets the value of the given uniform to the given integer array
+	 * 
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the integer array
+	 * @return the location of the set uniform or -1 if an error occurred
+	 */
+	public int setUniform(final String name, final int[] value) {
+		ensureCompiled();
+		final int uniformLocation = getUniform(name);
+		glUniform1iv(uniformLocation, value);
+		return GLErrors.checkForError(TAG, "setUniformIntArray") ? -1 : uniformLocation;
+	}
+
+	/**
+	 * Sets the value of the given uniform to the given integer
+	 * 
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the integer
+	 * @return the location of the set uniform or -1 if an error occurred
+	 */
+	public int setUniform(final String name, final int value) {
+		return setUniform(name, new int[] {value});
+	}
+
+	/**
+	 * Sets the value of the given uniform to the given float array
+	 * 
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the float array
+	 * @return the location of the set uniform or -1 if an error occurred
+	 */
+	public int setUniform(final String name, final float[] value) {
+		ensureCompiled();
+		final int uniformLocation = getUniform(name);
+		glUniform1fv(uniformLocation, value);
+		return GLErrors.checkForError(TAG, "setUniformFloatArray") ? -1 : uniformLocation;
+	}
+
+	/**
+	 * Sets the value of the given uniform to the given float
+	 * 
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the float
+	 * @return the location of the set uniform or -1 if an error occurred
+	 */
+	public int setUniform(final String name, final float value) {
+		return setUniform(name, new float[] {value});
+	}
+
+	/**
+	 * Sets the value of the given uniform to the given vec2
+	 * 
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the vec2
+	 * @return the location of the set uniform or -1 if an error occurred
+	 */
+	public int setUniform(final String name, final Vector2f value) {
+		ensureCompiled();
+		final int uniformLocation = getUniform(name);
+		FloatBuffer vectorBuffer = BufferUtils.createFloatBuffer(Constants.VEC2_COMPONENTS);
+		value.get(vectorBuffer);
+		glUniform2fv(uniformLocation, vectorBuffer);
+		return GLErrors.checkForError(TAG, "setUniformVector2f") ? -1 : uniformLocation;
+	}
+
+	/**
+	 * Sets the value of the given uniform to the given vec3
+	 * 
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the vec3
+	 * @param onlyTry
+	 *            whether the shader should only attempt to set the uniform
+	 * @return the location of the set uniform or -1 if an error occurred
+	 */
+	public int setUniform(final String name, final Vector3f value, final boolean onlyTry) {
+		ensureCompiled();
+		final int uniformLocation = getUniform(name, !onlyTry);
+		if (!onlyTry || uniformLocation >= 0) {
+			FloatBuffer vectorBuffer = BufferUtils.createFloatBuffer(Constants.VEC3_COMPONENTS);
+			value.get(vectorBuffer);
+			glUniform3fv(uniformLocation, vectorBuffer);
+			return GLErrors.checkForError(TAG, "setUniformVector3f") ? -1 : uniformLocation;
+		} else {
+			return uniformLocation;
+		}
+	}
+
+	/**
+	 * Attempts to set the given uniform to the given vec3
+	 * 
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the vec3
+	 * @return the location of the set uniform or -1 if an error occurred
+	 */
+	public int setUniform(final String name, final Vector3f value) {
+		return setUniform(name, value, false);
+	}
+
+	/**
+	 * Sets the value of the given uniform to the given vec4
+	 * 
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the vec4
+	 * @return the location of the set uniform or -1 if an error occurred
+	 */
+	public int setUniform(final String name, final Vector4f value) {
+		ensureCompiled();
+		final int uniformLocation = getUniform(name);
+		FloatBuffer vectorBuffer = BufferUtils.createFloatBuffer(Constants.VEC4_COMPONENTS);
+		value.get(vectorBuffer);
+		glUniform4fv(uniformLocation, vectorBuffer);
+		return GLErrors.checkForError(TAG, "setUniformVector4f") ? -1 : uniformLocation;
+	}
+
+	/**
+	 * Sets the value of the given uniform the given array of 3x3 matrices and transposes them if transpose is true.
+	 * 
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the array of matrices
+	 * @param transpose
+	 *            whether to transpose the matrices
+	 * @return the location of the set uniform or -1 if an error occurred
+	 */
+	public int setUniform(final String name, final Matrix3f[] value, final boolean transpose) {
+		ensureCompiled();
+		final int uniformLocation = getUniform(name);
+		FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(value.length * Constants.MAT3_COMPONENTS);
+		for (int i = 0; i < value.length; i++) {
+			Matrix3f matrix = value[i];
+			matrix.get(i * Constants.MAT3_COMPONENTS, matrixBuffer);
+		}
+		glUniformMatrix3fv(uniformLocation, transpose, matrixBuffer);
+		return GLErrors.checkForError(TAG, "setUniformMatrix3fArray") ? -1 : uniformLocation;
+	}
+
+	/**
+	 * Sets the value of the given uniform the given array of 3x3 matrices.
+	 * 
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the array of matrices
+	 * @return the location of the set uniform or -1 if an error occurred
+	 */
+	public int setUniform(final String name, final Matrix3f[] value) {
+		return setUniform(name, value, false);
+	}
+
+	/**
+	 * Sets the value of the given uniform the given 3x3 matrix.
+	 * 
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the matrix
+	 * @return the location of the set uniform or -1 if an error occurred
+	 */
+	public int setUniform(final String name, final Matrix3f value) {
+		return setUniform(name, new Matrix3f[] {value}, false);
+	}
+
+	/**
+	 * Sets the value of the given uniform the given array of 4x4 matrices and transposes them if transpose is true.
+	 * 
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the array of matrices
+	 * @param transpose
+	 *            whether to transpose the matrices
+	 * @param onlyTry
+	 *            whether the shader shuld only attempt to set the uniform
+	 * @return the location of the set uniform or -1 if an error occurred
+	 */
+	public int setUniform(final String name, final Matrix4f[] value, final boolean transpose, final boolean onlyTry) {
+		ensureCompiled();
+		final int uniformLocation = getUniform(name, !onlyTry);
+		if (!onlyTry || uniformLocation >= 0) {
+			FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(Constants.MAT4_COMPONENTS * value.length);
+			for (int i = 0; i < value.length; i++) {
+				Matrix4f matrix = value[i];
+				matrix.get(i * Constants.MAT4_COMPONENTS, matrixBuffer);
+			}
+			glUniformMatrix4fv(uniformLocation, transpose, matrixBuffer);
+			return GLErrors.checkForError(TAG, "setUniformMatrix4fArray") ? -1 : uniformLocation;
+		} else {
+			return uniformLocation;
+		}
+	}
+
+	/**
+	 * Attempts the value of the given uniform the given array of 4x4 matrices.
+	 * 
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the array of matrices
+	 * @return the location of the set uniform or -1 if an error occurred
+	 */
+	public int setUniform(final String name, final Matrix4f[] value) {
+		return setUniform(name, value, false, false);
+	}
+
+	/**
+	 * Attempts the value of the given uniform the given 4x4 matrix.
+	 * 
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the matrix
+	 * @param onlyTry
+	 *            whether the shader shuld only attempt to set the uniform
+	 * @return the location of the set uniform or -1 if an error occurred
+	 */
+	public int setUniform(final String name, final Matrix4f value, final boolean onlyTry) {
+		return setUniform(name, new Matrix4f[] {value}, false, onlyTry);
+	}
+
+	/**
+	 * Attempts the value of the given uniform the given 4x4 matrix.
+	 * 
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the matrix
+	 * @return the location of the set uniform or -1 if an error occurred
+	 */
+	public int setUniform(final String name, final Matrix4f value) {
+		return setUniform(name, value, false);
+	}
+
+	//</editor-fold>
 
 	public String getParameter(final String name) {
 		return preprocessor.getParameter(name);
@@ -262,27 +518,37 @@ public class Shader {
 
 		linkShader(vertexShader, fragmentShader, geomShader, tesControlShader, tesEvalShader);
 
-		for (Map.Entry<Integer, String> uniformBlockBinding : uniformBlocks.entrySet()) {
+		for (final Map.Entry<Integer, String> uniformBlockBinding : uniformBlocks.entrySet()) {
 			setUniformBlockIndex(uniformBlockBinding.getKey(), uniformBlockBinding.getValue());
 		}
 	}
 
 	/**
 	 * Compiles Vertex Shader
+	 * TODO unify compile<i>name</i>shader calls
 	 *
+	 <<<<<<< HEAD
+	 * 
 	 * @param paramString
 	 *            Shader Header
+	 *            =======
+	 *            >>>>>>> refs/remotes/origin/master
 	 * @return vertex shader object
 	 */
 	private int compileVertexShader() {
-		String sourceString = preprocessor.getProcessedShaderFile(vertexPath);
+		final String sourceString = preprocessor.getProcessedShaderFile(vertexPath);
 		final int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+		GLErrors.checkForError(TAG, "glCreateShader");
 		glShaderSource(vertexShader, sourceString);
+		GLErrors.checkForError(TAG, "glShaderSource");
 		glCompileShader(vertexShader);
+		GLErrors.checkForError(TAG, "glCompileShader");
 		final int compileSuccess = glGetShaderi(vertexShader, GL_COMPILE_STATUS);
+		GLErrors.checkForError(TAG, "glGetShaderi");
 		if (compileSuccess != 1) {
 			Log.error(TAG, "Error compiling vertex shader: " + compileSuccess);
-			String log = glGetShaderInfoLog(vertexShader);
+			final String log = glGetShaderInfoLog(vertexShader);
+			GLErrors.checkForError(TAG, "glGetShaderInfoLog");
 			printDebug(log, sourceString, vertexPath);
 		}
 		return vertexShader;
@@ -291,19 +557,23 @@ public class Shader {
 	/**
 	 * Compiles Fragment Shader
 	 *
+	 <<<<<<< HEAD
+	 * 
 	 * @param paramString
 	 *            Shader Header
+	 *            =======
+	 *            >>>>>>> refs/remotes/origin/master
 	 * @return fragment shader object
 	 */
 	private int compileFragmentShader() {
-		String sourceString = preprocessor.getProcessedShaderFile(fragmentPath);
+		final String sourceString = preprocessor.getProcessedShaderFile(fragmentPath);
 		final int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 		glShaderSource(fragmentShader, sourceString);
 		glCompileShader(fragmentShader);
 		final int compileSuccess = glGetShaderi(fragmentShader, GL_COMPILE_STATUS);
 		if (compileSuccess != 1) {
 			Log.error(TAG, "Error compiling fragment shader: " + compileSuccess);
-			String log = glGetShaderInfoLog(fragmentShader);
+			final String log = glGetShaderInfoLog(fragmentShader);
 			printDebug(log, sourceString, fragmentPath);
 		}
 		return fragmentShader;
@@ -312,22 +582,26 @@ public class Shader {
 	/**
 	 * Compiles Geometry Shader
 	 *
+	 <<<<<<< HEAD
+	 * 
 	 * @param paramString
 	 *            Shader Header
+	 *            =======
+	 *            >>>>>>> refs/remotes/origin/master
 	 * @return geometry shader object
 	 */
 	private int compileGeometryShader() {
 		if (geometryPath == null) {
 			return -1;
 		}
-		String sourceString = preprocessor.getProcessedShaderFile(geometryPath);
+		final String sourceString = preprocessor.getProcessedShaderFile(geometryPath);
 		final int geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
 		glShaderSource(geometryShader, sourceString);
 		glCompileShader(geometryShader);
 		final int compileSuccess = glGetShaderi(geometryShader, GL_COMPILE_STATUS);
 		if (compileSuccess != 1) {
 			Log.error(TAG, "Error compiling geometry shader: " + compileSuccess);
-			String log = glGetShaderInfoLog(geometryShader);
+			final String log = glGetShaderInfoLog(geometryShader);
 			printDebug(log, sourceString, geometryPath);
 		}
 		return geometryShader;
@@ -336,22 +610,26 @@ public class Shader {
 	/**
 	 * Compiles Tessellation Control Shader
 	 *
+	 <<<<<<< HEAD
+	 * 
 	 * @param paramString
 	 *            Shader Header
+	 *            =======
+	 *            >>>>>>> refs/remotes/origin/master
 	 * @return tessellation control shader object
 	 */
 	private int compileTesControlShader() {
 		if (tesControlPath == null) {
 			return -1;
 		}
-		String sourceString = preprocessor.getProcessedShaderFile(tesControlPath);
+		final String sourceString = preprocessor.getProcessedShaderFile(tesControlPath);
 		final int tesControlShader = glCreateShader(GL_TESS_CONTROL_SHADER);
 		glShaderSource(tesControlShader, sourceString);
 		glCompileShader(tesControlShader);
 		final int compileSuccess = glGetShaderi(tesControlShader, GL_COMPILE_STATUS);
 		if (compileSuccess != 1) {
 			Log.error(TAG, "Error compiling tessellation control shader: " + compileSuccess);
-			String log = glGetShaderInfoLog(tesControlShader);
+			final String log = glGetShaderInfoLog(tesControlShader);
 			printDebug(log, sourceString, tesControlPath);
 		}
 		return tesControlShader;
@@ -360,22 +638,26 @@ public class Shader {
 	/**
 	 * Compiles Tessellation Evaluation Shader
 	 *
+	 <<<<<<< HEAD
+	 * 
 	 * @param paramString
 	 *            Shader Header
+	 *            =======
+	 *            >>>>>>> refs/remotes/origin/master
 	 * @return tessellation evaluation shader object
 	 */
 	private int compileTesEvalShader() {
 		if (tesEvalPath == null) {
 			return -1;
 		}
-		String sourceString = preprocessor.getProcessedShaderFile(tesEvalPath);
+		final String sourceString = preprocessor.getProcessedShaderFile(tesEvalPath);
 		final int tesEvalShader = glCreateShader(GL_TESS_EVALUATION_SHADER);
 		glShaderSource(tesEvalShader, sourceString);
 		glCompileShader(tesEvalShader);
 		final int compileSuccess = glGetShaderi(tesEvalShader, GL_COMPILE_STATUS);
 		if (compileSuccess != 1) {
 			Log.error(TAG, "Error compiling tessellation evaluation shader: " + compileSuccess);
-			String log = glGetShaderInfoLog(tesEvalShader);
+			final String log = glGetShaderInfoLog(tesEvalShader);
 			printDebug(log, sourceString, tesEvalPath);
 		}
 		return tesEvalShader;
@@ -406,6 +688,7 @@ public class Shader {
 		if (tesEvalShader != -1) {
 			glAttachShader(shaderProgram, tesEvalShader);
 		}
+		GLErrors.checkForError(TAG, "glAttachShader");
 		glLinkProgram(shaderProgram);
 		final IntBuffer buffer = BufferUtils.createIntBuffer(1);
 		GL20.glGetProgramiv(shaderProgram, GL_LINK_STATUS, buffer);
@@ -416,6 +699,7 @@ public class Shader {
 
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
+		GLErrors.checkForError(TAG, "glDeleteShader");
 	}
 
 	/**
@@ -426,8 +710,7 @@ public class Shader {
 	 *            the shader log info.
 	 */
 	private void printDebug(final String log, final String source, final String sourceName) {
-		System.out.println(log);
-		Log.error(TAG, "Errors in \"" + sourceName + "\":");
+		Log.error(TAG, "Errors in \"" + sourceName + "\":\n" + log);
 
 		// stores line number and error message
 		final LinkedHashMap<Integer, ArrayList<String>> errorList = new LinkedHashMap<>();
@@ -468,7 +751,7 @@ public class Shader {
 
 			while(scannerSourceCode.hasNextLine()) {
 				final String codeLine = scannerSourceCode.nextLine();
-				String formattedLineNumber = numberFormat.format(lineNumber);
+				final String formattedLineNumber = numberFormat.format(lineNumber);
 				final String annotatedLine = formattedLineNumber + errorNo + ": " + codeLine;
 				Log.log(null, annotatedLine);
 				if (errorList.containsKey(lineNumber)) {
@@ -489,7 +772,7 @@ public class Shader {
 	 * @param drawMode
 	 *            new drawMode
 	 */
-	public void setDrawMode(int drawMode) {
+	public void setDrawMode(final int drawMode) {
 		this.drawMode = drawMode;
 	}
 

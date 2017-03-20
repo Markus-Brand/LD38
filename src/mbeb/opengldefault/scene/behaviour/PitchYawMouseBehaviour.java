@@ -5,6 +5,7 @@ import org.joml.Vector3f;
 
 import mbeb.opengldefault.controls.Mouse;
 import mbeb.opengldefault.scene.entities.Entity;
+import java.lang.Math;
 
 /**
  * A Behaviour that translates Mouse input to a pitch and yaw value to set as the direction of an Entity

@@ -952,8 +952,8 @@ public class Intersectiond {
 	 *         or {@link #POINT_ON_TRIANGLE_EDGE} if the intersection point lies on an edge;
 	 *         or <tt>-1</tt> if no intersection
 	 */
-	public static int intersectSweptSphereTriangle(double centerX, double centerY, double centerZ, double radius, double velX, double velY, double velZ, double v0X, double v0Y, double v0Z,
-			double v1X, double v1Y, double v1Z, double v2X, double v2Y, double v2Z, double epsilon, double maxT, Vector4d pointAndTime) {
+	public static int intersectSweptSphereTriangle(double centerX, double centerY, double centerZ, double radius, double velX, double velY, double velZ, double v0X, double v0Y, double v0Z, double v1X,
+			double v1Y, double v1Z, double v2X, double v2Y, double v2Z, double epsilon, double maxT, Vector4d pointAndTime) {
 		double v10X = v1X - v0X;
 		double v10Y = v1Y - v0Y;
 		double v10Z = v1Z - v0Z;
@@ -1720,8 +1720,8 @@ public class Intersectiond {
 	 *            the y coordinate of the maximum corner of the axis-aligned box
 	 * @return <code>true</code> if the given ray intersects the axis-aligned box; <code>false</code> otherwise
 	 */
-	public static boolean
-			testRayAab(double originX, double originY, double originZ, double dirX, double dirY, double dirZ, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+	public static boolean testRayAab(double originX, double originY, double originZ, double dirX, double dirY, double dirZ, double minX, double minY, double minZ, double maxX, double maxY,
+			double maxZ) {
 		double invDirX = 1.0 / dirX, invDirY = 1.0 / dirY, invDirZ = 1.0 / dirZ;
 		double tNear, tFar, tymin, tymax, tzmin, tzmax;
 		if (invDirX >= 0.0) {
@@ -1943,8 +1943,8 @@ public class Intersectiond {
 	 *            a small epsilon when testing rays that are almost parallel to the triangle
 	 * @return <code>true</code> if the given ray intersects the frontface of the triangle; <code>false</code> otherwise
 	 */
-	public static boolean testRayTriangle(double originX, double originY, double originZ, double dirX, double dirY, double dirZ, double v0X, double v0Y, double v0Z, double v1X, double v1Y,
-			double v1Z, double v2X, double v2Y, double v2Z, double epsilon) {
+	public static boolean testRayTriangle(double originX, double originY, double originZ, double dirX, double dirY, double dirZ, double v0X, double v0Y, double v0Z, double v1X, double v1Y, double v1Z,
+			double v2X, double v2Y, double v2Z, double epsilon) {
 		double edge1X = v1X - v0X;
 		double edge1Y = v1Y - v0Y;
 		double edge1Z = v1Z - v0Z;

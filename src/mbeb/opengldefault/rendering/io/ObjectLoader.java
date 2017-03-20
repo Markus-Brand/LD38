@@ -4,14 +4,14 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 
+import org.joml.*;
+import org.lwjgl.assimp.*;
+
 import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.openglcontext.*;
 import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.scene.*;
-
-import org.joml.*;
-import org.lwjgl.assimp.*;
 
 /**
  * Contains logic to create Renderables from Files
@@ -43,7 +43,7 @@ public class ObjectLoader {
 	 * @return a VAO-Renderable
 	 */
 	public AnimatedRenderable loadFromFileAnim(String path) {
-		return (AnimatedRenderable)loadFromFile(path, PosNormUvAnim3);
+		return (AnimatedRenderable) loadFromFile(path, PosNormUvAnim3);
 	}
 
 	/**
@@ -230,7 +230,7 @@ public class ObjectLoader {
 			Log.error(TAG, "No Bones in AnimatedMesh!");
 			return null;
 		}
-		
+
 		/*
 		rootBone.setDefaultBoneTransform(new Matrix4f(
 				1, 0, 0, 0,//this matrix is for flipping collada the right angle
@@ -304,9 +304,8 @@ public class ObjectLoader {
 					AIQuatKey rot = node.mRotationKeys().get(key);
 					AIVectorKey scale = node.mScalingKeys().get(key);
 
-					BoneTransformation transform =
-							new BoneTransformation(new Vector3f(pos.mValue().x(), pos.mValue().y(), pos.mValue().z()), new Quaternionf(rot.mValue().x(), rot.mValue().y(), rot.mValue().z(), rot
-									.mValue().w()), new Vector3f(scale.mValue().x(), scale.mValue().y(), scale.mValue().z()));
+					BoneTransformation transform = new BoneTransformation(new Vector3f(pos.mValue().x(), pos.mValue().y(), pos.mValue().z()),
+							new Quaternionf(rot.mValue().x(), rot.mValue().y(), rot.mValue().z(), rot.mValue().w()), new Vector3f(scale.mValue().x(), scale.mValue().y(), scale.mValue().z()));
 					KeyFrame keyFrame = new KeyFrame(pos.mTime(), new Pose(animMesh.getSkeleton(), animMesh.getTransform()).put(boneName, transform));
 					anim.mergeKeyFrame(keyFrame);
 				}
@@ -322,9 +321,9 @@ public class ObjectLoader {
 	private void adjustBoneBoxes(Bone skeleton, Vector3f vertexPosition, int vertexID, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights, Matrix4f sceneTransform) {
 		final float THRESHOLD = 0.2f; //vertices with smaller weights are not included into the boundingBox
 		//todo test for good values here
-		
+
 		List<Map.Entry<Integer, Float>> boneWeights = vertexBoneWeights.get(vertexID);
-		
+
 		for (Map.Entry<Integer, Float> boneWeight : boneWeights) {
 			int targetIndex = boneWeight.getKey();
 			if (targetIndex < 0 || boneWeight.getValue() < THRESHOLD) {
@@ -332,7 +331,7 @@ public class ObjectLoader {
 			}
 			Bone target = skeleton.firstBoneWithIndex(targetIndex);
 			Matrix4f totalTrans = target.getInverseBindTransform().mul(sceneTransform, new Matrix4f());
-			
+
 			Vector4f inBoneSpace4 = totalTrans.transform(new Vector4f(vertexPosition, 1));
 			Vector3f inBoneSpace = new Vector3f(inBoneSpace4.x, inBoneSpace4.y, inBoneSpace4.z);
 			target.setBoundingBox(target.getBoundingBox().extendTo(inBoneSpace));

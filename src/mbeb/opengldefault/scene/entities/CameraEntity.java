@@ -1,20 +1,20 @@
 package mbeb.opengldefault.scene.entities;
 
-import mbeb.opengldefault.camera.ICamera;
+import org.joml.*;
 
-import org.joml.Vector3f;
+import mbeb.opengldefault.camera.*;
 
 /**
  * Adapter class that enables a {@link ICamera} to be interpreted as {@link Entity}
- * 
+ *
  * @author Markus
  */
 public class CameraEntity extends Entity {
 
-	private ICamera camera;
+	private final ICamera camera;
 
-	public CameraEntity(ICamera cam) {
-		this.camera = cam;
+	public CameraEntity(final ICamera camera) {
+		this.camera = camera;
 	}
 
 	@Override
@@ -28,12 +28,12 @@ public class CameraEntity extends Entity {
 	}
 
 	@Override
-	public void setPosition(Vector3f position) {
+	public void setPosition(final Vector3f position) {
 		camera.setPosition(position);
 	}
 
 	@Override
-	public void setDirection(Vector3f direction) {
+	public void setDirection(final Vector3f direction) {
 		camera.setViewDirection(direction);
 	}
 

@@ -1,9 +1,9 @@
 package mbeb.opengldefault.rendering.renderable;
 
+import org.joml.*;
+
 import mbeb.opengldefault.rendering.io.*;
 import mbeb.opengldefault.scene.*;
-
-import org.joml.*;
 
 /**
  * Provides static Meshes
@@ -107,7 +107,12 @@ public class StaticMeshes {
 
 	/**
 	 * a Cube from (0,0,0) to (1,1,1) that can be rendered with GL_LINES
+	 * <<<<<<< HEAD
 	 *
+	 =======
+	 * 
+	 >>>>>>> refs/remotes/origin/master
+	 * 
 	 * @return
 	 */
 	public static VAORenderable getLineCube() {

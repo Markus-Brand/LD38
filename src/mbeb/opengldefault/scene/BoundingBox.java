@@ -1,9 +1,9 @@
 package mbeb.opengldefault.scene;
 
-import mbeb.opengldefault.camera.*;
-import mbeb.opengldefault.logging.Log;
-
 import org.joml.*;
+
+import mbeb.opengldefault.camera.*;
+import mbeb.opengldefault.logging.*;
 
 /**
  * A simple struct defining a box-like area in the world
