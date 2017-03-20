@@ -240,7 +240,7 @@ public class Shader {
 	//<editor-fold desc="UNIFORM-SETTERS">
 	/**
 	 * Sets the value of the given uniform to the given integer array
-	 * 
+	 *
 	 * @param name
 	 *            the name of the uniform
 	 * @param value
@@ -256,7 +256,7 @@ public class Shader {
 
 	/**
 	 * Sets the value of the given uniform to the given integer
-	 * 
+	 *
 	 * @param name
 	 *            the name of the uniform
 	 * @param value
@@ -269,7 +269,7 @@ public class Shader {
 
 	/**
 	 * Sets the value of the given uniform to the given float array
-	 * 
+	 *
 	 * @param name
 	 *            the name of the uniform
 	 * @param value
@@ -285,7 +285,7 @@ public class Shader {
 
 	/**
 	 * Sets the value of the given uniform to the given float
-	 * 
+	 *
 	 * @param name
 	 *            the name of the uniform
 	 * @param value
@@ -298,7 +298,7 @@ public class Shader {
 
 	/**
 	 * Sets the value of the given uniform to the given vec2
-	 * 
+	 *
 	 * @param name
 	 *            the name of the uniform
 	 * @param value
@@ -316,7 +316,7 @@ public class Shader {
 
 	/**
 	 * Sets the value of the given uniform to the given vec3
-	 * 
+	 *
 	 * @param name
 	 *            the name of the uniform
 	 * @param value
@@ -340,7 +340,7 @@ public class Shader {
 
 	/**
 	 * Attempts to set the given uniform to the given vec3
-	 * 
+	 *
 	 * @param name
 	 *            the name of the uniform
 	 * @param value
@@ -353,7 +353,7 @@ public class Shader {
 
 	/**
 	 * Sets the value of the given uniform to the given vec4
-	 * 
+	 *
 	 * @param name
 	 *            the name of the uniform
 	 * @param value
@@ -371,7 +371,7 @@ public class Shader {
 
 	/**
 	 * Sets the value of the given uniform the given array of 3x3 matrices and transposes them if transpose is true.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the uniform
 	 * @param value
@@ -394,7 +394,7 @@ public class Shader {
 
 	/**
 	 * Sets the value of the given uniform the given array of 3x3 matrices.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the uniform
 	 * @param value
@@ -407,7 +407,7 @@ public class Shader {
 
 	/**
 	 * Sets the value of the given uniform the given 3x3 matrix.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the uniform
 	 * @param value
@@ -420,7 +420,7 @@ public class Shader {
 
 	/**
 	 * Sets the value of the given uniform the given array of 4x4 matrices and transposes them if transpose is true.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the uniform
 	 * @param value
@@ -449,7 +449,7 @@ public class Shader {
 
 	/**
 	 * Attempts the value of the given uniform the given array of 4x4 matrices.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the uniform
 	 * @param value
@@ -462,7 +462,7 @@ public class Shader {
 
 	/**
 	 * Attempts the value of the given uniform the given 4x4 matrix.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the uniform
 	 * @param value
@@ -477,7 +477,7 @@ public class Shader {
 
 	/**
 	 * Attempts the value of the given uniform the given 4x4 matrix.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the uniform
 	 * @param value
@@ -527,12 +527,6 @@ public class Shader {
 	 * Compiles Vertex Shader
 	 * TODO unify compile<i>name</i>shader calls
 	 *
-	 <<<<<<< HEAD
-	 * 
-	 * @param paramString
-	 *            Shader Header
-	 *            =======
-	 *            >>>>>>> refs/remotes/origin/master
 	 * @return vertex shader object
 	 */
 	private int compileVertexShader() {
@@ -557,12 +551,6 @@ public class Shader {
 	/**
 	 * Compiles Fragment Shader
 	 *
-	 <<<<<<< HEAD
-	 * 
-	 * @param paramString
-	 *            Shader Header
-	 *            =======
-	 *            >>>>>>> refs/remotes/origin/master
 	 * @return fragment shader object
 	 */
 	private int compileFragmentShader() {
@@ -581,13 +569,7 @@ public class Shader {
 
 	/**
 	 * Compiles Geometry Shader
-	 *
-	 <<<<<<< HEAD
 	 * 
-	 * @param paramString
-	 *            Shader Header
-	 *            =======
-	 *            >>>>>>> refs/remotes/origin/master
 	 * @return geometry shader object
 	 */
 	private int compileGeometryShader() {
@@ -609,13 +591,7 @@ public class Shader {
 
 	/**
 	 * Compiles Tessellation Control Shader
-	 *
-	 <<<<<<< HEAD
 	 * 
-	 * @param paramString
-	 *            Shader Header
-	 *            =======
-	 *            >>>>>>> refs/remotes/origin/master
 	 * @return tessellation control shader object
 	 */
 	private int compileTesControlShader() {
@@ -637,13 +613,7 @@ public class Shader {
 
 	/**
 	 * Compiles Tessellation Evaluation Shader
-	 *
-	 <<<<<<< HEAD
 	 * 
-	 * @param paramString
-	 *            Shader Header
-	 *            =======
-	 *            >>>>>>> refs/remotes/origin/master
 	 * @return tessellation evaluation shader object
 	 */
 	private int compileTesEvalShader() {

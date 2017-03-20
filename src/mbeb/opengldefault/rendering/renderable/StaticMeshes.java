@@ -107,12 +107,7 @@ public class StaticMeshes {
 
 	/**
 	 * a Cube from (0,0,0) to (1,1,1) that can be rendered with GL_LINES
-	 * <<<<<<< HEAD
 	 *
-	 =======
-	 * 
-	 >>>>>>> refs/remotes/origin/master
-	 * 
 	 * @return
 	 */
 	public static VAORenderable getLineCube() {
