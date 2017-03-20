@@ -16,14 +16,13 @@ public class Menu extends AtlasGUI {
 
 	private Map<GUIElement, GameStates> buttons;
 
-	public Menu(String atlasName) {
-		super(atlasName);
+	public Menu(String atlasName, int atlasWidth, int atlasHeight) {
+		super(atlasName, atlasWidth, atlasHeight);
 		buttons = new HashMap<>();
 	}
 
 	public void addButtonElement(GUIElement element, GameStates destination) {
 		buttons.put(element, destination);
-		addGUIElement(element);
 	}
 
 	@Override

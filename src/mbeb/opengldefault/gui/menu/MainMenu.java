@@ -12,8 +12,8 @@ import org.joml.Vector2f;
 import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.game.GameState;
 import mbeb.opengldefault.game.GameStates;
-import mbeb.opengldefault.gui.AtlasGUIElement;
-import mbeb.opengldefault.gui.TextGUI;
+import mbeb.opengldefault.gui.AtlasGUI;
+import mbeb.opengldefault.gui.TextGUIElement;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
 import mbeb.opengldefault.rendering.shader.Shader;
@@ -21,37 +21,44 @@ import mbeb.opengldefault.rendering.shader.Shader;
 public class MainMenu implements GameState {
 	private static final String TAG = "MainMenu";
 
-	private TextGUI textGUI;
+	private AtlasGUI textGUI;
 
 	private Menu menuGUI;
 
 	private Shader guiShader;
 
+	private TextGUIElement fps;
+
 	GameStates nextGameState = null;
 
 	public MainMenu() {
-		menuGUI = new Menu("gui.png");
+		menuGUI = new Menu("gui.png", 2, 2);
 		guiShader = new Shader("gui.vert", "gui.frag");
-		textGUI = new TextGUI(32, 16, "font.png");
+		textGUI = new AtlasGUI("font.png", 32, 16);
 	}
 
 	@Override
 	public void init() {
-		textGUI.addTextElement("Hallo Welt! ! !012412", new Vector2f(), 0.05f).setPositionRelativeToScreen(0.5f, 0.5f);
-		textGUI.addTextElement("Und Hallo Erik!", new Vector2f(-1, -0.2f), 0.02f);
+		fps = textGUI.addText("0", new Vector2f(), 0.01f);
+		fps.setPositionRelativeToScreen(0, 0);
+		textGUI.addText("Hallo Welt! ! !012412", new Vector2f(), 0.05f).setPositionRelativeToScreen(0.0f, 0.75f);
+		textGUI.addText("Und Hallo Erik!", new Vector2f(-1, -0.2f), 0.02f).setPositionRelativeToScreen(1f,
+				0.25f);
 		menuGUI.addButtonElement(
-				new AtlasGUIElement(0, 2, new Vector2f(0.5f, OpenGLContext.getAspectRatio() * 0.5f))
+				menuGUI.addAtlasGUI(0, new Vector2f(), new Vector2f(0.5f, OpenGLContext.getAspectRatio() * 0.5f))
 						.setPositionRelativeToScreen(
 								0.25f, 0.5f), GameStates.GAME);
 		menuGUI.addButtonElement(
-				new AtlasGUIElement(2, 2, new Vector2f(0.5f, OpenGLContext.getAspectRatio() * 0.5f))
+				menuGUI.addAtlasGUI(0, new Vector2f(), new Vector2f(0.5f, OpenGLContext.getAspectRatio() * 0.5f))
 						.setPositionRelativeToScreen(
 								0.75f, 0.5f), GameStates.EXIT);
 	}
 
 	@Override
 	public void update(double deltaTime) {
+		fps.setText("FPS: " + (int) (1 / deltaTime));
 		menuGUI.update(deltaTime);
+		textGUI.update(deltaTime);
 
 		if (KeyBoard.isKeyDown(GLFW_KEY_ESCAPE)) {
 			nextGameState = GameStates.EXIT;

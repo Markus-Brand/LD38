@@ -11,8 +11,7 @@ public class CombinedGUIElement extends GUIElement {
 	private List<GUIElement> elements;
 
 	public CombinedGUIElement() {
-		elements = new ArrayList<GUIElement>();
-		setBounding(null);
+		resetElements();
 	}
 
 	public void addGUIElement(GUIElement element) {
@@ -20,10 +19,9 @@ public class CombinedGUIElement extends GUIElement {
 		if (getBounding() == null) {
 			setBounding(element.getBounding());
 		} else {
-			System.out.println("Pre :" + getBounding().getPosition() + " " + getBounding().getSize());
 			setBounding(getBounding().extend(element.getBounding()));
-			System.out.println("Post:" + getBounding().getPosition() + " " + getBounding().getSize());
 		}
+		setDirty();
 	}
 
 	@Override
@@ -53,6 +51,25 @@ public class CombinedGUIElement extends GUIElement {
 
 	public List<GUIElement> getElements() {
 		return elements;
+	}
+
+	@Override
+	public boolean isDirty() {
+		if (super.isDirty()) {
+			return true;
+		}
+		for (GUIElement element : elements) {
+			if (element.isDirty()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void resetElements() {
+		elements = new ArrayList<>();
+		setBounding(null);
+		setDirty();
 	}
 
 }

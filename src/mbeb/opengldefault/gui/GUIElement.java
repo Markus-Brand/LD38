@@ -85,6 +85,9 @@ public abstract class GUIElement {
 	}
 
 	public void setPosition(Vector2f position) {
+		if (bounding == null) {
+			bounding = new Rectangle(new Vector2f(), new Vector2f());
+		}
 		bounding.setPosition(position);
 	}
 
@@ -93,6 +96,9 @@ public abstract class GUIElement {
 	}
 
 	public void setSize(Vector2f size) {
+		if (bounding == null) {
+			bounding = new Rectangle(new Vector2f(), new Vector2f());
+		}
 		bounding.setSize(size);
 	}
 

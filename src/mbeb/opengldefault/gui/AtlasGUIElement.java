@@ -15,11 +15,11 @@ public class AtlasGUIElement extends GUIElement {
 	/**
 	 * Index in the atlas.
 	 * Example for a 3 * 3 atlas:
-	 * 6|7|8
+	 * 0|1|2
 	 * -----
 	 * 3|4|5
 	 * -----
-	 * 0|1|2
+	 * 6|7|8
 	 */
 	private int atlasIndex;
 
@@ -39,27 +39,20 @@ public class AtlasGUIElement extends GUIElement {
 		this.atlasHeight = atlasHeight;
 	}
 
-	public AtlasGUIElement(int atlasIndex, int atlasSize, Vector2f position, Vector2f size) {
-		super(position, size);
-		this.atlasIndex = atlasIndex;
-		this.atlasWidth = atlasSize;
-		this.atlasHeight = atlasSize;
+	public AtlasGUIElement(int atlasIndex, int atlasWidth, int atlasHeight) {
+		this(atlasIndex, atlasWidth, atlasHeight, new Vector2f(1));
 	}
 
-	public AtlasGUIElement(int atlasIndex, int atlasSize) {
-		this(atlasIndex, atlasSize, new Vector2f(1));
-	}
-
-	public AtlasGUIElement(int atlasIndex, int atlasSize, Vector2f size) {
-		this(atlasIndex, atlasSize, new Vector2f(), size);
+	public AtlasGUIElement(int atlasIndex, int atlasWidth, int atlasHeight, Vector2f size) {
+		this(atlasIndex, atlasWidth, atlasHeight, new Vector2f(), size);
 	}
 
 	public AtlasGUIElement(Vector2f size) {
-		this(0, 1, size);
+		this(0, 1, 1, size);
 	}
 
 	public AtlasGUIElement() {
-		this(0, 1);
+		this(0, 1, 1);
 	}
 
 	/**
