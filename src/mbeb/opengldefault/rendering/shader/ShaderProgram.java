@@ -378,6 +378,11 @@ public class ShaderProgram {
 		shaderObjects.values().forEach(ShaderObject::delete);
 	}
 
+	/**
+	 * acessor for the compiled version of a shader
+	 * @param type the shader type
+	 * @return the openGL-handle for the compiled shader, or -1 if no such shader is present
+	 */
 	private int getCompiled(ShaderObjectType type) {
 		ShaderObject obj = shaderObjects.get(type);
 		if (obj == null) {

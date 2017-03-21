@@ -26,6 +26,9 @@ public enum ShaderObjectType {
 		this.extensions = extensions;
 	}
 
+	/**
+	 * @return the openGL-Type of this ShaderObjectType
+	 */
 	public int getGlType() {
 		return glType;
 	}

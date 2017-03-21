@@ -19,11 +19,18 @@ public class ShaderObject {
 
 	private static final String TAG = "ShaderObject";
 
+	/** the type of this shader */
 	private final ShaderObjectType type;
+	/** the source path of this shader */
 	private final String sourcePath;
+	/** the preprocessor instance to fetch the source from */
 	private final ShaderPreprocessor preprocessor;
+
+	/** the gl-handle to the shader object. Only valid if compiled==true */
 	private int shaderID;
+	/** only true if this shader is currently compiled */
 	private boolean compiled;
+
 
 	public ShaderObject(String sourcePath, ShaderPreprocessor preprocessor) {
 		this.sourcePath = sourcePath;
@@ -38,19 +45,23 @@ public class ShaderObject {
 
 	/**
 	 * ensures that this shader is compiled
-	 * @return a shader object
+	 * @return a gl-handle to a shader object
 	 */
 	public int getCompiledShaderID() {
 		if (!compiled) {
-			final String sourceString = preprocessor.getProcessedShaderFile(sourcePath);
 			shaderID = glCreateShader(getType().getGlType());
 			GLErrors.checkForError(TAG, "glCreateShader");
+
+			final String sourceString = preprocessor.getProcessedShaderFile(sourcePath);
 			glShaderSource(shaderID, sourceString);
 			GLErrors.checkForError(TAG, "glShaderSource");
+
 			glCompileShader(shaderID);
 			GLErrors.checkForError(TAG, "glCompileShader");
+
 			final int compileSuccess = glGetShaderi(shaderID, GL_COMPILE_STATUS);
 			GLErrors.checkForError(TAG, "glGetShaderi");
+
 			if (compileSuccess != 1) {
 				Log.error(TAG, "Error compiling vertex shader: " + compileSuccess);
 				final String log = glGetShaderInfoLog(shaderID);
@@ -60,15 +71,6 @@ public class ShaderObject {
 			compiled = true;
 		}
 		return shaderID;
-	}
-
-	/**
-	 *
-	 * @return a shader object
-	 */
-	public int forceRecompile() {
-		delete();
-		return getCompiledShaderID();
 	}
 
 	/**
