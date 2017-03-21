@@ -18,7 +18,7 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 
 	static {
 		shader = new ShaderProgram("boundingbox.vert", "boundingbox.frag");
-		shader.addUniformBlockIndex("Matrices");
+		shader.addUniformBlockIndex(UBOManager.MATRICES);
 		shader.setDrawMode(GL11.GL_LINES);
 	}
 

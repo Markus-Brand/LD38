@@ -3,13 +3,9 @@ package mbeb.opengldefault.rendering.shader;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL31.*;
-import static org.lwjgl.opengl.GL32.*;
-import static org.lwjgl.opengl.GL40.*;
 
 import java.nio.*;
-import java.text.*;
 import java.util.*;
-import java.util.regex.*;
 
 import mbeb.opengldefault.constants.Constants;
 import org.joml.*;
@@ -48,7 +44,7 @@ public class ShaderProgram {
 	/**
 	 * constructor of a shader object.
 	 *
-	 * @param shaders the pathes to all shader objects
+	 * @param shaders the paths to all shader objects
 	 */
 	public ShaderProgram(final String... shaders) {
 		this(new HashMap<>(), shaders);
@@ -59,9 +55,9 @@ public class ShaderProgram {
 	 *
 	 * @param parameters
 	 *            a map containing initial values for shader parameters
-	 * @param shaders the pathes to all shader objects
+	 * @param shaders the paths to all shader objects
 	 */
-	public ShaderProgram(final Map<String, Object> parameters, final String... shaders) {
+	public ShaderProgram(final Map<String, String> parameters, final String... shaders) {
 		this.preprocessor = new ShaderPreprocessor(parameters);
 		uniformBlocks = new HashMap<>();
 		shaderProgram = -1;
@@ -357,7 +353,7 @@ public class ShaderProgram {
 	 *            the value of the parameter
 	 */
 	public void updateParameter(final String name, final Object value) {
-		preprocessor.updateParameter(name, value);
+		preprocessor.updateParameter(name, value.toString());
 	}
 
 	/**
@@ -365,11 +361,11 @@ public class ShaderProgram {
 	 */
 	public void compile() {
 		linkShader(
-				getCompiled(ShaderObjectType.VERTEX),
-				getCompiled(ShaderObjectType.FRAGMENT),
-				getCompiled(ShaderObjectType.GEOMETRY),
-				getCompiled(ShaderObjectType.TCS),
-				getCompiled(ShaderObjectType.TES));
+				getCompiledShader(ShaderObjectType.VERTEX),
+				getCompiledShader(ShaderObjectType.FRAGMENT),
+				getCompiledShader(ShaderObjectType.GEOMETRY),
+				getCompiledShader(ShaderObjectType.TCS),
+				getCompiledShader(ShaderObjectType.TES));
 
 		for (final Map.Entry<Integer, String> uniformBlockBinding : uniformBlocks.entrySet()) {
 			setUniformBlockIndex(uniformBlockBinding.getKey(), uniformBlockBinding.getValue());
@@ -379,14 +375,14 @@ public class ShaderProgram {
 	}
 
 	/**
-	 * acessor for the compiled version of a shader
+	 * accessor for the compiled version of a shader
 	 * @param type the shader type
-	 * @return the openGL-handle for the compiled shader, or -1 if no such shader is present
+	 * @return the openGL-handle for the compiled shader, or null if no such shader is present
 	 */
-	private int getCompiled(ShaderObjectType type) {
+	private Integer getCompiledShader(ShaderObjectType type) {
 		ShaderObject obj = shaderObjects.get(type);
 		if (obj == null) {
-			return -1;
+			return null;
 		}
 		return obj.getCompiledShaderID();
 	}
@@ -395,21 +391,19 @@ public class ShaderProgram {
 	 * links the shader program
 	 *
 	 * @param vertexShader
-	 *            vertex shader object
 	 * @param fragmentShader
-	 *            fragment shader object
+	 * @param geomShader
 	 * @param tesControlShader
 	 * @param tesEvalShader
-	 * @param geomShader
 	 */
-	private void linkShader(final int vertexShader, final int fragmentShader, final int geomShader, final int tesControlShader, final int tesEvalShader) {
+	private void linkShader(final Integer vertexShader, final Integer fragmentShader, final Integer geomShader, final Integer tesControlShader, final Integer tesEvalShader) {
 		shaderProgram = glCreateProgram();
 		glAttachShader(shaderProgram, vertexShader);
 		glAttachShader(shaderProgram, fragmentShader);
-		if (geomShader != -1) {
+		if (geomShader != null) {
 			glAttachShader(shaderProgram, geomShader);
 		}
-		if (tesControlShader != -1 && tesEvalShader != -1) {
+		if (tesControlShader != null && tesEvalShader != null) {
 			glAttachShader(shaderProgram, tesControlShader);
 			glAttachShader(shaderProgram, tesEvalShader);
 		}
@@ -453,7 +447,7 @@ public class ShaderProgram {
 	}
 
 	/**
-	 * ensure that this shader is in compiled state
+	 * ensure that this shaderProgram is in compiled state
 	 */
 	private void ensureCompiled() {
 		if (!isCompiled() || preprocessor.areParametersDirty()) {

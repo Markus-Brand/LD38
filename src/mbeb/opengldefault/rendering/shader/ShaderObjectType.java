@@ -9,7 +9,7 @@ import static org.lwjgl.opengl.GL40.GL_TESS_CONTROL_SHADER;
 import static org.lwjgl.opengl.GL40.GL_TESS_EVALUATION_SHADER;
 
 /**
- * All the Kinds of shaders in existence, and associated file extensions
+ * All the kinds of shaders in existence, and associated file extensions
  */
 public enum ShaderObjectType {
 	VERTEX(GL_VERTEX_SHADER, "vert"),

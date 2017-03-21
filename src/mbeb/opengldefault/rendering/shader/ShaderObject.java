@@ -32,6 +32,11 @@ public class ShaderObject {
 	private boolean compiled;
 
 
+	/**
+	 * create a new shader object, but do not compile it yet
+	 * @param sourcePath the path to the source file
+	 * @param preprocessor the preprocessor to parse the source file with
+	 */
 	public ShaderObject(String sourcePath, ShaderPreprocessor preprocessor) {
 		this.sourcePath = sourcePath;
 		this.preprocessor = preprocessor;
@@ -39,6 +44,9 @@ public class ShaderObject {
 		compiled = false;
 	}
 
+	/**
+	 * @return the type of this ShaderObject, determined by file extension
+	 */
 	public ShaderObjectType getType() {
 		return type;
 	}
