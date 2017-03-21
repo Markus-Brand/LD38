@@ -129,7 +129,7 @@ public class VAORenderable implements IRenderable {
 	 * @param shader
 	 */
 	@Override
-	public void render(Shader shader) {
+	public void render(ShaderProgram shader) {
 		bind();
 		glDrawElements(shader.getDrawMode(), indexSize, GL_UNSIGNED_INT, 0);
 		GLErrors.checkForError(TAG, "glDrawElements");

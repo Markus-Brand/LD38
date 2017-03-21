@@ -1,14 +1,9 @@
 package mbeb.opengldefault.animation;
 
-import static org.lwjgl.opengl.GL20.*;
-
-import java.nio.*;
 import java.util.*;
 import java.util.concurrent.atomic.*;
 
-import mbeb.opengldefault.constants.Constants;
 import org.joml.*;
-import org.lwjgl.*;
 
 import mbeb.opengldefault.rendering.shader.*;
 
@@ -164,7 +159,7 @@ public class Pose {
 	 * @param uniformName
 	 *            the uniform to store pose-data
 	 */
-	public void setUniformData(Shader shader, String uniformName) {
+	public void setUniformData(ShaderProgram shader, String uniformName) {
 		Matrix4f[] data = new Matrix4f[skeleton.boneCount()];
 		setUniformData(transform, skeleton, data);
 

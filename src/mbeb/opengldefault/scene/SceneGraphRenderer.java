@@ -67,7 +67,7 @@ public class SceneGraphRenderer {
 	 *            the model-Transformation for this Renderable
 	 */
 	public void renderSelf(final SceneObject object, final Matrix4f transform) {
-		final Shader shader = object.getShader();
+		final ShaderProgram shader = object.getShader();
 		shader.use();
 		if (object.hasOwnShader()) {
 			final Vector3f position = camera.getPosition();

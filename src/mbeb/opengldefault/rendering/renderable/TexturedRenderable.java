@@ -34,7 +34,7 @@ public class TexturedRenderable implements IRenderable {
 	}
 
 	@Override
-	public void render(Shader shader) {
+	public void render(ShaderProgram shader) {
 		getTexture().bind(shader);
 		renderable.render(shader);
 	}
