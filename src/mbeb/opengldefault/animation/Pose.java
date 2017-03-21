@@ -209,11 +209,11 @@ public class Pose {
 			transforms[b].getCombinedBoneTransform().get(data, b * FLOATS_PER_MAT4);
 		}
 
-		FloatBuffer buf = BufferUtils.createFloatBuffer(data.length);
-		buf.put(data);
-		buf.flip();
+		FloatBuffer buffer = BufferUtils.createFloatBuffer(data.length);
+		buffer.put(data);
+		buffer.flip();
 
-		glUniformMatrix4fv(shader.getUniform(uniformName), false, buf);
+		glUniformMatrix4fv(shader.getUniform(uniformName), false, buffer);
 		GLErrors.checkForError(TAG, "glUniformMatrix4fv");
 	}
 }
