@@ -26,7 +26,7 @@ public class BezierBehaviour implements IBehaviour {
 	}
 
 	@Override
-	public void update(double deltaTime, Entity entity) {
+	public void update(double deltaTime, IEntity entity) {
 		progress += deltaTime * speed;
 		progress %= curve.getMaxLength();
 		Vector3f direction = curve.getPosition(progress).sub(entity.getPosition(), new Vector3f());
@@ -37,7 +37,7 @@ public class BezierBehaviour implements IBehaviour {
 	}
 
 	@Override
-	public boolean triggers(Entity entity) {
+	public boolean triggers(IEntity entity) {
 		return true;
 	}
 }

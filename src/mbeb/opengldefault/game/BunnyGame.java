@@ -54,7 +54,7 @@ public class BunnyGame extends Game {
 
 	SceneObject playerObj, bunny0, bunny1, bunny2, bunny3, bunny4, curveObj;
 
-	Entity mainBunny, followingBunny1, followingBunny2, followingBunny3, followingBunny4, camEntity, playerEntity, spotLightEntity, ple;
+	Entity mainBunny, followingBunny1, followingBunny2, followingBunny3, followingBunny4, camEntity, playerEntity, spotLightEntity, ple, lampEntity;
 
 	@Override
 	public void init() {
@@ -74,6 +74,7 @@ public class BunnyGame extends Game {
 		AnimatedMesh playerAnim = new ObjectLoader().loadFromFileAnim("player.fbx");
 		playerAnim.setTransform(MeshFlip);
 		Texture bunnyTexture = new Texture("player.png");
+		Texture lampTexture = new Texture("lamp.png");
 		playerAnim.getSkeleton().printRecursive("");
 
 		final AnimatedMesh bunnyAnim = new ObjectLoader().loadFromFileAnim("ohrenFlackern.fbx");
@@ -97,6 +98,10 @@ public class BunnyGame extends Game {
 		SceneObject box = new SceneObject(new TexturedRenderable(boxRenderable, bunnyTexture));
 		box.setShader(stillShader);
 
+		final IRenderable lampRenderable = new ObjectLoader().loadFromFile("lamp.obj");
+		SceneObject lamp = new SceneObject(new TexturedRenderable(lampRenderable, lampTexture));
+		lamp.setShader(stillShader);
+
 		animPlayer = new AnimationStateFacade(playerAnim);
 		animBunny = new AnimationStateFacade(bunnyAnim);
 
@@ -113,6 +118,7 @@ public class BunnyGame extends Game {
 		followingBunny2 = new SceneEntity(bunny2);
 		followingBunny3 = new SceneEntity(bunny3);
 		followingBunny4 = new SceneEntity(bunny4);
+		lampEntity = new SceneEntity(lamp);
 
 		mainBunny.addBehaviour(1, new BezierBehaviour(curve, 4));
 
@@ -141,15 +147,18 @@ public class BunnyGame extends Game {
 		bunnyScene.getSceneGraph().addSubObject(bunny4);
 		bunnyScene.getSceneGraph().addSubObject(curveObj);
 		bunnyScene.getSceneGraph().addSubObject(box);
+		bunnyScene.getSceneGraph().addSubObject(lamp);
 
 		bunnyScene.getSceneGraph().setShader(animatedShader);
 
 
 		//a light on the hand
-		SpotLight pl = new SpotLight(new Color(240, 245, 255), new Vector3f(), new Vector3f(0, 1, 0), 30, 40, 9000);
-		ple = new SpotLightEntity(pl);
+		PointLight pl = new PointLight(new Color(240, 245, 255), new Vector3f(), 50);
+		ple = new PointLightEntity(pl);
 		bunnyScene.getLightManager().addLight(pl);
-		ple.addBehaviour(1, new BoneTrackingBehaviour(playerObj, animPlayer.getRenderable(), "Hand.L", new Vector3f(0, 0.5f, 0)));
+		ple.addBehaviour(1, new ParentBehaviour(lamp, new Vector3f(0, -0.5f, 0)));
+
+		lampEntity.addBehaviour(1, new BoneTrackingBehaviour(playerObj, animPlayer.getRenderable(), "Hand.L", new Vector3f(0, 0.5f, 0)).fixedDirection());
 
 
 		//pl = new PointLight(Color.GREEN, new Vector3f(0, 10, 0), 1000);
@@ -205,6 +214,7 @@ public class BunnyGame extends Game {
 		followingBunny3.update(deltaTime);
 		followingBunny4.update(deltaTime);
 		camEntity.update(deltaTime);
+		lampEntity.update(deltaTime);
 
 		//pl.setColor(new Color((float) java.lang.Math.sin(timepassed) / 2 + 0.5f, (float) 1.0, (float) java.lang.Math.cos(timepassed) / 2 + 0.5f));
 		//pl.setPosition(new Vector3f((float) java.lang.Math.sin(timepassed) * 5, 10, (float) java.lang.Math.cos(timepassed) * 5));

@@ -35,17 +35,10 @@ uniform int water;
 #include modules/SpotLightLogic.glsl
 
 
-vec3 calcNormal(vec3 normalIn, vec3 fragPos){
-	return normalize(normalIn) + vec3(0.03 * cos(fragPos.x * 120.0f +  8.0f * time), 0.03 *  sin(fragPos.y * 130.0f + 7.0f * time), 0.03 *  sin(fragPos.z * 140.0f + 5.0f * time));
-}
+
 
 void main(){
-	vec3 norm;
-	if(water == 0){	
-		norm = normalize(calcNormal(normal, pos));
-	}else{
-		norm = normalize(normal);
-	}
+	vec3 norm = normalize(normal);
 
     vec4 textureColor = texture(u_texture, tex);
     vec3 materialColor = textureColor.rgb;

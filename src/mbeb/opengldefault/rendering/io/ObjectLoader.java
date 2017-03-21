@@ -62,8 +62,10 @@ public class ObjectLoader {
 		for (YAMLParser.YAMLNode animNode: root.getChildren()) {
 			Animation anim = mesh.getAnimationByName(animNode.getName());
 
-			for (YAMLParser.YAMLNode boneNode : animNode.getChildren()) {
-				adjustBoneAnimationPriorities(anim, anim.getSkeleton(), boneNode);
+			if (anim != null) {
+				for (YAMLParser.YAMLNode boneNode : animNode.getChildren()) {
+					adjustBoneAnimationPriorities(anim, anim.getSkeleton(), boneNode);
+				}
 			}
 		}
 	}
@@ -219,6 +221,9 @@ public class ObjectLoader {
 		//normalize weights
 		for (int v = 0; v < mesh.mNumVertices(); v++) {
 			Map<Integer, Float> weights = rawVertexBoneWeights.get(v);
+			if (weights == null) {
+				weights = new HashMap<>();
+			}
 			//System.err.println("weights = " + weights.size());
 			while(weights.size() < weightsAmount) {
 				//putting 0 at some non-existent index
@@ -231,7 +236,7 @@ public class ObjectLoader {
 			while(list.size() > weightsAmount) {
 				list.remove(list.size() - 1);
 			}
-			//adjuts weights
+			//adjusts weights
 			float sum = list.stream().map(Map.Entry::getValue).reduce(0f, Float::sum);
 			for (Map.Entry<Integer, Float> entry : list) {
 				entry.setValue(entry.getValue() / sum);
@@ -317,6 +322,7 @@ public class ObjectLoader {
 		for (int a = 0; a < scene.mNumAnimations(); a++) {
 			AIAnimation aianim = AIAnimation.create(scene.mAnimations().get(a));
 			Animation anim = Animation.copySettingsFromAI(aianim);
+			System.out.println(anim.getName());
 
 			for (int channel = 0; channel < aianim.mNumChannels(); channel++) {
 				AINodeAnim node = AINodeAnim.create(aianim.mChannels().get(channel));

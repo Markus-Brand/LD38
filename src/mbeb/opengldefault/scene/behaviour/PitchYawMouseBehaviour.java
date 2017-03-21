@@ -35,12 +35,12 @@ public class PitchYawMouseBehaviour implements IBehaviour {
 	}
 
 	@Override
-	public boolean triggers(Entity entity) {
+	public boolean triggers(IEntity entity) {
 		return true;
 	}
 
 	@Override
-	public void update(double deltaTime, Entity entity) {
+	public void update(double deltaTime, IEntity entity) {
 
 		final Vector2f delta = lastMousePos.sub(Mouse.getPos(), new Vector2f());
 
@@ -71,7 +71,7 @@ public class PitchYawMouseBehaviour implements IBehaviour {
 	 * @param entity
 	 *            the entity the behaviour is applied to
 	 */
-	private void updateDirection(Entity entity) {
+	private void updateDirection(IEntity entity) {
 		Vector3f direction = new Vector3f();
 
 		direction.x = (float) (Math.cos(pitch) * Math.cos(yaw));

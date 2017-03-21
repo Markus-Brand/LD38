@@ -99,7 +99,7 @@ public class ShaderPreprocessor {
 	private String process(String fileName) {
 		String rawSource = Cache.getInstance().getRawSource(fileName);
 
-		String[] sourceParts = Arrays.asList(rawSource.split("\\R")).stream().map((String line) -> {
+		String[] sourceParts = Arrays.stream(rawSource.split("\\R")).map((String line) -> {
 			String trimmedLine = line.trim();
 			if (trimmedLine.startsWith(INCLUDE_TAG)) {
 				String includedFileName = trimmedLine.substring(INCLUDE_TAG.length()).trim();

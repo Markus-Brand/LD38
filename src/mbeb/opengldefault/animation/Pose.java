@@ -137,7 +137,6 @@ public class Pose {
 			return p2;
 		}
 
-		assert p1.skeleton == p2.skeleton;
 		Log.assertEqual(TAG, p1.skeleton, p2.skeleton, "Cannot lerp poses with different skeletons");
 
 		Pose result = new Pose(p1.skeleton, p1.transform);

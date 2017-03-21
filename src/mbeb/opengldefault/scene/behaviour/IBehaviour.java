@@ -17,7 +17,7 @@ public interface IBehaviour {
 	 *            the Entity, that is affected by this behaviour
 	 * @return
 	 */
-	boolean triggers(Entity entity);
+	boolean triggers(IEntity entity);
 
 	/**
 	 * Updates the entity with this behaviour
@@ -27,5 +27,19 @@ public interface IBehaviour {
 	 * @param entity
 	 *            the Entity, that is affected by this behaviour
 	 */
-	void update(double deltaTime, Entity entity);
+	void update(double deltaTime, IEntity entity);
+
+	/**
+	 * @return a new identical behaviour, which doesn't alter the rotation of the entity
+	 */
+	default IBehaviour fixedDirection() {
+		return new RestrictableBehaviour(this, true, false);
+	}
+
+	/**
+	 * @return a new identical behaviour, which doesn't alter the location of the entity
+	 */
+	default IBehaviour fixedLocation() {
+		return new RestrictableBehaviour(this, true, false);
+	}
 }
