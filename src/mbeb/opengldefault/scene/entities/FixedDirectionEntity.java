@@ -47,7 +47,8 @@ public class FixedDirectionEntity implements IEntity {
 	}
 
 	@Override
-	public void addBehaviour(int priority, IBehaviour behaviour) {
+	public IEntity addBehaviour(int priority, IBehaviour behaviour) {
 		wrappedObject.addBehaviour(priority, behaviour);
+		return this;
 	}
 }

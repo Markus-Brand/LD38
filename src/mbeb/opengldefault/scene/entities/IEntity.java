@@ -74,8 +74,9 @@ public interface IEntity {
 	 *            low value is higher priority
 	 * @param behaviour
 	 *            the new Behaviour
+	 * @return this, for chaining
 	 */
-	void addBehaviour(int priority, IBehaviour behaviour);
+	IEntity addBehaviour(int priority, IBehaviour behaviour);
 
 
 }

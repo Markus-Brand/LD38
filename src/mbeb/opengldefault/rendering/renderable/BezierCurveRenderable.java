@@ -1,10 +1,6 @@
 package mbeb.opengldefault.rendering.renderable;
 
-import java.nio.*;
-
-import mbeb.opengldefault.constants.Constants;
 import org.joml.*;
-import org.lwjgl.*;
 import org.lwjgl.opengl.*;
 
 import mbeb.opengldefault.curves.*;
