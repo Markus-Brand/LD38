@@ -11,6 +11,7 @@ import mbeb.opengldefault.logging.Log;
 import mbeb.opengldefault.rendering.shader.*;
 import java.util.concurrent.atomic.*;
 
+import mbeb.opengldefault.constants.Constants;
 import org.joml.*;
 import org.lwjgl.*;
 
@@ -202,18 +203,13 @@ public class Pose {
 	 *            the uniform to store pose-data
 	 */
 	public void setUniformData(Shader shader, String uniformName) {
-		float[] data = new float[FLOATS_PER_MAT4 * skeleton.boneCount()];
 		BoneState[] transforms = getConvertedData();
+		Matrix4f[] data = new Matrix4f[transforms.length];
 
 		for (int b = 0; b < transforms.length; b++) {
-			transforms[b].getCombinedBoneTransform().get(data, b * FLOATS_PER_MAT4);
+			data[b] = transforms[b].getCombinedBoneTransform();
 		}
 
-		FloatBuffer buffer = BufferUtils.createFloatBuffer(data.length);
-		buffer.put(data);
-		buffer.flip();
-
-		glUniformMatrix4fv(shader.getUniform(uniformName), false, buffer);
-		GLErrors.checkForError(TAG, "glUniformMatrix4fv");
+		shader.setUniform(uniformName, data);
 	}
 }

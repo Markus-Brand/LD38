@@ -63,7 +63,7 @@ public class Texture {
 		GLErrors.checkForError(TAG, "glActiveTexture");
 		glBindTexture(GL_TEXTURE_2D, textureHandle);
 		GLErrors.checkForError(TAG, "glBindTexture");
-		glUniform1i(shader.getUniform(uniformName), textureHandle);
+		shader.setUniform(uniformName, textureHandle);
 		GLErrors.checkForError(TAG, "glUniform1i");
 	}
 

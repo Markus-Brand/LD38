@@ -1,5 +1,6 @@
 package mbeb.opengldefault.animation;
 
+import mbeb.opengldefault.constants.Constants;
 import org.joml.*;
 import org.lwjgl.assimp.*;
 
