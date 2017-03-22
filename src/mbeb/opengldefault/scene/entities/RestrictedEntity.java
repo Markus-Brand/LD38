@@ -6,14 +6,17 @@ import org.joml.Vector3f;
 import java.util.Set;
 
 /**
- * A Decorator for IEntity not passing any SetPosition-calls
+ * A Decorator for IEntity to not pass rotation or translation commands
  */
-public class StationaryEntity implements IEntity {
+public class RestrictedEntity implements IEntity {
 
 	private final IEntity wrappedObject;
+	private final boolean move, rotate;
 
-	public StationaryEntity(IEntity wrappedObject) {
+	public RestrictedEntity(IEntity wrappedObject, boolean move, boolean rotate) {
 		this.wrappedObject = wrappedObject;
+		this.move = move;
+		this.rotate = rotate;
 	}
 
 	@Override
@@ -28,12 +31,16 @@ public class StationaryEntity implements IEntity {
 
 	@Override
 	public void setPosition(Vector3f position) {
-		//nothing
+		if (move) {
+			wrappedObject.setPosition(position);
+		}
 	}
 
 	@Override
 	public void setDirection(Vector3f direction) {
-		wrappedObject.setDirection(direction);
+		if (rotate) {
+			wrappedObject.setDirection(direction);
+		}
 	}
 
 	@Override

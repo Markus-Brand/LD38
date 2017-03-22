@@ -15,7 +15,7 @@ public class ParentBehaviour implements IBehaviour {
 	private SceneObject parentObject;
 	/** a position in local bone space (0^3 to be exactly at the bones origin) */
 	private Vector3f localPosition;
-
+	/** a rotation in local bone space (0^3 to be exactly at the bones origin) */
 	private Vector3f localDirection;
 
 	public ParentBehaviour(SceneObject parent) {
