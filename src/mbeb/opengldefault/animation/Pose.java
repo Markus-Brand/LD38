@@ -1,21 +1,11 @@
 package mbeb.opengldefault.animation;
 
-import static org.lwjgl.opengl.GL20.*;
-
-import java.nio.*;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.logging.Log;
 import mbeb.opengldefault.rendering.shader.*;
-import java.util.concurrent.atomic.*;
 
-import mbeb.opengldefault.constants.Constants;
 import org.joml.*;
-import org.lwjgl.*;
-
-import mbeb.opengldefault.rendering.shader.*;
 
 /**
  * orientations of a bone-construct
@@ -23,7 +13,6 @@ import mbeb.opengldefault.rendering.shader.*;
 public class Pose {
 
 	private static final String TAG = "Pose";
-	private static final int FLOATS_PER_MAT4 = 16;
 
 	/** A BoneTransformation for each bone */
 	private Map<String, BoneTransformation> boneTransforms = new HashMap<>();

@@ -139,9 +139,9 @@ public class AnimationStateFacade implements IRenderableHolder {
 	 * @param target the speed to slide to
 	 * @param deltaTime time since last call of this method
 	 */
-	public void slideSpeed(String presetName, double target, double deltaTime) {
+	public void slideSpeed(String presetName, double target, double deltaTime, double speed) {
 		AnimatorPreset preset = getPreset(presetName);
-		preset.setSpeed(slideParameter(preset.getSpeed(), target, deltaTime));
+		preset.setSpeed(slideParameter(preset.getSpeed(), target, deltaTime, speed));
 	}
 
 	/**
@@ -151,8 +151,8 @@ public class AnimationStateFacade implements IRenderableHolder {
 	 * @param deltaTime
 	 * @return
 	 */
-	private double slideParameter(double current, double target, double deltaTime) {
-		double factor = 1 / (deltaTime + 1);
+	private double slideParameter(double current, double target, double deltaTime, double speed) {
+		double factor = 1 / ((deltaTime * speed) + 1);
 		return target * (1 - factor) + current * factor;
 	}
 		

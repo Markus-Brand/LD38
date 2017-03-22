@@ -214,9 +214,9 @@ public class BunnyGame extends Game {
 		timePassed += deltaTime;
 		
 		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
-			animPlayer.slideSpeed("jogging", 50, deltaTime * 5);
+			animPlayer.slideSpeed("jogging", 50, deltaTime, 5);
 		} else {
-			animPlayer.slideSpeed("jogging", 25, deltaTime * 5);
+			animPlayer.slideSpeed("jogging", 25, deltaTime, 5);
 		}
 		animPlayer.ensureRunning("jogging", KeyBoard.isKeyDown(GLFW_KEY_Q));
 		animPlayer.ensureRunning("hat", KeyBoard.isKeyDown(GLFW_KEY_E), false);
