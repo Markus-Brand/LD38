@@ -6,12 +6,11 @@ import java.util.function.*;
 import org.joml.*;
 
 import mbeb.opengldefault.logging.*;
-import mbeb.opengldefault.scene.*;
 
 /**
  * a bone inside a mesh
  */
-public class Bone implements BoundingBox.Owner {
+public class Bone {
 
 	private static final String TAG = "Bone";
 
@@ -22,8 +21,6 @@ public class Bone implements BoundingBox.Owner {
 	private Matrix4f inverseBindTransform;
 	/** boneTransformation in bind pose */
 	private Matrix4f defaultBoneTransform;
-
-	private BoundingBox boundingBox;
 
 	private List<Bone> children;
 
@@ -46,19 +43,6 @@ public class Bone implements BoundingBox.Owner {
 			children = new ArrayList<>();
 		}
 		return children;
-	}
-
-	@Override
-	public BoundingBox getBoundingBox() {
-		if (boundingBox == null) {
-			setBoundingBox(new BoundingBox.Empty(getDefaultBoneTransform()));
-		}
-		return boundingBox;
-	}
-
-	@Override
-	public void setBoundingBox(BoundingBox boundingBox) {
-		this.boundingBox = boundingBox;
 	}
 
 	/**

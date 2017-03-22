@@ -37,7 +37,7 @@ public class BoneTrackingBehaviour implements IBehaviour {
 	@Override
 	public void update(double deltaTime, IEntity entity) {
 		Matrix4f boneTrans = renderable.getCurrentPose().get(boneID).getPoseBoneTransform();
-		Matrix4f parentTrans = animatedObject.getGLobalTransformation().asMatrix();
+		Matrix4f parentTrans = animatedObject.getGlobalTransformation().asMatrix();
 
 		Matrix4f finalTrans = parentTrans.mul(boneTrans, new Matrix4f());
 

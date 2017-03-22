@@ -81,7 +81,7 @@ public class OpenGLContext {
 		evaluateCommandLineArguments(args);
 		initOpenGL();
 
-		createWindow("Test window", true, getVideoModeWidth(), getVideoModeHeight());
+		createWindow("Test window", false, getVideoModeWidth(), getVideoModeHeight());
 		GL.createCapabilities();
 		GLErrors.checkForError(TAG, "createCapabilities");
 

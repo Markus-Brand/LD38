@@ -5,6 +5,9 @@ import org.joml.*;
 import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.logging.*;
 
+import java.util.*;
+import java.util.function.Function;
+
 /**
  * A simple struct defining a box-like area in the world
  */
@@ -38,19 +41,19 @@ public class BoundingBox {
 
 		@Override
 		public BoundingBox duplicate() {
-			return new Empty(modelTransform);
+			return new Empty(getModelTransform());
 		}
 
 		@Override
 		public BoundingBox unionWith(final BoundingBox other) {
 			BoundingBox result = other.duplicate();
-			result.setModelTransform(modelTransform.mul(result.modelTransform, new Matrix4f()));
+			result.setModelTransform(getModelTransform().mul(result.getModelTransform(), new Matrix4f()));
 			return result;
 		}
 
 		@Override
 		public BoundingBox extendTo(final Vector3f localVertex) {
-			return new BoundingBox(localVertex, new Vector3f(0), modelTransform);
+			return new BoundingBox(localVertex, new Vector3f(0), getModelTransform());
 		}
 
 		@Override
@@ -62,13 +65,18 @@ public class BoundingBox {
 	/**
 	 * local 3d aabb
 	 */
-	protected Vector3f localStart;
-	protected Vector3f localSize;
+	private Vector3f localStart;
+	private Vector3f localSize;
 
 	/**
 	 * the transformation for this object
 	 */
-	protected Matrix4f modelTransform;
+	private Matrix4f modelTransform;
+
+	/**
+	 * data caches
+	 */
+	private Vector3f[] localCorners = null;
 
 	public BoundingBox(final Vector3f localStart, final Vector3f localSize) {
 		this(localStart, localSize, new Matrix4f());
@@ -78,6 +86,7 @@ public class BoundingBox {
 		this.localStart = Log.assertNotNull(TAG, localStart);
 		this.localSize = Log.assertNotNull(TAG, localSize);
 		this.modelTransform = localToWorld;
+		changed();
 	}
 
 	/**
@@ -107,12 +116,23 @@ public class BoundingBox {
 		localEnd.z = java.lang.Math.max(localEnd.z, localVertex.z);
 
 		localEnd.sub(localStart, localSize);
-
+		changed();
 		return this;
+	}
+
+	public void scale(float boundingBoxSizeFactor) {
+		Vector3f startOffset = localSize.mul((1 - boundingBoxSizeFactor) / 2f, new Vector3f());
+
+		localStart.add(startOffset);
+		localSize.mul(boundingBoxSizeFactor);
 	}
 
 	public boolean isEmpty() {
 		return false;
+	}
+
+	public void changed() {
+		localCorners = null;
 	}
 
 	/**
@@ -132,11 +152,11 @@ public class BoundingBox {
 	 */
 	public void setModelTransform(final Matrix4f transform) {
 		this.modelTransform = transform;
+		changed();
 	}
 
 	@Override
 	public String toString() {
-		localSize.toString();
 		return "BoundingBox(start=" + localStart + ", size=" + localSize + ", transform=" + modelTransform + ")";
 	}
 
@@ -149,10 +169,10 @@ public class BoundingBox {
 	 */
 	public BoundingBox unionWith(final BoundingBox childBox) {
 		//We also need to check for updates in the child BB, because the BB could potentially grow, if the children have transformations on their own
-		final Vector3f[] childCorners = childBox.getParentGlobalCorners();
+		final List<Vector4f> childCorners = Streamerator.asList(childBox.getParentGlobalCorners());
 		BoundingBox bigger = this.duplicate();
-		for (final Vector3f corner : childCorners) {
-			bigger = bigger.extendTo(corner);
+		for (final Vector4f corner : childCorners) {
+			bigger = bigger.extendTo(new Vector3f(corner.x, corner.y, corner.z));
 		}
 		return bigger;
 	}
@@ -162,19 +182,21 @@ public class BoundingBox {
 	 *
 	 * @return
 	 */
-	public Vector3f[] getLocalCorners() {
-		final Vector3f[] rawCorners = new Vector3f[8];
-		for (int x = 0; x <= 1; x++) {
-			for (int y = 0; y <= 1; y++) {
-				for (int z = 0; z <= 1; z++) {
-					final Vector3f res = new Vector3f(localSize);
-					res.mul(x, y, z);
-					res.add(localStart);
-					rawCorners[x * 4 + y * 2 + z] = res;
+	public Iterator<Vector3f> getLocalCorners() {
+		if (localCorners == null) {
+			localCorners = new Vector3f[8];
+			for (int x = 0; x <= 1; x++) {
+				for (int y = 0; y <= 1; y++) {
+					for (int z = 0; z <= 1; z++) {
+						final Vector3f res = new Vector3f(localSize);
+						res.mul(x, y, z);
+						res.add(localStart);
+						localCorners[x * 4 + y * 2 + z] = res;
+					}
 				}
 			}
 		}
-		return rawCorners;
+		return Streamerator.ofArray(localCorners);
 	}
 
 	/**
@@ -182,13 +204,9 @@ public class BoundingBox {
 	 *
 	 * @return
 	 */
-	public Vector3f[] getParentGlobalCorners() {
-		final Vector3f[] corners = getLocalCorners();
-		for (int c = 0; c < corners.length; c++) {
-			Vector4f corner = new Vector4f(corners[c], 1.0f).mul(getModelTransform());
-			corners[c] = new Vector3f(corner.x, corner.y, corner.z);
-		}
-		return corners;
+	public Iterator<Vector4f> getParentGlobalCorners() {
+		return Streamerator.map(getLocalCorners(),
+				local -> new Vector4f(local, 1.0f).mul(getModelTransform()));
 	}
 
 	/**
@@ -197,15 +215,9 @@ public class BoundingBox {
 	 * @param parentTransform
 	 * @return
 	 */
-	public Vector4f[] getGlobalCorners(final Matrix4f parentTransform) {
-		final Vector3f[] parentGlobalCorners = getParentGlobalCorners();
-		final Vector4f[] globalCorners = new Vector4f[8];
-
-		for (int c = 0; c < globalCorners.length; c++) {
-			globalCorners[c] = new Vector4f(parentGlobalCorners[c], 1.0f).mul(parentTransform);
-		}
-
-		return globalCorners;
+	public Iterator<Vector4f> getGlobalCorners(final Matrix4f parentTransform) {
+		return Streamerator.map(getParentGlobalCorners(),
+				parentGlobal -> parentGlobal.mul(parentTransform));
 	}
 
 	/**
@@ -217,20 +229,22 @@ public class BoundingBox {
 	 *            the camera to look from
 	 * @return screen-space positions
 	 */
-	public Vector3f[] getCornersOnScreen(final Matrix4f parentTransform, final ICamera camera) {
-		final Vector4f[] globalCorners = getGlobalCorners(parentTransform);
-		final Vector3f[] screenCorners = new Vector3f[8];
-		for (int c = 0; c < globalCorners.length; c++) {
-			screenCorners[c] = camera.getPosOnScreen(globalCorners[c]);
-		}
-		return screenCorners;
+	public Iterator<Vector3f> getCornersOnScreen(final Matrix4f parentTransform, final ICamera camera) {
+		return Streamerator.map(getGlobalCorners(parentTransform), camera::getPosOnScreen);
 	}
 
 	private BoundingBox getGlobalBoundinBox(final Matrix4f parentTransform) {
-		final Vector4f[] globalCorners = getGlobalCorners(parentTransform);
-		float minX = globalCorners[0].x, minY = globalCorners[0].y, minZ = globalCorners[0].z, maxX = globalCorners[0].x, maxY = globalCorners[0].y, maxZ = globalCorners[0].z;
+		final List<Vector4f> globalCorners = Streamerator.asList(getGlobalCorners(parentTransform));
 
-		for (Vector4f globalCorner : globalCorners) {
+
+		float minX = globalCorners.get(0).x;
+		float minY = globalCorners.get(0).y;
+		float minZ = globalCorners.get(0).z;
+		float maxX = globalCorners.get(0).x;
+		float maxY = globalCorners.get(0).y;
+		float maxZ = globalCorners.get(0).z;
+
+		for (Vector4f globalCorner : globalCorners.subList(1, globalCorners.size() - 1)) {
 			minX = java.lang.Math.min(globalCorner.x, minX);
 			minY = java.lang.Math.min(globalCorner.y, minY);
 			minZ = java.lang.Math.min(globalCorner.z, minZ);
@@ -239,7 +253,7 @@ public class BoundingBox {
 			maxZ = java.lang.Math.max(globalCorner.z, maxZ);
 		}
 
-		return new BoundingBox(new Vector3f(minX, minY, minZ), new Vector3f(maxX - minX, maxY - minY, maxZ - minZ));
+		return new BoundingBox(new Vector3f(minX, minY, minZ), new Vector3f(maxX - minX, maxY - minY, maxZ - minZ));/**/
 	}
 
 	/**
@@ -324,5 +338,46 @@ public class BoundingBox {
 		}
 
 		return true;
+	}
+
+	public static class Streamerator {
+		public static <T> Iterator<T> ofArray(final T[] data) {
+			return new Iterator<T>() {
+
+				int index = 0;
+
+				@Override
+				public boolean hasNext() {
+					return index < data.length;
+				}
+
+				@Override
+				public T next() {
+					return data[index++];
+				}
+			};
+		}
+
+		public static <T, V> Iterator<V> map(final Iterator<T> mapped, final Function<T, V> mapper) {
+			return new Iterator<V>() {
+				@Override
+				public boolean hasNext() {
+					return mapped.hasNext();
+				}
+
+				@Override
+				public V next() {
+					return mapper.apply(mapped.next());
+				}
+			};
+		}
+
+		public static <T> List<T> asList(Iterator<T> it) {
+			List<T> list = new ArrayList<>();
+			while (it.hasNext()) {
+				list.add(it.next());
+			}
+			return list;
+		}
 	}
 }

@@ -2,9 +2,6 @@ package mbeb.opengldefault.animation;
 
 import java.util.*;
 
-import org.joml.*;
-
-import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.scene.*;
@@ -65,39 +62,9 @@ public class AnimatedRenderable implements IRenderable {
 
 	@Override
 	public BoundingBox getBoundingBox() {
-		if (animatedBoundingBox == null) {
-			animatedBoundingBox = adjustWith(new BoundingBox.Empty(), mesh.getSkeleton(), getCurrentPose().getTransform());
-		}
-		return animatedBoundingBox;
+		return mesh.getBoundingBox();
 	}
 
-	/**
-	 * adjust the boundingBox recursively for a given skeleton
-	 * 
-	 * @param box
-	 *            the initial box
-	 * @param bone
-	 *            the skeleton to insert into the box
-	 * @param parentTransform
-	 * @return a larger box
-	 */
-	private BoundingBox adjustWith(BoundingBox box, Bone bone, Matrix4f parentTransform) {
-		if (bone.getIndex() < 0) {
-			return box;
-		}
-		Matrix4f boneTransform = getCurrentPose().getRaw(bone.getName()).asMatrix();
-		Matrix4f transform = parentTransform.mul(boneTransform, new Matrix4f());
-
-		BoundingBox boneBox = bone.getBoundingBox();
-		boneBox.setModelTransform(transform);
-		box = box.unionWith(boneBox);
-
-		for (Bone childBone : bone.getChildren()) {
-			box = adjustWith(box, childBone, transform);
-		}
-
-		return box;
-	}
 
 	@Override
 	public boolean hasAnimations() {

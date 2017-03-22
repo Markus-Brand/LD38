@@ -21,21 +21,29 @@ public class FollowingBehaviour extends ReferenceEntityBehaviour {
 
 	@Override
 	public void update(double deltaTime, IEntity entity) {
-		Vector3f direction = getReference().getPosition().sub(entity.getPosition(), new Vector3f());
+		Vector3f direction = getDirectionTo(entity);
 
-		float distance = (float) (speed * deltaTime);
+		float distance = (float) (getSpeed(entity) * deltaTime);
 
 		if (direction.length() == 0) {
 			return;
 		}
 
 		if (direction.length() > distance) {
-			direction.normalize().mul(distance);
+			direction.normalize();
+			entity.setDirection(direction);
+			direction.mul(distance);
 		}
 
-		entity.setDirection(direction.normalize(new Vector3f()));
-
 		entity.setPosition(entity.getPosition().add(direction, new Vector3f()));
+	}
+
+	protected float getSpeed(IEntity entity) {
+		return speed;
+	}
+
+	protected Vector3f getDirectionTo(IEntity entity) {
+		return getReference().getPosition().sub(entity.getPosition(), new Vector3f());
 	}
 
 	@Override

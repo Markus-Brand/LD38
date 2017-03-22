@@ -5,6 +5,7 @@ import org.joml.*;
 import mbeb.opengldefault.rendering.io.*;
 import mbeb.opengldefault.scene.*;
 
+import java.util.List;
 /**
  * Provides static Meshes
  *
@@ -87,9 +88,9 @@ public class StaticMeshes {
 			uniformBox = uniformBox.extendTo(new Vector3f(0, 0, 0));
 			uniformBox = uniformBox.extendTo(new Vector3f(1, 1, 1));
 
-			Vector3f[] corners = uniformBox.getLocalCorners();
+			List<Vector3f> corners = BoundingBox.Streamerator.asList(uniformBox.getLocalCorners());
 
-			float[] data = new float[corners.length * 3];
+			float[] data = new float[corners.size() * 3];
 			int index = 0;
 			for (Vector3f corner : corners) {
 				data[index++] = corner.x;
@@ -97,7 +98,10 @@ public class StaticMeshes {
 				data[index++] = corner.z;
 			}
 
-			final int[] indexData = {0, 1, 1, 3, 3, 2, 2, 0, 0, 4, 1, 5, 2, 6, 3, 7, 4, 5, 5, 7, 7, 6, 6, 4};
+			final int[] indexData = {
+					0, 1, 1 , 3, 3, 2, 2, 0,
+					0, 4, 1, 5, 2, 6, 3, 7,
+					4, 5, 5, 7, 7, 6, 6, 4};
 
 			lineCube = new VAORenderable(data, indexData, new DataFragment[] {DataFragment.POSITION}, uniformBox);
 		}

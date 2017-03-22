@@ -104,6 +104,15 @@ public class YAMLParser {
 		public String getData() {
 			return data;
 		}
+
+		public YAMLNode getChildByName(String name) {
+			for (YAMLNode child: getChildren()) {
+				if (child.getName().equalsIgnoreCase(name)) {
+					return child;
+				}
+			}
+			return null;
+		}
 	}
 
 	/**

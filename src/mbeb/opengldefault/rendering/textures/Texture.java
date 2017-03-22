@@ -44,7 +44,7 @@ public class Texture {
 	 *
 	 * @param shader
 	 *            the shader to alter
-	 * @see bind(Shader, String)
+	 * @see #bind(Shader, String)
 	 */
 	public void bind(Shader shader) {
 		bind(shader, "u_texture");

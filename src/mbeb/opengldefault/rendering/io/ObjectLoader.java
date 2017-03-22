@@ -44,22 +44,24 @@ public class ObjectLoader {
 	 */
 	public AnimatedMesh loadFromFileAnim(String path) {
 		AnimatedMesh mesh =  (AnimatedMesh)loadFromFile(path, PosNormUvAnim3);
-		loadAnimationPriorities(mesh, path + ".weights.yaml");
+		loadAnimationMetaData(mesh, path + ".meta.yaml");
 		return mesh;
 	}
 
 	/**
 	 * load the priorities of movements per bone
 	 * @param mesh the mesh to modify
-	 * @param weightsPath path to the file containing this information
+	 * @param metaPath path to the file containing this information
 	 */
-	private void loadAnimationPriorities(AnimatedMesh mesh, String weightsPath) {
-		String extractedPath = getExtractedPath(weightsPath);
+	private void loadAnimationMetaData(AnimatedMesh mesh, String metaPath) {
+		String extractedPath = getExtractedPath(metaPath);
 		if (extractedPath == null) {
 			return;
 		}
 		YAMLParser.YAMLNode root = new YAMLParser(new File(extractedPath)).getRoot();
-		for (YAMLParser.YAMLNode animNode: root.getChildren()) {
+
+		YAMLParser.YAMLNode animations = root.getChildByName("animations");
+		for (YAMLParser.YAMLNode animNode: animations.getChildren()) {
 			Animation anim = mesh.getAnimationByName(animNode.getName());
 
 			if (anim != null) {
@@ -67,6 +69,11 @@ public class ObjectLoader {
 					adjustBoneAnimationPriorities(anim, anim.getSkeleton(), boneNode);
 				}
 			}
+		}
+
+		YAMLParser.YAMLNode sizeFactor = root.getChildByName("sizeFactor");
+		if (sizeFactor != null) {
+			mesh.setBoundingBoxSizeFactor(Float.valueOf(sizeFactor.getData()));
 		}
 	}
 
@@ -171,9 +178,6 @@ public class ObjectLoader {
 			AIVector3D aiposition = mesh.mVertices().get(v);
 			Vector3f position = new Vector3f(aiposition.x(), aiposition.y(), aiposition.z());
 			box = box.extendTo(position);
-			if (isAnimated) {
-				adjustBoneBoxes(skeleton, position, v, vertexBoneWeights, sceneTransform);
-			}
 			for (DataFragment dataFormat : format) {
 				dataFormat.addTo(mesh, v, data, dataPointer, vertexBoneWeights);
 				dataPointer += dataFormat.size();
@@ -347,28 +351,4 @@ public class ObjectLoader {
 			animMesh.addAnimation(anim);
 		}
 	}
-
-	/**
-	 * adjust the local boundingboxes of the bones to contain passed vertex
-	 */
-	private void adjustBoneBoxes(Bone skeleton, Vector3f vertexPosition, int vertexID, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights, Matrix4f sceneTransform) {
-		final float THRESHOLD = 0.2f; //vertices with smaller weights are not included into the boundingBox
-		//todo test for good values here
-
-		List<Map.Entry<Integer, Float>> boneWeights = vertexBoneWeights.get(vertexID);
-
-		for (Map.Entry<Integer, Float> boneWeight : boneWeights) {
-			int targetIndex = boneWeight.getKey();
-			if (targetIndex < 0 || boneWeight.getValue() < THRESHOLD) {
-				continue;
-			}
-			Bone target = skeleton.firstBoneWithIndex(targetIndex);
-			Matrix4f totalTrans = target.getInverseBindTransform().mul(sceneTransform, new Matrix4f());
-
-			Vector4f inBoneSpace4 = totalTrans.transform(new Vector4f(vertexPosition, 1));
-			Vector3f inBoneSpace = new Vector3f(inBoneSpace4.x, inBoneSpace4.y, inBoneSpace4.z);
-			target.setBoundingBox(target.getBoundingBox().extendTo(inBoneSpace));
-		}
-	}
-
 }

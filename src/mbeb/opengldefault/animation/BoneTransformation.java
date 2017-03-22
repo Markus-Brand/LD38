@@ -1,6 +1,6 @@
 package mbeb.opengldefault.animation;
 
-import mbeb.opengldefault.constants.Constants;
+import mbeb.opengldefault.logging.Log;
 import org.joml.*;
 import org.lwjgl.assimp.*;
 
@@ -9,8 +9,10 @@ import org.lwjgl.assimp.*;
  */
 public class BoneTransformation {
 
+	private static final String TAG = "BoneTransformation";
+
 	public static BoneTransformation identity() {
-		return new BoneTransformation(null, null, null);
+		return new BoneTransformation(new Matrix4f());
 	}
 
 	public static final Matrix4f matrixFromAI(AIMatrix4x4 aimat) {
@@ -50,9 +52,13 @@ public class BoneTransformation {
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////
+	private Matrix4f matrix;
+	private boolean matrixRepresentationValid;
+
 	private Vector3f position;
 	private Quaternionf rotation;
 	private Vector3f scale;
+	private boolean partsRepresentationValid;
 
 	public BoneTransformation(Vector3f position) {
 		this(position, null);
@@ -66,11 +72,14 @@ public class BoneTransformation {
 		this.position = position != null ? position : new Vector3f(0);
 		this.rotation = rotation != null ? rotation : new Quaternionf();
 		this.scale = scale != null ? scale : new Vector3f(1);
+		partsRepresentationValid = true;
+		matrixRepresentationValid = false;
 	}
 
 	public BoneTransformation(Matrix4f mat) {
-		this(mat.getTranslation(new Vector3f()), mat.getNormalizedRotation(new Quaternionf()), mat.getScale(new Vector3f()));
-
+		this.matrix = mat;
+		matrixRepresentationValid = true;
+		partsRepresentationValid = false;
 	}
 
 	/**
@@ -82,16 +91,37 @@ public class BoneTransformation {
 	 */
 	public BoneTransformation and(BoneTransformation other) {
 		//todo check if this method is used the right way always
-		Matrix4f mul = new Matrix4f();
-		this.asMatrix().mul(other.asMatrix(), mul);
-		return new BoneTransformation(mul);
+		return new BoneTransformation(this.asMatrix().mul(other.asMatrix(), new Matrix4f()));
 	}
 
 	/**
 	 * @return a matrix representing this transformation
 	 */
 	public Matrix4f asMatrix() {
-		return new Matrix4f().translate(getPosition()).scale(getScale()).rotate(getRotation().normalize());
+		ensureMatrixRepresentationValid();
+		return matrix;
+	}
+
+	private void ensureMatrixRepresentationValid() {
+		if (!matrixRepresentationValid) {
+			Log.assertTrue(TAG, partsRepresentationValid, "Non-represented BoneTransformation");
+			matrix = new Matrix4f().translate(position).rotate(rotation.normalize()).scale(scale);
+			matrixRepresentationValid = true;
+		}
+	}
+
+	private void ensurePartsRepresentationValid() {
+		if (!partsRepresentationValid) {
+			Log.assertTrue(TAG, matrixRepresentationValid, "Non-represented BoneTransformation");
+			position = matrix.getTranslation(new Vector3f());
+			rotation = matrix.getRotation(new AxisAngle4f()).get(new Quaternionf());
+			scale = matrix.getScale(new Vector3f());
+			partsRepresentationValid = true;
+		}
+	}
+
+	private void invalidateMatrixRepresentation() {
+		matrixRepresentationValid = false;
 	}
 
 	/**
@@ -133,11 +163,14 @@ public class BoneTransformation {
 	}
 
 	public Vector3f getPosition() {
+		ensurePartsRepresentationValid();
 		return position;
 	}
 
 	public void setPosition(Vector3f position) {
+		ensurePartsRepresentationValid();
 		this.position = position;
+		invalidateMatrixRepresentation();
 	}
 
 	public void setPosition(Vector4f position) {
@@ -145,18 +178,24 @@ public class BoneTransformation {
 	}
 
 	public Quaternionf getRotation() {
+		ensurePartsRepresentationValid();
 		return rotation;
 	}
 
 	public void setRotation(Quaternionf rotation) {
+		ensurePartsRepresentationValid();
 		this.rotation = rotation;
+		invalidateMatrixRepresentation();
 	}
 
 	public Vector3f getScale() {
+		ensurePartsRepresentationValid();
 		return scale;
 	}
 
 	public void setScale(Vector3f scale) {
+		ensurePartsRepresentationValid();
 		this.scale = scale;
+		invalidateMatrixRepresentation();
 	}
 }

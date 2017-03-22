@@ -1,5 +1,6 @@
 package mbeb.opengldefault.game;
 
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -50,7 +51,9 @@ public class BunnyGame extends Game {
 
 	BezierCurve curve;
 
-	AnimationStateFacade animBunny, animPlayer;
+	AnimationStateFacade animPlayer;
+
+	List<AnimationStateFacade> animBunnyList = new ArrayList<>();
 
 	SceneObject playerObj, curveObj;
 
@@ -61,12 +64,8 @@ public class BunnyGame extends Game {
 	@Override
 	public void init() {
 		timePassed = 0;
-		final ArrayList<Vector3f> controlPoints = new ArrayList<>();
-		final Random random = new Random();
-		for (int i = 0; i < 10; i++) {
-			controlPoints.add(new Vector3f(random.nextInt(51) - 25, random.nextInt(51) - 25, random.nextInt(51) - 25));
-		}
-		curve = new BezierCurve(controlPoints, ControlPointInputMode.CAMERAPOINTSCIRCULAR, true);
+		curve = generateRandomBezier();
+		BezierCurve curve2 = generateRandomBezier();
 
 		camera = new Camera(getContext().getAspectRatio());
 		final Skybox skybox = new Skybox("skybox/mountain");
@@ -104,15 +103,16 @@ public class BunnyGame extends Game {
 		lamp.setShader(stillShader);
 
 		animPlayer = new AnimationStateFacade(playerAnimMesh);
-		animBunny = new AnimationStateFacade(bunnyAnimMesh);
 
 		playerObj = new SceneObject(new TexturedRenderable(animPlayer, bunnyTexture));
+		playerObj.setShader(animatedShader);
 
 		entityWorld = new EntityWorld();
 
 		entityWorld.add(camera).addBehaviour(1, new PlayerControlBehaviour());
 
-		IEntity lastBunnyEntity = createBunnyChain(bunnyScene.getSceneGraph(), entityWorld, bunnyTexture, animBunny, curve);
+		IEntity lastBunnyEntity = createBunnyChain(bunnyScene.getSceneGraph(), entityWorld, bunnyTexture, bunnyAnimMesh, curve);
+		createBunnyChain(bunnyScene.getSceneGraph(), entityWorld, bunnyTexture, bunnyAnimMesh, curve2);
 
 		entityWorld.add(lamp).addBehaviour(1,
 				new BoneTrackingBehaviour(playerObj, animPlayer.getRenderable(), "Hand.L", new Vector3f(0, 0.5f, 0))
@@ -121,11 +121,13 @@ public class BunnyGame extends Game {
 
 		curveObj = new SceneObject(new BezierCurveRenderable(curve));
 		curveObj.setShader(curveShader);
+		SceneObject curveObj2 = new SceneObject(new BezierCurveRenderable(curve2));
+		curveObj2.setShader(curveShader);
 
-		bunnyScene.getSceneGraph().addSubObject(playerObj);
+		//bunnyScene.getSceneGraph().addSubObject(playerObj);
 		bunnyScene.getSceneGraph().addSubObject(curveObj);
-		bunnyScene.getSceneGraph().addSubObject(box);
-		bunnyScene.getSceneGraph().addSubObject(lamp);
+		//bunnyScene.getSceneGraph().addSubObject(box);
+		//bunnyScene.getSceneGraph().addSubObject(lamp);
 
 		bunnyScene.getSceneGraph().setShader(animatedShader);
 
@@ -155,9 +157,22 @@ public class BunnyGame extends Game {
 		animPlayer.registerAnimation("jogging", "running", 25, 2, 0.5);
 		animPlayer.registerAnimation("hat", "wave", 10, 0.5, 0.5);
 
-		animBunny.registerAnimation("ohr1", "OhrenFlackern1", 4);
-		animBunny.registerAnimation("ohr2", "OhrenFlackern2", 4);
-		animBunny.registerAnimation("party", "HeadBang", 4);
+
+		for (AnimationStateFacade facade: animBunnyList) {
+			facade.registerAnimation("ohr1", "OhrenFlackern1", 4);
+			facade.registerAnimation("ohr2", "OhrenFlackern2", 4);
+			facade.registerAnimation("party", "HeadBang", 4);
+		}
+
+	}
+
+	private BezierCurve generateRandomBezier() {
+		final ArrayList<Vector3f> controlPoints = new ArrayList<>();
+		final Random random = new Random();
+		for (int i = 0; i < 10; i++) {
+			controlPoints.add(new Vector3f(random.nextInt(51) - 25, random.nextInt(51) - 25, random.nextInt(51) - 25));
+		}
+		return new BezierCurve(controlPoints, ControlPointInputMode.CAMERAPOINTSCIRCULAR, true);
 	}
 
 	/**
@@ -169,19 +184,26 @@ public class BunnyGame extends Game {
 	 * @param curve the curve to follow
 	 * @return last bunny
 	 */
-	private IEntity createBunnyChain(SceneObject bunnyParent, EntityWorld world, Texture bunnyTexture, IRenderableHolder renderable, BezierCurve curve) {
-		final SceneObject mainBunnyObj = new SceneObject(new TexturedRenderable(renderable, bunnyTexture));
+	private IEntity createBunnyChain(SceneObject bunnyParent, EntityWorld world, Texture bunnyTexture, AnimatedMesh renderable, BezierCurve curve) {
+		AnimationStateFacade mainBunnyFacade = new AnimationStateFacade(renderable);
+		animBunnyList.add(mainBunnyFacade);
+		final SceneObject mainBunnyObj = new SceneObject(new TexturedRenderable(mainBunnyFacade, bunnyTexture));
 		bunnyParent.addSubObject(mainBunnyObj);
 
-		IEntity toFollow = world.add(mainBunnyObj).addBehaviour(1, new BezierBehaviour(curve, 4));
+		SceneObject toFollowObject = mainBunnyObj;
+		IEntity toFollow = world.add(toFollowObject).addBehaviour(1, new BezierBehaviour(curve, 3));
 
 		int bunnyCount = 50;
 		for (int b = 0; b < bunnyCount; b++) {
-			SceneObject followerObject = new SceneObject(new TexturedRenderable(renderable, bunnyTexture));
+			AnimationStateFacade followingBunnyFacade = new AnimationStateFacade(renderable);
+			animBunnyList.add(followingBunnyFacade);
+			SceneObject followerObject = new SceneObject(new TexturedRenderable(followingBunnyFacade, bunnyTexture));
 			bunnyParent.addSubObject(followerObject);
 			toFollow = world.add(followerObject)
-					.addBehaviour(1, new FollowingBehaviour(toFollow, 2.5f).limited(5))
-					.addBehaviour(2, new FollowingBehaviour(toFollow, 7f));
+					.addBehaviour(1, new SmoothFollowingBehaviour(toFollow, 1f));
+					//.addBehaviour(1, new FollowingBehaviour(toFollow, 0.5f).limited(5))
+					//.addBehaviour(2, new FollowingBehaviour(toFollow, 7f));
+			toFollowObject = followerObject;
 		}
 		return toFollow;
 	}
@@ -199,14 +221,19 @@ public class BunnyGame extends Game {
 		animPlayer.ensureRunning("jogging", KeyBoard.isKeyDown(GLFW_KEY_Q));
 		animPlayer.ensureRunning("hat", KeyBoard.isKeyDown(GLFW_KEY_E), false);
 
-		if (timePassed > 3) {
-			animBunny.ensureRunning("ohr1");
-		}
-		if (timePassed > 6) {
-			animBunny.ensureRunning("ohr2");
-		}
-		if (timePassed > 9) {
-			animBunny.ensureRunning("party");
+
+		int i = 0;
+		for (AnimationStateFacade facade: animBunnyList) {
+			if (timePassed > 3 + i * 0.01) {
+				facade.ensureRunning("ohr1");
+			}
+			if (timePassed > 6 + i * 0.01) {
+				facade.ensureRunning("ohr2");
+			}
+			if (timePassed > 9 + i * 0.01) {
+				facade.ensureRunning("party");
+			}
+			i++;
 		}
 
 		entityWorld.update(deltaTime);
@@ -228,7 +255,7 @@ public class BunnyGame extends Game {
 		glViewport(0, 0, getContext().getFramebufferWidth(), getContext().getFramebufferHeight());
 		GLErrors.checkForError(TAG, "glViewport");
 
-		bunnyScene.render(false); //bunnyScene.render(); to render without BoundingBoxes
+		bunnyScene.render(true); //bunnyScene.render(); to render without BoundingBoxes
 	}
 
 	@Override

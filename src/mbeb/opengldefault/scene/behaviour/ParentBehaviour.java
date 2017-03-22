@@ -34,7 +34,7 @@ public class ParentBehaviour implements IBehaviour {
 
 	@Override
 	public void update(double deltaTime, IEntity entity) {
-		Matrix4f parentTrans = parentObject.getGLobalTransformation().asMatrix();
+		Matrix4f parentTrans = parentObject.getGlobalTransformation().asMatrix();
 
 		Vector4f globalPosition = parentTrans.transform(new Vector4f(localPosition, 1));
 		entity.setPosition(new Vector3f(globalPosition.x, globalPosition.y, globalPosition.z));

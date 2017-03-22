@@ -13,18 +13,32 @@ import mbeb.opengldefault.scene.*;
  */
 public class AnimatedMesh implements IRenderable {
 
+	/** the actual vertex data */
 	private final VAORenderable mesh;
+	/** the Bone-tree animations rely on */
 	private final Bone skeleton;
+	/** all animations associated with this mesh */
 	private List<Animation> animations;
+
+	/** how much my boundingBox could be bigger than the one of the static mesh */
+	private float boundingBoxSizeFactor;
+	/** my actual boundingBox */
+	private BoundingBox scaledBox;
 
 	public AnimatedMesh(VAORenderable mesh, Bone skeleton) {
 		this.mesh = mesh;
 		this.skeleton = skeleton;
+		this.boundingBoxSizeFactor = 1f;
+		scaledBox = null;
 	}
 
 	@Override
 	public BoundingBox getBoundingBox() {
-		return mesh.getBoundingBox();
+		if (scaledBox == null) {
+			scaledBox = mesh.getBoundingBox().duplicate();
+			scaledBox.scale(boundingBoxSizeFactor);
+		}
+		return scaledBox;
 	}
 
 	@Override
@@ -94,4 +108,8 @@ public class AnimatedMesh implements IRenderable {
 		mesh.setTransform(transform);
 	}
 
+	public void setBoundingBoxSizeFactor(float boundingBoxSizeFactor) {
+		this.boundingBoxSizeFactor = boundingBoxSizeFactor;
+		scaledBox = null;
+	}
 }
