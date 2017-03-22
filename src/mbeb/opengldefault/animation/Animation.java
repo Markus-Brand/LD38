@@ -44,8 +44,8 @@ public class Animation {
 	 */
 	public void setBonePriority(Bone bone, int value) {
 		bonePriorities.put(bone, value);
-		for (KeyFrame kf: keyFrames) {
-			kf.getPose().setBonePriority(bone.getName(), value);
+		for (KeyFrame keyFrame: keyFrames) {
+			keyFrame.getPose().setBonePriority(bone.getName(), value);
 		}
 	}
 
