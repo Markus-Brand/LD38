@@ -33,13 +33,13 @@ public interface IBehaviour {
 	 * @return a new identical behaviour, which doesn't alter the rotation of the entity
 	 */
 	default IBehaviour fixedDirection() {
-		return new RestrictableBehaviour(this, true, false);
+		return new RestrictedBehaviour(this, true, false);
 	}
 
 	/**
 	 * @return a new identical behaviour, which doesn't alter the location of the entity
 	 */
 	default IBehaviour fixedLocation() {
-		return new RestrictableBehaviour(this, true, false);
+		return new RestrictedBehaviour(this, true, false);
 	}
 }
