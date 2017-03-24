@@ -28,7 +28,7 @@ public class AnimatedMesh implements IRenderable {
 	}
 
 	@Override
-	public void render(Shader shader) {
+	public void render(ShaderProgram shader) {
 		mesh.render(shader);
 	}
 

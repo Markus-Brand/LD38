@@ -1,16 +1,10 @@
 package mbeb.opengldefault.scene;
 
-import java.nio.*;
-
-import com.sun.org.apache.xpath.internal.operations.Mod;
-import mbeb.opengldefault.constants.Constants;
 import org.joml.*;
-import org.lwjgl.*;
 import org.lwjgl.opengl.*;
 
 import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.camera.*;
-import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.rendering.shader.*;
 
@@ -20,11 +14,11 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 
 	public static final boolean RENDER_BONE_BOXES = true;
 
-	private static Shader shader;
+	private static ShaderProgram shader;
 
 	static {
-		shader = new Shader("boundingbox.vert", "boundingbox.frag");
-		shader.addUniformBlockIndex("Matrices");
+		shader = new ShaderProgram("boundingbox.vert", "boundingbox.frag");
+		shader.addUniformBlockIndex(UBOManager.MATRICES);
 		shader.setDrawMode(GL11.GL_LINES);
 	}
 

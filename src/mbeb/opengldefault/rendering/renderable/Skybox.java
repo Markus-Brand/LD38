@@ -7,7 +7,7 @@ import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.rendering.textures.*;
 
 /**
- * Uses a {@link CubeMap} to render a Skybox with the Skybox {@link Shader}
+ * Uses a {@link CubeMap} to render a Skybox with the Skybox {@link ShaderProgram}
  *
  * @author Markus
  */
@@ -17,7 +17,7 @@ public class Skybox {
 
 	private final CubeMap cubeMap;
 	private final IRenderable skyboxRenderable;
-	private final Shader shader;
+	private final ShaderProgram shader;
 
 	/**
 	 * Constructor for a Skybox
@@ -27,7 +27,7 @@ public class Skybox {
 	 */
 	public Skybox(final String texturePath) {
 		cubeMap = new CubeMap(texturePath);
-		shader = new Shader("skybox.vert", "skybox.frag");
+		shader = new ShaderProgram("skybox.vert", "skybox.frag");
 		shader.addUniformBlockIndex(UBOManager.MATRICES);
 		skyboxRenderable = StaticMeshes.getCube();
 	}

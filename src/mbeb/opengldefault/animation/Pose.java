@@ -2,10 +2,10 @@ package mbeb.opengldefault.animation;
 
 import java.util.*;
 
+import org.joml.*;
+
 import mbeb.opengldefault.logging.Log;
 import mbeb.opengldefault.rendering.shader.*;
-
-import org.joml.*;
 
 /**
  * orientations of a bone-construct
@@ -191,7 +191,7 @@ public class Pose {
 	 * @param uniformName
 	 *            the uniform to store pose-data
 	 */
-	public void setUniformData(Shader shader, String uniformName) {
+	public void setUniformData(ShaderProgram shader, String uniformName) {
 		BoneState[] transforms = getConvertedData();
 		Matrix4f[] data = new Matrix4f[transforms.length];
 

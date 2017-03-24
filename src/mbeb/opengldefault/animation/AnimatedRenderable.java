@@ -32,7 +32,7 @@ public class AnimatedRenderable implements IRenderable {
 	}
 
 	@Override
-	public void render(Shader shader) {
+	public void render(ShaderProgram shader) {
 		//update pose uniforms
 		getCurrentPose().setUniformData(shader, "boneTransforms");
 		mesh.render(shader);

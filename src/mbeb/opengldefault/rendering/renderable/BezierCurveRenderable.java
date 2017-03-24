@@ -1,14 +1,10 @@
 package mbeb.opengldefault.rendering.renderable;
 
-import java.nio.*;
-
-import mbeb.opengldefault.constants.Constants;
+import mbeb.opengldefault.logging.GLErrors;
 import org.joml.*;
-import org.lwjgl.*;
 import org.lwjgl.opengl.*;
 
 import mbeb.opengldefault.curves.*;
-import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.io.*;
 import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.scene.*;
@@ -57,7 +53,7 @@ public class BezierCurveRenderable implements IRenderable {
 	}
 
 	@Override
-	public void render(final Shader shader) {
+	public void render(final ShaderProgram shader) {
 		shader.use();
 		float[] widthRange = new float[2];
 		GL11.glGetFloatv(GL11.GL_LINE_WIDTH_RANGE, widthRange);

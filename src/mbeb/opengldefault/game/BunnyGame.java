@@ -82,15 +82,15 @@ public class BunnyGame extends Game {
 		System.out.println();
 		bunnyAnim.getSkeleton().printRecursive("");
 
-		final Shader curveShader = new Shader("bezier.vert", "bezier.frag", "bezier.geom");
+		final ShaderProgram curveShader = new ShaderProgram("bezier.vert", "bezier.frag", "bezier.geom");
 		curveShader.addUniformBlockIndex(UBOManager.MATRICES);
 		curveShader.setDrawMode(GL_LINES);
 
-		final Shader animatedShader = new Shader("boneAnimation.vert", "basic.frag");
+		final ShaderProgram animatedShader = new ShaderProgram("boneAnimation.vert", "basic.frag");
 		bunnyScene.getLightManager().addShader(animatedShader);
 		animatedShader.addUniformBlockIndex(UBOManager.MATRICES);
 
-		final Shader stillShader = new Shader("basic.vert", "basic.frag");
+		final ShaderProgram stillShader = new ShaderProgram("basic.vert", "basic.frag");
 		bunnyScene.getLightManager().addShader(stillShader);
 		stillShader.addUniformBlockIndex(UBOManager.MATRICES);
 

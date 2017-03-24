@@ -16,7 +16,7 @@ public interface IRenderable extends IRenderableHolder{
 		return this;
 	}
 
-	void render(Shader shader);
+	void render(ShaderProgram shader);
 
 	BoundingBox getBoundingBox();
 
