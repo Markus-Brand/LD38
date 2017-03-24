@@ -82,6 +82,15 @@ public class ShaderObject {
 	}
 
 	/**
+	 * attaches this shader to an openGL shader program
+	 * @param shaderProgramHandle to program to attach to
+	 */
+	public void attachShader(int shaderProgramHandle) {
+		glAttachShader(shaderProgramHandle, getCompiledShaderID());
+		GLErrors.checkForError(TAG, "glAttachShader - " + getType().toString());
+	}
+
+	/**
 	 * clean up after linking objects together by deleting the openGL-shaderObject
 	 */
 	public void delete() {

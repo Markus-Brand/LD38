@@ -12,6 +12,7 @@ import static org.lwjgl.opengl.GL40.GL_TESS_EVALUATION_SHADER;
  * All the kinds of shaders in existence, and associated file extensions
  */
 public enum ShaderObjectType {
+
 	VERTEX(GL_VERTEX_SHADER, "vert"),
 	FRAGMENT(GL_FRAGMENT_SHADER, "frag"),
 	GEOMETRY(GL_GEOMETRY_SHADER, "geom"),
@@ -21,6 +22,11 @@ public enum ShaderObjectType {
 	private final int glType;
 	private final String[] extensions;
 
+	/**
+	 *
+	 * @param glType the openGL enum that fits to this ShaderObjectType
+	 * @param extensions all the extensions associated with this shaderObjectType
+	 */
 	ShaderObjectType(int glType, String... extensions) {
 		this.glType = glType;
 		this.extensions = extensions;
@@ -33,6 +39,10 @@ public enum ShaderObjectType {
 		return glType;
 	}
 
+	/**
+	 * @param testExtension a file extension (short string) to test
+	 * @return true, if the given file extension actually fits to this ShaderObjectType
+	 */
 	public boolean usesExtension(String testExtension) {
 		return Arrays.stream(extensions).anyMatch(myExtension -> myExtension.equalsIgnoreCase(testExtension));
 	}

@@ -32,7 +32,7 @@ public class ShaderProgram {
 
 	/**
 	 * handles current parameter set and offers precompilation of Shader-Files
-	 * */
+	 */
 	private final ShaderPreprocessor preprocessor;
 
 	/**
@@ -357,57 +357,13 @@ public class ShaderProgram {
 	}
 
 	/**
-	 * compiles the shader with the current values of the parameters-Map
+	 * compiles the shaderProgram with the current values of the parameters-Map and links it
 	 */
 	public void compile() {
-		linkShader(
-				getCompiledShader(ShaderObjectType.VERTEX),
-				getCompiledShader(ShaderObjectType.FRAGMENT),
-				getCompiledShader(ShaderObjectType.GEOMETRY),
-				getCompiledShader(ShaderObjectType.TCS),
-				getCompiledShader(ShaderObjectType.TES));
-
-		for (final Map.Entry<Integer, String> uniformBlockBinding : uniformBlocks.entrySet()) {
-			setUniformBlockIndex(uniformBlockBinding.getKey(), uniformBlockBinding.getValue());
-		}
-
-		shaderObjects.values().forEach(ShaderObject::delete);
-	}
-
-	/**
-	 * accessor for the compiled version of a shader
-	 * @param type the shader type
-	 * @return the openGL-handle for the compiled shader, or null if no such shader is present
-	 */
-	private Integer getCompiledShader(ShaderObjectType type) {
-		ShaderObject obj = shaderObjects.get(type);
-		if (obj == null) {
-			return null;
-		}
-		return obj.getCompiledShaderID();
-	}
-
-	/**
-	 * links the shader program
-	 *
-	 * @param vertexShader
-	 * @param fragmentShader
-	 * @param geomShader
-	 * @param tesControlShader
-	 * @param tesEvalShader
-	 */
-	private void linkShader(final Integer vertexShader, final Integer fragmentShader, final Integer geomShader, final Integer tesControlShader, final Integer tesEvalShader) {
+		//compiling of all the shaderObjects happens lazily
 		shaderProgram = glCreateProgram();
-		glAttachShader(shaderProgram, vertexShader);
-		glAttachShader(shaderProgram, fragmentShader);
-		if (geomShader != null) {
-			glAttachShader(shaderProgram, geomShader);
-		}
-		if (tesControlShader != null && tesEvalShader != null) {
-			glAttachShader(shaderProgram, tesControlShader);
-			glAttachShader(shaderProgram, tesEvalShader);
-		}
-		GLErrors.checkForError(TAG, "glAttachShader");
+		shaderObjects.values().forEach(shaderObject -> shaderObject.attachShader(shaderProgram));
+
 		glLinkProgram(shaderProgram);
 		final IntBuffer buffer = BufferUtils.createIntBuffer(1);
 		GL20.glGetProgramiv(shaderProgram, GL_LINK_STATUS, buffer);
@@ -415,6 +371,12 @@ public class ShaderProgram {
 			Log.error(TAG, "Error linking shader program: " + buffer.get(0));
 			Log.error(TAG, "Linking log:\n" + glGetProgramInfoLog(shaderProgram));
 		}
+
+		for (final Map.Entry<Integer, String> uniformBlockBinding : uniformBlocks.entrySet()) {
+			setUniformBlockIndex(uniformBlockBinding.getKey(), uniformBlockBinding.getValue());
+		}
+
+		shaderObjects.values().forEach(ShaderObject::delete);
 	}
 
 	/**
