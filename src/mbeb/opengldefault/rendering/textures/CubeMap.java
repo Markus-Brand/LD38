@@ -2,7 +2,6 @@ package mbeb.opengldefault.rendering.textures;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
-import static org.lwjgl.opengl.GL20.*;
 
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.shader.*;
@@ -29,15 +28,15 @@ public class CubeMap extends Texture {
 	 *
 	 * @param shader
 	 *            the shader to alter
-	 * @see #bind(Shader, String)
+	 * @see #bind(ShaderProgram, String)
 	 */
 	@Override
-	public void bind(Shader shader) {
+	public void bind(ShaderProgram shader) {
 		bind(shader, "u_cubeMap");
 	}
 
 	@Override
-	public void bind(Shader shader, String uniformName) {
+	public void bind(ShaderProgram shader, String uniformName) {
 		glBindTexture(GL_TEXTURE_CUBE_MAP, getTextureHandle());
 		GLErrors.checkForError(TAG, "glBindTexture");
 		shader.setUniform(uniformName, getTextureHandle());

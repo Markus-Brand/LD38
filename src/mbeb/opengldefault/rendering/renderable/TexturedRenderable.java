@@ -33,8 +33,12 @@ public class TexturedRenderable implements IRenderable {
 		return texture;
 	}
 
+	/**
+	 * binds the texture and then passes the call to the wrapped IRenderable
+	 * @param shader
+	 */
 	@Override
-	public void render(Shader shader) {
+	public void render(ShaderProgram shader) {
 		getTexture().bind(shader);
 		renderable.render(shader);
 	}

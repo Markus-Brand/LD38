@@ -16,7 +16,7 @@ public class SceneObject implements BoundingBox.Owner {
 	private static final String TAG = "SceneObject";
 
 	/** the renderable for this object, or null */
-	private Shader shader;
+	private ShaderProgram shader;
 	/** a renderable for this Object, or null */
 	private IRenderable renderable;
 	/** the combined boundingBox for this object(renderable+subObjects) */
@@ -162,7 +162,7 @@ public class SceneObject implements BoundingBox.Owner {
 	 *
 	 * @return
 	 */
-	public Shader getShader() {
+	public ShaderProgram getShader() {
 		if (!hasOwnShader() && parent != null) {
 			return parent.getShader();
 		}
@@ -174,7 +174,7 @@ public class SceneObject implements BoundingBox.Owner {
 	 *
 	 * @param shader
 	 */
-	public void setShader(Shader shader) {
+	public void setShader(ShaderProgram shader) {
 		this.shader = shader;
 	}
 

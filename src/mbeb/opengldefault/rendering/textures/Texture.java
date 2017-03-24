@@ -2,7 +2,6 @@ package mbeb.opengldefault.rendering.textures;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
-import static org.lwjgl.opengl.GL20.*;
 
 import org.lwjgl.opengl.*;
 
@@ -10,7 +9,7 @@ import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.shader.*;
 
 /**
- * A Texture that can bind itself to a uniform for a given {@link Shader}
+ * A Texture that can bind itself to a uniform for a given {@link ShaderProgram}
  */
 public class Texture {
 
@@ -44,9 +43,9 @@ public class Texture {
 	 *
 	 * @param shader
 	 *            the shader to alter
-	 * @see bind(Shader, String)
+	 * @see bind( ShaderProgram , String)
 	 */
-	public void bind(Shader shader) {
+	public void bind(ShaderProgram shader) {
 		bind(shader, "u_texture");
 	}
 
@@ -58,7 +57,7 @@ public class Texture {
 	 * @param uniformName
 	 *            the name of the uniform to adjust
 	 */
-	public void bind(Shader shader, String uniformName) {
+	public void bind(ShaderProgram shader, String uniformName) {
 		GL13.glActiveTexture(GL_TEXTURE0 + textureHandle);
 		glBindTexture(GL_TEXTURE_2D, textureHandle);
 		GLErrors.checkForError(TAG, "glBindTexture");

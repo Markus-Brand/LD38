@@ -70,11 +70,11 @@ public class BunnyGame extends Game {
 		bunnyAnim.getAnimatedMesh().setTransform(MeshFlip);
 		final IRenderable bunnyTextured = new TexturedRenderable(bunnyAnim, new Texture("bunny_2d.png"));
 
-		final Shader curveShader = new Shader("bezier.vert", "bezier.frag", "bezier.geom");
+		final ShaderProgram curveShader = new ShaderProgram("bezier.vert", "bezier.frag", "bezier.geom");
 		curveShader.addUniformBlockIndex(UBOManager.MATRICES);
 		curveShader.setDrawMode(GL_LINES);
 
-		final Shader defaultShader = new Shader("boneAnimation.vert", "basic.frag");
+		final ShaderProgram defaultShader = new ShaderProgram("boneAnimation.vert", "basic.frag");
 		bunnyScene.getLightManager().addShader(defaultShader);
 		defaultShader.addUniformBlockIndex(UBOManager.MATRICES);
 
