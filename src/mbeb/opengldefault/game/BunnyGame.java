@@ -9,6 +9,7 @@ import mbeb.opengldefault.animation.AnimationStateFacade;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_E;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_Q;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_TAB;
 import static org.lwjgl.opengl.GL11.*;
 
 import java.awt.*;
@@ -255,7 +256,7 @@ public class BunnyGame extends Game {
 		glViewport(0, 0, getContext().getFramebufferWidth(), getContext().getFramebufferHeight());
 		GLErrors.checkForError(TAG, "glViewport");
 
-		bunnyScene.render(true); //bunnyScene.render(); to render without BoundingBoxes
+		bunnyScene.render(KeyBoard.isKeyDown(GLFW_KEY_TAB)); //bunnyScene.render(); to render without BoundingBoxes
 	}
 
 	@Override
