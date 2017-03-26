@@ -1,8 +1,6 @@
 package mbeb.opengldefault.gui;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL33.*;
 import mbeb.opengldefault.constants.Constants;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.rendering.shader.Shader;
@@ -18,21 +16,7 @@ public class ProgressBarGUI extends GUI {
 
 	public ProgressBarGUI() {
 		super();
-		stride = Constants.MAT4_COMPONENTS + Constants.VEC4_COMPONENTS;
-	}
-
-	@Override
-	public void setupVAO() {
-		super.setupVAO();
-		renderable.bind();
-		glEnableVertexAttribArray(7);
-		GLErrors.checkForError(TAG, "glEnableVertexAttribArray");
-		glVertexAttribPointer(7, 4, GL_FLOAT, false, stride * Constants.FLOAT_SIZE, 4 * Constants.VEC4_SIZE);
-		GLErrors.checkForError(TAG, "glVertexAttribPointer");
-
-		glVertexAttribDivisor(7, 1);
-		GLErrors.checkForError(TAG, "glVertexAttribDivisor");
-		renderable.unbind();
+		stride = Constants.MAT4_COMPONENTS + Constants.VEC4_COMPONENTS + Constants.VEC4_COMPONENTS;
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glViewport;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -20,8 +21,8 @@ import mbeb.opengldefault.camera.ICamera;
 import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.curves.BezierCurve;
 import mbeb.opengldefault.curves.BezierCurve.ControlPointInputMode;
-import mbeb.opengldefault.gui.AtlasGUI;
-import mbeb.opengldefault.gui.TextGUIElement;
+import mbeb.opengldefault.gui.TextGUI;
+import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.light.Light;
 import mbeb.opengldefault.light.SpotLight;
 import mbeb.opengldefault.logging.GLErrors;
@@ -52,13 +53,11 @@ import org.lwjgl.glfw.GLFW;
 
 public class BunnyGameState implements GameState {
 
-	private static final String TAG = "GameGameState";
+	private static final String TAG = "BunnyGameState";
 
 	GameStates nextGameState;
 
 	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1);
-
-	private float timePassed;
 
 	private TextGUIElement fps;
 
@@ -79,11 +78,10 @@ public class BunnyGameState implements GameState {
 
 	Entity mainBunny, followingBunny1, followingBunny2, followingBunny3, followingBunny4, camEntity, spotLightEntity;
 
-	private AtlasGUI textGUI;
+	private TextGUI textGUI;
 
 	@Override
 	public void init() {
-		timePassed = 0;
 		final ArrayList<Vector3f> controlPoints = new ArrayList<>();
 
 		final Random random = new Random();
@@ -162,9 +160,11 @@ public class BunnyGameState implements GameState {
 		spotLightEntity.addBehaviour(1, new FollowingBehaviour(followingBunny3, 3f).limited(5));
 		spotLightEntity.addBehaviour(9001, new FollowingBehaviour(followingBunny3, 7.6f));
 
-		textGUI = new AtlasGUI("font.png", 32, 16);
+		textGUI = new TextGUI(new Font("Comic Sans MS", Font.PLAIN, 128));
 		guiShader = new Shader("gui.vert", "gui.frag");
-		fps = textGUI.addText("0", new Vector2f(), 0.01f);
+		textGUI.setShader(guiShader);
+		fps = textGUI.addText("0", new Vector2f(), 0.03f);
+		fps.setColor(Color.ORANGE);
 		fps.setPositionRelativeToScreen(0, 0);
 
 		glEnable(GL_CULL_FACE);
@@ -206,8 +206,6 @@ public class BunnyGameState implements GameState {
 		fps.setText("FPS: " + (int) (1 / deltaTime));
 		textGUI.update(deltaTime);
 
-		timePassed += deltaTime;
-
 		mainBunny.update(deltaTime);
 		followingBunny1.update(deltaTime);
 		followingBunny2.update(deltaTime);
@@ -233,8 +231,7 @@ public class BunnyGameState implements GameState {
 		GLErrors.checkForError(TAG, "glViewport");
 
 		bunnyScene.render(true); //bunnyScene.render(); to render without BoundingBoxes
-		guiShader.use();
-		textGUI.render(guiShader);
+		textGUI.render();
 	}
 
 	@Override

@@ -14,11 +14,13 @@ import java.nio.*;
 import org.lwjgl.BufferUtils;
 
 import mbeb.opengldefault.constants.Constants;
+import mbeb.opengldefault.gui.elements.GUIElement;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.StaticMeshes;
 import mbeb.opengldefault.rendering.renderable.VAORenderable;
 import mbeb.opengldefault.rendering.shader.Shader;
+import mbeb.opengldefault.rendering.textures.Texture;
 import mbeb.opengldefault.scene.BoundingBox;
 
 /**
@@ -28,6 +30,16 @@ import mbeb.opengldefault.scene.BoundingBox;
  */
 public class GUI implements IRenderable {
 	private static final String TAG = "GUI";
+
+	/**
+	 * The lut Texture for this GUI
+	 */
+	private Texture lut;
+
+	/**
+	 * The shader used to render this GUI
+	 */
+	private Shader shader;
 
 	/**
 	 * GUIElements that get drawn with this GUI
@@ -61,8 +73,9 @@ public class GUI implements IRenderable {
 		elements = new ArrayList<>();
 		dirty = true;
 		setupBuffer();
-		this.stride = Constants.MAT4_COMPONENTS;
+		this.stride = Constants.MAT4_COMPONENTS + Constants.VEC4_COMPONENTS;
 		renderable = StaticMeshes.getNewGuiQuad();
+		lut = new Texture(256, 256);
 	}
 
 	/**
@@ -95,8 +108,7 @@ public class GUI implements IRenderable {
 	 * @return the generated FloatBuffer
 	 */
 	private FloatBuffer getFloatBuffer() {
-		int bufferSize = stride;
-		FloatBuffer buffer = BufferUtils.createFloatBuffer(getElementsSize() * bufferSize);
+		FloatBuffer buffer = BufferUtils.createFloatBuffer(getElementsSize() * stride);
 		int offset = 0;
 		for (GUIElement guiElement : elements) {
 			offset += guiElement.writeToBuffer(buffer, offset);
@@ -110,22 +122,23 @@ public class GUI implements IRenderable {
 	 */
 	public void setupVAO() {
 		renderable.bind();
-		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 4, GL_FLOAT, false, stride * Constants.FLOAT_SIZE, 0 * Constants.VEC4_SIZE);
-		glEnableVertexAttribArray(4);
-		glVertexAttribPointer(4, 4, GL_FLOAT, false, stride * Constants.FLOAT_SIZE, 1 * Constants.VEC4_SIZE);
-		glEnableVertexAttribArray(5);
-		glVertexAttribPointer(5, 4, GL_FLOAT, false, stride * Constants.FLOAT_SIZE, 2 * Constants.VEC4_SIZE);
-		glEnableVertexAttribArray(6);
-		glVertexAttribPointer(6, 4, GL_FLOAT, false, stride * Constants.FLOAT_SIZE, 3 * Constants.VEC4_SIZE);
-		GLErrors.checkForError(TAG, "glVertexAttribPointer");
+		for (int i = 0; i < stride / Constants.VEC4_COMPONENTS; i++) {
+			int vertexAttribArrayIndex = i + 2;
+			glEnableVertexAttribArray(vertexAttribArrayIndex);
+			GLErrors.checkForError(TAG, "glEnableVertexAttribArray");
+			glVertexAttribPointer(vertexAttribArrayIndex, 4, GL_FLOAT, false, stride * Constants.FLOAT_SIZE, i
+					* Constants.VEC4_SIZE);
+			GLErrors.checkForError(TAG, "glVertexAttribPointer");
 
-		glVertexAttribDivisor(3, 1);
-		glVertexAttribDivisor(4, 1);
-		glVertexAttribDivisor(5, 1);
-		glVertexAttribDivisor(6, 1);
-		GLErrors.checkForError(TAG, "glVertexAttribDivisor");
+			glVertexAttribDivisor(vertexAttribArrayIndex, 1);
+			GLErrors.checkForError(TAG, "glVertexAttribDivisor");
+		}
 		renderable.unbind();
+	}
+
+	public void render() {
+		shader.use();
+		render(shader);
 	}
 
 	@Override
@@ -137,13 +150,20 @@ public class GUI implements IRenderable {
 			dirty = false;
 		}
 
-		glDepthFunc(GL_LEQUAL);
+		if (lut != null) {
+			lut.bind(shader, "u_lut");
+		}
+
+		glEnable(GL_BLEND);
+		glDisable(GL_DEPTH_TEST);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		GLErrors.checkForError(TAG, "glDepthFunc");
 		renderable.bind();
 		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, getElementsSize());
 		GLErrors.checkForError(TAG, "glDrawElementsInstanced");
 		renderable.unbind();
-		glDepthFunc(GL_LESS);
+		glDisable(GL_BLEND);
+		glEnable(GL_DEPTH_TEST);
 		GLErrors.checkForError(TAG, "glDepthFunc");
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		GLErrors.checkForError(TAG, "glBindBuffer");
@@ -163,8 +183,32 @@ public class GUI implements IRenderable {
 		for (GUIElement guiElement : elements) {
 			guiElement.update(deltaTime);
 			dirty = dirty || guiElement.isDirty();
-			guiElement.setClean();
 		}
 	}
 
+	/**
+	 * Getter for the lut
+	 * 
+	 * @return this GUIs lut
+	 */
+	public Texture getLut() {
+		return lut;
+	}
+
+	/**
+	 * Getter fot the Shader
+	 * 
+	 * @return the GUIs Shader
+	 */
+	public Shader getShader() {
+		return shader;
+	}
+
+	/**
+	 * @param shader
+	 *            the shader to set
+	 */
+	public void setShader(Shader shader) {
+		this.shader = shader;
+	}
 }

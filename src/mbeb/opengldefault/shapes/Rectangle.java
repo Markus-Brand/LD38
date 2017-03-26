@@ -1,4 +1,4 @@
-package mbeb.opengldefault.gui;
+package mbeb.opengldefault.shapes;
 
 import org.joml.Vector2f;
 

@@ -1,6 +1,8 @@
-package mbeb.opengldefault.gui;
+package mbeb.opengldefault.gui.elements;
 
 import java.nio.FloatBuffer;
+
+import mbeb.opengldefault.constants.Constants;
 
 import org.joml.Vector2f;
 import org.joml.Vector4f;
@@ -38,10 +40,9 @@ public class CircleBar extends GUIElement {
 
 	@Override
 	public int writeToBuffer(FloatBuffer buffer, int offset) {
-		getModelMatrix().get(offset, buffer);
-		int offsetByMatrix = 16;
-		new Vector4f(progress).get(offset + offsetByMatrix, buffer);
-		return 20;
+		int offsetBySuper = super.writeToBuffer(buffer, offset);
+		new Vector4f(progress).get(offset + offsetBySuper, buffer);
+		return offsetBySuper + Constants.VEC4_COMPONENTS;
 	}
 
 }

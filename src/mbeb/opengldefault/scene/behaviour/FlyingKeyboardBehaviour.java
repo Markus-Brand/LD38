@@ -8,7 +8,7 @@ import mbeb.opengldefault.scene.entities.*;
 
 /**
  * A Behaviour that makes a Entity fly along its viewDirection by using KeyBoard Input
- * 
+ *
  * @author Markus
  */
 public class FlyingKeyboardBehaviour implements IBehaviour {
@@ -18,7 +18,7 @@ public class FlyingKeyboardBehaviour implements IBehaviour {
 	private final Vector3f worldUp;
 
 	public FlyingKeyboardBehaviour() {
-		this(0.1f);
+		this(3f);
 	}
 
 	public FlyingKeyboardBehaviour(float movementSpeed) {
@@ -53,7 +53,7 @@ public class FlyingKeyboardBehaviour implements IBehaviour {
 			return;
 		}
 		delta.normalize();
-		delta.mul(movementSpeed);
+		delta.mul(movementSpeed * (float) deltaTime);
 
 		entity.setPosition(entity.getPosition().add(delta, new Vector3f()));
 	}

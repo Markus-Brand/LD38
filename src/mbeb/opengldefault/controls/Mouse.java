@@ -68,9 +68,6 @@ public class Mouse {
 	}
 
 	public static Vector2f getNormalizedDeviceCoordinates() {
-		Vector2f mousePosition = getPos();
-		return new Vector2f(
-				2 * mousePosition.x / OpenGLContext.getFramebufferWidth() - 1,
-				-(2 * mousePosition.y / OpenGLContext.getFramebufferHeight() - 1));
+		return OpenGLContext.getNDC(getPos());
 	}
 }

@@ -1,9 +1,14 @@
 package mbeb.opengldefault.rendering.textures;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.opengl.GL13.*;
-import static org.lwjgl.opengl.GL20.*;
 
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.nio.ByteBuffer;
+
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
 
 import mbeb.opengldefault.logging.*;
@@ -18,6 +23,23 @@ public class Texture {
 
 	/** OpenGL-handle id for the texture */
 	private int textureHandle;
+
+	public Texture(int width, int height) {
+		this(TextureCache.loadTexture(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB), false,
+				GL_CLAMP_TO_EDGE,
+				GL_CLAMP_TO_EDGE));
+	}
+
+	/**
+	 * load the image provided at <code>path</code>
+	 *
+	 * @param path
+	 *            where to load the image from
+	 */
+	public Texture(BufferedImage image) {
+		this(TextureCache.loadTexture(image, false, GL_CLAMP_TO_EDGE,
+				GL_CLAMP_TO_EDGE));
+	}
 
 	/**
 	 * load the image provided at <code>path</code>
@@ -68,5 +90,19 @@ public class Texture {
 
 	public int getTextureHandle() {
 		return textureHandle;
+	}
+
+	public void setPixel(int x, int y, Color color) {
+		GL13.glActiveTexture(GL_TEXTURE0 + textureHandle);
+		glBindTexture(GL_TEXTURE_2D, textureHandle);
+		GLErrors.checkForError(TAG, "glBindTexture");
+		ByteBuffer buffer = BufferUtils.createByteBuffer(4);
+		buffer.put((byte) color.getRed());
+		buffer.put((byte) color.getGreen());
+		buffer.put((byte) color.getBlue());
+		buffer.put((byte) color.getAlpha());
+		buffer.flip();
+		glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+		GLErrors.checkForError(TAG, "glTexSubImage2D");
 	}
 }

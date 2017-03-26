@@ -7,6 +7,7 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 
+import org.joml.Vector2f;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -288,6 +289,18 @@ public class OpenGLContext {
 
 	public static GLFWVidMode getVidmode() {
 		return vidmode;
+	}
+
+	public static Vector2f getNDC(Vector2f point) {
+		return new Vector2f(getNDCX(point.x), getNDCY(point.y));
+	}
+
+	public static float getNDCY(float y) {
+		return -(2 * y / getFramebufferHeight() - 1);
+	}
+
+	public static float getNDCX(float x) {
+		return 2 * x / getFramebufferWidth() - 1;
 	}
 
 	public static int getVideoModeWidth() {

@@ -1,4 +1,4 @@
-package mbeb.opengldefault.gui;
+package mbeb.opengldefault.gui.elements;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -81,6 +81,34 @@ public class CombinedGUIElement extends GUIElement {
 			return true;
 		}
 		return elements.stream().anyMatch(element -> element.isDirty());
+	}
+
+	@Override
+	public void useLUT() {
+		if (elements != null) {
+			for (GUIElement guiElement : elements) {
+				guiElement.useLUT();
+				guiElement.setLutRow(getLutRow());
+			}
+		}
+	}
+
+	@Override
+	public void setLutRow(float lutRow) {
+		super.setLutRow(lutRow);
+		for (GUIElement guiElement : elements) {
+			guiElement.setLutRow(lutRow);
+		}
+	}
+
+	@Override
+	public void useTexture() {
+		super.useTexture();
+		if (elements != null) {
+			for (GUIElement guiElement : elements) {
+				guiElement.useTexture();
+			}
+		}
 	}
 
 	/**

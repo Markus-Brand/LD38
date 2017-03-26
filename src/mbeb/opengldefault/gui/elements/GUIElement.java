@@ -1,6 +1,14 @@
-package mbeb.opengldefault.gui;
+package mbeb.opengldefault.gui.elements;
 
+import java.awt.Color;
 import java.nio.FloatBuffer;
+
+import mbeb.opengldefault.constants.Constants;
+import mbeb.opengldefault.controls.Mouse;
+import mbeb.opengldefault.gui.GUI;
+import mbeb.opengldefault.rendering.textures.Texture;
+import mbeb.opengldefault.shapes.Rectangle;
+
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -12,6 +20,24 @@ import org.joml.Vector3f;
  */
 public abstract class GUIElement {
 
+	/**
+	 * true if this GUIElement uses a lut (LookUpTable)
+	 */
+	private boolean usesLUT;
+
+	/**
+	 * the row in the lutTexture that is used for coloring this element
+	 */
+	private float lutRow;
+
+	/**
+	 * the lut texture
+	 */
+	private Texture lut;
+
+	/**
+	 * Bounding of this GUIElement
+	 */
 	private Rectangle bounding;
 
 	/**
@@ -19,9 +45,21 @@ public abstract class GUIElement {
 	 */
 	private boolean dirty;
 
-	public GUIElement(Vector2f position, Vector2f size) {
+	public GUIElement(Vector2f position, Vector2f size, boolean usesLUT, float lutRow, Texture lut) {
 		bounding = new Rectangle(position, size);
 		dirty = true;
+		this.usesLUT = usesLUT;
+		if (usesLUT) {
+			setLut(lut, lutRow);
+		}
+	}
+
+	public GUIElement(Vector2f position, Vector2f size, float lutRow, Texture lut) {
+		this(position, size, true, lutRow, lut);
+	}
+
+	public GUIElement(Vector2f position, Vector2f size) {
+		this(position, size, false, 0, null);
 	}
 
 	public GUIElement(Vector2f size) {
@@ -30,6 +68,22 @@ public abstract class GUIElement {
 
 	public GUIElement() {
 		this(new Vector2f(1));
+	}
+
+	/**
+	 * Makes this GUIElement use a lut
+	 */
+	public void useLUT() {
+		this.usesLUT = true;
+		setDirty();
+	}
+
+	/**
+	 * Makes this GUIElement use the input Texture directly
+	 */
+	public void useTexture() {
+		this.usesLUT = false;
+		setDirty();
 	}
 
 	/**
@@ -138,8 +192,11 @@ public abstract class GUIElement {
 	 *            offset of the data within the buffer
 	 */
 	public int writeToBuffer(FloatBuffer buffer, int offset) {
-		getModelMatrix().get(offset, buffer);
-		return 16;
+		buffer.put(offset, usesLUT ? 1.0f : 0.0f);
+		buffer.put(offset + 1, getLutRow());
+		getModelMatrix().get(offset + Constants.VEC4_COMPONENTS, buffer);
+		setClean();
+		return Constants.VEC4_COMPONENTS + Constants.MAT4_COMPONENTS;
 	}
 
 	/**
@@ -184,6 +241,15 @@ public abstract class GUIElement {
 	}
 
 	/**
+	 * Tests if the GUIElement is selected, meaning that the mouse is hovering over it
+	 *
+	 * @return true if the GUIElement is selected
+	 */
+	public boolean selected() {
+		return contains(Mouse.getNormalizedDeviceCoordinates());
+	}
+
+	/**
 	 * Getter for the bounding of the GUIElement
 	 *
 	 * @return the bounding if the GUIElement
@@ -204,10 +270,81 @@ public abstract class GUIElement {
 
 	/**
 	 * Returns the number of GUIElements, that this GUIElement writes into the buffer
-	 * 
+	 *
 	 * @return the number of GUIElements
 	 */
 	public int getNumElements() {
 		return 1;
+	}
+
+	/**
+	 * Getter for the lut row
+	 * 
+	 * @return the lutRow
+	 */
+	public float getLutRow() {
+		return lutRow;
+	}
+
+	/**
+	 * Setter for the lut row
+	 * 
+	 * @return the new lutRow
+	 */
+	public void setLutRow(float lutRow) {
+		this.lutRow = lutRow;
+	}
+
+	/**
+	 * Makes this GUIElement use a lut and sets the lut and the lutRow
+	 * 
+	 * @param lut
+	 *            the lut texture that will be used for this GUIElement
+	 * @param lutRow
+	 *            the lutRow in the lut that will be used
+	 */
+	public void setLut(Texture lut, float lutRow) {
+		useLUT();
+		this.lut = lut;
+		this.lutRow = lutRow;
+	}
+
+	/**
+	 * Sets a pixel color in the lut
+	 * 
+	 * @param color
+	 *            the Color to set the pixel to
+	 * @param xPosition
+	 *            the xPos of the pixel
+	 */
+	public void setColor(Color color, int xPosition) {
+		getLut().setPixel(xPosition, (int) (255 * getLutRow()), color);
+		setDirty();
+	}
+
+	/**
+	 * Sets the last pixel in the GUIElements lutRow to a color. This is the color that will be used if the inputTexture
+	 * is completly white
+	 * 
+	 * @param color
+	 *            the Color to set the pixel to
+	 */
+	public void setColor(Color color) {
+		setColor(color, 255);
+	}
+
+	/**
+	 * @return the lut Texture
+	 */
+	public Texture getLut() {
+		return lut;
+	}
+
+	/**
+	 * @param lut
+	 *            the lut Texture to set
+	 */
+	public void setLut(Texture lut) {
+		this.lut = lut;
 	}
 }

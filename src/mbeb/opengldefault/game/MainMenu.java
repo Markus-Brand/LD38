@@ -1,4 +1,4 @@
-package mbeb.opengldefault.gui.menu;
+package mbeb.opengldefault.game;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
@@ -7,51 +7,57 @@ import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glViewport;
 
+import java.awt.Color;
+import java.awt.Font;
+
 import org.joml.Vector2f;
+import org.lwjgl.glfw.GLFW;
 
 import mbeb.opengldefault.controls.KeyBoard;
-import mbeb.opengldefault.game.GameState;
-import mbeb.opengldefault.game.GameStates;
+import mbeb.opengldefault.controls.Mouse;
 import mbeb.opengldefault.gui.AtlasGUI;
-import mbeb.opengldefault.gui.TextGUIElement;
+import mbeb.opengldefault.gui.TextGUI;
+import mbeb.opengldefault.gui.elements.GUIElement;
+import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
 import mbeb.opengldefault.rendering.shader.Shader;
+import mbeb.opengldefault.rendering.textures.Texture;
 
 public class MainMenu implements GameState {
 	private static final String TAG = "MainMenu";
 
-	private AtlasGUI textGUI;
+	private TextGUI textGUI;
 
-	private Menu menuGUI;
+	private AtlasGUI menuGUI;
 
 	private Shader guiShader;
 
 	private TextGUIElement fps;
 
-	GameStates nextGameState = null;
+	private GUIElement buttonGame, buttonExit;
+
+	private GameStates nextGameState = null;
 
 	public MainMenu() {
-		menuGUI = new Menu("gui.png", 2, 2);
-		guiShader = new Shader("gui.vert", "gui.frag");
-		textGUI = new AtlasGUI("font.png", 32, 16);
 	}
 
 	@Override
 	public void init() {
-		fps = textGUI.addText("0", new Vector2f(), 0.01f);
+		menuGUI = new AtlasGUI(new Texture("menu.png"), 4, 4);
+		guiShader = new Shader("gui.vert", "gui.frag");
+		textGUI = new TextGUI(new Font("Comic Sans MS", Font.PLAIN, 128));
+
+		textGUI.setShader(guiShader);
+		menuGUI.setShader(guiShader);
+
+		fps = textGUI.addText("0", new Vector2f(), 0.03f);
 		fps.setPositionRelativeToScreen(0, 0);
-		textGUI.addText("Hallo Welt! ! !012412", new Vector2f(), 0.05f).setPositionRelativeToScreen(0.0f, 0.75f);
-		textGUI.addText("Und Hallo Erik!", new Vector2f(-1, -0.2f), 0.02f).setPositionRelativeToScreen(1f,
-				0.25f);
-		menuGUI.addButtonElement(
-				menuGUI.addAtlasGUI(0, new Vector2f(), new Vector2f(0.5f, OpenGLContext.getAspectRatio() * 0.5f))
-						.setPositionRelativeToScreen(
-								0.25f, 0.5f), GameStates.GAME);
-		menuGUI.addButtonElement(
-				menuGUI.addAtlasGUI(0, new Vector2f(), new Vector2f(0.5f, OpenGLContext.getAspectRatio() * 0.5f))
-						.setPositionRelativeToScreen(
-								0.75f, 0.5f), GameStates.EXIT);
+		fps.setColor(Color.ORANGE);
+
+		buttonGame = textGUI.addText("Start Game", new Vector2f(), 0.2f).setPositionRelativeToScreen(0.5f, 0.5f);
+		buttonExit = menuGUI.addAtlasGUI(0, new Vector2f(), new Vector2f(0.1f, OpenGLContext.getAspectRatio() * 0.1f))
+				.setPositionRelativeToScreen(0.01f, 0.99f);
 	}
 
 	@Override
@@ -62,6 +68,24 @@ public class MainMenu implements GameState {
 
 		if (KeyBoard.isKeyDown(GLFW_KEY_ESCAPE)) {
 			nextGameState = GameStates.EXIT;
+		}
+
+		if (buttonGame.selected()) {
+			buttonGame.setColor(Color.RED);
+			if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
+				nextGameState = GameStates.GAME;
+			}
+		} else {
+			buttonGame.setColor(Color.GREEN);
+		}
+
+		if (buttonExit.selected()) {
+			buttonExit.setColor(Color.RED);
+			if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
+				nextGameState = GameStates.EXIT;
+			}
+		} else {
+			buttonExit.setColor(Color.GREEN);
 		}
 	}
 
@@ -75,9 +99,8 @@ public class MainMenu implements GameState {
 		glViewport(0, 0, OpenGLContext.getFramebufferWidth(), OpenGLContext.getFramebufferHeight());
 		GLErrors.checkForError(TAG, "glViewport");
 
-		guiShader.use();
-		menuGUI.render(guiShader);
-		textGUI.render(guiShader);
+		menuGUI.render();
+		textGUI.render();
 	}
 
 	@Override
@@ -92,16 +115,11 @@ public class MainMenu implements GameState {
 
 	@Override
 	public GameStates getNextState() {
-		if (nextGameState != null) {
-			return nextGameState;
-		} else {
-			return menuGUI.getNextState();
-		}
+		return nextGameState;
 	}
 
 	@Override
 	public void resetNextGameState() {
 		nextGameState = null;
-		menuGUI.resetNextGameState();
 	}
 }

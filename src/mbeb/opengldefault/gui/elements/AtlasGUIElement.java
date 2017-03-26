@@ -1,6 +1,10 @@
-package mbeb.opengldefault.gui;
+package mbeb.opengldefault.gui.elements;
 
 import java.nio.FloatBuffer;
+
+import mbeb.opengldefault.constants.Constants;
+import mbeb.opengldefault.gui.AtlasGUI;
+import mbeb.opengldefault.rendering.textures.Texture;
 
 import org.joml.Vector2f;
 import org.joml.Vector4f;
@@ -31,6 +35,14 @@ public class AtlasGUIElement extends GUIElement {
 	 * Height of the texture atlas
 	 */
 	private int atlasHeight;
+
+	public AtlasGUIElement(int atlasIndex, int atlasWidth, int atlasHeight, Vector2f position, Vector2f size,
+			float lutRow, Texture lut) {
+		super(position, size, lut != null, lutRow, lut);
+		this.atlasIndex = atlasIndex;
+		this.atlasWidth = atlasWidth;
+		this.atlasHeight = atlasHeight;
+	}
 
 	public AtlasGUIElement(int atlasIndex, int atlasWidth, int atlasHeight, Vector2f position, Vector2f size) {
 		super(position, size);
@@ -71,10 +83,9 @@ public class AtlasGUIElement extends GUIElement {
 
 	@Override
 	public int writeToBuffer(FloatBuffer buffer, int offset) {
-		getModelMatrix().get(offset, buffer);
-		int offsetByMatrix = 16;
-		getOffset().get(offset + offsetByMatrix, buffer);
-		return 20;
+		int offsetBySuper = super.writeToBuffer(buffer, offset);
+		getOffset().get(offset + offsetBySuper, buffer);
+		return offsetBySuper + Constants.VEC4_COMPONENTS;
 	}
 
 	@Override

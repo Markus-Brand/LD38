@@ -1,14 +1,9 @@
 package mbeb.opengldefault.gui;
 
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
-import static org.lwjgl.opengl.GL33.glVertexAttribDivisor;
-
 import org.joml.Vector2f;
 
 import mbeb.opengldefault.constants.Constants;
-import mbeb.opengldefault.logging.GLErrors;
+import mbeb.opengldefault.gui.elements.AtlasGUIElement;
 import mbeb.opengldefault.rendering.shader.Shader;
 import mbeb.opengldefault.rendering.textures.Texture;
 
@@ -27,15 +22,19 @@ public class AtlasGUI extends GUI {
 	/**
 	 * Width and height of the texture Atlas
 	 */
-	private int atlasWidth, atlasHeight;
+	protected int atlasWidth, atlasHeight;
 
 	public AtlasGUI(String atlasName, int atlasWidth, int atlasHeight) {
+		this(new Texture(atlasName), atlasWidth, atlasHeight);
+	}
+
+	public AtlasGUI(Texture atlas, int atlasWidth, int atlasHeight) {
 		super();
 		this.atlasWidth = atlasWidth;
 		this.atlasHeight = atlasHeight;
-		atlas = new Texture(atlasName);
+		this.atlas = atlas;
 		//Store a Matrix and the offset Vector from {@link AtlasGUIElement}
-		stride = Constants.MAT4_COMPONENTS + Constants.VEC4_COMPONENTS;
+		stride = Constants.MAT4_COMPONENTS + Constants.VEC4_COMPONENTS + Constants.VEC4_COMPONENTS;
 	}
 
 	/**
@@ -51,40 +50,9 @@ public class AtlasGUI extends GUI {
 	 */
 	public AtlasGUIElement addAtlasGUI(int atlasIndex, Vector2f position, Vector2f size) {
 		AtlasGUIElement newElement = new AtlasGUIElement(atlasIndex, atlasWidth, atlasHeight, size);
+		newElement.setLut(getLut(), elements.size() % 256 / 255f);
 		elements.add(newElement);
 		return newElement;
-	}
-
-	/**
-	 * Adds a {@link TextGUIElement} to the GUI
-	 *
-	 * @param text
-	 *            the displayed text
-	 * @param position
-	 *            position of the element
-	 * @param width
-	 *            width of a letter
-	 * @return
-	 */
-	public TextGUIElement addText(String text, Vector2f position, float width) {
-		TextGUIElement newElement = new TextGUIElement(atlasWidth, atlasHeight, text, position, width);
-		elements.add(newElement);
-		return newElement;
-	}
-
-	@Override
-	public void setupVAO() {
-		super.setupVAO();
-		renderable.bind();
-
-		glEnableVertexAttribArray(7);
-		GLErrors.checkForError(TAG, "glEnableVertexAttribArray");
-		glVertexAttribPointer(7, 4, GL_FLOAT, false, stride * Constants.FLOAT_SIZE, 4 * Constants.VEC2_SIZE);
-		GLErrors.checkForError(TAG, "glVertexAttribPointer");
-
-		glVertexAttribDivisor(7, 1);
-		GLErrors.checkForError(TAG, "glVertexAttribDivisor");
-		renderable.unbind();
 	}
 
 	@Override
