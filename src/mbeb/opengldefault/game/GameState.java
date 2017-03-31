@@ -1,7 +1,9 @@
 package mbeb.opengldefault.game;
 
 /**
- * Interface for a GameState
+ * Interface for a GameState.
+ * GameStates can be MainMenus, the game itself, options, etc.
+ * Each gameState should have a {@link GameStateIdentifier} to manage it in a {@link Game} class
  *
  * @author Markus
  */
@@ -35,7 +37,7 @@ public interface GameState {
 	 *
 	 * @return the nextGameState
 	 */
-	public abstract GameStates getNextState();
+	public abstract GameStateIdentifier getNextState();
 
 	/**
 	 * The GameState is active if the nextGameState is null

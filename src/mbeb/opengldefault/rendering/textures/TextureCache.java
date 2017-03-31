@@ -40,8 +40,8 @@ public class TextureCache {
 	/**
 	 * load Texture with given path and given interpolation method
 	 *
-	 * @param path
-	 * @param interpolate
+	 * @param path path of the texture on the hard drive
+	 * @param interpolate true -> Linear sub sampling; false -> nearest neighbor
 	 * @return openGl texture
 	 */
 	public static int loadTexture(String path, boolean interpolate) {
@@ -49,13 +49,13 @@ public class TextureCache {
 	}
 
 	/**
-	 * load Texture with given path and given interpolation and wrappinh method.
+	 * load Texture with given path and given interpolation and wrapping method.
 	 * Loads the texture from the cache, in case that we already loaded this image
 	 *
-	 * @param path
-	 * @param interpolate
-	 * @param wrapS
-	 * @param wrapT
+	 * @param path path of the texture on the hard drive
+	 * @param interpolate true -> Linear sub sampling; false -> nearest neighbor
+	 * @param wrapS OpenGL wrap method in x direction
+	 * @param wrapT OpenGL wrap method in y direction
 	 * @return openGl texture
 	 */
 	public static int loadTexture(String path, boolean interpolate, int wrapS, int wrapT) {
@@ -95,10 +95,9 @@ public class TextureCache {
 	 *
 	 * @param image
 	 *            input BufferedImage
-	 * @param interpolate
-	 *            interpolation method
-	 * @param wrapS
-	 * @param wrapT
+	 * @param interpolate true -> Linear sub sampling; false -> nearest neighbor
+	 * @param wrapS OpenGL wrap method in x direction
+	 * @param wrapT OpenGL wrap method in y direction
 	 * @return openGl texture
 	 */
 	public static int loadTexture(BufferedImage image, boolean interpolate, int wrapS, int wrapT) {

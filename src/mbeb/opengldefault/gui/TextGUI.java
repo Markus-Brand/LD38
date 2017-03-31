@@ -2,6 +2,7 @@ package mbeb.opengldefault.gui;
 
 import java.awt.Font;
 
+import mbeb.opengldefault.gui.elements.GUIElement;
 import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
 
@@ -17,38 +18,33 @@ public class TextGUI extends AtlasGUI {
 	}
 
 	/**
-	 * Adds a {@link TextGUIElement} to the GUI
+	 * Adds a {@link TextGUIElement} to the {@link GUI}
 	 *
 	 * @param text
 	 *            the displayed text
 	 * @param position
 	 *            position of the element
-	 * @param width
-	 *            width of a letter
+	 * @param height
+	 *            height of a letter
 	 * @return
 	 */
 	public TextGUIElement addText(String text, Vector2f position, float height) {
 		TextGUIElement newElement = new TextGUIElement(atlasWidth, atlasHeight, text, position, getFont(height));
-		newElement.setLut(getLut(), elements.size() % 256 / 255f);
-		elements.add(newElement);
-		return newElement;
+		return (TextGUIElement) addGUIElement(newElement);
 	}
 
 	/**
-	 * Adds a {@link TextGUIElement} to the GUI
+	 * Adds a {@link TextGUIElement} to the {@link GUI}
 	 *
 	 * @param text
 	 *            the displayed text
 	 * @param position
 	 *            position of the element
-	 * @param width
-	 *            width of a letter
 	 * @return
 	 */
 	public TextGUIElement addText(String text, Vector2f position) {
 		TextGUIElement newElement = new TextGUIElement(atlasWidth, atlasHeight, text, position, getFont());
-		elements.add(newElement);
-		return newElement;
+		return (TextGUIElement) addGUIElement(newElement);
 	}
 
 	/**

@@ -48,11 +48,9 @@ public class AtlasGUI extends GUI {
 	 *            size of the element
 	 * @return the generated and added element
 	 */
-	public AtlasGUIElement addAtlasGUI(int atlasIndex, Vector2f position, Vector2f size) {
+	public AtlasGUIElement addAtlasGUIElement(int atlasIndex, Vector2f position, Vector2f size) {
 		AtlasGUIElement newElement = new AtlasGUIElement(atlasIndex, atlasWidth, atlasHeight, size);
-		newElement.setLut(getLut(), elements.size() % 256 / 255f);
-		elements.add(newElement);
-		return newElement;
+		return (AtlasGUIElement)addGUIElement(newElement);
 	}
 
 	@Override

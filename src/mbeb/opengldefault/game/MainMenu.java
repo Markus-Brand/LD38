@@ -37,7 +37,7 @@ public class MainMenu implements GameState {
 
 	private GUIElement buttonGame, buttonExit;
 
-	private GameStates nextGameState = null;
+	private GameStateIdentifier nextGameState = null;
 
 	public MainMenu() {
 	}
@@ -56,7 +56,7 @@ public class MainMenu implements GameState {
 		fps.setColor(Color.ORANGE);
 
 		buttonGame = textGUI.addText("Start Game", new Vector2f(), 0.2f).setPositionRelativeToScreen(0.5f, 0.5f);
-		buttonExit = menuGUI.addAtlasGUI(0, new Vector2f(), new Vector2f(0.1f, OpenGLContext.getAspectRatio() * 0.1f))
+		buttonExit = menuGUI.addAtlasGUIElement(0, new Vector2f(), new Vector2f(0.1f, OpenGLContext.getAspectRatio() * 0.1f))
 				.setPositionRelativeToScreen(0.01f, 0.99f);
 	}
 
@@ -67,13 +67,13 @@ public class MainMenu implements GameState {
 		textGUI.update(deltaTime);
 
 		if (KeyBoard.isKeyDown(GLFW_KEY_ESCAPE)) {
-			nextGameState = GameStates.EXIT;
+			nextGameState = GameStateIdentifier.EXIT;
 		}
 
 		if (buttonGame.selected()) {
 			buttonGame.setColor(Color.RED);
 			if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
-				nextGameState = GameStates.GAME;
+				nextGameState = GameStateIdentifier.GAME;
 			}
 		} else {
 			buttonGame.setColor(Color.GREEN);
@@ -82,7 +82,7 @@ public class MainMenu implements GameState {
 		if (buttonExit.selected()) {
 			buttonExit.setColor(Color.RED);
 			if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
-				nextGameState = GameStates.EXIT;
+				nextGameState = GameStateIdentifier.EXIT;
 			}
 		} else {
 			buttonExit.setColor(Color.GREEN);
@@ -114,7 +114,7 @@ public class MainMenu implements GameState {
 	}
 
 	@Override
-	public GameStates getNextState() {
+	public GameStateIdentifier getNextState() {
 		return nextGameState;
 	}
 

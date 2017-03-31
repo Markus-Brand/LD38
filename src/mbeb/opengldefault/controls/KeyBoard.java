@@ -4,6 +4,8 @@ public class KeyBoard {
 
 	/** Class Name Tag */
 	private static final String TAG = "KeyBoard";
+	
+	private static final int MAX_NUM_KEYS = 1024;
 
 	private KeyBoard() {
 		//should never be instantiated
@@ -15,7 +17,7 @@ public class KeyBoard {
 	private static boolean[] keys;
 
 	static {
-		keys = new boolean[1024];
+		keys = new boolean[MAX_NUM_KEYS];
 	}
 
 	/**

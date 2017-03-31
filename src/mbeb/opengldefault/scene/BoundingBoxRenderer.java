@@ -34,10 +34,11 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 				.scale(obj.getBoundingBox().getLocalSize());
 	}
 
-	/**
+	/** 
 	 * renders a single objects bounding box
 	 *
 	 * @param owner
+	 * @param boxColor
 	 * @param boundingBoxTransform
 	 */
 	private void renderBox(final BoundingBox.Owner owner, final Vector3f boxColor, final Matrix4f boundingBoxTransform) {

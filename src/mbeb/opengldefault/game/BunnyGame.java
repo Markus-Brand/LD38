@@ -8,8 +8,8 @@ public class BunnyGame extends Game {
 
 	@Override
 	public void init() {
-		addGameState(GameStates.MAIN_MENU, new MainMenu());
-		addGameState(GameStates.GAME, new BunnyGameState());
+		addGameState(GameStateIdentifier.MAIN_MENU, new MainMenu());
+		addGameState(GameStateIdentifier.GAME, new BunnyGameState());
 	}
 
 	@Override

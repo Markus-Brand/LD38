@@ -55,7 +55,7 @@ public class BunnyGameState implements GameState {
 
 	private static final String TAG = "BunnyGameState";
 
-	GameStates nextGameState;
+	GameStateIdentifier nextGameState;
 
 	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1);
 
@@ -199,7 +199,7 @@ public class BunnyGameState implements GameState {
 	@Override
 	public void update(final double deltaTime) {
 		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_ESCAPE)) {
-			nextGameState = GameStates.MAIN_MENU;
+			nextGameState = GameStateIdentifier.MAIN_MENU;
 			KeyBoard.releaseAll();
 		}
 
@@ -240,7 +240,7 @@ public class BunnyGameState implements GameState {
 	}
 
 	@Override
-	public GameStates getNextState() {
+	public GameStateIdentifier getNextState() {
 		return nextGameState;
 	}
 

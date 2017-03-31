@@ -785,6 +785,10 @@ public class Shader {
 		}
 	}
 
+	/**
+	 * Returns the name of the vertex shader. Might be useful for debugging
+	 * @return the name of the vertex shader. e.g: gui.vert -> gui
+	 */
 	public String getVertexName() {
 		return vertexPath.split("[.]")[0];
 	}

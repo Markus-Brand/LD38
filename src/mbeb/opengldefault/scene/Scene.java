@@ -20,17 +20,17 @@ public class Scene {
 	private Skybox skybox;
 	private final MousePicker3D picker;
 
-	public Scene(final ICamera cam) {
-		this(cam, null);
+	public Scene(final ICamera camera) {
+		this(camera, null);
 	}
 
-	public Scene(final ICamera cam, final Skybox skybox) {
-		this.camera = cam;
+	public Scene(final ICamera camera, final Skybox skybox) {
+		this.camera = camera;
 		this.skybox = skybox;
 		this.lightManager = new LightManager();
 		this.sceneGraphRoot = new SceneObject();
-		renderer = new VisibleSceneGraphRenderer(sceneGraphRoot, cam);
-		boundingBoxRenderer = new BoundingBoxRenderer(sceneGraphRoot, cam);
+		renderer = new VisibleSceneGraphRenderer(sceneGraphRoot, camera);
+		boundingBoxRenderer = new BoundingBoxRenderer(sceneGraphRoot, camera);
 		picker = new MousePicker3D(camera);
 	}
 

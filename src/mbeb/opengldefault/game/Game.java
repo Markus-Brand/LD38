@@ -14,12 +14,12 @@ public abstract class Game {
 	/**
 	 * Current GameState
 	 */
-	private GameStates currentGameState;
+	private GameStateIdentifier currentGameState;
 
 	/**
 	 * Mapping from the GamaStates enum to the actual GameState
 	 */
-	private Map<GameStates, GameState> gameStates;
+	private Map<GameStateIdentifier, GameState> gameStates;
 
 	/**
 	 * Adds a GameStates -> GameState mapping entry. The first GameState to add will be the startup entry per default
@@ -27,7 +27,7 @@ public abstract class Game {
 	 * @param key
 	 * @param newGameState
 	 */
-	protected void addGameState(GameStates key, GameState newGameState) {
+	protected void addGameState(GameStateIdentifier key, GameState newGameState) {
 		newGameState.init();
 		if (gameStates == null) {
 			gameStates = new HashMap<>();
@@ -49,26 +49,26 @@ public abstract class Game {
 	 *            time that passed since the last update
 	 */
 	public void update(double deltaTime) {
-		GameState currentState = getCurrentState();
+		GameState currentState = getCurrentGameState();
 		currentState.update(deltaTime);
 		if (!currentState.isActive()) {
 			currentGameState = currentState.getNextState();
 			currentState.resetNextGameState();
-			if (currentGameState == GameStates.EXIT) {
+			if (currentGameState == GameStateIdentifier.EXIT) {
 				OpenGLContext.close();
 			} else {
-				getCurrentState().open();
+				getCurrentGameState().open();
 			}
 		}
 	}
 
 	/**
-	 * Rendering entry point of a update cycle
+	 * Rendering entry point of an update cycle
 	 */
 	public void render() {
-		GameState currentState = getCurrentState();
-		if (currentState != null) {
-			currentState.render();
+		GameState currentGameState = getCurrentGameState();
+		if (currentGameState != null) {
+			currentGameState.render();
 		}
 	}
 
@@ -77,7 +77,7 @@ public abstract class Game {
 	 *
 	 * @return the current GameState
 	 */
-	private GameState getCurrentState() {
+	private GameState getCurrentGameState() {
 		return gameStates.get(currentGameState);
 	}
 

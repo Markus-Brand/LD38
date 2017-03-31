@@ -15,6 +15,7 @@ import org.lwjgl.BufferUtils;
 
 import mbeb.opengldefault.constants.Constants;
 import mbeb.opengldefault.gui.elements.GUIElement;
+import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.StaticMeshes;
@@ -79,14 +80,16 @@ public class GUI implements IRenderable {
 	}
 
 	/**
-	 * Adds a new {@link GUIElement}
-	 *
-	 * @param element
+	 * Adds a new GUIElement and sets its lut level
+	 * @param newElement the new element
+	 * @return the new element
 	 */
-	public void addGUIElement(GUIElement element) {
-		elements.add(element);
+	protected GUIElement addGUIElement(GUIElement newElement) {
+		newElement.setLut(getLut(), elements.size() % 256 / 255f);
+		elements.add(newElement);
+		return newElement;
 	}
-
+	
 	/**
 	 * Generates a new buffer
 	 */
@@ -196,7 +199,7 @@ public class GUI implements IRenderable {
 	}
 
 	/**
-	 * Getter fot the Shader
+	 * Getter for the Shader
 	 * 
 	 * @return the GUIs Shader
 	 */

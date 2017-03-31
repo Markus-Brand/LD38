@@ -12,6 +12,9 @@ import mbeb.opengldefault.rendering.shader.Shader;
  */
 public class ProgressBarGUI extends GUI {
 
+	/**
+	 * Class Tag
+	 */
 	private static final String TAG = "ProgressBarGUI";
 
 	public ProgressBarGUI() {

@@ -28,7 +28,7 @@ public class FontCache {
 	}
 
 	/**
-	 * The static method that is used as an accessor from the outside
+	 * The static method that is used to access the FontMaps
 	 * 
 	 * @param font
 	 *            The font, that will be used to generate the FontMap, if it isn't already loaded
@@ -43,7 +43,7 @@ public class FontCache {
 	}
 
 	/**
-	 * Generates the Texture and adds it to the cache
+	 * Generates the {@link Texture} and adds it to the cache
 	 * 
 	 * @param resizedFont
 	 *            the font used for generating the FontMap {@link Texture}
@@ -64,6 +64,12 @@ public class FontCache {
 		cachedFonts.put(resizedFont, new Texture(rasteredFont));
 	}
 
+	/**
+	 * Generates a {@link Graphics2D} object for rendering the FontMap into the texture
+	 * @param resizedFont the Font that will be used
+	 * @param rasteredFont the {@link BufferedImage} that will be used
+	 * @return the new {@link Graphics2D} object
+	 */
 	private static Graphics2D setupGraphics(Font resizedFont, BufferedImage rasteredFont) {
 		Graphics2D g2d = rasteredFont.createGraphics();
 		g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
@@ -100,13 +106,13 @@ public class FontCache {
 	}
 
 	/**
-	 * converts the font to a font with a power of two size
+	 * converts the {@link Font} to a {@link Font} with a power of two size
 	 * 
 	 * @param font
-	 *            input font
+	 *            input {@link Font}
 	 * @param charHeight
-	 *            height of a char in the input font
-	 * @return the resized Font
+	 *            height of a char in the input {@link Font}
+	 * @return the resized {@link Font}
 	 */
 	private static Font getResizedFont(Font font, int charHeight) {
 		int size = 2;

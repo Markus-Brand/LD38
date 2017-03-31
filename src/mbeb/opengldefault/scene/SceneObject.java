@@ -237,7 +237,7 @@ public class SceneObject implements BoundingBox.Owner {
 	}
 
 	/**
-	 * insert a given object ot my own boundingBox
+	 * insert a given object into my own boundingBox
 	 *
 	 * @param object
 	 */
