@@ -23,7 +23,7 @@ public interface GameState {
 	public abstract void update(double deltaTime);
 
 	/**
-	 * Rendering entry point of a update cycle
+	 * Rendering entry point of an update cycle
 	 */
 	public abstract void render();
 
