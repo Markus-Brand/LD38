@@ -14,13 +14,13 @@ public class FollowingBehaviour extends ReferenceEntityBehaviour {
 	/** speed of the entity */
 	private float speed;
 
-	public FollowingBehaviour(Entity followed, float speed) {
+	public FollowingBehaviour(IEntity followed, float speed) {
 		super(followed);
 		this.speed = speed;
 	}
 
 	@Override
-	public void update(double deltaTime, Entity entity) {
+	public void update(double deltaTime, IEntity entity) {
 		Vector3f direction = getReference().getPosition().sub(entity.getPosition(), new Vector3f());
 
 		float distance = (float) (speed * deltaTime);
@@ -39,7 +39,7 @@ public class FollowingBehaviour extends ReferenceEntityBehaviour {
 	}
 
 	@Override
-	public boolean triggers(Entity entity) {
+	public boolean triggers(IEntity entity) {
 		return true;
 	}
 

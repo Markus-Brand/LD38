@@ -120,7 +120,7 @@ public abstract class LightTypeManager {
 	 * @param shader
 	 *            that will be updated
 	 */
-	public void updateShader(final Shader shader) {
+	public void updateShader(final ShaderProgram shader) {
 		shader.addUniformBlockIndex(UBOBaseName);
 		shader.updateParameter(shaderLightTypeParameterName, lightCapacity);
 	}

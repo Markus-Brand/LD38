@@ -2,11 +2,12 @@ package mbeb.opengldefault.rendering.shader;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import mbeb.opengldefault.logging.*;
 
 /**
- * Parse the source code for one component of a {@link Shader} - Object
+ * Parse the source code for one {@link ShaderObject}
  *
  * @author Erik
  */
@@ -16,21 +17,33 @@ public class ShaderPreprocessor {
 	public static final String GLSL_VERSION = "330 core";
 	private static final String INCLUDE_TAG = "#include ";
 
-	private final Map<String, Object> parameters;
+	/** all the parameters that are pasted into the header of each shader as define statements */
+	private final Map<String, String> parameters;
+	/** cached version of the header string for each shader */
 	private String header;
+	/** whether the paramters of the header have changed and it has to be re-created */
 	private boolean parametersDirty;
 
-	public ShaderPreprocessor(Map<String, Object> parameters) {
+	/**
+	 * construct a new preprocessor with a given set of parameters
+	 * @param parameters can be null
+	 */
+	public ShaderPreprocessor(Map<String, String> parameters) {
 		this.parameters = parameters != null ? parameters : new HashMap<>();
 		setParametersDirty(true);
 	}
 
+	/**
+	 * getter for parameters
+	 * @param name the name of the parameter
+	 * @return the value of the parameter, or an empty string
+	 */
 	public String getParameter(final String name) {
-		final Object obj = parameters.get(name);
-		return obj == null ? "" : obj.toString();
+		final String obj = parameters.get(name);
+		return obj == null ? "" : obj;
 	}
 
-	public void updateParameter(final String name, final Object value) {
+	public void updateParameter(final String name, final String value) {
 		if (Objects.equals(value, parameters.get(name))) {
 			//no change in object
 			return;
@@ -39,6 +52,9 @@ public class ShaderPreprocessor {
 		setParametersDirty(true);
 	}
 
+	/**
+	 * @return true, if the cached header String is outdated
+	 */
 	public boolean areParametersDirty() {
 		return parametersDirty;
 	}
@@ -81,7 +97,7 @@ public class ShaderPreprocessor {
 		if (areParametersDirty()) {
 			setParametersDirty(false);
 			StringBuilder headerBuilder = new StringBuilder("#version ").append(GLSL_VERSION).append(System.getProperty("line.separator"));
-			for (Map.Entry<String, Object> parameter : parameters.entrySet()) {
+			for (Map.Entry<String, String> parameter : parameters.entrySet()) {
 				final Object value = parameter.getValue() != null ? parameter.getValue() : "";
 				headerBuilder.append("#define ").append(parameter.getKey()).append(" ").append(value).append(System.getProperty("line.separator"));
 			}
@@ -94,25 +110,19 @@ public class ShaderPreprocessor {
 	 * actually process a File
 	 *
 	 * @param fileName
-	 * @return
+	 * @return the inflated content of this file
 	 */
 	private String process(String fileName) {
 		String rawSource = Cache.getInstance().getRawSource(fileName);
 
-		String[] sourceParts = Arrays.asList(rawSource.split("\\R")).stream().map((String line) -> {
+		return Arrays.stream(rawSource.split("\\R")).map((String line) -> {
 			String trimmedLine = line.trim();
 			if (trimmedLine.startsWith(INCLUDE_TAG)) {
 				String includedFileName = trimmedLine.substring(INCLUDE_TAG.length()).trim();
 				return getProcessedCode(includedFileName);
 			}
 			return line;
-		}).map((String line) -> line + "\n").toArray(String[]::new);
-
-		StringBuilder result = new StringBuilder();
-		for (String sourcePart : sourceParts) {
-			result.append(sourcePart);
-		}
-		return result.toString();
+		}).collect(Collectors.joining("\n"));
 	}
 
 	private static final class Cache {

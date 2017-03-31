@@ -20,7 +20,7 @@ import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.StaticMeshes;
 import mbeb.opengldefault.rendering.renderable.VAORenderable;
-import mbeb.opengldefault.rendering.shader.Shader;
+import mbeb.opengldefault.rendering.shader.ShaderProgram;
 import mbeb.opengldefault.rendering.textures.Texture;
 import mbeb.opengldefault.scene.BoundingBox;
 
@@ -40,7 +40,7 @@ public class GUI implements IRenderable {
 	/**
 	 * The shader used to render this GUI
 	 */
-	private Shader shader;
+	private ShaderProgram shader;
 
 	/**
 	 * GUIElements that get drawn with this GUI
@@ -145,7 +145,7 @@ public class GUI implements IRenderable {
 	}
 
 	@Override
-	public void render(Shader shader) {
+	public void render(ShaderProgram shader) {
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		if (dirty) {
 			setupVAO();
@@ -203,7 +203,7 @@ public class GUI implements IRenderable {
 	 * 
 	 * @return the GUIs Shader
 	 */
-	public Shader getShader() {
+	public ShaderProgram getShader() {
 		return shader;
 	}
 
@@ -211,7 +211,7 @@ public class GUI implements IRenderable {
 	 * @param shader
 	 *            the shader to set
 	 */
-	public void setShader(Shader shader) {
+	public void setShader(ShaderProgram shader) {
 		this.shader = shader;
 	}
 }

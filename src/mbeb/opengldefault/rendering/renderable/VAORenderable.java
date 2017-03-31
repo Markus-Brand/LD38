@@ -121,6 +121,7 @@ public class VAORenderable implements IRenderable {
 	 */
 	public void unbind() {
 		glBindVertexArray(0);
+		GLErrors.checkForError(TAG, "glBindVertexArray");
 	}
 
 	/**
@@ -129,7 +130,7 @@ public class VAORenderable implements IRenderable {
 	 * @param shader
 	 */
 	@Override
-	public void render(Shader shader) {
+	public void render(ShaderProgram shader) {
 		bind();
 		glDrawElements(shader.getDrawMode(), indexSize, GL_UNSIGNED_INT, 0);
 		GLErrors.checkForError(TAG, "glDrawElements");
@@ -188,8 +189,11 @@ public class VAORenderable implements IRenderable {
 		GLErrors.checkForError(TAG, "generateEBO");
 
 		glBindVertexArray(0);
+		GLErrors.checkForError(TAG, "glBindVertexArray");
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		GLErrors.checkForError(TAG, "glBindBuffer");
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		GLErrors.checkForError(TAG, "glBindBuffer");
 
 		glDeleteBuffers(EBO);
 		GLErrors.checkForError(TAG, "glDeleteBuffers EBO");

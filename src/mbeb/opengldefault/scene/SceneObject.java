@@ -16,7 +16,7 @@ public class SceneObject implements BoundingBox.Owner {
 	private static final String TAG = "SceneObject";
 
 	/** the renderable for this object, or null */
-	private Shader shader;
+	private ShaderProgram shader;
 	/** a renderable for this Object, or null */
 	private IRenderable renderable;
 	/** the combined boundingBox for this object(renderable+subObjects) */
@@ -43,7 +43,7 @@ public class SceneObject implements BoundingBox.Owner {
 	 * @param renderable
 	 *            Renderable that is drawn if the object is rendered
 	 */
-	public SceneObject(IRenderable renderable) {
+	public SceneObject(IRenderableHolder renderable) {
 		this(renderable, new Matrix4f(), null);
 	}
 
@@ -55,7 +55,7 @@ public class SceneObject implements BoundingBox.Owner {
 	 * @param myTransformation
 	 *            Local Transformation based on Parent
 	 */
-	public SceneObject(IRenderable renderable, Matrix4f myTransformation) {
+	public SceneObject(IRenderableHolder renderable, Matrix4f myTransformation) {
 		this(renderable, myTransformation, null);
 	}
 
@@ -67,7 +67,7 @@ public class SceneObject implements BoundingBox.Owner {
 	 * @param myTransformation
 	 *            Local Transformation based on Parent
 	 */
-	public SceneObject(IRenderable renderable, BoneTransformation myTransformation) {
+	public SceneObject(IRenderableHolder renderable, BoneTransformation myTransformation) {
 		this(renderable, myTransformation, null);
 	}
 
@@ -81,7 +81,7 @@ public class SceneObject implements BoundingBox.Owner {
 	 * @param subObjects
 	 *            Children Objects
 	 */
-	public SceneObject(IRenderable renderable, Matrix4f myTransformation, List<SceneObject> subObjects) {
+	public SceneObject(IRenderableHolder renderable, Matrix4f myTransformation, List<SceneObject> subObjects) {
 		this(renderable, new BoneTransformation(myTransformation), subObjects);
 	}
 
@@ -95,10 +95,10 @@ public class SceneObject implements BoundingBox.Owner {
 	 * @param subObjects
 	 *            Children Objects
 	 */
-	public SceneObject(IRenderable renderable, BoneTransformation myTransformation, List<SceneObject> subObjects) {
+	public SceneObject(IRenderableHolder renderable, BoneTransformation myTransformation, List<SceneObject> subObjects) {
 		this.transformation = myTransformation;
 		this.subObjects = subObjects;
-		this.renderable = renderable;
+		this.renderable = renderable != null ? renderable.getRenderable() : null;
 		box = null;
 	}
 
@@ -162,7 +162,7 @@ public class SceneObject implements BoundingBox.Owner {
 	 *
 	 * @return
 	 */
-	public Shader getShader() {
+	public ShaderProgram getShader() {
 		if (!hasOwnShader() && parent != null) {
 			return parent.getShader();
 		}
@@ -174,7 +174,7 @@ public class SceneObject implements BoundingBox.Owner {
 	 *
 	 * @param shader
 	 */
-	public void setShader(Shader shader) {
+	public void setShader(ShaderProgram shader) {
 		this.shader = shader;
 	}
 

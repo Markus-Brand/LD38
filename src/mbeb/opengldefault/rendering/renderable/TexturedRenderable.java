@@ -20,8 +20,8 @@ public class TexturedRenderable implements IRenderable {
 	/** a texture to bind before rendering */
 	private Texture texture;
 
-	public TexturedRenderable(IRenderable renderable, Texture texture) {
-		this.renderable = renderable;
+	public TexturedRenderable(IRenderableHolder renderable, Texture texture) {
+		this.renderable = renderable.getRenderable();
 		this.texture = texture;
 	}
 
@@ -33,8 +33,12 @@ public class TexturedRenderable implements IRenderable {
 		return texture;
 	}
 
+	/**
+	 * binds the texture and then passes the call to the wrapped IRenderable
+	 * @param shader
+	 */
 	@Override
-	public void render(Shader shader) {
+	public void render(ShaderProgram shader) {
 		getTexture().bind(shader);
 		renderable.render(shader);
 	}

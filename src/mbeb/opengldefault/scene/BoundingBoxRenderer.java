@@ -14,11 +14,11 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 
 	public static final boolean RENDER_BONE_BOXES = true;
 
-	private static Shader shader;
+	private static ShaderProgram shader;
 
 	static {
-		shader = new Shader("boundingbox.vert", "boundingbox.frag");
-		shader.addUniformBlockIndex("Matrices");
+		shader = new ShaderProgram("boundingbox.vert", "boundingbox.frag");
+		shader.addUniformBlockIndex(UBOManager.MATRICES);
 		shader.setDrawMode(GL11.GL_LINES);
 	}
 

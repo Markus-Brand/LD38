@@ -79,50 +79,46 @@ public class Bone implements BoundingBox.Owner {
 		return index;
 	}
 
-	@Override
-	public String toString() {
-		return getName() + " - " + getIndex() + "(total " + boneCount() + ")";
-	}
-
 	/**
-	 * breadth-first search for a bone with given name
+	 * search for a bone
 	 * 
 	 * @param name
 	 *            the name to search for
 	 * @return a Bone-object or null when no bone matched the name
 	 */
-	public Bone firstBoneNamed(String name) {
-		Queue<Bone> boneQueue = new LinkedList<>();
-		boneQueue.add(this);
-		while(!boneQueue.isEmpty()) {
-			Bone bone = boneQueue.remove();
-			if (bone.getName().equals(name)) {
-				return bone;
-			}
-			boneQueue.addAll(bone.getChildren());
-		}
-		Log.log(TAG, "cant find any bone named \"" + name + "\"");
-		return null;
+	public Bone firstBoneNamed(final String name) {
+		return search(b -> b.getName().equals(name), "cant find any bone named \"" + name + "\"");
 	}
 
 	/**
-	 * breadth-first search for a bone with given id
+	 * search for a bone
 	 * 
 	 * @param index
 	 *            the id to search for
 	 * @return a Bone-object or null when no bone matched the name
 	 */
-	public Bone firstBoneWithIndex(int index) {
+	public Bone firstBoneWithIndex(final int index) {
+		return search(b -> b.getIndex() == index, "cant find any bone with index \"" + index + "\"");
+	}
+
+	/**
+	 * breadth-first search for a Bone with a given condition
+	 * @param condition
+	 * @return
+	 */
+	private Bone search(Predicate<? super Bone> condition, String  errorLogMessage) {
 		Queue<Bone> boneQueue = new LinkedList<>();
 		boneQueue.add(this);
 		while(!boneQueue.isEmpty()) {
 			Bone bone = boneQueue.remove();
-			if (bone.getIndex() == index) {
+			if (condition.test(bone)) {
 				return bone;
 			}
 			boneQueue.addAll(bone.getChildren());
 		}
-		Log.log(TAG, "cant find any bone with index \"" + index + "\"");
+		if (errorLogMessage != null) {
+			Log.log(TAG, errorLogMessage);
+		}
 		return null;
 	}
 
@@ -158,6 +154,19 @@ public class Bone implements BoundingBox.Owner {
 		action.accept(this);
 		for (Bone child : getChildren()) {
 			child.foreach(action);
+		}
+	}
+
+	@Override
+	public String toString() {
+		return getName() + " - " + getIndex() + " (total " + boneCount() + ")";
+	}
+
+	public void printRecursive(String prefix) {
+		System.out.println(prefix + this);
+
+		for (Bone child: getChildren()) {
+			child.printRecursive(prefix + "  |");
 		}
 	}
 }

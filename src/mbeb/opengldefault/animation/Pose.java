@@ -1,15 +1,10 @@
 package mbeb.opengldefault.animation;
 
-import static org.lwjgl.opengl.GL20.*;
-
-import java.nio.*;
 import java.util.*;
-import java.util.concurrent.atomic.*;
 
-import mbeb.opengldefault.constants.Constants;
 import org.joml.*;
-import org.lwjgl.*;
 
+import mbeb.opengldefault.logging.Log;
 import mbeb.opengldefault.rendering.shader.*;
 
 /**
@@ -17,10 +12,17 @@ import mbeb.opengldefault.rendering.shader.*;
  */
 public class Pose {
 
+	private static final String TAG = "Pose";
+
 	/** A BoneTransformation for each bone */
 	private Map<String, BoneTransformation> boneTransforms = new HashMap<>();
+	/** The priority of each bone */
+	private Map<String, Integer> bonePriorities = new HashMap<>();
 	private Bone skeleton;
 	private Matrix4f transform;
+
+	/** the applied bone matrices */
+	private BoneState[] convertedData = null;
 
 	public Pose(Bone skeleton, Matrix4f transform) {
 		this.skeleton = skeleton;
@@ -63,42 +65,41 @@ public class Pose {
 		}
 	}
 
-	/**
-	 * apply this poses relative transformations to a pose before, but only
-	 * to bones which have not been animated yet
-	 *
-	 * @param before
-	 *            the pose to alter
-	 */
-	public void applyAfter(Pose before) {
-		assert before.skeleton == this.skeleton;
+	public int getBonePriority(String boneName) {
+		Integer priority = bonePriorities.get(boneName);
+		return (priority != null) ? priority : 0;
+	}
 
-		for (Map.Entry<String, BoneTransformation> beforeSet : before.boneTransforms.entrySet()) {
-			String key = beforeSet.getKey();
-			Bone b = skeleton.firstBoneNamed(key);
-			BoneTransformation beforeTransform = beforeSet.getValue();
-			if (beforeTransform.isSameAs(b.getDefaultBoneTransform(), 0.001f)) {
-				BoneTransformation afterTransform = this.boneTransforms.get(key);
-				beforeSet.setValue(afterTransform);
-
-			}
-		}
+	public void setBonePriority(String boneName, int value) {
+		bonePriorities.put(boneName, value);
 	}
 
 	/**
-	 * @return how many bones are actually animated, in percent
+	 * apply this poses relative transformations to a pose before, but only
+	 * to bones with lower priority
+	 *
+	 * @param ownStrength the strength (intensity factor) of <code>this</code> Pose
+	 * @param before the pose to alter
 	 */
-	public float getAnimationAmount() {
-		AtomicInteger sum = new AtomicInteger();
+	public void mixInto(final double ownStrength, final Pose before) {
+		Log.assertEqual(TAG, this.skeleton, before.skeleton, "Cannot merge poses with different skeletons");
 
-		skeleton.foreach((Bone b) -> {
-			Matrix4f defTrans = b.getDefaultBoneTransform();
-			if (!boneTransforms.get(b.getName()).isSameAs(defTrans, 0.001f)) {
-				sum.incrementAndGet();
+		for (Map.Entry<String, BoneTransformation> beforeSet : before.boneTransforms.entrySet()) {
+			String key = beforeSet.getKey();
+			BoneTransformation beforeTransform = beforeSet.getValue();
+
+			if (getBonePriority(key) > before.getBonePriority(key)) {
+				BoneTransformation afterTransform = this.boneTransforms.get(key);
+				if (afterTransform == null) {
+					continue;
+				}
+				BoneTransformation lerped = BoneTransformation.lerp(
+						beforeTransform,
+						afterTransform, ownStrength);
+				beforeSet.setValue(lerped);
+				before.bonePriorities.put(key, getBonePriority(key));
 			}
-		});
-
-		return sum.get() / (float) skeleton.boneCount();
+		}
 	}
 
 	@Override
@@ -119,24 +120,27 @@ public class Pose {
 	 * @return
 	 */
 	public static final Pose lerp(Pose p1, Pose p2, double factor) {
-		if (factor == 1) {
-			return p2;
-		}
 		if (factor == 0) {
 			return p1;
 		}
+		if (factor == 1) {
+			return p2;
+		}
 
-		assert p1.skeleton == p2.skeleton;
+		Log.assertEqual(TAG, p1.skeleton, p2.skeleton, "Cannot lerp poses with different skeletons");
 
 		Pose result = new Pose(p1.skeleton, p1.transform);
+		result.bonePriorities = p1.bonePriorities;
 
 		for (Map.Entry<String, BoneTransformation> boneTransform : p1.boneTransforms.entrySet()) {
 			String name = boneTransform.getKey();
 			BoneTransformation t1 = boneTransform.getValue();
 			BoneTransformation t2 = p2.boneTransforms.get(name);
 
-			BoneTransformation resTrans = BoneTransformation.lerp(t1, t2, factor);
-			result.put(name, resTrans);
+			if (t1 != null && t2 != null) {
+				BoneTransformation resTrans = BoneTransformation.lerp(t1, t2, factor);
+				result.put(name, resTrans);
+			}
 		}
 
 		return result;
@@ -147,13 +151,36 @@ public class Pose {
 	}
 
 	/**
-	 * get the Treansformation of a Bone
-	 * 
-	 * @param name
+	 * get the Transformation of a Bone
+	 *
 	 * @return
 	 */
-	public Matrix4f get(String name) {
-		return getRaw(name).asMatrix().mul(transform, new Matrix4f());
+	public BoneState get(int boneID) {
+		return getConvertedData()[boneID];
+	}
+
+	public BoneState[] getConvertedData() {
+		if (convertedData == null) {
+			convertedData = new BoneState[skeleton.boneCount()];
+			convertData(transform, skeleton);
+		}
+		return convertedData;
+	}
+
+	private void convertData(Matrix4f parent, Bone bone) {
+		if (bone.getIndex() < 0) {
+			return;
+		}
+
+		Matrix4f currentLocalBoneTransform = getRaw(bone.getName()).asMatrix();
+		Matrix4f currentBoneTransform = parent.mul(currentLocalBoneTransform, new Matrix4f());
+
+		for (Bone child : bone.getChildren()) {
+			convertData(currentBoneTransform, child);
+		}
+
+		Matrix4f combined = currentBoneTransform.mul(bone.getInverseBindTransform(), new Matrix4f());
+		convertedData[bone.getIndex()] = new BoneState(bone, currentLocalBoneTransform, currentBoneTransform, combined);
 	}
 
 	/**
@@ -164,31 +191,14 @@ public class Pose {
 	 * @param uniformName
 	 *            the uniform to store pose-data
 	 */
-	public void setUniformData(Shader shader, String uniformName) {
-		Matrix4f[] data = new Matrix4f[skeleton.boneCount()];
-		setUniformData(transform, skeleton, data);
+	public void setUniformData(ShaderProgram shader, String uniformName) {
+		BoneState[] transforms = getConvertedData();
+		Matrix4f[] data = new Matrix4f[transforms.length];
 
-		shader.setUniform(uniformName, data);
-	}
-
-	/**
-	 * save a sub-bone of this pose to the given data-array
-	 *
-	 * @param parent
-	 *            the parent pose transformation
-	 * @param bone
-	 *            the current bone to recurively add
-	 * @param data
-	 *            the float array to store matrices into
-	 */
-	private void setUniformData(Matrix4f parent, Bone bone, Matrix4f[] data) {
-		Matrix4f currentLocalBoneTransform = getRaw(bone.getName()).asMatrix();
-		Matrix4f currentBoneTransform = parent.mul(currentLocalBoneTransform, new Matrix4f());
-		for (Bone child : bone.getChildren()) {
-			setUniformData(currentBoneTransform, child, data);
+		for (int b = 0; b < transforms.length; b++) {
+			data[b] = transforms[b].getCombinedBoneTransform();
 		}
 
-		Matrix4f combined = currentBoneTransform.mul(bone.getInverseBindTransform(), new Matrix4f());
-		data[bone.getIndex()] = combined;
+		shader.setUniform(uniformName, data);
 	}
 }

@@ -20,12 +20,12 @@ public class LimitedDistanceBehaviour implements IBehaviour {
 	}
 
 	@Override
-	public void update(double deltaTime, Entity entity) {
+	public void update(double deltaTime, IEntity entity) {
 		behaviour.update(deltaTime, entity);
 	}
 
 	@Override
-	public boolean triggers(Entity entity) {
+	public boolean triggers(IEntity entity) {
 		return behaviour.triggers(entity) && entity.getPosition().distance(behaviour.getReference().getPosition()) < distance;
 	}
 }

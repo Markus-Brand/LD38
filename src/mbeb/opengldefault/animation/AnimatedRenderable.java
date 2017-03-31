@@ -32,7 +32,7 @@ public class AnimatedRenderable implements IRenderable {
 	}
 
 	@Override
-	public void render(Shader shader) {
+	public void render(ShaderProgram shader) {
 		//update pose uniforms
 		getCurrentPose().setUniformData(shader, "boneTransforms");
 		mesh.render(shader);
@@ -41,6 +41,10 @@ public class AnimatedRenderable implements IRenderable {
 	@Override
 	public void update(double deltaTime) {
 		getCurrentAnimations().forEach((Animator anim) -> anim.update(deltaTime));
+
+		//delete all animators from the list that have finished their animation
+		getCurrentAnimations().removeIf(Animator::hasEnded);
+
 		mesh.update(deltaTime);
 		animatedBoundingBox = null;
 		currentPose = null;
@@ -57,17 +61,6 @@ public class AnimatedRenderable implements IRenderable {
 		synchronized(animatorLock) {
 			getCurrentAnimations().add(animator);
 		}
-	}
-
-	public void playAnimation(String name, double speed) {
-		Animation anim = mesh.getAnimationByName(name);
-		if (anim == null) {
-			Log.log(TAG, "No animation named: " + name);
-			return;
-		}
-		Animator animator = new Animator(anim);
-		animator.setSpeed(speed);
-		playAnimation(animator);
 	}
 
 	@Override
@@ -89,6 +82,9 @@ public class AnimatedRenderable implements IRenderable {
 	 * @return a larger box
 	 */
 	private BoundingBox adjustWith(BoundingBox box, Bone bone, Matrix4f parentTransform) {
+		if (bone.getIndex() < 0) {
+			return box;
+		}
 		Matrix4f boneTransform = getCurrentPose().getRaw(bone.getName()).asMatrix();
 		Matrix4f transform = parentTransform.mul(boneTransform, new Matrix4f());
 
@@ -112,14 +108,47 @@ public class AnimatedRenderable implements IRenderable {
 	public Pose getCurrentPose() {
 		if (currentPose == null) {
 			currentPose = mesh.defaultPose();
-			synchronized(animatorLock) {
-				for (Animator anim : getCurrentAnimations()) {
+			synchronized (animatorLock) {
+
+				//mix these animations from stronger strength to lower to minimize artifacts
+				List<Animator> currentAnimations = getCurrentAnimations();
+				currentAnimations.sort((Animator a1, Animator a2) -> -Double.compare(a1.getCurrentStrength(), a2.getCurrentStrength()));
+
+				for (Animator anim : currentAnimations) {
 					Pose p = anim.getCurrentPose();
-					p.applyAfter(currentPose);
+					p.mixInto(anim.getCurrentStrength(), currentPose);
 				}
 			}
 		}
 		return currentPose;
 	}
 
+	/**
+	 * stop all running animators of a given animation
+	 * @param animation
+	 */
+	public void stopAnimationsOf(Animation animation) {
+		synchronized (animatorLock) {
+			for (Animator anim: getCurrentAnimations()) {
+				if (anim.getAnimation().equals(animation)) {
+					anim.stop();
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param animation
+	 * @return true, if an Animator of the given Animation is currently running on this Renderable
+	 */
+	public boolean hasAnimationsOf(Animation animation) {
+		synchronized (animatorLock) {
+			for (Animator anim : getCurrentAnimations()) {
+				if (anim.getAnimation().equals(animation)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

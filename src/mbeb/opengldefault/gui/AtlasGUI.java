@@ -4,7 +4,7 @@ import org.joml.Vector2f;
 
 import mbeb.opengldefault.constants.Constants;
 import mbeb.opengldefault.gui.elements.AtlasGUIElement;
-import mbeb.opengldefault.rendering.shader.Shader;
+import mbeb.opengldefault.rendering.shader.ShaderProgram;
 import mbeb.opengldefault.rendering.textures.Texture;
 
 /**
@@ -54,7 +54,7 @@ public class AtlasGUI extends GUI {
 	}
 
 	@Override
-	public void render(Shader shader) {
+	public void render(ShaderProgram shader) {
 		atlas.bind(shader);
 		super.render(shader);
 	}

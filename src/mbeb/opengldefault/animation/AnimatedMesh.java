@@ -28,7 +28,7 @@ public class AnimatedMesh implements IRenderable {
 	}
 
 	@Override
-	public void render(Shader shader) {
+	public void render(ShaderProgram shader) {
 		mesh.render(shader);
 	}
 
@@ -74,7 +74,8 @@ public class AnimatedMesh implements IRenderable {
 	public Pose defaultPose() {
 		Pose defaultPose = new Pose(skeleton, getTransform());
 
-		skeleton.foreach((Bone bone) -> defaultPose.put(bone.getName(), new BoneTransformation(bone.getDefaultBoneTransform())));
+		skeleton.foreach((Bone bone) -> defaultPose.put(bone.getName(),
+				new BoneTransformation(bone.getDefaultBoneTransform())));
 
 		return defaultPose;
 	}
@@ -86,7 +87,7 @@ public class AnimatedMesh implements IRenderable {
 
 	/**
 	 * set a static transformation for this mesh
-	 * 
+	 *
 	 * @param transform
 	 */
 	public void setTransform(Matrix4f transform) {

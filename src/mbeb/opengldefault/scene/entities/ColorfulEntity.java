@@ -14,17 +14,17 @@ public interface ColorfulEntity {
 	/**
 	 * @return my color
 	 */
-	public Vector3f getColor();
+	Vector3f getColor();
 
 	/**
 	 * @param color
 	 *            my new color
 	 */
-	public void setColor(Vector3f color);
+	void setColor(Vector3f color);
 
 	/**
 	 * @param color
 	 *            my new color
 	 */
-	public void setColor(Color color);
+	void setColor(Color color);
 }

@@ -7,10 +7,16 @@ import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.scene.*;
 
 /**
- * something that can be rendered into a scene
+ * something that can be rendered into a scene (is an IRenderableHolder of itself)
  */
-public interface IRenderable {
-	void render(Shader shader);
+public interface IRenderable extends IRenderableHolder{
+
+	@Override
+	default IRenderable getRenderable() {
+		return this;
+	}
+
+	void render(ShaderProgram shader);
 
 	BoundingBox getBoundingBox();
 
@@ -19,8 +25,11 @@ public interface IRenderable {
 
 	/**
 	 * a static transformation on this Renderable
+<<<<<<< HEAD
 	 *
 	 * @return the static transformation on this Renderable
+=======
+>>>>>>> master
 	 */
 	default Matrix4f getTransform() {
 		return new Matrix4f();

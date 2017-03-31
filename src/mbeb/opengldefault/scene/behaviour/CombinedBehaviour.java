@@ -16,7 +16,7 @@ public class CombinedBehaviour implements IBehaviour {
 	}
 
 	@Override
-	public boolean triggers(Entity entity) {
+	public boolean triggers(IEntity entity) {
 		for (IBehaviour iBehaviour : behaviours) {
 			if (iBehaviour.triggers(entity)) {
 				return true;
@@ -26,7 +26,7 @@ public class CombinedBehaviour implements IBehaviour {
 	}
 
 	@Override
-	public void update(double deltaTime, Entity entity) {
+	public void update(double deltaTime, IEntity entity) {
 		for (IBehaviour iBehaviour : behaviours) {
 			iBehaviour.update(deltaTime, entity);
 		}

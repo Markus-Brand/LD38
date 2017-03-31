@@ -5,47 +5,87 @@ package mbeb.opengldefault.animation;
  */
 public class Animator {
 
-	private final Animation animation;
+	private final AnimatorPreset preset;
 	private double currentTime;
-	private double fadeInTime;
+	private double totalRunningTime;
+	private Double stopTimestamp;
 
-	private boolean looping;
-
-	private double speed;
-
-	public Animator(Animation animation) {
-		this(animation, 1);
-	}
-
-	public Animator(Animation animation, double speed) {
-		this.animation = animation;
-		currentTime = 0;
-		looping = true;
-		speed = 1.0;
-	}
-
-	public void setFadeInTime(double fadeInTime) {
-		this.fadeInTime = fadeInTime;
-	}
-
-	public void setLooping(boolean looping) {
-		this.looping = looping;
-	}
-
-	public boolean isLooping() {
-		return looping;
+	public Animator(AnimatorPreset preset) {
+		this.preset = preset;
+		currentTime = 0.001;
+		totalRunningTime = 0.001;
 	}
 
 	public void update(double deltaTime) {
-		currentTime += deltaTime * speed;
+		currentTime += deltaTime * preset.getSpeed();
+		totalRunningTime += deltaTime * preset.getSpeed();
+	}
+
+	public AnimatorPreset getPreset() {
+		return preset;
 	}
 
 	public Animation getAnimation() {
-		return animation;
+		return getPreset().getAnimation();
 	}
 
-	public void setSpeed(double speed) {
-		this.speed = speed;
+	/**
+	 * init the fade-out phase
+	 */
+	public void stop() {
+		if (isFadingOut()) {
+			return;
+		}
+		stopTimestamp = totalRunningTime;
+	}
+	
+	/**
+	 * start fading out to the end of the animation
+	 */
+	public void stopAtEnd() {
+		if (isFadingOut()) {
+			return;
+		}
+		//set the stopTimestamp so that fading out stops exactly on a loop restart
+		double loopSize = getAnimation().getKeyFrameDistance();
+		double endStamp = totalRunningTime + preset.getActualFadeOutTime();
+		endStamp = (((int)(endStamp / loopSize)) + 1) * loopSize;
+		endStamp -= preset.getActualFadeOutTime();
+		stopTimestamp = endStamp;
+	}
+
+	public boolean isFadingOut() {
+		return stopTimestamp != null;
+	}
+
+	/**
+	 *
+	 * @return true whether this animator is at its end
+	 */
+	public boolean hasEnded() {
+		if (stopTimestamp != null && stopTimestamp + preset.getActualFadeOutTime() < totalRunningTime) {
+			return true; //finished fading out
+		}
+		return false;
+	}
+
+	/**
+	 * @return the current weight of this animator (for fading / intensity)
+	 */
+	public double getCurrentStrength() {
+		double strength = preset.getIntensity();
+
+		double fadeInFactor = totalRunningTime / preset.getActualFadeInTime();
+		if (fadeInFactor < 1) {
+			strength *= fadeInFactor;
+		}
+
+		if (stopTimestamp != null && stopTimestamp <= totalRunningTime) {
+			double fadeOutFactor = 1 - (totalRunningTime - stopTimestamp) / preset.getActualFadeOutTime();
+			strength *= fadeOutFactor;
+		}
+
+		return strength;
 	}
 
 	/**
@@ -54,23 +94,23 @@ public class Animator {
 	 * @return
 	 */
 	public Pose getCurrentPose() {
-		KeyFrame[] beforeAfter = animation.getBeforeAndAfter(currentTime);
+		KeyFrame[] beforeAfter = getAnimation().getBeforeAndAfter(currentTime);
 
 		//edge-case handling
-		if (looping) {
+		if (preset.isLooping()) {
 			if (beforeAfter[0] == null) {
-				currentTime += animation.getKeyFrameDistance();
+				currentTime += getAnimation().getKeyFrameDistance();
 				return getCurrentPose();
 			}
 			if (beforeAfter[1] == null) {
-				currentTime -= animation.getKeyFrameDistance();
+				currentTime -= getAnimation().getKeyFrameDistance();
 				return getCurrentPose();
 			}
 		} else {
 			if (beforeAfter[0] == null) {
-				return beforeAfter[1].getPose();//todo apply intensity here
+				return beforeAfter[1].getPose();
 			} else if (beforeAfter[1] == null) {
-				return beforeAfter[0].getPose();//todo and here
+				return beforeAfter[0].getPose();
 			}
 		}
 
