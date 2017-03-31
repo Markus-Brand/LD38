@@ -15,7 +15,7 @@ import java.lang.Math;
 public class PitchYawMouseBehaviour implements IBehaviour {
 
 	/** mouse position at last update time */
-	private Vector2f lastMousePos;
+	private Vector2f lastMousePosition;
 	/** current orientation */
 	private float pitch, yaw;
 	/** speed of the rotation in radians per Pixel */
@@ -29,7 +29,7 @@ public class PitchYawMouseBehaviour implements IBehaviour {
 		this.pitch = pitch;
 		this.yaw = yaw;
 		this.rotationSpeed = rotationSpeed;
-		lastMousePos = new Vector2f(Mouse.getPos());
+		lastMousePosition = new Vector2f(Mouse.getPos());
 	}
 
 	@Override
@@ -40,9 +40,9 @@ public class PitchYawMouseBehaviour implements IBehaviour {
 	@Override
 	public void update(double deltaTime, Entity entity) {
 
-		final Vector2f delta = lastMousePos.sub(Mouse.getPos(), new Vector2f());
+		final Vector2f delta = lastMousePosition.sub(Mouse.getPos(), new Vector2f());
 
-		lastMousePos = new Vector2f(Mouse.getPos());
+		lastMousePosition = new Vector2f(Mouse.getPos());
 
 		/*if (!Mouse.isDown(GLFW_MOUSE_BUTTON_1)) {
 			return;
