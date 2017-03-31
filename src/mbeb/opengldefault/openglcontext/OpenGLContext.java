@@ -95,11 +95,14 @@ public class OpenGLContext {
 	 */
 	private void printOpenGLInformation() {
 		Log.log(TAG, "OpenGL version: " + GL11.glGetString(GL11.GL_VERSION));
+		GLErrors.checkForError(TAG, "glGetString");
 		Log.log(TAG, "Extensions supported:");
 		int num = GL11.glGetInteger(GL30.GL_NUM_EXTENSIONS);
+		GLErrors.checkForError(TAG, "glGetInteger");
 
 		for (int i = 0; i < num; i++) {
 			String extension = GL30.glGetStringi(GL11.GL_EXTENSIONS, i);
+			GLErrors.checkForError(TAG, "glGetString");
 			Log.log(TAG, extension);
 		}
 	}
@@ -132,7 +135,7 @@ public class OpenGLContext {
 			double deltaTime = thisTime - lastTime;
 			lastTime = thisTime;
 
-			//Debug.log((int) (1 / deltaTime) + "fps");
+			//Log.log(TAG, (int) (1 / deltaTime) + "fps");
 			game.update(deltaTime);
 			game.render();
 		}
@@ -189,7 +192,7 @@ public class OpenGLContext {
 			}
 		});
 
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
 		glfwSetCursorPosCallback(window, (window, xPos, yPos) -> Mouse.setPos(xPos, yPos));
 
@@ -208,7 +211,7 @@ public class OpenGLContext {
 
 		// Center our window
 		if (!fullscreen) {
-			glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
+			glfwSetWindowPos(window, (vidmode.width() - width), (vidmode.height() - height));
 		}
 
 		// Make the OpenGL context current

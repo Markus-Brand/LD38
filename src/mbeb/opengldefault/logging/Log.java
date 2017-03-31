@@ -87,7 +87,7 @@ public class Log {
 	 * error message
 	 *
 	 * @param tag
-	 *            of the calling glass
+	 *            of the calling class
 	 * @param additionalInformation
 	 */
 	public static void error(final String tag, final Object additionalInformation) {
@@ -98,7 +98,7 @@ public class Log {
 	 * error message
 	 *
 	 * @param tag
-	 *            of the calling glass
+	 *            of the calling class
 	 * @param additionalInformation
 	 * @param throwable
 	 */
@@ -124,7 +124,7 @@ public class Log {
 	 * @param info
 	 *            (for example "LOG: ")
 	 * @param tag
-	 *            of the calling glass
+	 *            of the calling class
 	 * @return error message a la: <br>
 	 *         [MM/dd/yyyy HH:mm:ss] <i>info</i> In class <i>tag</i>: <i>additionalInformation</i>
 	 */
@@ -145,7 +145,7 @@ public class Log {
 	 * Assert that condition is true
 	 *
 	 * @param tag
-	 *            of the calling glass
+	 *            of the calling class
 	 * @param condition
 	 * @param obj
 	 * @throws AssertionError
@@ -168,7 +168,7 @@ public class Log {
 	 * Assert that condition is false
 	 *
 	 * @param tag
-	 *            of the calling glass
+	 *            of the calling class
 	 * @param condition
 	 * @param obj
 	 * @throws AssertionError
@@ -181,24 +181,25 @@ public class Log {
 	 * Assert that testObject equals referenceObject
 	 *
 	 * @param tag
-	 *            of the calling glass
+	 *            of the calling class
 	 * @param testObject
 	 * @param referenceObject
-	 * @param obj
+	 * @param additionalInformation
 	 * @throws AssertionError
 	 */
-	public static void assertEqual(final String tag, final Object testObject, final Object referenceObject, final Object obj) {
-		assertTrue(tag, testObject.equals(referenceObject), obj);
+	public static <T> T assertEqual(final String tag, final T testObject, final T referenceObject, final Object additionalInformation) {
+		assertTrue(tag, testObject.equals(referenceObject), additionalInformation);
+		return testObject;
 	}
 
 	/**
 	 * assert that testObject isn't equal referenceObject
 	 *
 	 * @param tag
-	 *            of the calling glass
+	 *            of the calling class
 	 * @param testObject
 	 * @param referenceObject
-	 * @param obj
+	 * @param additionalInformation
 	 * @throws AssertionError
 	 */
 	public static void assertNotEqual(final String tag, final Object testObject, final Object referenceObject, final Object additionalInformation) {
@@ -209,13 +210,27 @@ public class Log {
 	 * assert that <i>object</i> != null
 	 *
 	 * @param tag
-	 *            of the calling glass
+	 *            of the calling class
 	 * @param object
 	 *            under test
 	 * @param additionalInformation
 	 * @throws AssertionError
 	 */
-	public static void assertNotNull(final String tag, final Object object, final Object additionalInformation) {
+	public static <T> T assertNotNull(final String tag, final T object, final Object additionalInformation) {
 		assertTrue(tag, object != null, additionalInformation);
+		return object;
+	}
+
+	/**
+	 * assert that <i>object</i> != null
+	 *
+	 * @param tag
+	 *            of the calling class
+	 * @param object
+	 *            under test
+	 * @throws AssertionError
+	 */
+	public static <T> T assertNotNull(String tag, T object) {
+		return assertNotNull(tag, object, "Object is null");
 	}
 }

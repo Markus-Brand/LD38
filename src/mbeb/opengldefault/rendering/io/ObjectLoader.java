@@ -40,10 +40,52 @@ public class ObjectLoader {
 	 *
 	 * @param path
 	 *            the absolute File-Path to the object
-	 * @return a VAO-Renderable
+	 * @return a Renderable
 	 */
-	public AnimatedRenderable loadFromFileAnim(String path) {
-		return (AnimatedRenderable) loadFromFile(path, PosNormUvAnim3);
+	public AnimatedMesh loadFromFileAnim(String path) {
+		AnimatedMesh mesh =  (AnimatedMesh)loadFromFile(path, PosNormUvAnim3);
+		loadAnimationPriorities(mesh, path + ".weights.yaml");
+		return mesh;
+	}
+
+	/**
+	 * load the priorities of movements per bone
+	 * @param mesh the mesh to modify
+	 * @param weightsPath path to the file containing this information
+	 */
+	private void loadAnimationPriorities(AnimatedMesh mesh, String weightsPath) {
+		String extractedPath = getExtractedPath(weightsPath);
+		if (extractedPath == null) {
+			return;
+		}
+		YAMLParser.YAMLNode root = new YAMLParser(new File(extractedPath)).getRoot();
+		for (YAMLParser.YAMLNode animNode: root.getChildren()) {
+			Animation anim = mesh.getAnimationByName(animNode.getName());
+
+			if (anim != null) {
+				for (YAMLParser.YAMLNode boneNode : animNode.getChildren()) {
+					adjustBoneAnimationPriorities(anim, anim.getSkeleton(), boneNode);
+				}
+			}
+		}
+	}
+
+	/**
+	 * apply one directive (one line of YAML) to the corresponding Animation
+	 * @param anim the Animation to alter
+	 * @param bone the root bone (anim.getSkeleton())
+	 * @param boneNode the directive to apply
+	 */
+	private void adjustBoneAnimationPriorities(Animation anim, Bone bone, YAMLParser.YAMLNode boneNode) {
+		if (bone.getName().toLowerCase().contains(boneNode.getName().toLowerCase())) {
+			bone.foreach((Bone ancestor) ->  {
+				anim.setBonePriority(ancestor, Integer.valueOf(boneNode.getData()));
+			});
+		} else {
+			for (Bone child: bone.getChildren()) {
+				adjustBoneAnimationPriorities(anim, child, boneNode);
+			}
+		}
 	}
 
 	/**
@@ -79,7 +121,11 @@ public class ObjectLoader {
 		File export = new File(res, rawPath);
 		if (!export.exists()) {
 			try {
-				Files.copy(OpenGLContext.class.getResourceAsStream("/mbeb/opengldefault/resources/" + rawPath), export.toPath());
+				InputStream inStream = OpenGLContext.class.getResourceAsStream("/mbeb/opengldefault/resources/" + rawPath);
+				if (inStream == null) {
+					return null;
+				}
+				Files.copy(inStream, export.toPath());
 			} catch(IOException ex) {
 				Log.log(TAG, ex.getMessage() + " at extracting resource " + rawPath);
 			}
@@ -141,7 +187,7 @@ public class ObjectLoader {
 			AnimatedMesh animMesh = new AnimatedMesh(vaomesh, skeleton);
 			animMesh.setTransform(sceneTransform);
 			loadAnimations(animMesh, scene);
-			return new AnimatedRenderable(animMesh);
+			return animMesh;
 		} else {
 			return vaomesh;
 		}
@@ -166,11 +212,7 @@ public class ObjectLoader {
 			for (int w = 0; w < bone.mNumWeights(); w++) {
 				AIVertexWeight aiWeight = bone.mWeights().get(w);
 				int vertex = aiWeight.mVertexId();
-				Map<Integer, Float> vertexMapping = rawVertexBoneWeights.get(vertex);
-				if (vertexMapping == null) {
-					vertexMapping = new HashMap<>();
-					rawVertexBoneWeights.put(vertex, vertexMapping);
-				}
+				Map<Integer, Float> vertexMapping = rawVertexBoneWeights.computeIfAbsent(vertex, k -> new HashMap<>());
 				String boneName = bone.mName().dataString();
 				int boneID = skeleton.firstBoneNamed(boneName).getIndex();
 				vertexMapping.put(boneID, aiWeight.mWeight());
@@ -179,6 +221,9 @@ public class ObjectLoader {
 		//normalize weights
 		for (int v = 0; v < mesh.mNumVertices(); v++) {
 			Map<Integer, Float> weights = rawVertexBoneWeights.get(v);
+			if (weights == null) {
+				weights = new HashMap<>();
+			}
 			//System.err.println("weights = " + weights.size());
 			while(weights.size() < weightsAmount) {
 				//putting 0 at some non-existent index
@@ -191,7 +236,7 @@ public class ObjectLoader {
 			while(list.size() > weightsAmount) {
 				list.remove(list.size() - 1);
 			}
-			//adjuts weights
+			//adjusts weights
 			float sum = list.stream().map(Map.Entry::getValue).reduce(0f, Float::sum);
 			for (Map.Entry<Integer, Float> entry : list) {
 				entry.setValue(entry.getValue() / sum);
@@ -230,19 +275,6 @@ public class ObjectLoader {
 			Log.error(TAG, "No Bones in AnimatedMesh!");
 			return null;
 		}
-
-		/*
-		rootBone.setDefaultBoneTransform(new Matrix4f(
-				1, 0, 0, 0,//this matrix is for flipping collada the right angle
-				0, 0, -1, 0,//still a bit hacky though
-				0, 1, 0, 0,//todo - replace with aiScene.rootTransformation
-				0, 0, 0, 1).mul(rootBone.getDefaultBoneTransform(), new Matrix4f()));
-		
-		rootBone.setInverseBindTransform(new Matrix4f(
-				1, 0, 0, 0,//this matrix is for flipping collada the right angle
-				0, 0, -1, 0,//still a bit hacky though
-				0, 1, 0, 0,//todo - replace with aiScene.rootTransformation
-				0, 0, 0, 1).mul(rootBone.getInverseBindTransform(), new Matrix4f()));/**/
 		return rootBone;
 	}
 
@@ -290,6 +322,7 @@ public class ObjectLoader {
 		for (int a = 0; a < scene.mNumAnimations(); a++) {
 			AIAnimation aianim = AIAnimation.create(scene.mAnimations().get(a));
 			Animation anim = Animation.copySettingsFromAI(aianim);
+			System.out.println(anim.getName());
 
 			for (int channel = 0; channel < aianim.mNumChannels(); channel++) {
 				AINodeAnim node = AINodeAnim.create(aianim.mChannels().get(channel));

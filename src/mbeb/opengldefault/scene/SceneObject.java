@@ -43,7 +43,7 @@ public class SceneObject implements BoundingBox.Owner {
 	 * @param renderable
 	 *            Renderable that is drawn if the object is rendered
 	 */
-	public SceneObject(IRenderable renderable) {
+	public SceneObject(IRenderableHolder renderable) {
 		this(renderable, new Matrix4f(), null);
 	}
 
@@ -55,7 +55,7 @@ public class SceneObject implements BoundingBox.Owner {
 	 * @param myTransformation
 	 *            Local Transformation based on Parent
 	 */
-	public SceneObject(IRenderable renderable, Matrix4f myTransformation) {
+	public SceneObject(IRenderableHolder renderable, Matrix4f myTransformation) {
 		this(renderable, myTransformation, null);
 	}
 
@@ -67,7 +67,7 @@ public class SceneObject implements BoundingBox.Owner {
 	 * @param myTransformation
 	 *            Local Transformation based on Parent
 	 */
-	public SceneObject(IRenderable renderable, BoneTransformation myTransformation) {
+	public SceneObject(IRenderableHolder renderable, BoneTransformation myTransformation) {
 		this(renderable, myTransformation, null);
 	}
 
@@ -81,7 +81,7 @@ public class SceneObject implements BoundingBox.Owner {
 	 * @param subObjects
 	 *            Children Objects
 	 */
-	public SceneObject(IRenderable renderable, Matrix4f myTransformation, List<SceneObject> subObjects) {
+	public SceneObject(IRenderableHolder renderable, Matrix4f myTransformation, List<SceneObject> subObjects) {
 		this(renderable, new BoneTransformation(myTransformation), subObjects);
 	}
 
@@ -95,10 +95,10 @@ public class SceneObject implements BoundingBox.Owner {
 	 * @param subObjects
 	 *            Children Objects
 	 */
-	public SceneObject(IRenderable renderable, BoneTransformation myTransformation, List<SceneObject> subObjects) {
+	public SceneObject(IRenderableHolder renderable, BoneTransformation myTransformation, List<SceneObject> subObjects) {
 		this.transformation = myTransformation;
 		this.subObjects = subObjects;
-		this.renderable = renderable;
+		this.renderable = renderable != null ? renderable.getRenderable() : null;
 		box = null;
 	}
 

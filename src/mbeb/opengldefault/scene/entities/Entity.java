@@ -11,30 +11,7 @@ import mbeb.opengldefault.scene.behaviour.*;
  *
  * @author Markus
  */
-public abstract class Entity {
-
-	/**
-	 * Contains a Behaviour and a priority. The class is used to sort the Behaviours
-	 * Note: this class has a natural ordering that is inconsistent with equals.
-	 * 
-	 * @author Markus
-	 */
-	protected class PrioritizedBehaviour implements Comparable<PrioritizedBehaviour> {
-
-		public IBehaviour behaviour;
-		public int priority;
-
-		public PrioritizedBehaviour(IBehaviour behaviour, int priority) {
-			this.behaviour = behaviour;
-			this.priority = priority;
-		}
-
-		@Override
-		public int compareTo(PrioritizedBehaviour o) {
-			return Integer.compare(priority, o.priority);
-		}
-
-	}
+public abstract class Entity implements IEntity {
 
 	protected Set<PrioritizedBehaviour> behaviours;
 

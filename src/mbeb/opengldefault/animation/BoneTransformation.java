@@ -36,7 +36,16 @@ public class BoneTransformation {
 	 * @return
 	 */
 	public static BoneTransformation lerp(BoneTransformation t1, BoneTransformation t2, double factor) {
-		return new BoneTransformation(lerpVec3(t1.getPosition(), t2.getPosition(), factor), lerpQuaternion(t1.getRotation(), t2.getRotation(), factor), lerpVec3(t1.getScale(), t2.getScale(), factor));
+		if (factor == 0) {
+			return t1;
+		}
+		if (factor == 1) {
+			return t2;
+		}
+		return new BoneTransformation(
+				lerpVec3(t1.getPosition(), t2.getPosition(), factor),
+				lerpQuaternion(t1.getRotation(), t2.getRotation(), factor),
+				lerpVec3(t1.getScale(), t2.getScale(), factor));
 
 	}
 
@@ -145,25 +154,6 @@ public class BoneTransformation {
 
 	public Vector3f getScale() {
 		return scale;
-	}
-
-	/**
-	 * check if this transformation is nearly the same as a provided matrix
-	 * 
-	 * @param other
-	 *            other matrix to check
-	 * @param epsilon
-	 *            the tolerance
-	 * @return whether the difference lies within tolerance
-	 */
-	public boolean isSameAs(Matrix4f other, float epsilon) {
-		Matrix4f diff = this.asMatrix().sub(other, new Matrix4f());
-
-		float distance = 0;
-		for (Float f : diff.get(new float[Constants.MAT4_COMPONENTS])) {
-			distance += java.lang.Math.abs(f);
-		}
-		return distance < epsilon;
 	}
 
 	public void setScale(Vector3f scale) {

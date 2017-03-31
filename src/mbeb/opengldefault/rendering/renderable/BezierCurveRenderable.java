@@ -1,5 +1,6 @@
 package mbeb.opengldefault.rendering.renderable;
 
+import mbeb.opengldefault.logging.GLErrors;
 import org.joml.*;
 import org.lwjgl.opengl.*;
 
@@ -56,7 +57,9 @@ public class BezierCurveRenderable implements IRenderable {
 		shader.use();
 		float[] widthRange = new float[2];
 		GL11.glGetFloatv(GL11.GL_LINE_WIDTH_RANGE, widthRange);
+		GLErrors.checkForError(TAG, "glGetFloatv");
 		GL11.glLineWidth(Float.min(widthRange[1], 3.0f));
+		GLErrors.checkForError(TAG, "glLineWidth");
 
 		shader.setUniform("bernstein", curve.bernstein());
 
@@ -66,6 +69,7 @@ public class BezierCurveRenderable implements IRenderable {
 			renderable.render(shader);
 		}
 		GL11.glLineWidth(1);
+		GLErrors.checkForError(TAG, "glLineWidth");
 	}
 
 	@Override

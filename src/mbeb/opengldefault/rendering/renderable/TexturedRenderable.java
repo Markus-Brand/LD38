@@ -20,8 +20,8 @@ public class TexturedRenderable implements IRenderable {
 	/** a texture to bind before rendering */
 	private Texture texture;
 
-	public TexturedRenderable(IRenderable renderable, Texture texture) {
-		this.renderable = renderable;
+	public TexturedRenderable(IRenderableHolder renderable, Texture texture) {
+		this.renderable = renderable.getRenderable();
 		this.texture = texture;
 	}
 

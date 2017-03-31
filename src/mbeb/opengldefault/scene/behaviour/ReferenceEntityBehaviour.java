@@ -9,13 +9,13 @@ import mbeb.opengldefault.scene.entities.*;
  */
 public abstract class ReferenceEntityBehaviour implements IBehaviour {
 
-	private final Entity reference;
+	private final IEntity reference;
 
-	public ReferenceEntityBehaviour(Entity reference) {
+	public ReferenceEntityBehaviour(IEntity reference) {
 		this.reference = reference;
 	}
 
-	public Entity getReference() {
+	public IEntity getReference() {
 		return reference;
 	}
 

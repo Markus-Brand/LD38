@@ -12,7 +12,7 @@ uniform sampler2D u_texture;
 #include modules/Struct_PointLight.glsl
 #include modules/Struct_SpotLight.glsl
 
-float ambientStrength = 0.04f;
+float ambientStrength = 0.4f;
 float specularStrength = 2.5f;
 float reflectionStrength = 0.4f;
 
@@ -35,17 +35,10 @@ uniform int water;
 #include modules/SpotLightLogic.glsl
 
 
-vec3 calcNormal(vec3 normalIn, vec3 fragPos){
-	return normalize(normalIn) + vec3(0.03 * cos(fragPos.x * 120.0f +  8.0f * time), 0.03 *  sin(fragPos.y * 130.0f + 7.0f * time), 0.03 *  sin(fragPos.z * 140.0f + 5.0f * time));
-}
+
 
 void main(){
-	vec3 norm;
-	if(water == 0){	
-		norm = normalize(calcNormal(normal, pos));
-	}else{
-		norm = normalize(normal);
-	}
+	vec3 norm = normalize(normal);
 
     vec4 textureColor = texture(u_texture, tex);
     vec3 materialColor = textureColor.rgb;
@@ -70,11 +63,11 @@ void main(){
 
 	result += ambient;
 
-	float gamma = 2.2;
-	float gi = 1.0 / gamma;
-	result.x = pow(result.x, gi);
-	result.y = pow(result.y, gi);
-	result.z = pow(result.z, gi);
+	//float gamma = 2.2;
+	//float gi = 1.0 / gamma;
+	//result.x = pow(result.x, gi);
+	//result.y = pow(result.y, gi);
+	//result.z = pow(result.z, gi);
 
 	if(alpha == 0){
 		color = vec4(result, 1.0f);
