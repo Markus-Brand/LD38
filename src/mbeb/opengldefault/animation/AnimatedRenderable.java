@@ -74,29 +74,29 @@ public class AnimatedRenderable implements IRenderable {
 	/**
 	 * adjust the boundingBox recursively for a given skeleton
 	 * 
-	 * @param box
-	 *            the initial box
+	 * @param initialBox
+	 *            the boundingBox to enlarge
 	 * @param bone
 	 *            the skeleton to insert into the box
 	 * @param parentTransform
 	 * @return a larger box
 	 */
-	private BoundingBox adjustWith(BoundingBox box, Bone bone, Matrix4f parentTransform) {
+	private BoundingBox adjustWith(BoundingBox initialBox, Bone bone, Matrix4f parentTransform) {
 		if (bone.getIndex() < 0) {
-			return box;
+			return initialBox;
 		}
 		Matrix4f boneTransform = getCurrentPose().getRaw(bone.getName()).asMatrix();
 		Matrix4f transform = parentTransform.mul(boneTransform, new Matrix4f());
 
 		BoundingBox boneBox = bone.getBoundingBox();
 		boneBox.setModelTransform(transform);
-		box = box.unionWith(boneBox);
+		BoundingBox largerBox = initialBox.unionWith(boneBox);
 
 		for (Bone childBone : bone.getChildren()) {
-			box = adjustWith(box, childBone, transform);
+			largerBox = adjustWith(largerBox, childBone, transform);
 		}
 
-		return box;
+		return largerBox;
 	}
 
 	@Override

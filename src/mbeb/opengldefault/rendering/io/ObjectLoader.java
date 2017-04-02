@@ -109,7 +109,7 @@ public class ObjectLoader {
 			//todo not return just the first mesh, rather combine meshes
 			return mesh;
 		}
-		System.err.println("NO OBJECT FOUND!");
+		Log.error(TAG, "No Mesh found in object");
 		return null;
 	}
 
@@ -127,7 +127,7 @@ public class ObjectLoader {
 				}
 				Files.copy(inStream, export.toPath());
 			} catch(IOException ex) {
-				Log.log(TAG, ex.getMessage() + " at extracting resource " + rawPath);
+				Log.error(TAG, "Cannot extract resource " + rawPath, ex);
 			}
 		}
 		return "res/" + rawPath;
@@ -328,8 +328,8 @@ public class ObjectLoader {
 				AINodeAnim node = AINodeAnim.create(aianim.mChannels().get(channel));
 				String boneName = node.mNodeName().dataString();
 
-				assert node.mNumPositionKeys() == node.mNumRotationKeys();
-				assert node.mNumScalingKeys() == node.mNumRotationKeys();
+				Log.assertEqual(TAG, node.mNumPositionKeys(), node.mNumRotationKeys(), "unequal position and rotation key amount");
+				Log.assertEqual(TAG, node.mNumScalingKeys(), node.mNumRotationKeys(), "unequal scaling and rotation key amount");
 
 				for (int key = 0; key < node.mNumPositionKeys(); key++) {
 

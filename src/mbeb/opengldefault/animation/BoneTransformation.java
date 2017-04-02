@@ -4,6 +4,8 @@ import mbeb.opengldefault.constants.Constants;
 import org.joml.*;
 import org.lwjgl.assimp.*;
 
+import java.lang.Math;
+
 /**
  * a Transformation with convenient functions.
  */
@@ -36,10 +38,10 @@ public class BoneTransformation {
 	 * @return
 	 */
 	public static BoneTransformation lerp(BoneTransformation t1, BoneTransformation t2, double factor) {
-		if (factor == 0) {
+		if (Math.abs(factor) <= Pose.LERP_SHORTCUT_EPSILON) {
 			return t1;
 		}
-		if (factor == 1) {
+		if (Math.abs(factor - 1) <= Pose.LERP_SHORTCUT_EPSILON) {
 			return t2;
 		}
 		return new BoneTransformation(

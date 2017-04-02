@@ -188,7 +188,7 @@ public class Log {
 	 * @throws AssertionError
 	 */
 	public static <T> T assertEqual(final String tag, final T testObject, final T referenceObject, final Object additionalInformation) {
-		assertTrue(tag, testObject.equals(referenceObject), additionalInformation);
+		assertTrue(tag, Objects.equals(testObject, referenceObject), additionalInformation);
 		return testObject;
 	}
 
