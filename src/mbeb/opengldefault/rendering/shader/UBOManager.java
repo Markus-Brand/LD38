@@ -3,11 +3,11 @@ package mbeb.opengldefault.rendering.shader;
 import java.util.*;
 
 public abstract class UBOManager {
-	private static UBOManager instance;
-	public static String MATRICES = "Matrices";
-	public static String DIRECTIONALLIGHT = "DirectionalLightBlock";
-	public static String POINTLIGHT = "PointLightBlock";
-	public static String SPOTLIGHT = "SpotLightBlock";
+
+	public static final String MATRICES = "Matrices";
+	public static final String DIRECTIONALLIGHT = "DirectionalLightBlock";
+	public static final String POINTLIGHT = "PointLightBlock";
+	public static final String SPOTLIGHT = "SpotLightBlock";
 
 	private static final Map<String, Integer> UBOMapping;
 

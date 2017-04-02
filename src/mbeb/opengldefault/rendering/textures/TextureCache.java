@@ -85,7 +85,6 @@ public class TextureCache {
 			image = ImageIO.read(in);
 		} catch(IOException e) {
 			Log.error(TAG, "Unable to Load Texture: " + path, e);
-			e.printStackTrace();
 		}
 		return image;
 	}
