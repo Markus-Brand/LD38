@@ -20,6 +20,10 @@ public class Log {
 	/** File writer for logging in file */
 	static PrintWriter writer;
 
+	private Log() {
+		//should never be instantiated
+	}
+
 	/**
 	 * Inits Debug width given debug mode
 	 *

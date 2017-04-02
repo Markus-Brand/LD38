@@ -78,9 +78,8 @@ public class ObjectLoader {
 	 */
 	private void adjustBoneAnimationPriorities(Animation anim, Bone bone, YAMLParser.YAMLNode boneNode) {
 		if (bone.getName().toLowerCase().contains(boneNode.getName().toLowerCase())) {
-			bone.foreach((Bone ancestor) ->  {
-				anim.setBonePriority(ancestor, Integer.valueOf(boneNode.getData()));
-			});
+			bone.foreach((Bone ancestor) ->
+					anim.setBonePriority(ancestor, Integer.valueOf(boneNode.getData())));
 		} else {
 			for (Bone child: bone.getChildren()) {
 				adjustBoneAnimationPriorities(anim, child, boneNode);
@@ -208,7 +207,6 @@ public class ObjectLoader {
 		Map<Integer, Map<Integer, Float>> rawVertexBoneWeights = new HashMap<>(2 * mesh.mNumVertices());
 		for (int b = 0; b < mesh.mNumBones(); b++) {
 			AIBone bone = AIBone.create(mesh.mBones().get(b));
-			//System.err.println("mNumWeights = " + bone.mNumWeights());
 			for (int w = 0; w < bone.mNumWeights(); w++) {
 				AIVertexWeight aiWeight = bone.mWeights().get(w);
 				int vertex = aiWeight.mVertexId();
@@ -224,7 +222,6 @@ public class ObjectLoader {
 			if (weights == null) {
 				weights = new HashMap<>();
 			}
-			//System.err.println("weights = " + weights.size());
 			while(weights.size() < weightsAmount) {
 				//putting 0 at some non-existent index
 				weights.put(-weights.size() - 1, 0f);
@@ -322,7 +319,6 @@ public class ObjectLoader {
 		for (int a = 0; a < scene.mNumAnimations(); a++) {
 			AIAnimation aianim = AIAnimation.create(scene.mAnimations().get(a));
 			Animation anim = Animation.copySettingsFromAI(aianim);
-			System.out.println(anim.getName());
 
 			for (int channel = 0; channel < aianim.mNumChannels(); channel++) {
 				AINodeAnim node = AINodeAnim.create(aianim.mChannels().get(channel));

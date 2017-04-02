@@ -211,7 +211,7 @@ public class OpenGLContext {
 
 		// Center our window
 		if (!fullscreen) {
-			glfwSetWindowPos(window, (vidmode.width() - width), (vidmode.height() - height));
+			glfwSetWindowPos(window, vidmode.width() - width, vidmode.height() - height);
 		}
 
 		// Make the OpenGL context current

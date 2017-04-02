@@ -19,6 +19,10 @@ public abstract class UBOManager {
 		UBOMapping.put(SPOTLIGHT, 3);
 	}
 
+	private UBOManager() {
+		//should never be instantiated
+	}
+
 	public static int getUBOID(final String UBOName) {
 		return UBOMapping.get(UBOName);
 	}

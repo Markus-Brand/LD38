@@ -27,6 +27,11 @@ public class TextureCache {
 
 	private static Map<String, Integer> cachedImages = new HashMap<>();
 
+	private TextureCache() {
+		//should never be instantiated
+	}
+
+
 	/**
 	 * load Texture with given path
 	 *
