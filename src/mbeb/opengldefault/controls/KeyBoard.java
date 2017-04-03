@@ -5,10 +5,6 @@ public class KeyBoard {
 	/** Class Name Tag */
 	private static final String TAG = "KeyBoard";
 
-	private KeyBoard() {
-		//should never be instantiated
-	}
-
 	/**
 	 * Boolean array of all of the keys
 	 */
@@ -16,6 +12,10 @@ public class KeyBoard {
 
 	static {
 		keys = new boolean[1024];
+	}
+
+	private KeyBoard() {
+		//should never be instantiated
 	}
 
 	/**

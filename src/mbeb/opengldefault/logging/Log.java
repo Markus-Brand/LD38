@@ -20,6 +20,10 @@ public class Log {
 	/** File writer for logging in file */
 	static PrintWriter writer;
 
+	private Log() {
+		//should never be instantiated
+	}
+
 	/**
 	 * Inits Debug width given debug mode
 	 *
@@ -188,7 +192,7 @@ public class Log {
 	 * @throws AssertionError
 	 */
 	public static <T> T assertEqual(final String tag, final T testObject, final T referenceObject, final Object additionalInformation) {
-		assertTrue(tag, testObject.equals(referenceObject), additionalInformation);
+		assertTrue(tag, Objects.equals(testObject, referenceObject), additionalInformation);
 		return testObject;
 	}
 

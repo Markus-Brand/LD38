@@ -1,10 +1,8 @@
 package mbeb.opengldefault.animation;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import mbeb.opengldefault.logging.Log;
-import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.IRenderableHolder;
 
 /**
@@ -15,7 +13,7 @@ public class AnimationStateFacade implements IRenderableHolder {
 	private static final String TAG = "AnimationStateFacade";
 	
 	/** the animatedRenderable, whose state should be controlled */
-	final private AnimatedRenderable renderable;
+	private final AnimatedRenderable renderable;
 	
 	/** all the registered presets */
 	private Map<String, AnimatorPreset> presets;

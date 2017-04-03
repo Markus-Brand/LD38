@@ -27,6 +27,11 @@ public class TextureCache {
 
 	private static Map<String, Integer> cachedImages = new HashMap<>();
 
+	private TextureCache() {
+		//should never be instantiated
+	}
+
+
 	/**
 	 * load Texture with given path
 	 *
@@ -85,7 +90,6 @@ public class TextureCache {
 			image = ImageIO.read(in);
 		} catch(IOException e) {
 			Log.error(TAG, "Unable to Load Texture: " + path, e);
-			e.printStackTrace();
 		}
 		return image;
 	}

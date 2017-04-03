@@ -24,7 +24,7 @@ public class ShaderProgram {
 	private static final String TAG = "ShaderProgram";
 
 	/** OpenGL shader program */
-	private int shaderProgram;
+	private int shaderProgramHandle;
 	/** Drawmode for the Renderables that get rendered by this shader */
 	private int drawMode;
 	/** the shader components */
@@ -60,7 +60,7 @@ public class ShaderProgram {
 	public ShaderProgram(final Map<String, String> parameters, final String... shaders) {
 		this.preprocessor = new ShaderPreprocessor(parameters);
 		uniformBlocks = new HashMap<>();
-		shaderProgram = -1;
+		shaderProgramHandle = -1;
 
 		shaderObjects = new HashMap<>();
 		for (String path: shaders) {
@@ -93,9 +93,9 @@ public class ShaderProgram {
 	 */
 	private void setUniformBlockIndex(final int index, final String name) {
 		ensureCompiled();
-		final int uniformBlockIndex = glGetUniformBlockIndex(shaderProgram, name);
+		final int uniformBlockIndex = glGetUniformBlockIndex(shaderProgramHandle, name);
 		GLErrors.checkForError(TAG, "glGetUniformBlockIndex");
-		glUniformBlockBinding(shaderProgram, uniformBlockIndex, index);
+		glUniformBlockBinding(shaderProgramHandle, uniformBlockIndex, index);
 		GLErrors.checkForError(TAG, "glUniformBlockBinding");
 	}
 
@@ -104,7 +104,7 @@ public class ShaderProgram {
 	 */
 	public void use() {
 		ensureUpToDate();
-		glUseProgram(shaderProgram);
+		glUseProgram(shaderProgramHandle);
 		GLErrors.checkForError(TAG, "glUseProgram");
 	}
 
@@ -130,7 +130,7 @@ public class ShaderProgram {
 	 */
 	public int getUniform(final String name, final boolean logAnError) {
 		ensureCompiled();
-		final int location = glGetUniformLocation(shaderProgram, name);
+		final int location = glGetUniformLocation(shaderProgramHandle, name);
 		GLErrors.checkForError(TAG, "glGetUniformLocation: " + ((name != null) ? name : "null"));
 		if (logAnError && location < 0) {
 			Log.error(TAG, "GetUniform failed: " + name);
@@ -361,15 +361,15 @@ public class ShaderProgram {
 	 */
 	public void compile() {
 		//compiling of all the shaderObjects happens lazily
-		shaderProgram = glCreateProgram();
-		shaderObjects.values().forEach(shaderObject -> shaderObject.attachShader(shaderProgram));
+		shaderProgramHandle = glCreateProgram();
+		shaderObjects.values().forEach(shaderObject -> shaderObject.attachShader(shaderProgramHandle));
 
-		glLinkProgram(shaderProgram);
+		glLinkProgram(shaderProgramHandle);
 		final IntBuffer buffer = BufferUtils.createIntBuffer(1);
-		GL20.glGetProgramiv(shaderProgram, GL_LINK_STATUS, buffer);
+		GL20.glGetProgramiv(shaderProgramHandle, GL_LINK_STATUS, buffer);
 		if (buffer.get(0) != 1) {
 			Log.error(TAG, "Error linking shader program: " + buffer.get(0));
-			Log.error(TAG, "Linking log:\n" + glGetProgramInfoLog(shaderProgram));
+			Log.error(TAG, "Linking log:\n" + glGetProgramInfoLog(shaderProgramHandle));
 		}
 
 		for (final Map.Entry<Integer, String> uniformBlockBinding : uniformBlocks.entrySet()) {
@@ -405,7 +405,7 @@ public class ShaderProgram {
 	 * @return whether this program is already compiled
 	 */
 	public boolean isCompiled() {
-		return shaderProgram >= 0;
+		return shaderProgramHandle >= 0;
 	}
 
 	/**

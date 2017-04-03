@@ -14,8 +14,6 @@ import mbeb.opengldefault.scene.*;
  */
 public class AnimatedRenderable implements IRenderable {
 
-	private static final String TAG = "AnimatedRenderable";
-
 	private final AnimatedMesh mesh;
 	private List<Animator> currentAnimations = new ArrayList<>();
 	private final Object animatorLock = new Object();
@@ -74,29 +72,29 @@ public class AnimatedRenderable implements IRenderable {
 	/**
 	 * adjust the boundingBox recursively for a given skeleton
 	 * 
-	 * @param box
-	 *            the initial box
+	 * @param initialBox
+	 *            the boundingBox to enlarge
 	 * @param bone
 	 *            the skeleton to insert into the box
 	 * @param parentTransform
 	 * @return a larger box
 	 */
-	private BoundingBox adjustWith(BoundingBox box, Bone bone, Matrix4f parentTransform) {
+	private BoundingBox adjustWith(BoundingBox initialBox, Bone bone, Matrix4f parentTransform) {
 		if (bone.getIndex() < 0) {
-			return box;
+			return initialBox;
 		}
 		Matrix4f boneTransform = getCurrentPose().getRaw(bone.getName()).asMatrix();
 		Matrix4f transform = parentTransform.mul(boneTransform, new Matrix4f());
 
 		BoundingBox boneBox = bone.getBoundingBox();
 		boneBox.setModelTransform(transform);
-		box = box.unionWith(boneBox);
+		BoundingBox largerBox = initialBox.unionWith(boneBox);
 
 		for (Bone childBone : bone.getChildren()) {
-			box = adjustWith(box, childBone, transform);
+			largerBox = adjustWith(largerBox, childBone, transform);
 		}
 
-		return box;
+		return largerBox;
 	}
 
 	@Override
@@ -111,10 +109,10 @@ public class AnimatedRenderable implements IRenderable {
 			synchronized (animatorLock) {
 
 				//mix these animations from stronger strength to lower to minimize artifacts
-				List<Animator> currentAnimations = getCurrentAnimations();
-				currentAnimations.sort((Animator a1, Animator a2) -> -Double.compare(a1.getCurrentStrength(), a2.getCurrentStrength()));
+				List<Animator> currentAnimationsSorted = getCurrentAnimations();
+				currentAnimationsSorted.sort((Animator a1, Animator a2) -> -Double.compare(a1.getCurrentStrength(), a2.getCurrentStrength()));
 
-				for (Animator anim : currentAnimations) {
+				for (Animator anim : currentAnimationsSorted) {
 					Pose p = anim.getCurrentPose();
 					p.mixInto(anim.getCurrentStrength(), currentPose);
 				}

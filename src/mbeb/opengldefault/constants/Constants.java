@@ -85,4 +85,8 @@ public class Constants {
 	 */
 	public static final int MAT4_SIZE = FLOAT_SIZE * MAT4_COMPONENTS;
 	//</editor-fold>
+
+	private Constants() {
+		//should never be instantiated
+	}
 }

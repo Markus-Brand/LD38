@@ -18,8 +18,8 @@ import mbeb.opengldefault.scene.*;
  */
 public class ObjectLoader {
 
-	public static final DataFragment[] PosNormUv = new DataFragment[] {DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV};
-	public static final DataFragment[] PosNormUvAnim3 = new DataFragment[] {DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV, DataFragment.BONE_INDICES_3, DataFragment.BONE_WEIGHTS_3};
+	private static final DataFragment[] PosNormUv = new DataFragment[] {DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV};
+	private static final DataFragment[] PosNormUvAnim3 = new DataFragment[] {DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV, DataFragment.BONE_INDICES_3, DataFragment.BONE_WEIGHTS_3};
 
 	private static final String TAG = "ObjectLoader";
 
@@ -78,9 +78,8 @@ public class ObjectLoader {
 	 */
 	private void adjustBoneAnimationPriorities(Animation anim, Bone bone, YAMLParser.YAMLNode boneNode) {
 		if (bone.getName().toLowerCase().contains(boneNode.getName().toLowerCase())) {
-			bone.foreach((Bone ancestor) ->  {
-				anim.setBonePriority(ancestor, Integer.valueOf(boneNode.getData()));
-			});
+			bone.foreach((Bone ancestor) ->
+					anim.setBonePriority(ancestor, Integer.valueOf(boneNode.getData())));
 		} else {
 			for (Bone child: bone.getChildren()) {
 				adjustBoneAnimationPriorities(anim, child, boneNode);
@@ -109,7 +108,7 @@ public class ObjectLoader {
 			//todo not return just the first mesh, rather combine meshes
 			return mesh;
 		}
-		System.err.println("NO OBJECT FOUND!");
+		Log.error(TAG, "No Mesh found in object");
 		return null;
 	}
 
@@ -127,7 +126,7 @@ public class ObjectLoader {
 				}
 				Files.copy(inStream, export.toPath());
 			} catch(IOException ex) {
-				Log.log(TAG, ex.getMessage() + " at extracting resource " + rawPath);
+				Log.error(TAG, "Cannot extract resource " + rawPath, ex);
 			}
 		}
 		return "res/" + rawPath;
@@ -208,7 +207,6 @@ public class ObjectLoader {
 		Map<Integer, Map<Integer, Float>> rawVertexBoneWeights = new HashMap<>(2 * mesh.mNumVertices());
 		for (int b = 0; b < mesh.mNumBones(); b++) {
 			AIBone bone = AIBone.create(mesh.mBones().get(b));
-			//System.err.println("mNumWeights = " + bone.mNumWeights());
 			for (int w = 0; w < bone.mNumWeights(); w++) {
 				AIVertexWeight aiWeight = bone.mWeights().get(w);
 				int vertex = aiWeight.mVertexId();
@@ -224,7 +222,6 @@ public class ObjectLoader {
 			if (weights == null) {
 				weights = new HashMap<>();
 			}
-			//System.err.println("weights = " + weights.size());
 			while(weights.size() < weightsAmount) {
 				//putting 0 at some non-existent index
 				weights.put(-weights.size() - 1, 0f);
@@ -322,14 +319,13 @@ public class ObjectLoader {
 		for (int a = 0; a < scene.mNumAnimations(); a++) {
 			AIAnimation aianim = AIAnimation.create(scene.mAnimations().get(a));
 			Animation anim = Animation.copySettingsFromAI(aianim);
-			System.out.println(anim.getName());
 
 			for (int channel = 0; channel < aianim.mNumChannels(); channel++) {
 				AINodeAnim node = AINodeAnim.create(aianim.mChannels().get(channel));
 				String boneName = node.mNodeName().dataString();
 
-				assert node.mNumPositionKeys() == node.mNumRotationKeys();
-				assert node.mNumScalingKeys() == node.mNumRotationKeys();
+				Log.assertEqual(TAG, node.mNumPositionKeys(), node.mNumRotationKeys(), "unequal position and rotation key amount");
+				Log.assertEqual(TAG, node.mNumScalingKeys(), node.mNumRotationKeys(), "unequal scaling and rotation key amount");
 
 				for (int key = 0; key < node.mNumPositionKeys(); key++) {
 
