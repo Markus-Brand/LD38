@@ -140,18 +140,15 @@ public class BunnyGame extends Game {
 
 		camEntity.addBehaviour(1, new PlayerControlBehaviour());
 
-		curveObj = new SceneObject(new BezierCurveRenderable(curve));
-		curveObj.setShader(curveShader);
-
-		bunnyScene.getSceneGraph().addSubObject(playerObj);
+		//bunnyScene.getSceneGraph().addSubObject(playerObj);
 		bunnyScene.getSceneGraph().addSubObject(bunny0);
 		bunnyScene.getSceneGraph().addSubObject(bunny1);
 		bunnyScene.getSceneGraph().addSubObject(bunny2);
 		bunnyScene.getSceneGraph().addSubObject(bunny3);
 		bunnyScene.getSceneGraph().addSubObject(bunny4);
 		bunnyScene.getSceneGraph().addSubObject(curveObj);
-		bunnyScene.getSceneGraph().addSubObject(box);
-		bunnyScene.getSceneGraph().addSubObject(lamp);
+		//bunnyScene.getSceneGraph().addSubObject(box);
+		//bunnyScene.getSceneGraph().addSubObject(lamp);
 
 		bunnyScene.getSceneGraph().setShader(animatedShader);
 
@@ -179,7 +176,7 @@ public class BunnyGame extends Game {
 		//bunnyScene.getSceneGraph().getTransformation().setPosition(new Vector3f(11, 0, 0));
 		//bunnyScene.getSceneGraph().getTransformation().
 		curveObj.setTransformation(
-				new BoneTransformation(new Matrix4f().scale(1, 0.1f, 1).rotate(0.1f, 0, 1, 0)));
+				new BoneTransformation(new Matrix4f().scale(1, 0.1f, 1).rotate(0.4f, 0, 1, 0)));
 		glEnable(GL_CULL_FACE);
 		GLErrors.checkForError(TAG, "glEnable");
 		glEnable(GL_DEPTH_TEST);
