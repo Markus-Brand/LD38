@@ -124,7 +124,7 @@ public class BunnyGame extends Game {
 		curveObj = new SceneObject(new BezierCurveRenderable(curve));
 		curveObj.setShader(curveShader);
 
-		mainBunny.addBehaviour(1, new BezierBehaviour(curveObj, 10));
+		mainBunny.addBehaviour(1, new BezierBehaviour(curveObj, 4));
 
 		followingBunny1.addBehaviour(1, new FollowingBehaviour(mainBunny, 3f).limited(5));
 		followingBunny1.addBehaviour(2, new FollowingBehaviour(mainBunny, 7.6f));
@@ -175,8 +175,6 @@ public class BunnyGame extends Game {
 
 		//bunnyScene.getSceneGraph().getTransformation().setPosition(new Vector3f(11, 0, 0));
 		//bunnyScene.getSceneGraph().getTransformation().
-		curveObj.setTransformation(
-				new BoneTransformation(new Matrix4f().scale(1, 0.1f, 1).rotate(0.4f, 0, 1, 0)));
 		glEnable(GL_CULL_FACE);
 		GLErrors.checkForError(TAG, "glEnable");
 		glEnable(GL_DEPTH_TEST);
@@ -213,7 +211,15 @@ public class BunnyGame extends Game {
 			animBunny.ensureRunning("party");
 		}
 
-		mainBunny.update(deltaTime);
+
+		curveObj.setTransformation(new BoneTransformation(new Vector3f(50, 0, 0),
+				new Quaternionf(new AxisAngle4f(timePassed / -50, new Vector3f(0, 1, 0).normalize()))
+				, new Vector3f(1, 0.2f, 1)));
+		//bunnyScene.getSceneGraph().setTransformation(new BoneTransformation(null, null, new Vector3f(1, 0.01f, 1)));
+
+		for (int i = 0; i < 10; i++) {
+			mainBunny.update(deltaTime);
+		}
 		followingBunny1.update(deltaTime);
 		followingBunny2.update(deltaTime);
 		followingBunny3.update(deltaTime);

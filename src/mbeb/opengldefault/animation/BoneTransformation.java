@@ -70,7 +70,6 @@ public class BoneTransformation {
 
 	public BoneTransformation(Matrix4f mat) {
 		this(mat.getTranslation(new Vector3f()), mat.getNormalizedRotation(new Quaternionf()), mat.getScale(new Vector3f()));
-
 	}
 
 	/**
