@@ -174,7 +174,7 @@ public class ShaderPreprocessor {
 		 */
 		private static String loadSource(final String path) {
 			try {
-				InputStream shaderURL = ShaderPreprocessor.class.getResourceAsStream("/shader/" + path);
+				InputStream shaderURL = ShaderPreprocessor.class.getResourceAsStream("/shaders/" + path);
 				try(Scanner sc = new Scanner(shaderURL, "UTF-8")) {
 					return sc.useDelimiter("\\A").next();
 				}

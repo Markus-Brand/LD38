@@ -193,8 +193,6 @@ public class ObjectLoader {
 		} else {
 			return vaomesh;
 		}
-
-
 	}
 
 	/**
