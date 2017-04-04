@@ -205,13 +205,16 @@ public class OpenGLContext {
 
 		// Make the OpenGL context current
 		glfwMakeContextCurrent(window);
-
-		//glfw requires the use of an array (because it uses pointers in C) for getFramebufferSize
-		int[] widthBuffer = new int[1];
-		int[] heightBuffer = new int[1];
-		glfwGetFramebufferSize(window, widthBuffer, heightBuffer);
-		framebufferHeight = heightBuffer[0];
-		framebufferWidth = widthBuffer[0];
+		
+		GLFWWindowSizeCallbackI resizeHandler = (long l, int i, int i1) -> {
+			int[] widthBuffer = new int[1];
+			int[] heightBuffer = new int[1];
+			glfwGetFramebufferSize(window, widthBuffer, heightBuffer);
+			framebufferHeight = heightBuffer[0];
+			framebufferWidth = widthBuffer[0];
+		};
+		glfwSetWindowSizeCallback(window, resizeHandler);
+		resizeHandler.invoke(0, 0, 0);
 
 		// Enable v-sync
 		//glfwSwapInterval(1);
