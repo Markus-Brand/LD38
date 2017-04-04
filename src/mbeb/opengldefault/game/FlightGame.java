@@ -6,6 +6,7 @@ import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.curves.BezierCurve;
 import mbeb.opengldefault.light.DirectionalLight;
 import mbeb.opengldefault.logging.GLErrors;
+import mbeb.opengldefault.openglcontext.OpenGLContext;
 import mbeb.opengldefault.rendering.io.ObjectLoader;
 import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.rendering.shader.ShaderProgram;
@@ -31,7 +32,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
 /**
  * Another test game, where you fly a box around
  */
-public class FlightGame extends Game {
+public class FlightGame implements GameState {
 	
 	private static final String TAG = "FlightGame";
 	
@@ -40,7 +41,7 @@ public class FlightGame extends Game {
 	
 	@Override
 	public void init() {
-		Camera camera = new Camera(getContext().getAspectRatio());
+		Camera camera = new Camera(OpenGLContext.getAspectRatio());
 		Skybox skybox = new Skybox("skybox/mountain");
 		
 		scene = new Scene(camera, skybox);
@@ -130,7 +131,7 @@ public class FlightGame extends Game {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		GLErrors.checkForError(TAG, "glClear");
 		
-		glViewport(0, 0, getContext().getFramebufferWidth(), getContext().getFramebufferHeight());
+		glViewport(0, 0, OpenGLContext.getFramebufferWidth(), OpenGLContext.getFramebufferHeight());
 		GLErrors.checkForError(TAG, "glViewport");
 		
 		scene.render(KeyBoard.isKeyDown(GLFW_KEY_TAB));
@@ -139,5 +140,20 @@ public class FlightGame extends Game {
 	@Override
 	public void clear() {
 		TextureCache.clearCache();
+	}
+	
+	@Override
+	public GameStateIdentifier getNextState() {
+		return null;
+	}
+	
+	@Override
+	public void resetNextGameState() {
+	
+	}
+	
+	@Override
+	public void open() {
+	
 	}
 }

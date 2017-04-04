@@ -208,6 +208,7 @@ public class SceneObject implements BoundingBox.Owner {
 	/**
 	 * @return a boundingBox so that each sub-Object lies within
 	 */
+	@Override
 	public BoundingBox getBoundingBox() {
 		//TODO: Only recalculate BB if needed
 		reCalculateBoundingBox();
@@ -233,20 +234,23 @@ public class SceneObject implements BoundingBox.Owner {
 	public BoundingBox reCalculateBoundingBox() {
 		box = getRenderableBoundingBox();
 
-		for (SceneObject o : getSubObjects()) {
-			adjustBoundingBoxFor(o);
+		for (SceneObject subObject : getSubObjects()) {
+			adjustBoundingBoxFor(subObject);
 		}
 		return box;
 	}
 
 	/**
-	 * insert a given object ot my own boundingBox
+	 * insert a given object into my own boundingBox
 	 *
 	 * @param object
 	 */
 	private void adjustBoundingBoxFor(SceneObject object) {
 		if (box == null) {
 			box = getRenderableBoundingBox();
+		}
+		if (object.getBoundingBox() == null) {
+			return;
 		}
 		box = box.unionWith(object.getBoundingBox());
 	}

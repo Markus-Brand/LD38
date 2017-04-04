@@ -18,20 +18,20 @@ public class Scene {
 	private final SceneObject sceneGraphRoot;
 	private final ICamera camera;
 	private Skybox skybox;
-	private final MousePicker picker;
+	private final MousePicker3D picker;
 
-	public Scene(final ICamera cam) {
-		this(cam, null);
+	public Scene(final ICamera camera) {
+		this(camera, null);
 	}
 
-	public Scene(final ICamera cam, final Skybox skybox) {
-		this.camera = cam;
+	public Scene(final ICamera camera, final Skybox skybox) {
+		this.camera = camera;
 		this.skybox = skybox;
 		this.lightManager = new LightManager();
 		this.sceneGraphRoot = new SceneObject();
-		renderer = new SceneGraphRenderer(sceneGraphRoot, cam);
-		boundingBoxRenderer = new BoundingBoxRenderer(sceneGraphRoot, cam);
-		picker = new MousePicker(camera);
+		renderer = new SceneGraphRenderer(sceneGraphRoot, camera);
+		boundingBoxRenderer = new BoundingBoxRenderer(sceneGraphRoot, camera);
+		picker = new MousePicker3D(camera);
 	}
 
 	public SceneObject getSceneGraph() {
@@ -59,7 +59,7 @@ public class Scene {
 
 	public void render(final boolean renderBoundingBoxes) {
 		renderer.render();
-		picker.searchBBs(sceneGraphRoot, new Matrix4f());
+		picker.searchBoundingBoxes(sceneGraphRoot, new Matrix4f());
 		if (renderBoundingBoxes) {
 			boundingBoxRenderer.render();
 		}

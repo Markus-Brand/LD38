@@ -1,17 +1,40 @@
 package mbeb.opengldefault.game;
 
-import mbeb.opengldefault.openglcontext.*;
+import java.util.HashMap;
 
+import java.util.Map;
+
+import mbeb.opengldefault.openglcontext.OpenGLContext;
+
+/**
+ * Abstract class to characterize a whole game
+ */
 public abstract class Game {
 
-	private OpenGLContext context = null;
+	/**
+	 * Current GameStateIdentifier
+	 */
+	private GameStateIdentifier currentGameState;
 
-	public OpenGLContext getContext() {
-		return context;
-	}
+	/**
+	 * Mapping from the GameStateIdentifier enum to the actual GameState
+	 */
+	private Map<GameStateIdentifier, GameState> gameStates;
 
-	public void setContext(OpenGLContext context) {
-		this.context = context;
+	/**
+	 * Adds a GameStateIdentifier -> GameState mapping entry. The first GameState to add will be the startup entry per default
+	 *
+	 * @param key
+	 * @param newGameState
+	 */
+	protected void addGameState(GameStateIdentifier key, GameState newGameState) {
+		newGameState.init();
+		if (gameStates == null) {
+			gameStates = new HashMap<>();
+			currentGameState = key;
+			newGameState.open();
+		}
+		gameStates.put(key, newGameState);
 	}
 
 	/**
@@ -25,15 +48,45 @@ public abstract class Game {
 	 * @param deltaTime
 	 *            time that passed since the last update
 	 */
-	public abstract void update(double deltaTime);
+	public void update(double deltaTime) {
+		GameState currentState = getCurrentGameState();
+		currentState.update(deltaTime);
+		if (!currentState.isActive()) {
+			currentGameState = currentState.getNextState();
+			currentState.resetNextGameState();
+			if (currentGameState == GameStateIdentifier.EXIT) {
+				OpenGLContext.close();
+			} else {
+				getCurrentGameState().open();
+			}
+		}
+	}
 
 	/**
-	 * Rendering entry point of a update cycle
+	 * Rendering entry point of an update cycle
 	 */
-	public abstract void render();
+	public void render() {
+		GameState currentGameState = getCurrentGameState();
+		if (currentGameState != null) {
+			currentGameState.render();
+		}
+	}
+
+	/**
+	 * Getter for the current GameState
+	 *
+	 * @return the current GameState
+	 */
+	private GameState getCurrentGameState() {
+		return gameStates.get(currentGameState);
+	}
 
 	/**
 	 * Clear the Game. The game will close after this method is called.
 	 */
-	public abstract void clear();
+	public void clear() {
+		for (GameState state : gameStates.values()) {
+			state.clear();
+		}
+	}
 }

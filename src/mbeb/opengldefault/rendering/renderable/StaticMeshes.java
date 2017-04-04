@@ -12,9 +12,10 @@ import mbeb.opengldefault.scene.*;
  */
 public class StaticMeshes {
 
-	private static IRenderable screenAlignedQuad;
-	private static IRenderable uniformCube;
-	private static IRenderable lineCube;
+	private static VAORenderable screenAlignedQuad;
+	private static VAORenderable guiQuad;
+	private static VAORenderable uniformCube;
+	private static VAORenderable lineCube;
 
 	private StaticMeshes() {
 		//should never be instantiated
@@ -25,24 +26,51 @@ public class StaticMeshes {
 	 *
 	 * @return ScreenAlignedQuad Renderable
 	 */
-	public static IRenderable getScreenAlignedQuad() {
+	public static VAORenderable getScreenAlignedQuad() {
 		if (screenAlignedQuad == null) {
 
 			final float[] vertexData = {-1, -1, 1, -1, -1, 1, 1, 1};
 
 			final int[] indexData = {0, 1, 2, 1, 3, 2};
 
-			screenAlignedQuad = new VAORenderable(vertexData, indexData, new DataFragment[] {DataFragment.POSITION2D}, new BoundingBox(new Vector3f(-1, -1, 0), new Vector3f(2, 2, 0)));
+			screenAlignedQuad =
+					new VAORenderable(vertexData, indexData, new DataFragment[] {DataFragment.POSITION2D},
+							new BoundingBox(new Vector3f(-1, -1, 0), new Vector3f(2, 2, 0)));
 		}
 		return screenAlignedQuad;
 	}
 
 	/**
-	 * Get A Renderable containing vertexData of a uniform Cube. Used in {@link Skybox}
+	 * Get A Renderable containing vertexData of a ScreenAlignedQuad
+	 *
+	 * @return ScreenAlignedQuad Renderable
+	 */
+	public static VAORenderable getGuiQuad() {
+		if (guiQuad == null) {
+			guiQuad = getNewGuiQuad();
+		}
+		return guiQuad;
+	}
+
+	public static VAORenderable getNewGuiQuad() {
+		final float[] vertexData = {
+				0, 0, 0, 0,
+				1, 0, 1, 0,
+				0, 1, 0, 1,
+				1, 1, 1, 1};
+
+		final int[] indexData = {0, 1, 2, 1, 3, 2};
+
+		return new VAORenderable(vertexData, indexData, new DataFragment[] {DataFragment.POSITION2D,
+				DataFragment.UV}, new BoundingBox(new Vector3f(-1, -1, 0), new Vector3f(2, 2, 0)));
+	}
+
+	/**
+	 * Gets A Renderable containing vertexData of a uniform Cube. Used in {@link Skybox}
 	 *
 	 * @return Cube Renderable
 	 */
-	public static IRenderable getCube() {
+	public static VAORenderable getCube() {
 		if (uniformCube == null) {
 
 			/* @formatter:off */
@@ -74,22 +102,24 @@ public class StaticMeshes {
 
 			/* @formatter:on */
 
-			uniformCube = new VAORenderable(vertexData, indexData, new DataFragment[] {DataFragment.POSITION}, new BoundingBox(new Vector3f(-1, -1, -1), new Vector3f(2, 2, 2)));
+			uniformCube =
+					new VAORenderable(vertexData, indexData, new DataFragment[] {DataFragment.POSITION},
+							new BoundingBox(new Vector3f(-1), new Vector3f(2)));
 		}
 		return uniformCube;
 	}
 
 	/**
 	 * a Cube from (0,0,0) to (1,1,1) that can be rendered with GL_LINES
-	 * 
+	 *
 	 * @return
 	 */
-	public static IRenderable getLineCube() {
+	public static VAORenderable getLineCube() {
 		if (lineCube == null) {
 
 			BoundingBox uniformBox = new BoundingBox.Empty();
-			uniformBox = uniformBox.extendTo(new Vector3f(0, 0, 0));
-			uniformBox = uniformBox.extendTo(new Vector3f(1, 1, 1));
+			uniformBox = uniformBox.extendTo(new Vector3f(0));
+			uniformBox = uniformBox.extendTo(new Vector3f(1));
 
 			Vector3f[] corners = uniformBox.getLocalCorners();
 
@@ -101,7 +131,9 @@ public class StaticMeshes {
 				data[index++] = corner.z;
 			}
 
-			final int[] indexData = {0, 1, 1, 3, 3, 2, 2, 0, 0, 4, 1, 5, 2, 6, 3, 7, 4, 5, 5, 7, 7, 6, 6, 4};
+			final int[] indexData = {0, 1, 1, 3, 3, 2, 2, 0,
+					0, 4, 1, 5, 2, 6, 3, 7,
+					4, 5, 5, 7, 7, 6, 6, 4};
 
 			lineCube = new VAORenderable(data, indexData, new DataFragment[] {DataFragment.POSITION}, uniformBox);
 		}
