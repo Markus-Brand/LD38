@@ -40,6 +40,6 @@ public interface IBehaviour {
 	 * @return a new identical behaviour, which doesn't alter the location of the entity
 	 */
 	default IBehaviour fixedLocation() {
-		return new RestrictedBehaviour(this, true, false);
+		return new RestrictedBehaviour(this, false, true);
 	}
 }

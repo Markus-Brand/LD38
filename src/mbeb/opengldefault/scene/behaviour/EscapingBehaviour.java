@@ -9,7 +9,7 @@ import mbeb.opengldefault.scene.entities.*;
  */
 public class EscapingBehaviour extends FollowingBehaviour {
 
-	public EscapingBehaviour(Entity followed, float speed) {
+	public EscapingBehaviour(IEntity followed, float speed) {
 		super(followed, -speed);
 	}
 
