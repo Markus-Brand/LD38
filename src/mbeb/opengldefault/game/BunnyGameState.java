@@ -53,6 +53,7 @@ import mbeb.opengldefault.scene.entities.Entity;
 import mbeb.opengldefault.scene.entities.PointLightEntity;
 import mbeb.opengldefault.scene.entities.SceneEntity;
 import mbeb.opengldefault.scene.entities.SpotLightEntity;
+import mbeb.opengldefault.options.Option;
 
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -63,6 +64,9 @@ public class BunnyGameState implements GameState {
 
 	private static final String TAG = "BunnyGameState";
 
+	@Option
+	public static int hallo = 1;
+	
 	GameStateIdentifier nextGameState;
 
 	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1);
@@ -236,6 +240,7 @@ public class BunnyGameState implements GameState {
 
 	@Override
 	public void update(final double deltaTime) {
+		System.out.println("--------------" + hallo);
 		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_ESCAPE)) {
 			nextGameState = GameStateIdentifier.MAIN_MENU;
 			KeyBoard.releaseAll();
