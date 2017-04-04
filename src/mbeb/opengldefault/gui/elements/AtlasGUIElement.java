@@ -38,7 +38,7 @@ public class AtlasGUIElement extends GUIElement {
 
 	public AtlasGUIElement(int atlasIndex, int atlasWidth, int atlasHeight, Vector2f position, Vector2f size,
 			float lutRow, Texture lut) {
-		super(position, size, lut != null, lutRow, lut);
+		super(position, size, lutRow, lut);
 		this.atlasIndex = atlasIndex;
 		this.atlasWidth = atlasWidth;
 		this.atlasHeight = atlasHeight;

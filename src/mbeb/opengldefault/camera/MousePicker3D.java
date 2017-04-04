@@ -39,14 +39,14 @@ public class MousePicker3D {
 
 	/**
 	 * Updates the ray to match current camera and Mouse position
-	 * @param deltaTime time sincce last update
+	 * @param deltaTime time since last update
 	 */
 	public void update(double deltaTime) {
 		calculateRay();
 	}
 
 	/**
-	 * Calcukates the ray
+	 * Calculates the ray
 	 */
 	private void calculateRay() {
 		Vector2f normalizedDeviceCoordinates = Mouse.getNormalizedDeviceCoordinates();
@@ -58,7 +58,7 @@ public class MousePicker3D {
 
 	/**
 	 * Converts from eyeSpaceCoordinates to worldSpaceCoordinates
-	 * @param eyeSpaceCoordinates ray in eyeSpaceCoordinates
+	 * @param eyeSpaceCoordinates the ray in eyeSpaceCoordinates
 	 * @return ray in worldSpaceCoordinates
 	 */
 	private Vector3f getWorldSpaceCoordinates(Vector4f eyeSpaceCoordinates) {
@@ -69,7 +69,7 @@ public class MousePicker3D {
 	
 	/**
 	 * Converts from clipCoordinates to eyeSpaceCoordinates
-	 * @param clipCoordinates ray in clipCoordinates
+	 * @param clipCoordinates the ray in clipCoordinates
 	 * @return ray in eyeSpaceCoordinates
 	 */
 	private Vector4f getEyeSpaceCoordinates(Vector4f clipCoordinates) {
@@ -80,7 +80,7 @@ public class MousePicker3D {
 
 	/**
 	 * Traverses a scene and selects all Objects whose BoundingBox intersects the ray
-	 * @param currentObject the scene or current SceneObject
+	 * @param currentObject the root SceneObject, which is the scene itself, or current SceneObject while recursively calling this method
 	 * @param parentTransform parent transformation to convert from parentSpace to worldSpace
 	 */
 	public void searchBoundingBoxes(SceneObject currentObject, Matrix4f parentTransform) {

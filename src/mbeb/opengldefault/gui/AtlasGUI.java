@@ -33,7 +33,7 @@ public class AtlasGUI extends GUI {
 		this.atlasWidth = atlasWidth;
 		this.atlasHeight = atlasHeight;
 		this.atlas = atlas;
-		//Store a Matrix and the offset Vector from {@link AtlasGUIElement}
+		//Store a Matrix, the offset Vector from {@link AtlasGUIElement} and the lut Vector
 		stride = Constants.MAT4_COMPONENTS + Constants.VEC4_COMPONENTS + Constants.VEC4_COMPONENTS;
 	}
 

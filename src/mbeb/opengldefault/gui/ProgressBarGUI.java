@@ -6,7 +6,7 @@ import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.rendering.shader.ShaderProgram;
 
 /**
- * A Progressbar {@link GUI} that is able to render Progressbars in one drawcall
+ * A ProgressBar {@link GUI} that is able to render ProgressBars in one drawcall
  *
  * @author Markus
  */
@@ -19,6 +19,7 @@ public class ProgressBarGUI extends GUI {
 
 	public ProgressBarGUI() {
 		super();
+		//Store a Matrix, the progress vector and the lut vector
 		stride = Constants.MAT4_COMPONENTS + Constants.VEC4_COMPONENTS + Constants.VEC4_COMPONENTS;
 	}
 

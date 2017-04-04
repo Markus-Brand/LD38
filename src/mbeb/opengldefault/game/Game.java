@@ -12,17 +12,17 @@ import mbeb.opengldefault.openglcontext.OpenGLContext;
 public abstract class Game {
 
 	/**
-	 * Current GameState
+	 * Current GameStateIdentifier
 	 */
 	private GameStateIdentifier currentGameState;
 
 	/**
-	 * Mapping from the GamaStates enum to the actual GameState
+	 * Mapping from the GameStateIdentifier enum to the actual GameState
 	 */
 	private Map<GameStateIdentifier, GameState> gameStates;
 
 	/**
-	 * Adds a GameStates -> GameState mapping entry. The first GameState to add will be the startup entry per default
+	 * Adds a GameStateIdentifier -> GameState mapping entry. The first GameState to add will be the startup entry per default
 	 *
 	 * @param key
 	 * @param newGameState

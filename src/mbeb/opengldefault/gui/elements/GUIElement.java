@@ -21,11 +21,6 @@ import org.joml.Vector3f;
 public abstract class GUIElement {
 
 	/**
-	 * true if this GUIElement uses a lut (LookUpTable)
-	 */
-	private boolean usesLUT;
-
-	/**
 	 * the row in the lutTexture that is used for coloring this element
 	 */
 	private float lutRow;
@@ -45,21 +40,14 @@ public abstract class GUIElement {
 	 */
 	private boolean dirty;
 
-	public GUIElement(Vector2f position, Vector2f size, boolean usesLUT, float lutRow, Texture lut) {
+	public GUIElement(Vector2f position, Vector2f size, float lutRow, Texture lut) {
 		bounding = new Rectangle(position, size);
 		dirty = true;
-		this.usesLUT = usesLUT;
-		if (usesLUT) {
-			setLut(lut, lutRow);
-		}
-	}
-
-	public GUIElement(Vector2f position, Vector2f size, float lutRow, Texture lut) {
-		this(position, size, true, lutRow, lut);
+		setLut(lut, lutRow);
 	}
 
 	public GUIElement(Vector2f position, Vector2f size) {
-		this(position, size, false, 0, null);
+		this(position, size, 0, null);
 	}
 
 	public GUIElement(Vector2f size) {
@@ -71,18 +59,10 @@ public abstract class GUIElement {
 	}
 
 	/**
-	 * Makes this GUIElement use a lut
-	 */
-	public void useLUT() {
-		this.usesLUT = true;
-		setDirty();
-	}
-
-	/**
 	 * Makes this GUIElement use the input Texture directly
 	 */
 	public void useTexture() {
-		this.usesLUT = false;
+		lut = null;
 		setDirty();
 	}
 
@@ -192,7 +172,7 @@ public abstract class GUIElement {
 	 *            offset of the data within the buffer
 	 */
 	public int writeToBuffer(FloatBuffer buffer, int offset) {
-		buffer.put(offset, usesLUT ? 1.0f : 0.0f);
+		buffer.put(offset, lut != null ? 1.0f : 0.0f);
 		buffer.put(offset + 1, getLutRow());
 		getModelMatrix().get(offset + Constants.VEC4_COMPONENTS, buffer);
 		setClean();
@@ -304,7 +284,6 @@ public abstract class GUIElement {
 	 *            the lutRow in the lut that will be used
 	 */
 	public void setLut(Texture lut, float lutRow) {
-		useLUT();
 		this.lut = lut;
 		this.lutRow = lutRow;
 	}

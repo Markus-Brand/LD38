@@ -19,7 +19,7 @@ import mbeb.opengldefault.rendering.textures.Texture;
  */
 public class FontCache {
 	/**
-	 * Map containing a mapping from Font to Texture representing the FontCache
+	 * Map containing a mapping from {@link Font} to Texture representing the FontCache
 	 */
 	private static Map<Font, Texture> cachedFonts;
 
@@ -46,7 +46,7 @@ public class FontCache {
 	 * Generates the {@link Texture} and adds it to the cache
 	 * 
 	 * @param resizedFont
-	 *            the font used for generating the FontMap {@link Texture}
+	 *            the {@link Font} used for generating the FontMap {@link Texture}
 	 */
 	private static void addFont(Font resizedFont) {
 		System.out.println("Load font: " + resizedFont.getName() + " Size " + resizedFont.getSize());
@@ -66,7 +66,7 @@ public class FontCache {
 
 	/**
 	 * Generates a {@link Graphics2D} object for rendering the FontMap into the texture
-	 * @param resizedFont the Font that will be used
+	 * @param resizedFont the {@link Font} that will be used
 	 * @param rasteredFont the {@link BufferedImage} that will be used
 	 * @return the new {@link Graphics2D} object
 	 */
@@ -110,13 +110,13 @@ public class FontCache {
 	 * 
 	 * @param font
 	 *            input {@link Font}
-	 * @param charHeight
+	 * @param minimumCharHeight
 	 *            height of a char in the input {@link Font}
 	 * @return the resized {@link Font}
 	 */
-	private static Font getResizedFont(Font font, int charHeight) {
+	private static Font getResizedFont(Font font, int minimumCharHeight) {
 		int size = 2;
-		while(size < charHeight) {
+		while(size < minimumCharHeight) {
 			size <<= 1;
 		}
 		return font.deriveFont((float) size);

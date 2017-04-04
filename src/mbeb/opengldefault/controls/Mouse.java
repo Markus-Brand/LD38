@@ -67,6 +67,10 @@ public class Mouse {
 		return mouseDown[button];
 	}
 
+	/**
+	 * Returns the mouse position in normalized device coordinates ([-1, 1], [-1, 1])
+	 * @return the mouse position in normalized device coordinates
+	 */
 	public static Vector2f getNormalizedDeviceCoordinates() {
 		return OpenGLContext.getNDC(getPos());
 	}

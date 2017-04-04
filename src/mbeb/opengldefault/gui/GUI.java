@@ -15,7 +15,6 @@ import org.lwjgl.BufferUtils;
 
 import mbeb.opengldefault.constants.Constants;
 import mbeb.opengldefault.gui.elements.GUIElement;
-import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.StaticMeshes;
@@ -33,7 +32,7 @@ public class GUI implements IRenderable {
 	private static final String TAG = "GUI";
 
 	/**
-	 * The lut Texture for this GUI
+	 * The look up table Texture for this GUI
 	 */
 	private Texture lut;
 
@@ -74,6 +73,7 @@ public class GUI implements IRenderable {
 		elements = new ArrayList<>();
 		dirty = true;
 		setupBuffer();
+		//Store a Matrix and the lut Vector
 		this.stride = Constants.MAT4_COMPONENTS + Constants.VEC4_COMPONENTS;
 		renderable = StaticMeshes.getNewGuiQuad();
 		lut = new Texture(256, 256);
@@ -85,7 +85,7 @@ public class GUI implements IRenderable {
 	 * @return the new element
 	 */
 	protected GUIElement addGUIElement(GUIElement newElement) {
-		newElement.setLut(getLut(), elements.size() % 256 / 255f);
+		newElement.setLut(getLut(), (elements.size() % 256) / 255f);
 		elements.add(newElement);
 		return newElement;
 	}
@@ -126,6 +126,7 @@ public class GUI implements IRenderable {
 	public void setupVAO() {
 		renderable.bind();
 		for (int i = 0; i < stride / Constants.VEC4_COMPONENTS; i++) {
+			/* The first two Vertex Attributes are reserved for position and texCoordinates*/
 			int vertexAttribArrayIndex = i + 2;
 			glEnableVertexAttribArray(vertexAttribArrayIndex);
 			GLErrors.checkForError(TAG, "glEnableVertexAttribArray");
@@ -185,7 +186,7 @@ public class GUI implements IRenderable {
 	public void update(double deltaTime) {
 		for (GUIElement guiElement : elements) {
 			guiElement.update(deltaTime);
-			dirty = dirty || guiElement.isDirty();
+			dirty |= guiElement.isDirty();
 		}
 	}
 

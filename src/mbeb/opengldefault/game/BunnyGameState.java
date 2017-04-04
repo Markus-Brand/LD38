@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import mbeb.opengldefault.animation.AnimatedMesh;
-import mbeb.opengldefault.animation.AnimatedRenderable;
 import mbeb.opengldefault.animation.AnimationStateFacade;
 import mbeb.opengldefault.camera.Camera;
 import mbeb.opengldefault.camera.ICamera;
@@ -135,17 +134,17 @@ public class BunnyGameState implements GameState {
 		bunnyScene.getLightManager().addShader(animatedShader);
 		animatedShader.addUniformBlockIndex(UBOManager.MATRICES);
 
-		final ShaderProgram stillShader = new ShaderProgram("basic.vert", "basic.frag");
-		bunnyScene.getLightManager().addShader(stillShader);
-		stillShader.addUniformBlockIndex(UBOManager.MATRICES);
+		final ShaderProgram stationaryShader = new ShaderProgram("basic.vert", "basic.frag");
+		bunnyScene.getLightManager().addShader(stationaryShader);
+		stationaryShader.addUniformBlockIndex(UBOManager.MATRICES);
 
 		final IRenderable boxRenderable = new ObjectLoader().loadFromFile("box.obj");
 		SceneObject box = new SceneObject(new TexturedRenderable(boxRenderable, bunnyTexture));
-		box.setShader(stillShader);
+		box.setShader(stationaryShader);
 
 		final IRenderable lampRenderable = new ObjectLoader().loadFromFile("lamp.obj");
 		SceneObject lamp = new SceneObject(new TexturedRenderable(lampRenderable, lampTexture));
-		lamp.setShader(stillShader);
+		lamp.setShader(stationaryShader);
 
 		animPlayer = new AnimationStateFacade(playerAnim);
 		animBunny = new AnimationStateFacade(bunnyAnim);
@@ -250,7 +249,7 @@ public class BunnyGameState implements GameState {
 		fps.setText("FPS: " + (int) (1 / deltaTime));
 		textGUI.update(deltaTime);
 
-timePassed += deltaTime;
+		timePassed += deltaTime;
 		
 		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
 			animPlayer.slideSpeed("jogging", 50, deltaTime, 5);

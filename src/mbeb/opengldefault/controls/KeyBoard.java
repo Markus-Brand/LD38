@@ -64,6 +64,6 @@ public class KeyBoard {
 	}
 
 	public static void releaseAll() {
-		keys = new boolean[1024];
+		keys = new boolean[MAX_NUM_KEYS];
 	}
 }

@@ -84,16 +84,6 @@ public class CombinedGUIElement extends GUIElement {
 	}
 
 	@Override
-	public void useLUT() {
-		if (elements != null) {
-			for (GUIElement guiElement : elements) {
-				guiElement.useLUT();
-				guiElement.setLutRow(getLutRow());
-			}
-		}
-	}
-
-	@Override
 	public void setLutRow(float lutRow) {
 		super.setLutRow(lutRow);
 		for (GUIElement guiElement : elements) {
@@ -112,7 +102,7 @@ public class CombinedGUIElement extends GUIElement {
 	}
 
 	/**
-	 * Resets the Elements and the bounding. Usefull for changing text, for example.
+	 * Resets the Elements and the bounding. Useful for changing text, for example.
 	 */
 	public void resetElements() {
 		elements = new ArrayList<>();

@@ -2,7 +2,6 @@ package mbeb.opengldefault.gui;
 
 import java.awt.Font;
 
-import mbeb.opengldefault.gui.elements.GUIElement;
 import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
 

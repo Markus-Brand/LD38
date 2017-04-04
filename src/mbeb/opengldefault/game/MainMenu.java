@@ -40,6 +40,7 @@ public class MainMenu implements GameState {
 	private GameStateIdentifier nextGameState = null;
 
 	public MainMenu() {
+		//Currently empty, because we can do everything in the init() method
 	}
 
 	@Override
@@ -105,7 +106,7 @@ public class MainMenu implements GameState {
 
 	@Override
 	public void clear() {
-
+		//Currently nothing to do here (thanks Java GC)
 	}
 
 	@Override
