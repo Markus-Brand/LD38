@@ -6,6 +6,7 @@ layout (location = 7) in vec4 offset;
 
 out vec2 tex;
 out vec3 pos;
+
 flat out vec4 colorInfo;
 
 void main(){ 
