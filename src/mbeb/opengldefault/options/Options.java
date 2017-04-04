@@ -16,7 +16,7 @@ import mbeb.opengldefault.reflection.ClassFinder;
 
 public class Options {
 	
-	private static File optionsFile = new File("OpenGL-default/src/mbeb/opengldefault/options/options.txt");
+	private static File optionsFile = new File("OpenGL-default/src/mbeb/opengldefault/options/options.options");
 	
 	public static void load(){
 		Map<String, String> options = getOptionMap();
