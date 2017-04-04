@@ -142,7 +142,7 @@ public class OpenGLContext {
 			Files.walk(new File("res").toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile)
 					.forEach(File::delete);
 		} catch(IOException ex) {
-			Log.log(TAG, ex.getMessage() + " - unable to delete old res-directory");
+			Log.error(TAG, "Unable to delete old res-directory", ex);
 		}
 	}
 
@@ -168,7 +168,7 @@ public class OpenGLContext {
 		}
 
 		if (window == NULL) {
-			throw new RuntimeException("Failed to create the GLFW window");
+			Log.error(TAG, "Failed to create the GLFW window", new RuntimeException());
 		}
 
 		// Setup a key callback. It will be called every time a key is pressed, repeated or released.
@@ -200,7 +200,7 @@ public class OpenGLContext {
 
 		// Center our window
 		if (!fullscreen) {
-			glfwSetWindowPos(window, (vidmode.width() - width), (vidmode.height() - height));
+			glfwSetWindowPos(window, vidmode.width() - width, vidmode.height() - height);
 		}
 
 		// Make the OpenGL context current

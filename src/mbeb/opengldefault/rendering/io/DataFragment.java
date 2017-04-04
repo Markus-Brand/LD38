@@ -2,13 +2,13 @@ package mbeb.opengldefault.rendering.io;
 
 import java.util.*;
 
+import mbeb.opengldefault.logging.Log;
 import org.lwjgl.assimp.*;
 
 /**
  * for parsing files: specify information wanted from the mesh
  */
 public enum DataFragment {
-
 	FLOAT {
 
 		@Override
@@ -143,6 +143,8 @@ public enum DataFragment {
 		}
 	};
 
+	private static final String TAG = "DataFragment";
+
 	/**
 	 * @return how many floats this DataFragment takes
 	 */
@@ -161,7 +163,7 @@ public enum DataFragment {
 	 *            current array offset
 	 */
 	protected void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
-		System.err.println("addTo not implemented!");
+		Log.error(TAG, "addTo not implemented!");
 	}
 
 	/**

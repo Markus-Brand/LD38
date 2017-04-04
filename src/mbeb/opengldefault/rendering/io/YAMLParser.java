@@ -1,5 +1,7 @@
 package mbeb.opengldefault.rendering.io;
 
+import mbeb.opengldefault.logging.Log;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,6 +13,8 @@ import java.util.List;
  * Parse the content of a simple YAML file
  */
 public class YAMLParser {
+
+	private static final String TAG = "YAMLParser";
 
 	private File file;
 	private YAMLNode root = null;
@@ -29,7 +33,7 @@ public class YAMLParser {
 				Iterator<String> lines = Files.lines(file.toPath()).filter((String s) -> !s.startsWith("#")).iterator();
 				root = parse(new PeekableIterator<>(lines), new YAMLNode("root", null), 0);
 			} catch (IOException e) {
-				e.printStackTrace();
+				Log.error(TAG, "Cannot find file " + file.getName(), e);
 			}
 		}
 		return root;

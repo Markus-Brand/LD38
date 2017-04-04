@@ -9,16 +9,16 @@ public class Mouse {
 	/** Class Name Tag */
 	private static final String TAG = "Mouse";
 
-	private Mouse() {
-		//should never be instantiated
-	}
-
 	private static Vector2f cursorPos;
 	private static boolean[] mouseDown;
 
 	static {
 		cursorPos = new Vector2f();
 		mouseDown = new boolean[32];
+	}
+
+	private Mouse() {
+		//should never be instantiated
 	}
 
 	/**

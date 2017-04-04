@@ -18,8 +18,8 @@ public interface IEntity {
 	 */
 	class PrioritizedBehaviour implements Comparable<Entity.PrioritizedBehaviour> {
 
-		public IBehaviour behaviour;
-		public int priority;
+		private IBehaviour behaviour;
+		private int priority;
 
 		public PrioritizedBehaviour(IBehaviour behaviour, int priority) {
 			this.behaviour = behaviour;
@@ -31,6 +31,13 @@ public interface IEntity {
 			return Integer.compare(priority, o.priority);
 		}
 
+		public IBehaviour getBehaviour() {
+			return behaviour;
+		}
+
+		public int getPriority() {
+			return priority;
+		}
 	}
 
 	/**

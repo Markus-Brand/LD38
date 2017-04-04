@@ -50,11 +50,6 @@ public class VAORenderable implements IRenderable {
 		this.VAO = generateVAO(data, indices, dataFormat);
 	}
 
-	@Override
-	public BoundingBox getBoundingBox() {
-		return boundingBox;
-	}
-
 	/**
 	 * Constructor for Renderable
 	 *
@@ -70,6 +65,11 @@ public class VAORenderable implements IRenderable {
 		this.boundingBox = boundingBox;
 		this.indexSize = indexBuffer.capacity();
 		this.VAO = generateVAO(vertexBuffer, indexBuffer, dataFormat);
+	}
+
+	@Override
+	public BoundingBox getBoundingBox() {
+		return boundingBox;
 	}
 
 	@Override

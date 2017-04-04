@@ -10,6 +10,10 @@ public class Main {
 
 	private static final String TAG = "Main";
 
+	private Main() {
+		//should never be instantiated
+	}
+
 	public static void main(String[] args) {
 		OpenGLContext.startGame(new BunnyGame(), args);
 	}

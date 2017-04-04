@@ -106,9 +106,7 @@ public abstract class LightTypeManager {
 	private void bufferData() {
 		final FloatBuffer dataBuffer = BufferUtils.createFloatBuffer(getBufferSize());
 
-		lights.forEach((final Light light) -> {
-			dataBuffer.put(light.getData());
-		});
+		lights.forEach((final Light light) -> dataBuffer.put(light.getData()));
 		dataBuffer.flip();
 		glBufferSubData(GL_UNIFORM_BUFFER, Constants.BLOCK_SIZE, dataBuffer);
 		GLErrors.checkForError(TAG, "glBufferSubData");

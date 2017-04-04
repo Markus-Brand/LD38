@@ -7,10 +7,6 @@ public class KeyBoard {
 	
 	private static final int MAX_NUM_KEYS = 1024;
 
-	private KeyBoard() {
-		//should never be instantiated
-	}
-
 	/**
 	 * Boolean array of all of the keys
 	 */
@@ -18,6 +14,10 @@ public class KeyBoard {
 
 	static {
 		keys = new boolean[MAX_NUM_KEYS];
+	}
+
+	private KeyBoard() {
+		//should never be instantiated
 	}
 
 	/**

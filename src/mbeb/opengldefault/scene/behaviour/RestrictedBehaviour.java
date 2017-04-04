@@ -10,7 +10,8 @@ public class RestrictedBehaviour implements IBehaviour {
 
 	private IBehaviour wrapped;
 
-	private boolean move, rotate;
+	private boolean move;
+	private boolean rotate;
 
 	public RestrictedBehaviour(IBehaviour wrapped, boolean move, boolean rotate) {
 		this.wrapped = wrapped;
