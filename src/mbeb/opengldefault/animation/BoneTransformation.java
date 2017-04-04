@@ -1,8 +1,9 @@
 package mbeb.opengldefault.animation;
 
-import mbeb.opengldefault.constants.Constants;
 import org.joml.*;
 import org.lwjgl.assimp.*;
+
+import java.lang.Math;
 
 /**
  * a Transformation with convenient functions.
@@ -13,10 +14,9 @@ public class BoneTransformation {
 		return new BoneTransformation(null, null, null);
 	}
 
-	public static final Matrix4f matrixFromAI(AIMatrix4x4 aimat) {
-		Matrix4f mat = new Matrix4f(aimat.a1(), aimat.b1(), aimat.c1(), aimat.d1(), aimat.a2(), aimat.b2(), aimat.c2(), aimat.d2(), aimat.a3(), aimat.b3(), aimat.c3(), aimat.d3(), aimat.a4(),
+	public static Matrix4f matrixFromAI(AIMatrix4x4 aimat) {
+		return new Matrix4f(aimat.a1(), aimat.b1(), aimat.c1(), aimat.d1(), aimat.a2(), aimat.b2(), aimat.c2(), aimat.d2(), aimat.a3(), aimat.b3(), aimat.c3(), aimat.d3(), aimat.a4(),
 				aimat.b4(), aimat.c4(), aimat.d4());
-		return mat;
 	}
 
 	private static Vector3f lerpVec3(Vector3f a, Vector3f b, double factor) {
@@ -36,10 +36,10 @@ public class BoneTransformation {
 	 * @return
 	 */
 	public static BoneTransformation lerp(BoneTransformation t1, BoneTransformation t2, double factor) {
-		if (factor == 0) {
+		if (Math.abs(factor) <= Pose.LERP_SHORTCUT_EPSILON) {
 			return t1;
 		}
-		if (factor == 1) {
+		if (Math.abs(factor - 1) <= Pose.LERP_SHORTCUT_EPSILON) {
 			return t2;
 		}
 		return new BoneTransformation(

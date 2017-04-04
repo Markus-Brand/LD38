@@ -103,6 +103,7 @@ public class ShaderObject {
 	}
 
 
+
 	/**
 	 * Print source code of shader object line by line with leading line
 	 * numbers and in-place error messages
@@ -122,49 +123,68 @@ public class ShaderObject {
 
 		try(Scanner scannerShaderLog = new Scanner(log)) {
 			while(scannerShaderLog.hasNextLine()) {
-				final String logLine = scannerShaderLog.nextLine();
-				final Matcher regExMatcher = regExPattern.matcher(logLine);
-				if (regExMatcher.find()) {
-
-					final String lineNumberString = regExMatcher.group(1);
-					final String errorString = regExMatcher.group(2);
-					final int lineNumber = Integer.parseInt(lineNumberString);
-
-					if (errorList.containsKey(lineNumber)) {
-						errorList.get(lineNumber).add(errorString);
-
-					} else {
-						final ArrayList<String> stringList = new ArrayList<>();
-						stringList.add(errorString);
-						errorList.put(lineNumber, stringList);
-					}
-				}
+				extractErrors(scannerShaderLog.nextLine(), regExPattern, errorList);
 			}
 		}
 
 		// format source code
-		final String errorNo = "    ";
-		final String errorYes = "\\->>>>>>";
-		final DecimalFormat numberFormat = new DecimalFormat("0000");
-
 		try(Scanner scannerSourceCode = new Scanner(source)) {
 			int lineNumber = 1;
 
 			while(scannerSourceCode.hasNextLine()) {
-				final String codeLine = scannerSourceCode.nextLine();
-				final String formattedLineNumber = numberFormat.format(lineNumber);
-				final String annotatedLine = formattedLineNumber + errorNo + ": " + codeLine;
-				Log.log(null, annotatedLine);
-				if (errorList.containsKey(lineNumber)) {
-					for (final String string : errorList.get(lineNumber)) {
-						Log.log(null, errorYes + ": " + string);
-					}
-				}
+				printFormattedLine(scannerSourceCode.nextLine(),
+						lineNumber, errorList.get(lineNumber));
 
 				lineNumber++;
 			}
 		}
 		throw new RuntimeException("Non-compilable shader code!");
+	}
+
+	private static final String ERROR_NO = "    ";
+	private static final String ERROR_YES = "\\->>>>>>";
+	private static final DecimalFormat LINE_NUMBER_FORMAT = new DecimalFormat("0000");
+
+	/**
+	 * print a line of code together with its errors
+	 * @param codeLine the line to display
+	 * @param lineNumber the number of the line
+	 * @param errorList
+	 */
+	private void printFormattedLine(String codeLine, int lineNumber, ArrayList<String> errorList) {
+		final String formattedLineNumber = LINE_NUMBER_FORMAT.format(lineNumber);
+		final String annotatedLine = formattedLineNumber + ERROR_NO + ": " + codeLine;
+		Log.log(null, annotatedLine);
+		if (errorList != null) {
+			for (final String string : errorList) {
+				Log.log(null, ERROR_YES + ": " + string);
+			}
+		}
+	}
+
+	/**
+	 * parse a given logLine and insert an Error line into the given collection
+	 * @param logLine the log line to analyze
+	 * @param regExPattern a pattern determining whether a line contains an error
+	 * @param errorList the Error line collection to enlarge
+	 */
+	private void extractErrors(String logLine, Pattern regExPattern, LinkedHashMap<Integer, ArrayList<String>> errorList) {
+		final Matcher regExMatcher = regExPattern.matcher(logLine);
+		if (regExMatcher.find()) {
+
+			final String lineNumberString = regExMatcher.group(1);
+			final String errorString = regExMatcher.group(2);
+			final int lineNumber = Integer.parseInt(lineNumberString);
+
+			if (errorList.containsKey(lineNumber)) {
+				errorList.get(lineNumber).add(errorString);
+
+			} else {
+				final ArrayList<String> stringList = new ArrayList<>();
+				stringList.add(errorString);
+				errorList.put(lineNumber, stringList);
+			}
+		}
 	}
 
 }

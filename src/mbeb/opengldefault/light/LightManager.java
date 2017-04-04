@@ -38,9 +38,7 @@ public class LightManager {
 	 * updates the <i>TYPE</i>_LIGHT_CAPACITY Parameters of all registered shaders
 	 */
 	private void updateShaders() {
-		shaders.forEach((final ShaderProgram shader) -> {
-			updateShader(shader);
-		});
+		shaders.forEach(this::updateShader);
 	}
 
 	/**
@@ -66,7 +64,7 @@ public class LightManager {
 	 * @param shader
 	 *            that will be unregistered
 	 */
-	private void removeShader(final ShaderProgram shader) {
+	public void removeShader(final ShaderProgram shader) {
 		shaders.remove(shader);
 	}
 

@@ -1,5 +1,6 @@
 package mbeb.opengldefault.animation;
 
+import java.lang.Math;
 import java.util.*;
 
 import org.joml.*;
@@ -13,6 +14,8 @@ import mbeb.opengldefault.rendering.shader.*;
 public class Pose {
 
 	private static final String TAG = "Pose";
+
+	public static final float LERP_SHORTCUT_EPSILON = 0.001f;
 
 	/** A BoneTransformation for each bone */
 	private Map<String, BoneTransformation> boneTransforms = new HashMap<>();
@@ -120,10 +123,10 @@ public class Pose {
 	 * @return
 	 */
 	public static final Pose lerp(Pose p1, Pose p2, double factor) {
-		if (factor == 0) {
+		if (Math.abs(factor) <= LERP_SHORTCUT_EPSILON) {
 			return p1;
 		}
-		if (factor == 1) {
+		if (Math.abs(factor - 1) <= LERP_SHORTCUT_EPSILON) {
 			return p2;
 		}
 

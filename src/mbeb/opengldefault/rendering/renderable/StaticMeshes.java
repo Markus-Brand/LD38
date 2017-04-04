@@ -16,6 +16,10 @@ public class StaticMeshes {
 	private static IRenderable uniformCube;
 	private static IRenderable lineCube;
 
+	private StaticMeshes() {
+		//should never be instantiated
+	}
+
 	/**
 	 * Get A Renderable containing vertexData of a ScreenAlignedQuad
 	 *
