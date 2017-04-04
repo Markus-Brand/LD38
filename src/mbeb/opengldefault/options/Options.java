@@ -4,15 +4,15 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import mbeb.opengldefault.game.GameState;
-import mbeb.opengldefault.reflection.OptionFieldFinder;
+import mbeb.opengldefault.reflection.ClassFinder;
 
 public class Options {
 	
@@ -20,7 +20,7 @@ public class Options {
 	
 	public static void load(){
 		Map<String, String> options = getOptionMap();
-		for(Field f : OptionFieldFinder.findStaticFields(Option.class)){
+		for(Field f : findOptions()){
 			if(!options.containsKey(f.getName())){
 				System.out.println("There is no option in the option file for: " + f.getName());
 				continue;
@@ -39,7 +39,7 @@ public class Options {
 	
 	public static void save(){
 		List<String> optionLines = new ArrayList<>();
-		for(Field f : OptionFieldFinder.findStaticFields(Option.class)){
+		for(Field f : findOptions()){
 			try {
 				optionLines.add(f.getName() + " " + f.get(null));
 			} catch (IllegalArgumentException | IllegalAccessException e) {
@@ -73,5 +73,18 @@ public class Options {
 			e.printStackTrace();
 		}
 		return options;
+	}
+	
+	private static Set<Field> findOptions() {
+		Set<Field> set = new HashSet<>();
+    
+		for(Class<?> c : ClassFinder.find("mbeb")){
+			for (Field field : c.getDeclaredFields()) {
+				if (field.isAnnotationPresent(Option.class) && java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
+	                set.add(field);
+	            }
+			}
+		}
+		return set;
 	}
 }

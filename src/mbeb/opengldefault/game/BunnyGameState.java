@@ -240,7 +240,6 @@ public class BunnyGameState implements GameState {
 
 	@Override
 	public void update(final double deltaTime) {
-		System.out.println("--------------" + hallo);
 		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_ESCAPE)) {
 			nextGameState = GameStateIdentifier.MAIN_MENU;
 			KeyBoard.releaseAll();
