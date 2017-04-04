@@ -12,7 +12,7 @@ import mbeb.opengldefault.shapes.Rectangle;
 import org.joml.Vector2f;
 
 /**
- * A {@link CombinedGUIElement} that is used to draw a String by using a {@link AtlasGUI}
+ * A {@link CombinedGUIElement} that is used to draw a String by using an {@link AtlasGUI}
  *
  * @author Markus
  */
@@ -97,7 +97,7 @@ public class TextGUIElement extends CombinedGUIElement {
 	}
 
 	/**
-	 * Getter fot the FontMetrics
+	 * Getter for the FontMetrics
 	 * 
 	 * @return the fonts FontMetrics
 	 */

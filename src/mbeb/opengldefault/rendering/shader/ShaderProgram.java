@@ -70,7 +70,7 @@ public class ShaderProgram {
 
 		Log.assertTrue(TAG, shaderObjects.containsKey(ShaderObjectType.VERTEX), "Vertex shader required");
 		Log.assertTrue(TAG, shaderObjects.containsKey(ShaderObjectType.FRAGMENT), "Fragment shader required");
-		Log.assertEqual(TAG, shaderObjects.containsKey(ShaderObjectType.TCS), shaderObjects.containsKey(ShaderObjectType.TES), "TCS and TES only allowed together.");
+		Log.assertEqual(TAG, shaderObjects.containsKey(ShaderObjectType.TCS), shaderObjects.containsKey(ShaderObjectType.TES), "TCS and TES are only allowed together.");
 	}
 
 	/**

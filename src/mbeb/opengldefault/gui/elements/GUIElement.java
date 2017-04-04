@@ -303,7 +303,7 @@ public abstract class GUIElement {
 
 	/**
 	 * Sets the last pixel in the GUIElements lutRow to a color. This is the color that will be used if the inputTexture
-	 * is completly white
+	 * is completely white
 	 * 
 	 * @param color
 	 *            the Color to set the pixel to

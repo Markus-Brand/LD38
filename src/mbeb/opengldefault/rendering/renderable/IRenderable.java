@@ -25,11 +25,8 @@ public interface IRenderable extends IRenderableHolder{
 
 	/**
 	 * a static transformation on this Renderable
-<<<<<<< HEAD
 	 *
 	 * @return the static transformation on this Renderable
-=======
->>>>>>> master
 	 */
 	default Matrix4f getTransform() {
 		return new Matrix4f();

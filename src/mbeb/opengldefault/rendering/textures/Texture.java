@@ -26,15 +26,12 @@ public class Texture {
 
 	public Texture(int width, int height) {
 		this(TextureCache.loadTexture(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB), false,
-				GL_CLAMP_TO_EDGE,
 				GL_CLAMP_TO_EDGE));
 	}
 
 	/**
-	 * load the image provided at <code>path</code>
-	 *
-	 * @param path
-	 *            where to load the image from
+	 * Generate OpenGL Texture from BufferedImage
+	 * @param image the input BufferedImage
 	 */
 	public Texture(BufferedImage image) {
 		this(TextureCache.loadTexture(image, false, GL_CLAMP_TO_EDGE,
@@ -52,7 +49,7 @@ public class Texture {
 	}
 
 	/**
-	 * create a new instace with an already loaded OpenGL-Texture
+	 * create a new instance with an already loaded OpenGL-Texture
 	 *
 	 * @param textureHandle
 	 *            a valid texture handle

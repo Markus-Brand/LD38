@@ -110,11 +110,6 @@ public class BunnyGameState implements GameState {
 
 		bunnyScene = new Scene(camera, skybox);
 
-		
-		
-		
-		
-
 		AnimatedMesh playerAnim = new ObjectLoader().loadFromFileAnim("player.fbx");
 		playerAnim.setTransform(MeshFlip);
 		Texture bunnyTexture = new Texture("player.png");
@@ -295,7 +290,7 @@ public class BunnyGameState implements GameState {
 		glViewport(0, 0, OpenGLContext.getFramebufferWidth(), OpenGLContext.getFramebufferHeight());
 		GLErrors.checkForError(TAG, "glViewport");
 
-		bunnyScene.render(true); //bunnyScene.render(); to render without BoundingBoxes
+		bunnyScene.render(); //bunnyScene.render(); to render without BoundingBoxes
 		textGUI.render();
 	}
 

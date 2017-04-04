@@ -97,6 +97,19 @@ public class TextureCache {
 	 *            input BufferedImage
 	 * @param interpolate true -> Linear sub sampling; false -> nearest neighbor
 	 * @param wrapS OpenGL wrap method in x direction
+	 * @return openGl texture
+	 */
+	public static int loadTexture(BufferedImage image, boolean interpolate, int wrapMethod) {		
+		return loadTexture(image, interpolate, wrapMethod, wrapMethod);
+	}
+	
+	/**
+	 * Generate OpenGL Texture from BufferedImage with given interpolation method
+	 *
+	 * @param image
+	 *            input BufferedImage
+	 * @param interpolate true -> Linear sub sampling; false -> nearest neighbor
+	 * @param wrapS OpenGL wrap method in x direction
 	 * @param wrapT OpenGL wrap method in y direction
 	 * @return openGl texture
 	 */
