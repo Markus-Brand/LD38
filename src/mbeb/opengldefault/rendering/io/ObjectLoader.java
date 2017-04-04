@@ -20,6 +20,8 @@ public class ObjectLoader {
 
 	private static final DataFragment[] PosNormUv = new DataFragment[] {DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV};
 	private static final DataFragment[] PosNormUvAnim3 = new DataFragment[] {DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV, DataFragment.BONE_INDICES_3, DataFragment.BONE_WEIGHTS_3};
+	private static final float THRESHOLD = 0.2f; //vertices with smaller weights are not included into the boundingBox
+	//todo test for good values here
 
 	private static final String TAG = "ObjectLoader";
 
@@ -104,9 +106,9 @@ public class ObjectLoader {
 		Bone sceneStructure = parseScene(scene);
 
 		for (int meshID = 0; meshID < scene.mNumMeshes(); meshID++) {
-			IRenderable mesh = loadMesh(scene, meshID, format, sceneStructure);
+			return loadMesh(scene, meshID, format, sceneStructure);
 			//todo not return just the first mesh, rather combine meshes
-			return mesh;
+			//Nice and dandy, but until you do, sonar says no.
 		}
 		Log.error(TAG, "No Mesh found in object");
 		return null;
@@ -120,7 +122,7 @@ public class ObjectLoader {
 		File export = new File(res, rawPath);
 		if (!export.exists()) {
 			try {
-				InputStream inStream = OpenGLContext.class.getResourceAsStream("/mbeb/opengldefault/resources/" + rawPath);
+				InputStream inStream = OpenGLContext.class.getResourceAsStream("/models/" + rawPath);
 				if (inStream == null) {
 					return null;
 				}
@@ -180,6 +182,7 @@ public class ObjectLoader {
 			indices[indicesPointer] = indicesPointer;
 			indicesPointer++;
 		}
+		mesh.close();
 		VAORenderable vaomesh = new VAORenderable(data, indices, format, box);
 
 		if (isAnimated) {
@@ -190,6 +193,8 @@ public class ObjectLoader {
 		} else {
 			return vaomesh;
 		}
+
+
 	}
 
 	/**
@@ -215,6 +220,7 @@ public class ObjectLoader {
 				int boneID = skeleton.firstBoneNamed(boneName).getIndex();
 				vertexMapping.put(boneID, aiWeight.mWeight());
 			}
+			bone.close();
 		}
 		//normalize weights
 		for (int v = 0; v < mesh.mNumVertices(); v++) {
@@ -228,7 +234,7 @@ public class ObjectLoader {
 			}
 			ArrayList<Map.Entry<Integer, Float>> list = new ArrayList<>(weights.entrySet());
 
-			list.sort((Map.Entry<Integer, Float> o1, Map.Entry<Integer, Float> o2) -> -o1.getValue().compareTo(o2.getValue()));
+			list.sort((Map.Entry<Integer, Float> o1, Map.Entry<Integer, Float> o2) -> o2.getValue().compareTo(o1.getValue()));
 
 			while(list.size() > weightsAmount) {
 				list.remove(list.size() - 1);
@@ -254,6 +260,9 @@ public class ObjectLoader {
 	 * @return
 	 */
 	private Bone parseSkeleton(AIMesh mesh, Bone sceneStructure) {
+		//todo: Try to merge this method with load Vertex weights
+		//This is necessary to make sonar stop complaining about unclosed resources, because the assimp binding actually
+		//destroys any object that is closed.
 		Bone rootBone = null;
 		for (int b = 0; b < mesh.mNumBones(); b++) {
 			AIBone aibone = AIBone.create(mesh.mBones().get(b));
@@ -338,6 +347,7 @@ public class ObjectLoader {
 					KeyFrame keyFrame = new KeyFrame(pos.mTime(), new Pose(animMesh.getSkeleton(), animMesh.getTransform()).put(boneName, transform));
 					anim.mergeKeyFrame(keyFrame);
 				}
+				node.close();
 			}
 
 			animMesh.addAnimation(anim);
@@ -348,9 +358,6 @@ public class ObjectLoader {
 	 * adjust the local boundingboxes of the bones to contain passed vertex
 	 */
 	private void adjustBoneBoxes(Bone skeleton, Vector3f vertexPosition, int vertexID, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights, Matrix4f sceneTransform) {
-		final float THRESHOLD = 0.2f; //vertices with smaller weights are not included into the boundingBox
-		//todo test for good values here
-
 		List<Map.Entry<Integer, Float>> boneWeights = vertexBoneWeights.get(vertexID);
 
 		for (Map.Entry<Integer, Float> boneWeight : boneWeights) {
