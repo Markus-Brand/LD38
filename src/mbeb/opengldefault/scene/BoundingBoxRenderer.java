@@ -13,11 +13,11 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 
 	public static final boolean RENDER_BONE_BOXES = true;
 
-	private static Shader shader;
+	private static ShaderProgram shader;
 
 	static {
-		shader = new Shader("boundingbox.vert", "boundingbox.frag");
-		shader.addUniformBlockIndex("Matrices");
+		shader = new ShaderProgram("boundingbox.vert", "boundingbox.frag");
+		shader.addUniformBlockIndex(UBOManager.MATRICES);
 		shader.setDrawMode(GL11.GL_LINES);
 	}
 
@@ -29,20 +29,22 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 		if (obj.getBoundingBox().isEmpty()) {
 			return new Matrix4f();
 		}
-		return new Matrix4f().translate(obj.getBoundingBox().getLocalStart()).scale(obj.getBoundingBox().getLocalSize());
+		return new Matrix4f().translate(obj.getBoundingBox().getLocalStart())
+				.scale(obj.getBoundingBox().getLocalSize());
 	}
 
-	/**
-	 * render a single objects bounding box
-	 * 
-	 * @param object
+	/** 
+	 * renders a single objects bounding box
+	 *
+	 * @param owner
+	 * @param boxColor
 	 * @param boundingBoxTransform
 	 */
-	private void renderBox(final BoundingBox.Owner object, final Vector3f boxColor, final Matrix4f boundingBoxTransform) {
-		if (object.getBoundingBox().isEmpty()) {
+	private void renderBox(final BoundingBox.Owner owner, final Vector3f boxColor, final Matrix4f boundingBoxTransform) {
+		if (owner.getBoundingBox().isEmpty()) {
 			return;
 		}
-		final Matrix4f localTrans = getBoxTransformFor(object);
+		final Matrix4f localTrans = getBoxTransformFor(owner);
 
 		trySettingModelUniform(boundingBoxTransform.mul(localTrans, new Matrix4f()));
 		shader.setUniform("boxColor", boxColor);

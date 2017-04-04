@@ -1,16 +1,21 @@
 package mbeb.opengldefault.rendering.textures;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.opengl.GL13.*;
-import static org.lwjgl.opengl.GL20.*;
 
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.nio.ByteBuffer;
+
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
 
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.shader.*;
 
 /**
- * A Texture that can bind itself to a uniform for a given {@link Shader}
+ * A Texture that can bind itself to a uniform for a given {@link ShaderProgram}
  */
 public class Texture {
 
@@ -18,6 +23,20 @@ public class Texture {
 
 	/** OpenGL-handle id for the texture */
 	private int textureHandle;
+
+	public Texture(int width, int height) {
+		this(TextureCache.loadTexture(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB), false,
+				GL_CLAMP_TO_EDGE));
+	}
+
+	/**
+	 * Generate OpenGL Texture from BufferedImage
+	 * @param image the input BufferedImage
+	 */
+	public Texture(BufferedImage image) {
+		this(TextureCache.loadTexture(image, false, GL_CLAMP_TO_EDGE,
+				GL_CLAMP_TO_EDGE));
+	}
 
 	/**
 	 * load the image provided at <code>path</code>
@@ -30,7 +49,7 @@ public class Texture {
 	}
 
 	/**
-	 * create a new instace with an already loaded OpenGL-Texture
+	 * create a new instance with an already loaded OpenGL-Texture
 	 *
 	 * @param textureHandle
 	 *            a valid texture handle
@@ -44,9 +63,9 @@ public class Texture {
 	 *
 	 * @param shader
 	 *            the shader to alter
-	 * @see #bind(Shader, String)
+	 * @see #bind( ShaderProgram , String)
 	 */
-	public void bind(Shader shader) {
+	public void bind(ShaderProgram shader) {
 		bind(shader, "u_texture");
 	}
 
@@ -58,7 +77,7 @@ public class Texture {
 	 * @param uniformName
 	 *            the name of the uniform to adjust
 	 */
-	public void bind(Shader shader, String uniformName) {
+	public void bind(ShaderProgram shader, String uniformName) {
 		GL13.glActiveTexture(GL_TEXTURE0 + textureHandle);
 		GLErrors.checkForError(TAG, "glActiveTexture");
 		glBindTexture(GL_TEXTURE_2D, textureHandle);
@@ -69,5 +88,19 @@ public class Texture {
 
 	public int getTextureHandle() {
 		return textureHandle;
+	}
+
+	public void setPixel(int x, int y, Color color) {
+		GL13.glActiveTexture(GL_TEXTURE0 + textureHandle);
+		glBindTexture(GL_TEXTURE_2D, textureHandle);
+		GLErrors.checkForError(TAG, "glBindTexture");
+		ByteBuffer buffer = BufferUtils.createByteBuffer(4);
+		buffer.put((byte) color.getRed());
+		buffer.put((byte) color.getGreen());
+		buffer.put((byte) color.getBlue());
+		buffer.put((byte) color.getAlpha());
+		buffer.flip();
+		glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+		GLErrors.checkForError(TAG, "glTexSubImage2D");
 	}
 }

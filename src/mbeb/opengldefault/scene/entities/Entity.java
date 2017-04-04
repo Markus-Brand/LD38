@@ -48,7 +48,7 @@ public abstract class Entity implements IEntity {
 	 */
 	public void update(double deltaTime) {
 		for (PrioritizedBehaviour prioBehaviour : behaviours) {
-			IBehaviour behaviour = prioBehaviour.behaviour;
+			IBehaviour behaviour = prioBehaviour.getBehaviour();
 			if (behaviour.triggers(this)) {
 				behaviour.update(deltaTime, this);
 				break;

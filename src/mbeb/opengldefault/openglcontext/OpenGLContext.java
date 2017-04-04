@@ -7,6 +7,7 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 
+import org.joml.Vector2f;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -38,7 +39,7 @@ public class OpenGLContext {
 	/**
 	 * The created window Object
 	 */
-	private long window;
+	private static long window;
 
 	/**
 	 * Primary monitors video mode
@@ -48,24 +49,24 @@ public class OpenGLContext {
 	/**
 	 * The actual framebuffer width
 	 */
-	private int framebufferWidth;
+	private static int framebufferWidth;
 
 	/**
 	 * The actual framebuffer height
 	 */
-	private int framebufferHeight;
+	private static int framebufferHeight;
 
 	/*
 	 * Game Object
 	 */
-	private Game game;
+	private static Game game;
 
 	/**
 	 * Constructor of the Main class It initializes a new Window, then starts
 	 * the main loop and cleans when the window is closed
 	 */
-	public OpenGLContext(Game game, String[] args) {
-		this.game = game;
+	public static void startGame(Game game, String[] args) {
+		OpenGLContext.game = game;
 		init(args);
 		loop();
 		clean();
@@ -77,23 +78,22 @@ public class OpenGLContext {
 	 * @param args
 	 *            The command line arguments
 	 */
-	private void init(String[] args) {
+	private static void init(String[] args) {
 		evaluateCommandLineArguments(args);
 		initOpenGL();
 
-		createWindow("Test window", false, getVideoModeWidth(), getVideoModeHeight());
+		createWindow("Test window", true, getVideoModeWidth(), getVideoModeHeight());
 		GL.createCapabilities();
 		GLErrors.checkForError(TAG, "createCapabilities");
 
 		printOpenGLInformation();
-		game.setContext(this);
 		game.init();
 	}
 
 	/**
 	 * Print OpenGL version and supported extensions
 	 */
-	private void printOpenGLInformation() {
+	private static void printOpenGLInformation() {
 		Log.log(TAG, "OpenGL version: " + GL11.glGetString(GL11.GL_VERSION));
 		GLErrors.checkForError(TAG, "glGetString");
 		Log.log(TAG, "Extensions supported:");
@@ -110,7 +110,7 @@ public class OpenGLContext {
 	/**
 	 * game loop
 	 */
-	private void loop() {
+	private static void loop() {
 		double lastTime = glfwGetTime();
 		while(!glfwWindowShouldClose(window)) {
 
@@ -118,18 +118,6 @@ public class OpenGLContext {
 			// Poll for window events. The key callback above will only be
 			// invoked during this call.
 			glfwPollEvents();
-
-			if (KeyBoard.isKeyDown(GLFW_KEY_C)) {
-				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-			}
-
-			if (KeyBoard.isKeyDown(GLFW_KEY_X)) {
-				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			}
-
-			if (KeyBoard.isKeyDown(GLFW_KEY_ESCAPE)) {
-				glfwSetWindowShouldClose(window, true); // We will detect this in our rendering loop
-			}
 
 			double thisTime = glfwGetTime();
 			double deltaTime = thisTime - lastTime;
@@ -144,16 +132,17 @@ public class OpenGLContext {
 	/**
 	 * cleaning after closing the window
 	 */
-	private void clean() {
+	private static void clean() {
 		game.clear();
 		glfwDestroyWindow(window);
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();
 		Log.closeLogFile();
 		try {
-			Files.walk(new File("res").toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+			Files.walk(new File("res").toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile)
+					.forEach(File::delete);
 		} catch(IOException ex) {
-			Log.log(TAG, ex.getMessage() + " - unable to delete old res-directory");
+			Log.error(TAG, "Unable to delete old res-directory", ex);
 		}
 	}
 
@@ -169,7 +158,7 @@ public class OpenGLContext {
 	 * @param height
 	 *            window framebufferHeight
 	 */
-	private void createWindow(String title, boolean fullscreen, int width, int height) {
+	private static void createWindow(String title, boolean fullscreen, int width, int height) {
 		// Create the window
 		if (fullscreen) {
 			glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
@@ -179,7 +168,7 @@ public class OpenGLContext {
 		}
 
 		if (window == NULL) {
-			throw new RuntimeException("Failed to create the GLFW window");
+			Log.error(TAG, "Failed to create the GLFW window", new RuntimeException());
 		}
 
 		// Setup a key callback. It will be called every time a key is pressed, repeated or released.
@@ -211,18 +200,21 @@ public class OpenGLContext {
 
 		// Center our window
 		if (!fullscreen) {
-			glfwSetWindowPos(window, (vidmode.width() - width), (vidmode.height() - height));
+			glfwSetWindowPos(window, vidmode.width() - width, vidmode.height() - height);
 		}
 
 		// Make the OpenGL context current
 		glfwMakeContextCurrent(window);
-
-		//glfw requires the use of an array (because it uses pointers in C) for getFramebufferSize
-		int[] widthBuffer = new int[1];
-		int[] heightBuffer = new int[1];
-		glfwGetFramebufferSize(window, widthBuffer, heightBuffer);
-		framebufferHeight = heightBuffer[0];
-		framebufferWidth = widthBuffer[0];
+		
+		GLFWWindowSizeCallbackI resizeHandler = (long l, int i, int i1) -> {
+			int[] widthBuffer = new int[1];
+			int[] heightBuffer = new int[1];
+			glfwGetFramebufferSize(window, widthBuffer, heightBuffer);
+			framebufferHeight = heightBuffer[0];
+			framebufferWidth = widthBuffer[0];
+		};
+		glfwSetWindowSizeCallback(window, resizeHandler);
+		resizeHandler.invoke(0, 0, 0);
 
 		// Enable v-sync
 		//glfwSwapInterval(1);
@@ -305,6 +297,18 @@ public class OpenGLContext {
 		return vidmode;
 	}
 
+	public static Vector2f getNDC(Vector2f point) {
+		return new Vector2f(getNDCX(point.x), getNDCY(point.y));
+	}
+
+	public static float getNDCY(float y) {
+		return -(2 * y / getFramebufferHeight() - 1);
+	}
+
+	public static float getNDCX(float x) {
+		return 2 * x / getFramebufferWidth() - 1;
+	}
+
 	public static int getVideoModeWidth() {
 		return vidmode.width();
 	}
@@ -313,15 +317,27 @@ public class OpenGLContext {
 		return vidmode.height();
 	}
 
-	public int getFramebufferWidth() {
+	public static int getFramebufferWidth() {
 		return framebufferWidth;
 	}
 
-	public int getFramebufferHeight() {
+	public static int getFramebufferHeight() {
 		return framebufferHeight;
 	}
 
-	public float getAspectRatio() {
+	public static float getAspectRatio() {
 		return getFramebufferWidth() / (float) getFramebufferHeight();
+	}
+
+	public static void close() {
+		glfwSetWindowShouldClose(window, true);
+	}
+
+	public static void showCursor() {
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
+
+	public static void hideCursor() {
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	}
 }

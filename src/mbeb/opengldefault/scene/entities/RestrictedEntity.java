@@ -11,7 +11,8 @@ import java.util.Set;
 public class RestrictedEntity implements IEntity {
 
 	private final IEntity wrappedObject;
-	private final boolean move, rotate;
+	private final boolean move;
+	private final boolean rotate;
 
 	public RestrictedEntity(IEntity wrappedObject, boolean move, boolean rotate) {
 		this.wrappedObject = wrappedObject;

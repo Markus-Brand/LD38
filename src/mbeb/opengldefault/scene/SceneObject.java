@@ -16,7 +16,7 @@ public class SceneObject implements BoundingBox.Owner {
 	private static final String TAG = "SceneObject";
 
 	/** the renderable for this object, or null */
-	private Shader shader;
+	private ShaderProgram shader;
 	/** a renderable for this Object, or null */
 	private IRenderable renderable;
 	/** the combined boundingBox for this object(renderable+subObjects) */
@@ -164,7 +164,7 @@ public class SceneObject implements BoundingBox.Owner {
 	 *
 	 * @return
 	 */
-	public Shader getShader() {
+	public ShaderProgram getShader() {
 		if (!hasOwnShader() && parent != null) {
 			return parent.getShader();
 		}
@@ -176,7 +176,7 @@ public class SceneObject implements BoundingBox.Owner {
 	 *
 	 * @param shader
 	 */
-	public void setShader(Shader shader) {
+	public void setShader(ShaderProgram shader) {
 		this.shader = shader;
 	}
 
@@ -206,6 +206,7 @@ public class SceneObject implements BoundingBox.Owner {
 	/**
 	 * @return a boundingBox so that each sub-Object lies within
 	 */
+	@Override
 	public BoundingBox getBoundingBox() {
 		if (box == null) {
 			reCalculateBoundingBox();
@@ -232,20 +233,23 @@ public class SceneObject implements BoundingBox.Owner {
 	public BoundingBox reCalculateBoundingBox() {
 		box = getRenderableBoundingBox();
 
-		for (SceneObject o : getSubObjects()) {
-			adjustBoundingBoxFor(o);
+		for (SceneObject subObject : getSubObjects()) {
+			adjustBoundingBoxFor(subObject);
 		}
 		return box;
 	}
 
 	/**
-	 * insert a given object ot my own boundingBox
+	 * insert a given object into my own boundingBox
 	 *
 	 * @param object
 	 */
 	private void adjustBoundingBoxFor(SceneObject object) {
 		if (box == null) {
 			box = getRenderableBoundingBox();
+		}
+		if (object.getBoundingBox() == null) {
+			return;
 		}
 		box = box.unionWith(object.getBoundingBox());
 	}

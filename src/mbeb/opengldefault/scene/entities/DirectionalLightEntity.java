@@ -57,6 +57,7 @@ public class DirectionalLightEntity extends Entity implements ColorfulEntity {
 	 */
 	@Override
 	public void setPosition(final Vector3f position) {
+		//just ignore the value
 	}
 
 	@Override

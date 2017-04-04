@@ -21,7 +21,7 @@ public class LightManager {
 	/** LightTypeManager for SpotLights */
 	private final LightTypeManager spotLightTypeManager;
 	/** List of shaders (witch normally use Light) */
-	private final ArrayList<Shader> shaders;
+	private final ArrayList<ShaderProgram> shaders;
 
 	/**
 	 * creates LightManager with 3 LightTypeManagers for each LightType (Directional, Point, Spot) and stores the light using shaders
@@ -38,16 +38,14 @@ public class LightManager {
 	 * updates the <i>TYPE</i>_LIGHT_CAPACITY Parameters of all registered shaders
 	 */
 	private void updateShaders() {
-		shaders.forEach((final Shader shader) -> {
-			updateShader(shader);
-		});
+		shaders.forEach(this::updateShader);
 	}
 
 	/**
 	 * @param shader
 	 *            the shader witch should be registered
 	 */
-	public void addShader(final Shader shader) {
+	public void addShader(final ShaderProgram shader) {
 		shaders.add(shader);
 		updateShader(shader);
 	}
@@ -56,7 +54,7 @@ public class LightManager {
 	 * @param shader
 	 *            updates the <i>TYPE</i>_LIGHT_CAPACITY Parameters of this shader
 	 */
-	private void updateShader(final Shader shader) {
+	private void updateShader(final ShaderProgram shader) {
 		directionalLightTypeManager.updateShader(shader);
 		pointLightTypeManager.updateShader(shader);
 		spotLightTypeManager.updateShader(shader);
@@ -66,7 +64,7 @@ public class LightManager {
 	 * @param shader
 	 *            that will be unregistered
 	 */
-	private void removeShader(final Shader shader) {
+	public void removeShader(final ShaderProgram shader) {
 		shaders.remove(shader);
 	}
 

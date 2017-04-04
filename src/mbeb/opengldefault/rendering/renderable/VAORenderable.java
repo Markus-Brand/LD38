@@ -50,11 +50,6 @@ public class VAORenderable implements IRenderable {
 		this.VAO = generateVAO(data, indices, dataFormat);
 	}
 
-	@Override
-	public BoundingBox getBoundingBox() {
-		return boundingBox;
-	}
-
 	/**
 	 * Constructor for Renderable
 	 *
@@ -70,6 +65,11 @@ public class VAORenderable implements IRenderable {
 		this.boundingBox = boundingBox;
 		this.indexSize = indexBuffer.capacity();
 		this.VAO = generateVAO(vertexBuffer, indexBuffer, dataFormat);
+	}
+
+	@Override
+	public BoundingBox getBoundingBox() {
+		return boundingBox;
 	}
 
 	@Override
@@ -130,7 +130,7 @@ public class VAORenderable implements IRenderable {
 	 * @param shader
 	 */
 	@Override
-	public void render(Shader shader) {
+	public void render(ShaderProgram shader) {
 		bind();
 		glDrawElements(shader.getDrawMode(), indexSize, GL_UNSIGNED_INT, 0);
 		GLErrors.checkForError(TAG, "glDrawElements");

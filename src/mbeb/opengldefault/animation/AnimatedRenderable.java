@@ -11,8 +11,6 @@ import mbeb.opengldefault.scene.*;
  */
 public class AnimatedRenderable implements IRenderable {
 
-	private static final String TAG = "AnimatedRenderable";
-
 	private final AnimatedMesh mesh;
 	private List<Animator> currentAnimations = new ArrayList<>();
 	private final Object animatorLock = new Object();
@@ -29,7 +27,7 @@ public class AnimatedRenderable implements IRenderable {
 	}
 
 	@Override
-	public void render(Shader shader) {
+	public void render(ShaderProgram shader) {
 		//update pose uniforms
 		getCurrentPose().setUniformData(shader, "boneTransforms");
 		mesh.render(shader);
@@ -78,10 +76,10 @@ public class AnimatedRenderable implements IRenderable {
 			synchronized (animatorLock) {
 
 				//mix these animations from stronger strength to lower to minimize artifacts
-				List<Animator> currentAnimations = getCurrentAnimations();
-				currentAnimations.sort((Animator a1, Animator a2) -> -Double.compare(a1.getCurrentStrength(), a2.getCurrentStrength()));
+				List<Animator> currentAnimationsSorted = getCurrentAnimations();
+				currentAnimationsSorted.sort((Animator a1, Animator a2) -> -Double.compare(a1.getCurrentStrength(), a2.getCurrentStrength()));
 
-				for (Animator anim : currentAnimations) {
+				for (Animator anim : currentAnimationsSorted) {
 					Pose p = anim.getCurrentPose();
 					p.mixInto(anim.getCurrentStrength(), currentPose);
 				}

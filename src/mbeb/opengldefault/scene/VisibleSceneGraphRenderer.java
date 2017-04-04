@@ -37,6 +37,10 @@ public class VisibleSceneGraphRenderer extends SceneGraphRenderer {
 	 * @return false if this object would not be visible if rendered
 	 */
 	private boolean isVisible(final SceneObject object, final Matrix4f parentTransform) {
+		if (object.getBoundingBox().isEmpty()) {
+			return true;
+		}
+		
 		Iterator<Vector3f> cornerIterator = object.getBoundingBox().getCornersOnScreen(parentTransform, camera);
 
 		List<Vector3f> corners = new ArrayList<>();

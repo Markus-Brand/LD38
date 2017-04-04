@@ -1,8 +1,8 @@
 package mbeb.opengldefault.rendering.renderable;
 
+import mbeb.opengldefault.animation.Pose;
 import org.joml.*;
 
-import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.rendering.shader.*;
 import mbeb.opengldefault.scene.*;
 
@@ -16,7 +16,7 @@ public interface IRenderable extends IRenderableHolder{
 		return this;
 	}
 
-	void render(Shader shader);
+	void render(ShaderProgram shader);
 
 	BoundingBox getBoundingBox();
 
@@ -25,6 +25,8 @@ public interface IRenderable extends IRenderableHolder{
 
 	/**
 	 * a static transformation on this Renderable
+	 *
+	 * @return the static transformation on this Renderable
 	 */
 	default Matrix4f getTransform() {
 		return new Matrix4f();

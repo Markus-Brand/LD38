@@ -65,6 +65,6 @@ public class PointLightEntity extends Entity implements ColorfulEntity {
 	 */
 	@Override
 	public void setDirection(final Vector3f direction) {
-
+		//just ignore the value
 	}
 }

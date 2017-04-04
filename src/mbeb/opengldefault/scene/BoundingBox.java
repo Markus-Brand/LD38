@@ -169,6 +169,9 @@ public class BoundingBox {
 	 */
 	public BoundingBox unionWith(final BoundingBox childBox) {
 		//We also need to check for updates in the child BB, because the BB could potentially grow, if the children have transformations on their own
+		if (childBox.isEmpty()) {
+			return this.duplicate();
+		}
 		final List<Vector4f> childCorners = Streamerator.asList(childBox.getParentGlobalCorners());
 		BoundingBox bigger = this.duplicate();
 		for (final Vector4f corner : childCorners) {
@@ -278,10 +281,14 @@ public class BoundingBox {
 		return getLocalStart().add(getLocalSize(), new Vector3f());
 	}
 
-	public boolean intersectsRay(Vector3f origin, Vector3f direction, Matrix4f parentTransform) {
-		BoundingBox globalBB = getGlobalBoundinBox(parentTransform);
-		Vector3f min = globalBB.getLocalStart();
-		Vector3f max = globalBB.getLocalEnd();
+	public boolean intersectsRay(Vector3f origin, Vector3f direction, Matrix4f parentTransform)
+	{
+		if (isEmpty()) {
+			return false;
+		}
+		BoundingBox globalBoundingBox = getGlobalBoundinBox(parentTransform);
+		Vector3f min = globalBoundingBox.getLocalStart();
+		Vector3f max = globalBoundingBox.getLocalEnd();
 		if (min == null || max == null) {
 			System.out.println(min + " " + max);
 			return false;

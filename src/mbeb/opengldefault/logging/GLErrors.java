@@ -8,6 +8,10 @@ public class GLErrors {
 	/** Class Name Tag */
 	private static final String TAG = "GLErrors";
 
+	private GLErrors() {
+		//should never be instantiated
+	}
+
 	/**
 	 * Checks if an error occurred between this moment and the last error check.
 	 * This method should be called every time an OpenGL method is called.
