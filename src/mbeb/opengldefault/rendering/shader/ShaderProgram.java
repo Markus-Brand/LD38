@@ -70,14 +70,14 @@ public class ShaderProgram {
 
 		Log.assertTrue(TAG, shaderObjects.containsKey(ShaderObjectType.VERTEX), "Vertex shader required");
 		Log.assertTrue(TAG, shaderObjects.containsKey(ShaderObjectType.FRAGMENT), "Fragment shader required");
-		Log.assertEqual(TAG, shaderObjects.containsKey(ShaderObjectType.TCS), shaderObjects.containsKey(ShaderObjectType.TES), "TCS and TES only allowed together.");
-
+		Log.assertEqual(TAG, shaderObjects.containsKey(ShaderObjectType.TCS), shaderObjects.containsKey(ShaderObjectType.TES), "TCS and TES are only allowed together.");
 	}
 
 	/**
 	 * Adds a Uniform Buffer Block to the Shader
 	 *
-	 * @param UBOName the name of the UBO to add
+	 * @param UBOName
+	 *            the name of the UBO to add
 	 */
 	public void addUniformBlockIndex(final String UBOName) {
 		final int index = UBOManager.getUBOID(UBOName);
@@ -130,19 +130,22 @@ public class ShaderProgram {
 	 */
 	public int getUniform(final String name, final boolean logAnError) {
 		ensureCompiled();
-		final int location = glGetUniformLocation(shaderProgramHandle, name);
+		final int uniformLocation = glGetUniformLocation(shaderProgramHandle, name);
 		GLErrors.checkForError(TAG, "glGetUniformLocation: " + ((name != null) ? name : "null"));
-		if (logAnError && location < 0) {
+		if (logAnError && uniformLocation < 0) {
 			Log.error(TAG, "GetUniform failed: " + name);
 		}
-		return location;
+		return uniformLocation;
 	}
 
 	//<editor-fold desc="UNIFORM-SETTERS">
 	/**
 	 * Sets the value of the given uniform to the given integer array
-	 * @param name the name of the uniform
-	 * @param value the integer array
+	 *
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the integer array
 	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final int[] value) {
@@ -154,18 +157,24 @@ public class ShaderProgram {
 
 	/**
 	 * Sets the value of the given uniform to the given integer
-	 * @param name the name of the uniform
-	 * @param value the integer
+	 *
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the integer
 	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final int value) {
-		return setUniform(name, new int[]{ value });
+		return setUniform(name, new int[] {value});
 	}
 
 	/**
 	 * Sets the value of the given uniform to the given float array
-	 * @param name the name of the uniform
-	 * @param value the float array
+	 *
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the float array
 	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final float[] value) {
@@ -177,18 +186,24 @@ public class ShaderProgram {
 
 	/**
 	 * Sets the value of the given uniform to the given float
-	 * @param name the name of the uniform
-	 * @param value the float
+	 *
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the float
 	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final float value) {
-		return setUniform(name, new float[]{ value });
+		return setUniform(name, new float[] {value});
 	}
 
 	/**
 	 * Sets the value of the given uniform to the given vec2
-	 * @param name the name of the uniform
-	 * @param value the vec2
+	 *
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the vec2
 	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Vector2f value) {
@@ -202,9 +217,13 @@ public class ShaderProgram {
 
 	/**
 	 * Sets the value of the given uniform to the given vec3
-	 * @param name the name of the uniform
-	 * @param value the vec3
-	 * @param onlyTry whether the shader should only attempt to set the uniform
+	 *
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the vec3
+	 * @param onlyTry
+	 *            whether the shader should only attempt to set the uniform
 	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Vector3f value, final boolean onlyTry) {
@@ -222,8 +241,11 @@ public class ShaderProgram {
 
 	/**
 	 * Attempts to set the given uniform to the given vec3
-	 * @param name the name of the uniform
-	 * @param value the vec3
+	 *
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the vec3
 	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Vector3f value) {
@@ -232,8 +254,11 @@ public class ShaderProgram {
 
 	/**
 	 * Sets the value of the given uniform to the given vec4
-	 * @param name the name of the uniform
-	 * @param value the vec4
+	 *
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the vec4
 	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Vector4f value) {
@@ -247,9 +272,13 @@ public class ShaderProgram {
 
 	/**
 	 * Sets the value of the given uniform the given array of 3x3 matrices and transposes them if transpose is true.
-	 * @param name the name of the uniform
-	 * @param value the array of matrices
-	 * @param transpose whether to transpose the matrices
+	 *
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the array of matrices
+	 * @param transpose
+	 *            whether to transpose the matrices
 	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Matrix3f[] value, final boolean transpose) {
@@ -266,8 +295,11 @@ public class ShaderProgram {
 
 	/**
 	 * Sets the value of the given uniform the given array of 3x3 matrices.
-	 * @param name the name of the uniform
-	 * @param value the array of matrices
+	 *
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the array of matrices
 	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Matrix3f[] value) {
@@ -276,20 +308,28 @@ public class ShaderProgram {
 
 	/**
 	 * Sets the value of the given uniform the given 3x3 matrix.
-	 * @param name the name of the uniform
-	 * @param value the matrix
+	 *
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the matrix
 	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Matrix3f value) {
-		return setUniform(name, new Matrix3f[]{ value }, false);
+		return setUniform(name, new Matrix3f[] {value}, false);
 	}
 
 	/**
 	 * Sets the value of the given uniform the given array of 4x4 matrices and transposes them if transpose is true.
-	 * @param name the name of the uniform
-	 * @param value the array of matrices
-	 * @param transpose whether to transpose the matrices
-	 * @param onlyTry whether the shader shuld only attempt to set the uniform
+	 *
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the array of matrices
+	 * @param transpose
+	 *            whether to transpose the matrices
+	 * @param onlyTry
+	 *            whether the shader shuld only attempt to set the uniform
 	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Matrix4f[] value, final boolean transpose, final boolean onlyTry) {
@@ -310,8 +350,11 @@ public class ShaderProgram {
 
 	/**
 	 * Attempts the value of the given uniform the given array of 4x4 matrices.
-	 * @param name the name of the uniform
-	 * @param value the array of matrices
+	 *
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the array of matrices
 	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Matrix4f[] value) {
@@ -320,24 +363,32 @@ public class ShaderProgram {
 
 	/**
 	 * Attempts the value of the given uniform the given 4x4 matrix.
-	 * @param name the name of the uniform
-	 * @param value the matrix
-	 * @param onlyTry whether the shader shuld only attempt to set the uniform
+	 *
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the matrix
+	 * @param onlyTry
+	 *            whether the shader shuld only attempt to set the uniform
 	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Matrix4f value, final boolean onlyTry) {
-		return setUniform(name, new Matrix4f[]{ value }, false, onlyTry);
+		return setUniform(name, new Matrix4f[] {value}, false, onlyTry);
 	}
 
 	/**
 	 * Attempts the value of the given uniform the given 4x4 matrix.
-	 * @param name the name of the uniform
-	 * @param value the matrix
+	 *
+	 * @param name
+	 *            the name of the uniform
+	 * @param value
+	 *            the matrix
 	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Matrix4f value) {
 		return setUniform(name, value, false);
 	}
+
 	//</editor-fold>
 
 	public String getParameter(final String name) {
@@ -345,7 +396,7 @@ public class ShaderProgram {
 	}
 
 	/**
-	 * update a shader-parameter, which triggers re-compiling on next usage
+	 * updates a shader-parameter, which triggers re-compiling on next usage
 	 *
 	 * @param name
 	 *            the parameter name, like used in the shader file
@@ -426,5 +477,13 @@ public class ShaderProgram {
 		if (preprocessor.areParametersDirty()) {
 			compile();
 		}
+	}
+
+	/**
+	 * Returns the name of the vertex shader. Might be useful for debugging
+	 * @return the name of the vertex shader. e.g: gui.vert -> gui
+	 */
+	public String getVertexName() {
+		return shaderObjects.get(ShaderObjectType.VERTEX).getSourcePath().split("[.]")[0];
 	}
 }

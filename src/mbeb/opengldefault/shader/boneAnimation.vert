@@ -12,8 +12,6 @@ out vec2 tex;
 out vec3 pos;
 out vec3 normal;
 
-out vec4 color;
-
 #include modules/UBO_Matrices.glsl
 
 uniform mat4 boneTransforms[MAX_JOINTS];
@@ -56,6 +54,4 @@ void main() {
 	gl_Position = projectionView * vec4(pos, 1.0);
 	normal = mat3(model) * normalize(totalNormal.xyz);
 	tex = texCoord;
-
-	color = vec4((normal * 0.5f) + vec3(0.5), 1.0);
 }

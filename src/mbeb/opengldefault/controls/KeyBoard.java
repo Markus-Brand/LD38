@@ -4,14 +4,16 @@ public class KeyBoard {
 
 	/** Class Name Tag */
 	private static final String TAG = "KeyBoard";
+	
+	private static final int MAX_NUM_KEYS = 1024;
 
 	/**
 	 * Boolean array of all of the keys
 	 */
-	private static final boolean[] keys;
+	private static boolean[] keys;
 
 	static {
-		keys = new boolean[1024];
+		keys = new boolean[MAX_NUM_KEYS];
 	}
 
 	private KeyBoard() {
@@ -59,5 +61,9 @@ public class KeyBoard {
 			return false;
 		}
 		return keys[keyCode];
+	}
+
+	public static void releaseAll() {
+		keys = new boolean[MAX_NUM_KEYS];
 	}
 }
