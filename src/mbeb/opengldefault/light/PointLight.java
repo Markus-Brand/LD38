@@ -2,6 +2,8 @@ package mbeb.opengldefault.light;
 
 import java.awt.*;
 
+import mbeb.opengldefault.scene.entities.IEntity;
+import mbeb.opengldefault.scene.entities.PointLightEntity;
 import org.joml.*;
 
 /**
@@ -208,5 +210,10 @@ public class PointLight extends Light implements LimitedLight {
 		data[9] = quadratic;
 
 		return data;
+	}
+	
+	@Override
+	public IEntity asNewEntity() {
+		return new PointLightEntity(this);
 	}
 }

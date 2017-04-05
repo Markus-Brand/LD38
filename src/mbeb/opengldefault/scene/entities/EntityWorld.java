@@ -1,12 +1,5 @@
 package mbeb.opengldefault.scene.entities;
 
-import mbeb.opengldefault.camera.ICamera;
-import mbeb.opengldefault.light.DirectionalLight;
-import mbeb.opengldefault.light.Light;
-import mbeb.opengldefault.light.PointLight;
-import mbeb.opengldefault.light.SpotLight;
-import mbeb.opengldefault.scene.SceneObject;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Consumer;
@@ -15,41 +8,39 @@ import java.util.function.Consumer;
  * A Collection of entities that can interact with each other
  */
 public class EntityWorld {
-
+	
+	/**
+	 * al the entities in this world
+	 */
 	private Collection<IEntity> entities;
 
 	public EntityWorld() {
 		entities = new ArrayList<>();
 	}
-
-	public IEntity add(IEntity newEntity) {
-		entities.add(newEntity);
-		return newEntity;
+	
+	/**
+	 * add a new entity to this world
+	 * @param newEntity the object that can be represented as Entity
+	 * @return the actual IEntity that got added
+	 */
+	public IEntity add(IEntityConvertable newEntity) {
+		IEntity entity = newEntity.asEntity();
+		entities.add(entity);
+		return entity;
 	}
-
-	public IEntity add(SceneObject objectToWrap) {
-		return add(new SceneEntity(objectToWrap));
-	}
-
-	public IEntity add(ICamera objectToWrap) {
-		return add(new CameraEntity(objectToWrap));
-	}
-
-	public IEntity add(Light objectToWrap) {
-		if (objectToWrap instanceof DirectionalLight) {
-			return add(new DirectionalLightEntity((DirectionalLight) objectToWrap));
-		} else if (objectToWrap instanceof PointLight) {
-			return add(new PointLightEntity((PointLight)objectToWrap));
-		} else if (objectToWrap instanceof SpotLight) {
-			return add(new SpotLightEntity((SpotLight)objectToWrap));
-		}
-		return null;
-	}
-
+	
+	/**
+	 * iterate through all the entities of this world
+	 * @param action the action to perform for each entity
+	 */
 	public void forEachEntity(Consumer<IEntity> action) {
 		entities.forEach(action);
 	}
-
+	
+	/**
+	 * update this world and all entities in it
+	 * @param deltaTime
+	 */
 	public void update(double deltaTime) {
 		forEachEntity(entity -> entity.update(deltaTime));
 	}

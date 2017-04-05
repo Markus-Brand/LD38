@@ -8,7 +8,7 @@ import java.util.Set;
 /**
  * A thing inside the world that can obtain behaviours
  */
-public interface IEntity {
+public interface IEntity extends IEntityConvertable {
 
 	/**
 	 * Contains a Behaviour and a priority. The class is used to sort the Behaviours
@@ -84,6 +84,15 @@ public interface IEntity {
 	 * @return this, for chaining
 	 */
 	IEntity addBehaviour(int priority, IBehaviour behaviour);
-
-
+	
+	
+	@Override
+	default IEntity asEntity() {
+		return this;
+	}
+	
+	@Override
+	default IEntity asNewEntity() {
+		throw new UnsupportedOperationException("An Entity cannot be cloned for now");
+	}
 }

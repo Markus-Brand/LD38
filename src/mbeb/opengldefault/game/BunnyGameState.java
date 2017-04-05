@@ -212,7 +212,7 @@ public class BunnyGameState implements GameState {
 		SceneObject toFollowObject = mainBunnyObj;
 		IEntity toFollow = world.add(toFollowObject).addBehaviour(1, new BezierBehaviour(curve, 3));
 		
-		int bunnyCount = 30;
+		int bunnyCount = 100;
 		for (int b = 0; b < bunnyCount; b++) {
 			AnimationStateFacade followingBunnyFacade = new AnimationStateFacade(renderable);
 			animBunnyList.add(followingBunnyFacade);

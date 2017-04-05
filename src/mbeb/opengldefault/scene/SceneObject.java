@@ -2,6 +2,9 @@ package mbeb.opengldefault.scene;
 
 import java.util.*;
 
+import mbeb.opengldefault.scene.entities.IEntity;
+import mbeb.opengldefault.scene.entities.IEntityConvertable;
+import mbeb.opengldefault.scene.entities.SceneEntity;
 import org.joml.*;
 
 import mbeb.opengldefault.animation.*;
@@ -11,7 +14,7 @@ import mbeb.opengldefault.rendering.shader.*;
 /**
  * A (potentially) complex object inside a scene, with transformations
  */
-public class SceneObject implements BoundingBox.Owner {
+public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 
 	private static final String TAG = "SceneObject";
 
@@ -310,5 +313,10 @@ public class SceneObject implements BoundingBox.Owner {
 
 	public void setSelected(boolean selected) {
 		this.selected = selected;
+	}
+	
+	@Override
+	public IEntity asNewEntity() {
+		return new SceneEntity(this);
 	}
 }
