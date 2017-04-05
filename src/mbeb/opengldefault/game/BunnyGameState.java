@@ -19,6 +19,7 @@ import java.util.Random;
 
 import mbeb.opengldefault.animation.AnimatedMesh;
 import mbeb.opengldefault.animation.AnimationStateFacade;
+import mbeb.opengldefault.animation.BoneTransformation;
 import mbeb.opengldefault.camera.Camera;
 import mbeb.opengldefault.camera.ICamera;
 import mbeb.opengldefault.controls.KeyBoard;
@@ -216,7 +217,7 @@ public class BunnyGameState implements GameState {
 		for (int b = 0; b < bunnyCount; b++) {
 			AnimationStateFacade followingBunnyFacade = new AnimationStateFacade(renderable);
 			animBunnyList.add(followingBunnyFacade);
-			SceneObject followerObject = new SceneObject(new TexturedRenderable(followingBunnyFacade, bunnyTexture));
+			SceneObject followerObject = new SceneObject(new TexturedRenderable(followingBunnyFacade, bunnyTexture), createStartMatrix());
 			bunnyParent.addSubObject(followerObject);
 			toFollow = world.add(followerObject)
 					           .addBehaviour(1, new SmoothFollowingBehaviour(toFollow, 1f));
@@ -225,6 +226,11 @@ public class BunnyGameState implements GameState {
 			toFollowObject = followerObject;
 		}
 		return toFollow;
+	}
+	
+	private BoneTransformation createStartMatrix() {
+		Random r = new Random();
+		return new BoneTransformation(new Vector3f(r.nextFloat() * 6 - 3, r.nextFloat() * 6 - 3, r.nextFloat() * 6 - 3));
 	}
 	
 	@Override
@@ -270,13 +276,6 @@ public class BunnyGameState implements GameState {
 	
 	@Override
 	public void render() {
-		glClearColor(0.05f, 0.075f, 0.075f, 1);
-		GLErrors.checkForError(TAG, "glClearColor");
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		GLErrors.checkForError(TAG, "glClear");
-		
-		glViewport(0, 0, OpenGLContext.getFramebufferWidth(), OpenGLContext.getFramebufferHeight());
-		GLErrors.checkForError(TAG, "glViewport");
 		
 		bunnyScene.render(KeyBoard.isKeyDown(GLFW_KEY_TAB)); //bunnyScene.render(); to render without BoundingBoxes
 	}

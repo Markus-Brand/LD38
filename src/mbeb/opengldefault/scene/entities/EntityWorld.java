@@ -44,4 +44,8 @@ public class EntityWorld {
 	public void update(double deltaTime) {
 		forEachEntity(entity -> entity.update(deltaTime));
 	}
+
+	public int entityCount() {
+		return entities.size();
+	}
 }

@@ -174,7 +174,7 @@ public class GUI implements IRenderable {
 	}
 
 	public int getElementsSize() {
-		return elements.stream().mapToInt(element -> element.getNumElements()).sum();
+		return elements.stream().mapToInt(GUIElement::getNumElements).sum();
 	}
 
 	@Override
