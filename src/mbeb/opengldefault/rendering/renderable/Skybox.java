@@ -26,7 +26,19 @@ public class Skybox {
 	 *            path for the skybox textures relative to the textures folder
 	 */
 	public Skybox(final String texturePath) {
-		cubeMap = new CubeMap(texturePath);
+		this(texturePath, "jpg");
+	}
+
+		/**
+		 * Constructor for a Skybox
+		 *
+		 * @param texturePath
+		 *            path for the skybox textures relative to the textures folder
+		 * @param extension
+		 *            the file extension for the images
+		 */
+	public Skybox(final String texturePath, String extension) {
+		cubeMap = new CubeMap(texturePath, extension);
 		shader = new ShaderProgram("skybox.vert", "skybox.frag");
 		shader.addUniformBlockIndex(UBOManager.MATRICES);
 		skyboxRenderable = StaticMeshes.getCube();

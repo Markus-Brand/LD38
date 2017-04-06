@@ -18,16 +18,16 @@ public class AutoRotateBehaviour implements IBehaviour {
 	@Override
 	public void update(double deltaTime, IEntity entity) {
 		if (lastPosition == null) {
-			lastPosition = entity.getPosition();
+			lastPosition = new Vector3f(entity.getPosition());
 			return;
 		}
 		Vector3f currentPosition = entity.getPosition();
 		Vector3f direction = currentPosition.sub(lastPosition, new Vector3f());
-		if (Math.abs(direction.lengthSquared()) < 0.001f) {
+		if (Math.abs(direction.lengthSquared()) < 0.0001f) {
 			return;
 		}
 		direction.normalize();
 		entity.setDirection(direction);
-		lastPosition = currentPosition;
+		lastPosition = new Vector3f(currentPosition);
 	}
 }

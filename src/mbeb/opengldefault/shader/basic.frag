@@ -1,4 +1,4 @@
-#define SHININESS 64
+#define SHININESS 256
 
 in vec2 tex;
 in vec3 pos;
@@ -12,9 +12,8 @@ uniform sampler2D u_texture;
 #include modules/Struct_PointLight.glsl
 #include modules/Struct_SpotLight.glsl
 
-float ambientStrength = 0.4f;
+float ambientStrength = 0.1f;
 float specularStrength = 2.5f;
-float reflectionStrength = 0.4f;
 
 #include modules/DirectionalLightBlock.glsl
 #include modules/PointLightBlock.glsl
@@ -33,9 +32,6 @@ uniform int water;
 #include modules/DirectionalLightLogic.glsl
 #include modules/PointLightLogic.glsl
 #include modules/SpotLightLogic.glsl
-
-
-
 
 void main(){
 	vec3 norm = normalize(normal);

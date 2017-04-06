@@ -274,9 +274,9 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 	public BoneTransformation getGlobalTransformation() {
 		if (globalTransformation == null) {
 			if (parent == null) {
-				globalTransformation =  getTransformation();
+				globalTransformation = getTransformation();
 			} else {
-				globalTransformation =  getParentGlobalTranform().and(getTransformation());
+				globalTransformation = getParentGlobalTranform().and(getTransformation());
 			}
 		}
 		return globalTransformation;
@@ -294,7 +294,7 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 	 * @return Objects position
 	 */
 	public Vector3f getGlobalPosition() {
-		return getGlobalTransformation().applyTo3(new Vector3f());
+		return getGlobalTransformation().getPosition();
 	}
 
 	/**

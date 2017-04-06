@@ -4,6 +4,8 @@ import mbeb.opengldefault.animation.BoneTransformation;
 import mbeb.opengldefault.camera.Camera;
 import mbeb.opengldefault.camera.ICamera;
 import mbeb.opengldefault.controls.KeyBoard;
+import mbeb.opengldefault.light.DirectionalLight;
+import mbeb.opengldefault.light.PointLight;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
 import mbeb.opengldefault.rendering.io.ObjectLoader;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
@@ -15,10 +17,7 @@ import mbeb.opengldefault.rendering.textures.Texture;
 import mbeb.opengldefault.rendering.textures.TextureCache;
 import mbeb.opengldefault.scene.Scene;
 import mbeb.opengldefault.scene.SceneObject;
-import mbeb.opengldefault.scene.behaviour.AutoRotateBehaviour;
-import mbeb.opengldefault.scene.behaviour.CombinedBehaviour;
-import mbeb.opengldefault.scene.behaviour.IBehaviour;
-import mbeb.opengldefault.scene.behaviour.PlayerControlBehaviour;
+import mbeb.opengldefault.scene.behaviour.*;
 import mbeb.opengldefault.scene.entities.EntityWorld;
 import mbeb.opengldefault.scene.entities.IEntity;
 import org.joml.Vector3f;
@@ -26,7 +25,10 @@ import org.joml.Vector3f;
 import java.util.Random;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_TAB;
+import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
+import static org.lwjgl.opengl.GL11.glEnable;
 
 /**
  * Particles that attract each other
@@ -36,23 +38,31 @@ public class PhysicsSimulationState implements GameState {
 	private Scene scene;
 	private EntityWorld bunnys;
 	private EntityWorld others;
-	private TexturedRenderable bunny;
+	private TexturedRenderable particle;
+	private TexturedRenderable greenParticle;
+	private GravitationBehaviour gravitation;
 	
 	@Override
 	public void init() {
 		ICamera camera = new Camera(OpenGLContext.getAspectRatio());
-		Skybox sky = new Skybox("skybox/mountain");
+		camera.setPosition(new Vector3f(1, 1, 1));
+		Skybox sky = new Skybox("spacebox/s", "png");
 		scene = new Scene(camera, sky);
 		
 		ObjectLoader loader = new ObjectLoader();
 		
 		IRenderable bunnyRaw = loader.loadFromFile("ico.obj");
-		Texture tex = new Texture("blueRed.png");
-		bunny = new TexturedRenderable(bunnyRaw, tex);
+		Texture blueRed = new Texture("blueRedLight.png");
+		Texture green = new Texture("green.png");
+		particle = new TexturedRenderable(bunnyRaw, blueRed);
+		greenParticle = new TexturedRenderable(bunnyRaw, green);
 		
 		bunnys = new EntityWorld();
 		others = new EntityWorld();
-		
+		gravitation = new GravitationBehaviour(bunnys, 0.01f, 0.01f);
+
+		/*new PlayerControlBehaviour().fixedLocation()/*/
+		//bunnys.add(camera).addBehaviour(1, gravitation);
 		others.add(camera).addBehaviour(1, new PlayerControlBehaviour());
 		
 		ShaderProgram defaultShader = new ShaderProgram("basic.vert", "basic.frag");
@@ -60,49 +70,42 @@ public class PhysicsSimulationState implements GameState {
 		scene.getSceneGraph().setShader(defaultShader);
 		scene.getLightManager().addShader(defaultShader);
 
-		for (int i = 0; i < 200; i++) {
-			addABunny();
+		DirectionalLight sun = new DirectionalLight(new Vector3f(0.1f), new Vector3f(0, -1, 0.2f).normalize());
+		scene.getLightManager().addLight(sun);
+
+		glEnable(GL_CULL_FACE);
+
+		for (int i = 0; i < 100; i++) {
+			addAParticle();
+		}
+
+		for (int i = 0; i < 5; i++) {
+			addALight();
 		}
 	}
-	
-	private void addABunny() {
-		SceneObject newBunny = new SceneObject(bunny, getStartTransform().and(new BoneTransformation(null, null, new Vector3f(0.05f))));
+
+	private void addAParticle() {
+		SceneObject newBunny = new SceneObject(particle, getStartTransform().and(new BoneTransformation(null, null, new Vector3f(0.05f))));
 		scene.getSceneGraph().addSubObject(newBunny);
-		IBehaviour autoRotate = new AutoRotateBehaviour();
-		bunnys.add(newBunny).addBehaviour(1, new CombinedBehaviour(autoRotate, new IBehaviour() {
-			@Override
-			public boolean triggers(IEntity entity) {
-				return true;
-			}
+		bunnys.add(newBunny).addBehaviour(1, gravitation);
+	}
 
-			final float speedDecrease = 0f;
-			final float forceFactor = 0.01f;
-			private Vector3f speed = new Vector3f();
-			
-			@Override
-			public void update(double deltaTime, IEntity entity) {
-				float deltaTimef = (float) deltaTime;
-				Vector3f currentPosition = entity.getPosition();
-				Vector3f force = new Vector3f();
-				bunnys.forEachEntity((IEntity other) -> {
-					if (other != entity) {
+	private void addALight() {
+		SceneObject newBunny = new SceneObject(greenParticle, getStartTransform().and(new BoneTransformation(null, null, new Vector3f(0.02f))));
+		scene.getSceneGraph().addSubObject(newBunny);
+		bunnys.add(newBunny).addBehaviour(1, gravitation);
 
-						Vector3f localForce = other.getPosition().sub(currentPosition, new Vector3f());
-						float distance = localForce.length();
-						if (distance != 0) {
-							localForce.normalize();
-							localForce.div(Math.max(distance * distance, 1));
-							force.add(localForce);
-						}
-					}
-				});
-				force.mul(forceFactor);
+		PointLight light = new PointLight(randomColor(), randomVec(), 3);
+		scene.getLightManager().addLight(light);
+		bunnys.add(light).addBehaviour(1, new ParentBehaviour(newBunny));
+	}
 
-				speed = speed.mul(1 - (speedDecrease * deltaTimef)).add(force.mul(deltaTimef));
-
-				entity.setPosition(currentPosition.add(speed.mul(deltaTimef, new Vector3f())));
-			}
-		}/**/));
+	private Vector3f randomColor() {
+		return new Vector3f(0, 1, 0);
+		/*Random r = new Random();
+		Vector3f color = new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat());
+		color.normalize();
+		return color;/**/
 	}
 	
 	private BoneTransformation getStartTransform() {
@@ -117,10 +120,12 @@ public class PhysicsSimulationState implements GameState {
 	@Override
 	public void update(double deltaTime) {
 		scene.update(deltaTime);
-		bunnys.update(deltaTime);
+		if (KeyBoard.isKeyDown(GLFW_KEY_SPACE)) {
+			bunnys.update(deltaTime);
+		}
 		others.update(deltaTime);
 
-		centerAll(bunnys);
+		//centerAll(bunnys);
 	}
 
 	private void centerAll(EntityWorld entities) {

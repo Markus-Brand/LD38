@@ -56,9 +56,9 @@ public class BoneTransformation {
 	private Matrix4f matrix;
 	private boolean matrixRepresentationValid;
 
-	private Vector3f position;
-	private Quaternionf rotation;
-	private Vector3f scale;
+	private Vector3f position = null;
+	private Quaternionf rotation = null;
+	private Vector3f scale = null;
 	private boolean partsRepresentationValid;
 
 	public BoneTransformation(Vector3f position) {
@@ -164,7 +164,11 @@ public class BoneTransformation {
 	}
 
 	public Vector3f getPosition() {
-		ensurePartsRepresentationValid();
+		if (position == null) {
+			Log.assertTrue(TAG, matrixRepresentationValid, "Undefined Transformation");
+			position = matrix.getTranslation(new Vector3f());
+		}
+		//ensurePartsRepresentationValid();
 		return position;
 	}
 

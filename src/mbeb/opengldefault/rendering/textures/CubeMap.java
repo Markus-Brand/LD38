@@ -19,8 +19,8 @@ public class CubeMap extends Texture {
 		super(textureHandle);
 	}
 
-	public CubeMap(String path) {
-		this(TextureCache.loadCubeMap(path));
+	public CubeMap(String path, String extension) {
+		this(TextureCache.loadCubeMap(path, extension));
 	}
 
 	/**

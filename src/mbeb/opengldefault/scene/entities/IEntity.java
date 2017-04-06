@@ -1,5 +1,6 @@
 package mbeb.opengldefault.scene.entities;
 
+import mbeb.opengldefault.scene.behaviour.CombinedBehaviour;
 import mbeb.opengldefault.scene.behaviour.IBehaviour;
 import org.joml.Vector3f;
 
@@ -84,6 +85,23 @@ public interface IEntity extends IEntityConvertable {
 	 * @return this, for chaining
 	 */
 	IEntity addBehaviour(int priority, IBehaviour behaviour);
+
+	/**
+	 * Add multiple behaviours with given priority.
+	 *
+	 * @param priority
+	 *            low value is higher priority
+	 * @param behaviours
+	 *            the Behaviours to execute in parallel
+	 * @return this, for chaining
+	 */
+	default IEntity addBehaviour(int priority, IBehaviour... behaviours) {
+		if (behaviours.length == 1) {
+			return addBehaviour(priority, behaviours[0]);
+		}
+		CombinedBehaviour combined = new CombinedBehaviour(behaviours);
+		return addBehaviour(priority, combined);
+	}
 	
 	
 	@Override
