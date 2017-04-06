@@ -827,6 +827,15 @@ public class Vector2f implements Externalizable, Vector2fc {
 		return dest;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.joml.Vector2fc#lerp(org.joml.Vector2fc, float, org.joml.Vector2f)
+	 */
+	public Vector2f lerp(Vector2fc other, Vector2f t, Vector2f dest) {
+		dest.x = x + (other.x() - x) * t.x;
+		dest.y = y + (other.y() - y) * t.y;
+		return dest;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

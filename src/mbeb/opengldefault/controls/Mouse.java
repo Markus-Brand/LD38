@@ -1,5 +1,7 @@
 package mbeb.opengldefault.controls;
 
+import mbeb.opengldefault.openglcontext.OpenGLContext;
+
 import org.joml.*;
 
 public class Mouse {
@@ -21,7 +23,7 @@ public class Mouse {
 
 	/**
 	 * update the cursors position
-	 * 
+	 *
 	 * @param xPos
 	 * @param yPos
 	 */
@@ -32,7 +34,7 @@ public class Mouse {
 
 	/**
 	 * save a buttonDown-event
-	 * 
+	 *
 	 * @param button
 	 *            the mouseButton-id
 	 */
@@ -42,7 +44,7 @@ public class Mouse {
 
 	/**
 	 * save a buttonUp-event
-	 * 
+	 *
 	 * @param button
 	 *            the mouseButton-id
 	 */
@@ -65,4 +67,11 @@ public class Mouse {
 		return mouseDown[button];
 	}
 
+	/**
+	 * Returns the mouse position in normalized device coordinates ([-1, 1], [-1, 1])
+	 * @return the mouse position in normalized device coordinates
+	 */
+	public static Vector2f getNormalizedDeviceCoordinates() {
+		return OpenGLContext.getNDC(getPos());
+	}
 }

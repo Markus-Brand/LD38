@@ -141,6 +141,14 @@ public class ShaderObject {
 		throw new RuntimeException("Non-compilable shader code!");
 	}
 
+	/**
+	 * Getter for the source path of a shader
+	 * @return the shaders source path
+	 */
+	public String getSourcePath() {
+		return sourcePath;
+	}
+	
 	private static final String ERROR_NO = "    ";
 	private static final String ERROR_YES = "\\->>>>>>";
 	private static final DecimalFormat LINE_NUMBER_FORMAT = new DecimalFormat("0000");
@@ -186,5 +194,4 @@ public class ShaderObject {
 			}
 		}
 	}
-
 }
