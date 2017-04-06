@@ -36,7 +36,7 @@ import static org.lwjgl.opengl.GL11.glEnable;
 public class PhysicsSimulationState implements GameState {
 	
 	private Scene scene;
-	private EntityWorld bunnys;
+	private EntityWorld particles;
 	private EntityWorld others;
 	private TexturedRenderable particle;
 	private TexturedRenderable greenParticle;
@@ -57,12 +57,12 @@ public class PhysicsSimulationState implements GameState {
 		particle = new TexturedRenderable(bunnyRaw, blueRed);
 		greenParticle = new TexturedRenderable(bunnyRaw, green);
 		
-		bunnys = new EntityWorld();
+		particles = new EntityWorld();
 		others = new EntityWorld();
-		gravitation = new GravitationBehaviour(bunnys, 0.01f, 0.01f);
+		gravitation = new GravitationBehaviour(particles, 0.01f, 0.01f);
 
 		/*new PlayerControlBehaviour().fixedLocation()/*/
-		//bunnys.add(camera).addBehaviour(1, gravitation);
+		//particles.add(camera).addBehaviour(1, gravitation);
 		others.add(camera).addBehaviour(1, new PlayerControlBehaviour());
 		
 		ShaderProgram defaultShader = new ShaderProgram("basic.vert", "basic.frag");
@@ -70,7 +70,7 @@ public class PhysicsSimulationState implements GameState {
 		scene.getSceneGraph().setShader(defaultShader);
 		scene.getLightManager().addShader(defaultShader);
 
-		DirectionalLight sun = new DirectionalLight(new Vector3f(0.1f), new Vector3f(0, -1, 0.2f).normalize());
+		DirectionalLight sun = new DirectionalLight(new Vector3f(0.2f), new Vector3f(0, -1, 0.2f).normalize());
 		scene.getLightManager().addLight(sun);
 
 		glEnable(GL_CULL_FACE);
@@ -78,34 +78,30 @@ public class PhysicsSimulationState implements GameState {
 		for (int i = 0; i < 100; i++) {
 			addAParticle();
 		}
-
 		for (int i = 0; i < 5; i++) {
 			addALight();
 		}
 	}
 
 	private void addAParticle() {
-		SceneObject newBunny = new SceneObject(particle, getStartTransform().and(new BoneTransformation(null, null, new Vector3f(0.05f))));
-		scene.getSceneGraph().addSubObject(newBunny);
-		bunnys.add(newBunny).addBehaviour(1, gravitation);
+		SceneObject newParticle = new SceneObject(particle, getStartTransform().and(new BoneTransformation(null, null, new Vector3f(0.05f))));
+		scene.getSceneGraph().addSubObject(newParticle);
+		particles.add(newParticle).addBehaviour(1, gravitation);
 	}
 
 	private void addALight() {
-		SceneObject newBunny = new SceneObject(greenParticle, getStartTransform().and(new BoneTransformation(null, null, new Vector3f(0.02f))));
-		scene.getSceneGraph().addSubObject(newBunny);
-		bunnys.add(newBunny).addBehaviour(1, gravitation);
+		//here are materials missing: emission on these should be at max
+		SceneObject newLightObject = new SceneObject(greenParticle, getStartTransform().and(new BoneTransformation(null, null, new Vector3f(0.02f))));
+		scene.getSceneGraph().addSubObject(newLightObject);
+		particles.add(newLightObject).addBehaviour(1, gravitation);
 
-		PointLight light = new PointLight(randomColor(), randomVec(), 3);
-		scene.getLightManager().addLight(light);
-		bunnys.add(light).addBehaviour(1, new ParentBehaviour(newBunny));
+		PointLight newLight = new PointLight(generateLightColor(), randomVec(), 3);
+		scene.getLightManager().addLight(newLight);
+		particles.add(newLight).addBehaviour(1, new ParentBehaviour(newLightObject));
 	}
 
-	private Vector3f randomColor() {
+	private Vector3f generateLightColor() {
 		return new Vector3f(0, 1, 0);
-		/*Random r = new Random();
-		Vector3f color = new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat());
-		color.normalize();
-		return color;/**/
 	}
 	
 	private BoneTransformation getStartTransform() {
@@ -121,11 +117,11 @@ public class PhysicsSimulationState implements GameState {
 	public void update(double deltaTime) {
 		scene.update(deltaTime);
 		if (KeyBoard.isKeyDown(GLFW_KEY_SPACE)) {
-			bunnys.update(deltaTime);
+			particles.update(deltaTime);
 		}
 		others.update(deltaTime);
 
-		//centerAll(bunnys);
+		centerAll(particles);
 	}
 
 	private void centerAll(EntityWorld entities) {
@@ -156,11 +152,11 @@ public class PhysicsSimulationState implements GameState {
 	
 	@Override
 	public void resetNextGameState() {
-	
+		//nothing
 	}
 	
 	@Override
 	public void open() {
-	
+		//nothing
 	}
 }
