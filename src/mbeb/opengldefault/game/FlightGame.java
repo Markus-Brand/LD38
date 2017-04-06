@@ -144,9 +144,14 @@ public class FlightGame implements GameState {
 	
 	@Override
 	public GameStateIdentifier getNextState() {
-		return KeyBoard.isKeyDown(GLFW_KEY_ESCAPE) ? GameStateIdentifier.MAIN_MENU : null;
+		return KeyBoard.pullKeyDown(GLFW_KEY_ESCAPE) ? GameStateIdentifier.MAIN_MENU : null;
 	}
-	
+
+	@Override
+	public boolean isActive() {
+		return !KeyBoard.isKeyDown(GLFW_KEY_ESCAPE);
+	}
+
 	@Override
 	public void resetNextGameState() {
 		//nothing
