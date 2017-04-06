@@ -261,7 +261,7 @@ public class SceneObject implements BoundingBox.Owner {
 		if (parent == null) {
 			return BoneTransformation.identity();
 		}
-		return parent.getGLobalTransformation();
+		return parent.getGlobalTransformation();
 	}
 
 	/**
@@ -269,7 +269,7 @@ public class SceneObject implements BoundingBox.Owner {
 	 *
 	 * @return global Transformation
 	 */
-	public BoneTransformation getGLobalTransformation() {
+	public BoneTransformation getGlobalTransformation() {
 		if (parent == null) {
 			return getTransformation();
 		} else {
@@ -283,7 +283,7 @@ public class SceneObject implements BoundingBox.Owner {
 	 * @return Objects position
 	 */
 	public Vector3f getPosition() {
-		return getGLobalTransformation().applyTo3(new Vector3f());
+		return getGlobalTransformation().applyTo3(new Vector3f());
 	}
 
 	public boolean isSelected() {

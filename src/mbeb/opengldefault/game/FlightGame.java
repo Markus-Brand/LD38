@@ -113,7 +113,6 @@ public class FlightGame implements GameState {
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		GLErrors.checkForError(TAG, "glEnable");
-		
 	}
 	
 	@Override
