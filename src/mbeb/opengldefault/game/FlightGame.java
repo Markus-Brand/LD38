@@ -25,6 +25,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_TAB;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.glViewport;
@@ -143,16 +144,16 @@ public class FlightGame implements GameState {
 	
 	@Override
 	public GameStateIdentifier getNextState() {
-		return null;
+		return KeyBoard.isKeyDown(GLFW_KEY_ESCAPE) ? GameStateIdentifier.MAIN_MENU : null;
 	}
 	
 	@Override
 	public void resetNextGameState() {
-	
+		//nothing
 	}
 	
 	@Override
 	public void open() {
-	
+		//nothing
 	}
 }
