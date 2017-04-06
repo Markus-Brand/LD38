@@ -18,8 +18,18 @@ import mbeb.opengldefault.scene.*;
  */
 public class ObjectLoader {
 
-	private static final DataFragment[] PosNormUv = new DataFragment[] {DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV};
-	private static final DataFragment[] PosNormUvAnim3 = new DataFragment[] {DataFragment.POSITION, DataFragment.NORMAL, DataFragment.UV, DataFragment.BONE_INDICES_3, DataFragment.BONE_WEIGHTS_3};
+	private static final DataFragment[] PosNormUv = new DataFragment[] {
+			DataFragment.POSITION,
+			DataFragment.NORMAL,
+			DataFragment.UV
+	};
+	private static final DataFragment[] PosNormUvAnim3 = new DataFragment[] {
+			DataFragment.POSITION,
+			DataFragment.NORMAL,
+			DataFragment.UV,
+			DataFragment.BONE_INDICES_3,
+			DataFragment.BONE_WEIGHTS_3
+	};
 	private static final float THRESHOLD = 0.2f; //vertices with smaller weights are not included into the boundingBox
 	//todo test for good values here
 
@@ -105,13 +115,13 @@ public class ObjectLoader {
 
 		Bone sceneStructure = parseScene(scene);
 
-		for (int meshID = 0; meshID < scene.mNumMeshes(); meshID++) {
-			return loadMesh(scene, meshID, format, sceneStructure);
+		if (scene.mNumMeshes() > 0) {
+			return loadMesh(scene, 0, format, sceneStructure);
 			//todo not return just the first mesh, rather combine meshes
-			//Nice and dandy, but until you do, sonar says no.
+		} else {
+			Log.error(TAG, "No Mesh found in object");
+			return null;
 		}
-		Log.error(TAG, "No Mesh found in object");
-		return null;
 	}
 
 	private String getExtractedPath(String rawPath) {
@@ -277,7 +287,6 @@ public class ObjectLoader {
 		}
 		if (rootBone == null) {
 			Log.error(TAG, "No Bones in AnimatedMesh!");
-			return null;
 		}
 		return rootBone;
 	}
@@ -340,9 +349,18 @@ public class ObjectLoader {
 					AIQuatKey rot = node.mRotationKeys().get(key);
 					AIVectorKey scale = node.mScalingKeys().get(key);
 
-					BoneTransformation transform = new BoneTransformation(new Vector3f(pos.mValue().x(), pos.mValue().y(), pos.mValue().z()),
-							new Quaternionf(rot.mValue().x(), rot.mValue().y(), rot.mValue().z(), rot.mValue().w()), new Vector3f(scale.mValue().x(), scale.mValue().y(), scale.mValue().z()));
-					KeyFrame keyFrame = new KeyFrame(pos.mTime(), new Pose(animMesh.getSkeleton(), animMesh.getTransform()).put(boneName, transform));
+					BoneTransformation transform = new BoneTransformation(
+							new Vector3f(pos.mValue().x(), pos.mValue().y(), pos.mValue().z()),
+							new Quaternionf(rot.mValue().x(), rot.mValue().y(), rot.mValue().z(), rot.mValue().w()),
+							new Vector3f(scale.mValue().x(), scale.mValue().y(), scale.mValue().z())
+					);
+					KeyFrame keyFrame = new KeyFrame(
+							pos.mTime(),
+							new Pose(
+									animMesh.getSkeleton(),
+									animMesh.getTransform()).put(boneName, transform
+							)
+					);
 					anim.mergeKeyFrame(keyFrame);
 				}
 				node.close();
@@ -355,7 +373,13 @@ public class ObjectLoader {
 	/**
 	 * adjust the local boundingboxes of the bones to contain passed vertex
 	 */
-	private void adjustBoneBoxes(Bone skeleton, Vector3f vertexPosition, int vertexID, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights, Matrix4f sceneTransform) {
+	private void adjustBoneBoxes(
+			Bone skeleton,
+			Vector3f vertexPosition,
+			int vertexID,
+			Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights,
+			Matrix4f sceneTransform
+	) {
 		List<Map.Entry<Integer, Float>> boneWeights = vertexBoneWeights.get(vertexID);
 
 		for (Map.Entry<Integer, Float> boneWeight : boneWeights) {
