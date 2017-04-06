@@ -13,7 +13,7 @@ import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glViewport;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -125,17 +125,17 @@ public class BunnyGameState implements GameState {
 		bunnyScene.getLightManager().addShader(animatedShader);
 		animatedShader.addUniformBlockIndex(UBOManager.MATRICES);
 		
-		final ShaderProgram stillShader = new ShaderProgram("basic.vert", "basic.frag");
-		bunnyScene.getLightManager().addShader(stillShader);
-		stillShader.addUniformBlockIndex(UBOManager.MATRICES);
+		final ShaderProgram stationaryShader = new ShaderProgram("basic.vert", "basic.frag");
+		bunnyScene.getLightManager().addShader(stationaryShader);
+		stationaryShader.addUniformBlockIndex(UBOManager.MATRICES);
 		
 		final IRenderable boxRenderable = new ObjectLoader().loadFromFile("box.obj");
 		SceneObject box = new SceneObject(new TexturedRenderable(boxRenderable, bunnyTexture));
-		box.setShader(stillShader);
+		box.setShader(stationaryShader);
 		
 		final IRenderable lampRenderable = new ObjectLoader().loadFromFile("lamp.obj");
 		SceneObject lamp = new SceneObject(new TexturedRenderable(lampRenderable, lampTexture));
-		lamp.setShader(stillShader);
+		lamp.setShader(stationaryShader);
 		
 		animPlayer = new AnimationStateFacade(playerAnim);
 		animBunny = new AnimationStateFacade(bunnyAnim);
@@ -174,15 +174,15 @@ public class BunnyGameState implements GameState {
 		
 		camEntity.addBehaviour(1, new PlayerControlBehaviour());
 		
-		//bunnyScene.getSceneGraph().addSubObject(playerObj);
+		bunnyScene.getSceneGraph().addSubObject(playerObj);
 		bunnyScene.getSceneGraph().addSubObject(bunny0);
 		bunnyScene.getSceneGraph().addSubObject(bunny1);
 		bunnyScene.getSceneGraph().addSubObject(bunny2);
 		bunnyScene.getSceneGraph().addSubObject(bunny3);
 		bunnyScene.getSceneGraph().addSubObject(bunny4);
 		bunnyScene.getSceneGraph().addSubObject(curveObj);
-		//bunnyScene.getSceneGraph().addSubObject(box);
-		//bunnyScene.getSceneGraph().addSubObject(lamp);
+		bunnyScene.getSceneGraph().addSubObject(box);
+		bunnyScene.getSceneGraph().addSubObject(lamp);
 		
 		bunnyScene.getSceneGraph().setShader(animatedShader);
 		
@@ -206,9 +206,7 @@ public class BunnyGameState implements GameState {
 		spotLightEntity = new SpotLightEntity(sl);
 		spotLightEntity.addBehaviour(1, new FollowingBehaviour(followingBunny3, 3f).limited(5));
 		spotLightEntity.addBehaviour(9001, new FollowingBehaviour(followingBunny3, 7.6f));
-		
-		//bunnyScene.getSceneGraph().getTransformation().setPosition(new Vector3f(11, 0, 0));
-		//bunnyScene.getSceneGraph().getTransformation().
+
 		glEnable(GL_CULL_FACE);
 		GLErrors.checkForError(TAG, "glEnable");
 		glEnable(GL_DEPTH_TEST);
@@ -220,10 +218,24 @@ public class BunnyGameState implements GameState {
 		animBunny.registerAnimation("ohr1", "OhrenFlackern1", 4);
 		animBunny.registerAnimation("ohr2", "OhrenFlackern2", 4);
 		animBunny.registerAnimation("party", "HeadBang", 4);
+
+		textGUI = new TextGUI(new Font("Comic Sans MS", Font.PLAIN, 128));
+		guiShader = new ShaderProgram("gui.vert", "gui.frag");
+		textGUI.setShader(guiShader);
+		fps = textGUI.addText("0", new Vector2f(), 0.03f);
+		fps.setColor(Color.ORANGE);
+		fps.setPositionRelativeToScreen(0, 0);
 	}
 	
 	@Override
 	public void update(final double deltaTime) {
+		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_ESCAPE)) {
+			nextGameState = GameStateIdentifier.MAIN_MENU;
+			KeyBoard.releaseAll();
+		}
+
+		fps.setText("FPS: " + (int) (1 / deltaTime));
+		textGUI.update(deltaTime);
 		
 		timePassed += deltaTime;
 		
@@ -279,7 +291,7 @@ public class BunnyGameState implements GameState {
 		GLErrors.checkForError(TAG, "glViewport");
 		
 		bunnyScene.render(KeyBoard.isKeyDown(GLFW_KEY_TAB)); //bunnyScene.render(); to render without BoundingBoxes
-		//textGUI.render();
+		textGUI.render();
 	}
 
 	@Override

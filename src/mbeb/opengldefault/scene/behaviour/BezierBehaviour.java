@@ -34,9 +34,8 @@ public class BezierBehaviour implements IBehaviour {
 	public void update(double deltaTime, IEntity entity) {
 		progress += deltaTime * speed;
 		progress %= curve.getMaxLength();
-		Vector3f direction =
-				curve.getPosition(progress, curveObj.getGlobalTransformation().asMatrix()).sub(
-						entity.getPosition(), new Vector3f());
+		Vector3f curvePosition = curve.getPosition(progress, curveObj.getGlobalTransformation().asMatrix());
+		Vector3f direction = curvePosition.sub(entity.getPosition(), new Vector3f());
 
 		entity.setDirection(direction.normalize(new Vector3f()));
 
