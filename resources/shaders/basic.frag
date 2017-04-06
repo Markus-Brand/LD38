@@ -63,11 +63,13 @@ void main(){
 
 	result += ambient;
 
-	//float gamma = 2.2;
-	//float gi = 1.0 / gamma;
-	//result.x = pow(result.x, gi);
-	//result.y = pow(result.y, gi);
-	//result.z = pow(result.z, gi);
+#ifdef GAMMA_CORRECTION
+	float gamma = 2.2;
+	float gi = 1.0 / gamma;
+	result.x = pow(result.x, gi);
+	result.y = pow(result.y, gi);
+	result.z = pow(result.z, gi);
+#endif
 
 	if(alpha == 0){
 		color = vec4(result, 1.0f);
