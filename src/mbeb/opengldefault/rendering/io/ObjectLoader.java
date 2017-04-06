@@ -196,7 +196,7 @@ public class ObjectLoader {
 	}
 
 	/**
-	 * load the per-vertex weights on the bones ()
+	 * load the per-vertex weights on the bones
 	 *
 	 * @param mesh
 	 * @param skeleton
@@ -252,7 +252,7 @@ public class ObjectLoader {
 	 * extract a skeleton from the scene structure and adjust the bones indices
 	 *
 	 * @param mesh
-	 *            the mesh that containts bones
+	 *            the mesh that contains bones
 	 * @param sceneStructure
 	 *            the total scene structure
 	 * @return
