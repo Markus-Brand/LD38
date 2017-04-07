@@ -45,6 +45,9 @@ public class EntityWorld {
 		forEachEntity(entity -> entity.update(deltaTime));
 	}
 
+	/**
+	 * @return the number of entities in this world
+	 */
 	public int entityCount() {
 		return entities.size();
 	}

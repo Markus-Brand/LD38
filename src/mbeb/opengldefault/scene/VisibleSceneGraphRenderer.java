@@ -13,9 +13,6 @@ import java.util.List;
  */
 public class VisibleSceneGraphRenderer extends SceneGraphRenderer {
 
-	@Deprecated
-	private static final float MIN_SCREEN_AREA = 1f;
-
 	public VisibleSceneGraphRenderer(final SceneObject root, final ICamera cam) {
 		super(root, cam);
 	}
@@ -48,7 +45,7 @@ public class VisibleSceneGraphRenderer extends SceneGraphRenderer {
 			Vector3f corner = cornerIterator.next();
 			if (corner.x > -1 && corner.x < 1 && corner.y > -1 && corner.y < 1 && corner.z > -1 && corner.z < 1) {
 				return true;
-			}/**/
+			}
 			corners.add(corner);
 		}
 
@@ -80,12 +77,6 @@ public class VisibleSceneGraphRenderer extends SceneGraphRenderer {
 			return false;
 		}
 		return true;
-		//otherwise check if big enough
-		//final float area = (maxX - minX) * (maxY - minY);
-		//System.out.println(maxX);
-		//System.out.println(area);
-
-		//return area >= MIN_SCREEN_AREA;
 	}
 
 }
