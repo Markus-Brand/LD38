@@ -93,8 +93,7 @@ public class BoundingBox {
 	 * @return a new equivalent BoundingBox
 	 */
 	public BoundingBox duplicate() {
-		BoundingBox clone = new BoundingBox(new Vector3f(localStart), new Vector3f(localSize), modelTransform);
-		return clone;
+		return new BoundingBox(new Vector3f(localStart), new Vector3f(localSize), modelTransform);
 	}
 
 	/**
@@ -120,6 +119,11 @@ public class BoundingBox {
 		return this;
 	}
 
+	/**
+	 * increase the size of this BoundingBox by the given factor.
+	 * The center of the BoundingBox is the scaling origin
+	 * @param boundingBoxSizeFactor
+	 */
 	public void scale(float boundingBoxSizeFactor) {
 		Vector3f startOffset = localSize.mul((1 - boundingBoxSizeFactor) / 2f, new Vector3f());
 
@@ -281,8 +285,7 @@ public class BoundingBox {
 		return getLocalStart().add(getLocalSize(), new Vector3f());
 	}
 
-	public boolean intersectsRay(Vector3f origin, Vector3f direction, Matrix4f parentTransform)
-	{
+	public boolean intersectsRay(Vector3f origin, Vector3f direction, Matrix4f parentTransform) {
 		if (isEmpty()) {
 			return false;
 		}
@@ -347,7 +350,16 @@ public class BoundingBox {
 		return true;
 	}
 
+	/**
+	 * utility functions to use the fast Iterators of java with the comfort functions of Streams
+	 */
 	public static class Streamerator {
+
+		/**
+		 * @param data the array to wrap
+		 * @param <T> array type
+		 * @return an iterator view of an array
+		 */
 		public static <T> Iterator<T> ofArray(final T[] data) {
 			return new Iterator<T>() {
 
@@ -365,6 +377,14 @@ public class BoundingBox {
 			};
 		}
 
+		/**
+		 *
+		 * @param mapped an iterator to map
+		 * @param mapper the function to apply lazily to all elements of the iterator
+		 * @param <T> source type
+		 * @param <V> result type
+		 * @return another iterator of the mapped values
+		 */
 		public static <T, V> Iterator<V> map(final Iterator<T> mapped, final Function<T, V> mapper) {
 			return new Iterator<V>() {
 				@Override
@@ -379,11 +399,15 @@ public class BoundingBox {
 			};
 		}
 
-		public static <T> List<T> asList(Iterator<T> it) {
+		/**
+		 * collect an iterator to a list
+		 * @param iterator the (not infinite) iterator to collect
+		 * @param <T> the type of the data
+		 * @return a list containing all the elements of the iterator
+		 */
+		public static <T> List<T> asList(Iterator<T> iterator) {
 			List<T> list = new ArrayList<>();
-			while (it.hasNext()) {
-				list.add(it.next());
-			}
+			iterator.forEachRemaining(list::add);
 			return list;
 		}
 	}

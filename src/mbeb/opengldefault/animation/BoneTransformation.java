@@ -61,14 +61,29 @@ public class BoneTransformation {
 	private Vector3f scale = null;
 	private boolean partsRepresentationValid;
 
+	/**
+	 * create a new transformation which only consists of a translation
+	 * @param position
+	 */
 	public BoneTransformation(Vector3f position) {
 		this(position, null);
 	}
 
+	/**
+	 * createa atrnsformation that translates and rotates
+	 * @param position
+	 * @param rotation
+	 */
 	public BoneTransformation(Vector3f position, Quaternionf rotation) {
 		this(position, rotation, null);
 	}
 
+	/**
+	 * create a new BoneTransformation based on the lor-rot-scale - components. Leave null on components you don't intend to use
+	 * @param position
+	 * @param rotation
+	 * @param scale
+	 */
 	public BoneTransformation(Vector3f position, Quaternionf rotation, Vector3f scale) {
 		this.position = position != null ? position : new Vector3f(0);
 		this.rotation = rotation != null ? rotation : new Quaternionf();
@@ -77,8 +92,12 @@ public class BoneTransformation {
 		matrixRepresentationValid = false;
 	}
 
-	public BoneTransformation(Matrix4f mat) {
-		this.matrix = mat;
+	/**
+	 * create a new BoneTransformation based on a Matrix
+	 * @param matrix
+	 */
+	public BoneTransformation(Matrix4f matrix) {
+		this.matrix = matrix;
 		matrixRepresentationValid = true;
 		partsRepresentationValid = false;
 	}
@@ -91,7 +110,6 @@ public class BoneTransformation {
 	 * @return a new combined transformation
 	 */
 	public BoneTransformation and(BoneTransformation other) {
-		//todo check if this method is used the right way always
 		return new BoneTransformation(this.asMatrix().mul(other.asMatrix(), new Matrix4f()));
 	}
 
@@ -103,24 +121,39 @@ public class BoneTransformation {
 		return matrix;
 	}
 
+	/**
+	 * after this method returns, this BoneTransformation is also present in matrix representation
+	 */
 	private void ensureMatrixRepresentationValid() {
 		if (!matrixRepresentationValid) {
-			Log.assertTrue(TAG, partsRepresentationValid, "Non-represented BoneTransformation");
+			Log.assertTrue(TAG, partsRepresentationValid, "Undefined Transformation");
 			matrix = new Matrix4f().translate(position).rotate(rotation.normalize()).scale(scale);
 			matrixRepresentationValid = true;
 		}
 	}
 
+	/**
+	 * after this method returns, this BoneTransformation is also present in component representation
+	 */
 	private void ensurePartsRepresentationValid() {
 		if (!partsRepresentationValid) {
-			Log.assertTrue(TAG, matrixRepresentationValid, "Non-represented BoneTransformation");
-			position = matrix.getTranslation(new Vector3f());
-			rotation = matrix.getRotation(new AxisAngle4f()).get(new Quaternionf());
-			scale = matrix.getScale(new Vector3f());
+			Log.assertTrue(TAG, matrixRepresentationValid, "Undefined Transformation");
+			if (position == null) {
+				position = matrix.getTranslation(new Vector3f());
+			}
+			if (rotation == null) {
+				rotation = matrix.getRotation(new AxisAngle4f()).get(new Quaternionf());
+			}
+			if (scale == null) {
+				scale = matrix.getScale(new Vector3f());
+			}
 			partsRepresentationValid = true;
 		}
 	}
 
+	/**
+	 * mark the matrix as outdated
+	 */
 	private void invalidateMatrixRepresentation() {
 		matrixRepresentationValid = false;
 	}
@@ -168,7 +201,6 @@ public class BoneTransformation {
 			Log.assertTrue(TAG, matrixRepresentationValid, "Undefined Transformation");
 			position = matrix.getTranslation(new Vector3f());
 		}
-		//ensurePartsRepresentationValid();
 		return position;
 	}
 
@@ -183,7 +215,10 @@ public class BoneTransformation {
 	}
 
 	public Quaternionf getRotation() {
-		ensurePartsRepresentationValid();
+		if (rotation == null) {
+			Log.assertTrue(TAG, matrixRepresentationValid, "Undefined Transformation");
+			rotation = matrix.getRotation(new AxisAngle4f()).get(new Quaternionf());
+		}
 		return rotation;
 	}
 
@@ -194,7 +229,10 @@ public class BoneTransformation {
 	}
 
 	public Vector3f getScale() {
-		ensurePartsRepresentationValid();
+		if (scale == null) {
+			Log.assertTrue(TAG, matrixRepresentationValid, "Undefined Transformation");
+			scale = matrix.getScale(new Vector3f());
+		}
 		return scale;
 	}
 
