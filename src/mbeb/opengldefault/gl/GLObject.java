@@ -73,6 +73,65 @@ public abstract class GLObject {
 	}
 
 	/**
+	 * Tries to bind this object to the current context, updating
+	 * {@link mbeb.opengldefault.openglcontext.ContextBindings} to match the new state.
+	 * @return whether the binding succeeded
+	 */
+	protected abstract boolean glBind();
+
+	/**
+	 * Binds this object to the OpenGL context.
+	 * @return whether the operation succeeded.
+	 */
+	public boolean bind() {
+		if (!this.isBound()) {
+			boolean success = this.glBind();
+			if (!success) {
+				Log.error(TAG, "Could not bind object.");
+			}
+			return success;
+		} else {
+			return true;
+		}
+	}
+
+	/**
+	 * Checks with {@link mbeb.opengldefault.openglcontext.ContextBindings} whether this object is currently bound.
+	 * @return whether this object is currently bound to the context
+	 */
+	protected abstract boolean isBoundToContext();
+
+	/**
+	 * @return whether this object is currently bound to the context
+	 */
+	public boolean isBound() {
+		return this.isBoundToContext();
+	}
+
+	/**
+	 * Tries to unbind this object from the current context, updating
+	 * {@link mbeb.opengldefault.openglcontext.ContextBindings} to match the new state.
+	 * @return whether the unbinding (of isaac) succeeded
+	 */
+	protected abstract boolean glUnbind();
+
+	/**
+	 * Unbinds this object from the OpenGL context.
+	 * @return whether the operation succeeded.
+	 */
+	public boolean unbind() {
+		if (this.isBound()) {
+			boolean success = this.glUnbind();
+			if (!success) {
+				Log.error(TAG, "Could not unbind object.");
+			}
+			return success;
+		} else {
+			return true;
+		}
+	}
+
+	/**
 	 * Performs the object type specific deletion.
 	 *
 	 * @return whether the operation succeeded
@@ -86,6 +145,7 @@ public abstract class GLObject {
 	 */
 	public boolean delete() {
 		if (this.exists()) {
+			this.unbind();
 			boolean success = this.glDelete();
 			if (!success) {
 				Log.error(TAG, "Object could not be deleted.");
