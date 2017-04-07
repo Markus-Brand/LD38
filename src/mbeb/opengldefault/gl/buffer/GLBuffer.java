@@ -11,6 +11,7 @@ import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER;
 
 /**
  * Describing all the Buffers that exist in OpenGL
@@ -30,7 +31,11 @@ public abstract class GLBuffer extends GLObject {
 		/**
 		 * the currently bound {@link ElementBuffer}
 		 */
-		EBO(GL_ELEMENT_ARRAY_BUFFER);
+		EBO(GL_ELEMENT_ARRAY_BUFFER),
+		/**
+		 * the currently bound {@link UniformBuffer}
+		 */
+		UBO(GL_UNIFORM_BUFFER);
 
 		private final int glType;
 
@@ -103,24 +108,58 @@ public abstract class GLBuffer extends GLObject {
 //</editor-fold>
 
 //<editor-fold desc="bufferData">
-	public void bufferData(IntBuffer buffer, int target) {
-		glBufferData(type.getGLType(), buffer, target);
+	public void bufferData(long size, int usage) {
+		glBufferData(type.getGLType(), size, usage);
 		GLErrors.checkForError(TAG, "glBufferData " + type);
 	}
-	public void bufferData(ByteBuffer buffer, int target) {
-		glBufferData(type.getGLType(), buffer, target);
+
+	public void bufferData(IntBuffer buffer, int usage) {
+		buffer.rewind();
+		glBufferData(type.getGLType(), buffer, usage);
 		GLErrors.checkForError(TAG, "glBufferData " + type);
 	}
-	public void bufferData(FloatBuffer buffer, int target) {
-		glBufferData(type.getGLType(), buffer, target);
+	public void bufferData(ByteBuffer buffer, int usage) {
+		buffer.rewind();
+		glBufferData(type.getGLType(), buffer, usage);
 		GLErrors.checkForError(TAG, "glBufferData " + type);
 	}
-	public void bufferData(int[] buffer, int target) {
-		glBufferData(type.getGLType(), buffer, target);
+	public void bufferData(FloatBuffer buffer, int usage) {
+		buffer.rewind();
+		glBufferData(type.getGLType(), buffer, usage);
 		GLErrors.checkForError(TAG, "glBufferData " + type);
 	}
-	public void bufferData(float [] buffer, int target) {
-		glBufferData(type.getGLType(), buffer, target);
+	public void bufferData(int[] buffer, int usage) {
+		glBufferData(type.getGLType(), buffer, usage);
+		GLErrors.checkForError(TAG, "glBufferData " + type);
+	}
+	public void bufferData(float [] buffer, int usage) {
+		glBufferData(type.getGLType(), buffer, usage);
+		GLErrors.checkForError(TAG, "glBufferData " + type);
+	}
+//</editor-fold>
+
+//<editor-fold desc="bufferSubData">
+	public void bufferSubData(long offset, IntBuffer buffer) {
+		buffer.rewind();
+		glBufferSubData(type.getGLType(),offset,  buffer);
+		GLErrors.checkForError(TAG, "glBufferData " + type);
+	}
+	public void bufferSubData(long offset, ByteBuffer buffer) {
+		buffer.rewind();
+		glBufferSubData(type.getGLType(),offset,  buffer);
+		GLErrors.checkForError(TAG, "glBufferData " + type);
+	}
+	public void bufferSubData(long offset, FloatBuffer buffer) {
+		buffer.rewind();
+		glBufferSubData(type.getGLType(),offset,  buffer);
+		GLErrors.checkForError(TAG, "glBufferData " + type);
+	}
+	public void bufferSubData(long offset, int[] buffer) {
+		glBufferSubData(type.getGLType(),offset,  buffer);
+		GLErrors.checkForError(TAG, "glBufferData " + type);
+	}
+	public void bufferSubData(long offset, float [] buffer) {
+		glBufferSubData(type.getGLType(),offset,  buffer);
 		GLErrors.checkForError(TAG, "glBufferData " + type);
 	}
 //</editor-fold>

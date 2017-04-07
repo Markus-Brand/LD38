@@ -156,13 +156,9 @@ public class VAORenderable implements IRenderable {
 
 		vertexBuffer.put(data);
 
-		vertexBuffer.flip();
-
 		IntBuffer indexBuffer = BufferUtils.createIntBuffer(indices.length);
 
 		indexBuffer.put(indices);
-
-		indexBuffer.flip();
 
 		return generateVAO(vertexBuffer, indexBuffer, dataFormat);
 	}

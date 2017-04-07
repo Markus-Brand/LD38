@@ -2,12 +2,12 @@ package mbeb.opengldefault.rendering.shader;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL31.*;
 
 import java.nio.*;
 import java.util.*;
 
 import mbeb.opengldefault.constants.Constants;
+import mbeb.opengldefault.gl.buffer.UniformBuffer;
 import org.joml.*;
 import org.lwjgl.*;
 import org.lwjgl.opengl.*;
@@ -39,7 +39,7 @@ public class ShaderProgram {
 	 * Uniform Blocks used in the shader. Will hold data like projection and
 	 * view matrices that are available to multiple shaders
 	 */
-	private final Map<Integer, String> uniformBlocks;
+	private final Collection<UniformBuffer> uniformBlocks;
 
 	/**
 	 * constructor of a shader object.
@@ -59,7 +59,7 @@ public class ShaderProgram {
 	 */
 	public ShaderProgram(final Map<String, String> parameters, final String... shaders) {
 		this.preprocessor = new ShaderPreprocessor(parameters);
-		uniformBlocks = new HashMap<>();
+		uniformBlocks = new HashSet<>();
 		shaderProgramHandle = -1;
 
 		shaderObjects = new HashMap<>();
@@ -76,27 +76,22 @@ public class ShaderProgram {
 	/**
 	 * Adds a Uniform Buffer Block to the Shader
 	 *
-	 * @param UBOName
-	 *            the name of the UBO to add
+	 * @param UBO
+	 *            the UBO to add
 	 */
-	public void addUniformBlockIndex(final String UBOName) {
-		final int index = UBOManager.getUBOID(UBOName);
-		uniformBlocks.put(index, UBOName);
-		setUniformBlockIndex(index, UBOName);
+	public void addUniformBlockIndex(final UniformBuffer UBO) {
+		uniformBlocks.add(UBO);
+		setUniformBlockIndex(UBO);
 	}
 
 	/**
 	 * binds the uniform Block to the shader program
 	 *
-	 * @param index
-	 * @param name
+	 * @param UBO
 	 */
-	private void setUniformBlockIndex(final int index, final String name) {
+	private void setUniformBlockIndex(final UniformBuffer UBO) {
 		ensureCompiled();
-		final int uniformBlockIndex = glGetUniformBlockIndex(shaderProgramHandle, name);
-		GLErrors.checkForError(TAG, "glGetUniformBlockIndex");
-		glUniformBlockBinding(shaderProgramHandle, uniformBlockIndex, index);
-		GLErrors.checkForError(TAG, "glUniformBlockBinding");
+		UBO.attachToShader(shaderProgramHandle);
 	}
 
 	/**
@@ -423,8 +418,8 @@ public class ShaderProgram {
 			Log.error(TAG, "Linking log:\n" + glGetProgramInfoLog(shaderProgramHandle));
 		}
 
-		for (final Map.Entry<Integer, String> uniformBlockBinding : uniformBlocks.entrySet()) {
-			setUniformBlockIndex(uniformBlockBinding.getKey(), uniformBlockBinding.getValue());
+		for (final UniformBuffer uniformBlock : uniformBlocks) {
+			setUniformBlockIndex(uniformBlock);
 		}
 
 		shaderObjects.values().forEach(ShaderObject::delete);

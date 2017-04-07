@@ -1,29 +1,16 @@
 package mbeb.opengldefault.rendering.shader;
 
-import java.util.*;
+import mbeb.opengldefault.gl.buffer.UniformBuffer;
 
 public abstract class UBOManager {
 
-	public static final String MATRICES = "Matrices";
-	public static final String DIRECTIONALLIGHT = "DirectionalLightBlock";
-	public static final String POINTLIGHT = "PointLightBlock";
-	public static final String SPOTLIGHT = "SpotLightBlock";
+	public static final UniformBuffer MATRICES = new UniformBuffer(0, "Matrices");
+	public static final UniformBuffer DIRECTIONALLIGHT = new UniformBuffer(1, "DirectionalLightBlock");
+	public static final UniformBuffer POINTLIGHT = new UniformBuffer(2, "PointLightBlock");
+	public static final UniformBuffer SPOTLIGHT = new UniformBuffer(3, "SpotLightBlock");
 
-	private static final Map<String, Integer> UBOMapping;
-
-	static {
-		UBOMapping = new HashMap<>();
-		UBOMapping.put(MATRICES, 0);
-		UBOMapping.put(DIRECTIONALLIGHT, 1);
-		UBOMapping.put(POINTLIGHT, 2);
-		UBOMapping.put(SPOTLIGHT, 3);
-	}
 
 	private UBOManager() {
 		//should never be instantiated
-	}
-
-	public static int getUBOID(final String UBOName) {
-		return UBOMapping.get(UBOName);
 	}
 }

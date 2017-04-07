@@ -1,22 +1,20 @@
 package mbeb.opengldefault.light;
 
 import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.opengl.GL31.*;
 
 import java.nio.*;
 import java.util.*;
 import java.util.concurrent.atomic.*;
 
 import mbeb.opengldefault.constants.Constants;
+import mbeb.opengldefault.gl.buffer.UniformBuffer;
 import org.lwjgl.*;
 
-import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.shader.*;
 
 /**
  * I'm an abstract class blueprint used for classes managing lights of one type (e.g. directional, point or spot lights) and there different parameters (e.g. UBOID, capacity, storage size...).
- * I'm encapsuling all basic functions probably useful for a concrete LightTypeManager.
+ * I'm encapsulating all basic functions probably useful for a concrete LightTypeManager.
  *
  * @author Merlin (and Erik and Markus but if something is wrong blame him and only him) :D
  */
@@ -24,10 +22,6 @@ public abstract class LightTypeManager {
 	/** Class Name Tag */
 	private static final String TAG = "LightTypeManager";
 
-	/** stores UBO Name */
-	protected String UBOBaseName;
-	/** stores UBO identifier */
-	protected int UBOBaseID;
 	/** number of Blocks needed to store one Object of the managed LightType */
 	protected int lightBlockSize;
 	/** name of the LightType Parameter for the managed LightType */
@@ -37,23 +31,20 @@ public abstract class LightTypeManager {
 	/** all managed lights */
 	private final ArrayList<Light> lights;
 	/** UBO identifier */
-	private final int UBO;
+	private final UniformBuffer UBO;
 
 	/**
 	 * @param shaderLightTypeParameterName
 	 * @param lightBlockSize
-	 * @param UBOBaseName
+	 * @param UBO
 	 * @param lightCapacity
 	 */
-	public LightTypeManager(final String shaderLightTypeParameterName, final int lightBlockSize, final String UBOBaseName, final int lightCapacity) {
+	public LightTypeManager(final String shaderLightTypeParameterName, final int lightBlockSize, final UniformBuffer UBO, final int lightCapacity) {
 		this.shaderLightTypeParameterName = shaderLightTypeParameterName;
 		this.lightBlockSize = lightBlockSize;
-		this.UBOBaseName = UBOBaseName;
 		this.lightCapacity = lightCapacity;
-		this.UBOBaseID = UBOManager.getUBOID(UBOBaseName);
 		this.lights = new ArrayList<>();
-		this.UBO = glGenBuffers();
-		GLErrors.checkForError(TAG, "glGenBuffers");
+		this.UBO = UBO;
 		resizeBuffer();
 	}
 
@@ -61,20 +52,16 @@ public abstract class LightTypeManager {
 	 * adjusts capacity of UBO and keeps it's data up to date
 	 */
 	private void resizeBuffer() {
-		glBindBuffer(GL_UNIFORM_BUFFER, UBO);
-		GLErrors.checkForError(TAG, "glBindBuffer");
+		UBO.bind();
 
-		glBufferData(GL_UNIFORM_BUFFER, getBufferSize() + Constants.BLOCK_SIZE, GL_STATIC_DRAW);
-		GLErrors.checkForError(TAG, "glBufferData");
+		UBO.bufferData(getBufferSize() + Constants.BLOCK_SIZE, GL_STATIC_DRAW);
 
-		glBindBufferBase(GL_UNIFORM_BUFFER, UBOBaseID, UBO);
-		GLErrors.checkForError(TAG, "glBindBufferBase");
+		UBO.bindBufferBase();
 
 		saveBufferSize();
 		bufferData();
 
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-		GLErrors.checkForError(TAG, "glBindBuffer");
+		UBO.unbind();
 	}
 
 	/**
@@ -88,16 +75,12 @@ public abstract class LightTypeManager {
 	 * stores the buffer size at the beginning of the UBO
 	 */
 	private void saveBufferSize() {
-		glBindBuffer(GL_UNIFORM_BUFFER, UBO);
-		GLErrors.checkForError(TAG, "glBindBuffer");
+		UBO.bind();
 
 		final IntBuffer sizeBuffer = BufferUtils.createIntBuffer(4);
-
 		sizeBuffer.put(lights.size());
-		sizeBuffer.flip();
 
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeBuffer);
-		GLErrors.checkForError(TAG, "glBufferSubData");
+		UBO.bufferSubData(0, sizeBuffer);
 	}
 
 	/**
@@ -107,9 +90,7 @@ public abstract class LightTypeManager {
 		final FloatBuffer dataBuffer = BufferUtils.createFloatBuffer(getBufferSize());
 
 		lights.forEach((final Light light) -> dataBuffer.put(light.getData()));
-		dataBuffer.flip();
-		glBufferSubData(GL_UNIFORM_BUFFER, Constants.BLOCK_SIZE, dataBuffer);
-		GLErrors.checkForError(TAG, "glBufferSubData");
+		UBO.bufferSubData(Constants.BLOCK_SIZE, dataBuffer);
 	}
 
 	/**
@@ -119,7 +100,7 @@ public abstract class LightTypeManager {
 	 *            that will be updated
 	 */
 	public void updateShader(final ShaderProgram shader) {
-		shader.addUniformBlockIndex(UBOBaseName);
+		shader.addUniformBlockIndex(UBO);
 		shader.updateParameter(shaderLightTypeParameterName, lightCapacity);
 	}
 
@@ -161,18 +142,14 @@ public abstract class LightTypeManager {
 	 *            the position that the light will have afterwards
 	 */
 	private void updateSingleLightData(final Light light, final int offset) {
-		glBindBuffer(GL_UNIFORM_BUFFER, UBO);
-		GLErrors.checkForError(TAG, "glBindBuffer");
+		UBO.bind();
 		final FloatBuffer lightBuffer = BufferUtils.createFloatBuffer(lightBlockSize * 4);
 		lightBuffer.put(light.getData());
-		lightBuffer.flip();
 
 		final int bufferSizeStorageSpace = Constants.BLOCK_SIZE; //one block reserved space for this at the beginning of the UBO
-		glBufferSubData(GL_UNIFORM_BUFFER, bufferSizeStorageSpace + offset, lightBuffer);
-		GLErrors.checkForError(TAG, "glBufferSubData");
+		UBO.bufferSubData(bufferSizeStorageSpace + offset, lightBuffer);
 
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-		GLErrors.checkForError(TAG, "glBindBuffer");
+		UBO.unbind();
 	}
 
 	/**

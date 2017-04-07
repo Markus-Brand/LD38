@@ -1,16 +1,14 @@
 package mbeb.opengldefault.camera;
 
 import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.opengl.GL31.*;
 
 import java.nio.*;
 
 import mbeb.opengldefault.constants.Constants;
+import mbeb.opengldefault.gl.buffer.UniformBuffer;
 import org.joml.*;
 import org.lwjgl.*;
 
-import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.shader.*;
 
 public class Camera implements ICamera {
@@ -33,7 +31,7 @@ public class Camera implements ICamera {
 	protected Matrix4f projectionView;
 
 	/** Uniform Buffer containing the Matrix data */
-	private int UBO = -1;
+	private UniformBuffer UBO = UBOManager.MATRICES;
 
 	/** Position of the Camera */
 	protected Vector3f position;
@@ -60,6 +58,12 @@ public class Camera implements ICamera {
 		projection.mul(view, getProjectionView());
 		position = new Vector3f();
 		viewDirection = new Vector3f(1, 0, 0);
+
+
+		UBO.bind();
+		UBO.bufferData(256, GL_DYNAMIC_DRAW);
+		UBO.bindBufferBase();
+		UBO.unbind();
 		updateUniformBlock();
 	}
 
@@ -117,43 +121,22 @@ public class Camera implements ICamera {
 	}
 
 	@Override
-	public int getUBO() {
-		if (UBO == -1) {
-			UBO = glGenBuffers();
-			glBindBuffer(GL_UNIFORM_BUFFER, UBO);
-			GLErrors.checkForError(TAG, "glBindBuffer");
-			glBufferData(GL_UNIFORM_BUFFER, 256, GL_DYNAMIC_DRAW);
-			GLErrors.checkForError(TAG, "glBufferData");
-			glBindBufferBase(GL_UNIFORM_BUFFER, UBOManager.getUBOID(UBOManager.MATRICES), UBO);
-			GLErrors.checkForError(TAG, "glBindBufferBase");
-			glBindBuffer(GL_UNIFORM_BUFFER, 0);
-			GLErrors.checkForError(TAG, "glBindBuffer");
-
-		}
-		return UBO;
-	}
-
-	@Override
 	public void updateUniformBlock() {
-		glBindBuffer(GL_UNIFORM_BUFFER, getUBO());
-		GLErrors.checkForError(TAG, "glBindBuffer");
+		UBO.bind();
+
 		final FloatBuffer projectionBuffer = BufferUtils.createFloatBuffer(Constants.MAT4_COMPONENTS);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, getProjection().get(projectionBuffer));
-		GLErrors.checkForError(TAG, "glBufferSubData");
+		UBO.bufferSubData(0, getProjection().get(projectionBuffer));
 
 		final FloatBuffer viewBuffer = BufferUtils.createFloatBuffer(Constants.MAT4_COMPONENTS);
-		glBufferSubData(GL_UNIFORM_BUFFER, Constants.MAT4_SIZE, getView().get(viewBuffer));
-		GLErrors.checkForError(TAG, "glBufferSubData");
+		UBO.bufferSubData(Constants.MAT4_SIZE, getView().get(viewBuffer));
 
 		final FloatBuffer projectionViewBuffer = BufferUtils.createFloatBuffer(Constants.MAT4_COMPONENTS);
-		glBufferSubData(GL_UNIFORM_BUFFER, 2 * Constants.MAT4_SIZE, getProjectionView().get(projectionViewBuffer));
-		GLErrors.checkForError(TAG, "glBufferSubData");
+		UBO.bufferSubData(2 * Constants.MAT4_SIZE, getProjectionView().get(projectionViewBuffer));
 
 		final FloatBuffer skyboxViewBuffer = BufferUtils.createFloatBuffer(Constants.MAT4_COMPONENTS);
-		glBufferSubData(GL_UNIFORM_BUFFER, 3 * Constants.MAT4_SIZE, getSkyboxView().get(skyboxViewBuffer));
-		GLErrors.checkForError(TAG, "glBufferSubData");
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-		GLErrors.checkForError(TAG, "glBindBuffer");
+		UBO.bufferSubData(3 * Constants.MAT4_SIZE, getSkyboxView().get(skyboxViewBuffer));
+
+		UBO.unbind();
 	}
 
 	@Override
