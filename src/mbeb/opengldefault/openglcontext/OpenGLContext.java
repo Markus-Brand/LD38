@@ -302,11 +302,11 @@ public class OpenGLContext {
 	}
 
 	public static float getNDCY(float y) {
-		return -(2 * y / getFramebufferHeight() - 1);
+		return -(2 * y / getVideoModeHeight() - 1);
 	}
 
 	public static float getNDCX(float x) {
-		return 2 * x / getFramebufferWidth() - 1;
+		return 2 * x / getVideoModeWidth() - 1;
 	}
 
 	public static int getVideoModeWidth() {
