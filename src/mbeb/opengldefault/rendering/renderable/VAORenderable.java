@@ -7,6 +7,8 @@ import static org.lwjgl.opengl.GL30.*;
 
 import java.nio.*;
 
+import mbeb.opengldefault.gl.buffer.ElementBuffer;
+import mbeb.opengldefault.gl.buffer.VertexBuffer;
 import org.joml.*;
 import org.lwjgl.*;
 
@@ -183,22 +185,16 @@ public class VAORenderable implements IRenderable {
 		glBindVertexArray(VAO);
 		GLErrors.checkForError(TAG, "glBindVertexArray");
 
-		int VBO = generateVBO(vertexBuffer, dataFormat);
+		VertexBuffer VBO = generateVBO(vertexBuffer, dataFormat);
 
-		int EBO = generateEBO(indexBuffer);
+		ElementBuffer EBO = generateEBO(indexBuffer);
 		GLErrors.checkForError(TAG, "generateEBO");
 
 		glBindVertexArray(0);
 		GLErrors.checkForError(TAG, "glBindVertexArray");
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		GLErrors.checkForError(TAG, "glBindBuffer");
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		GLErrors.checkForError(TAG, "glBindBuffer");
 
-		glDeleteBuffers(EBO);
-		GLErrors.checkForError(TAG, "glDeleteBuffers EBO");
-		glDeleteBuffers(VBO);
-		GLErrors.checkForError(TAG, "glDeleteBuffers VBO");
+		EBO.delete();
+		VBO.delete();
 
 		return VAO;
 	}
@@ -210,14 +206,10 @@ public class VAORenderable implements IRenderable {
 	 *            index data in a IntBuffer. The order in which the vertex data is read
 	 * @return generated EBO
 	 */
-	private static int generateEBO(IntBuffer indexBuffer) {
-		int EBO;
-		EBO = glGenBuffers();
-		GLErrors.checkForError(TAG, "glGenBuffers EBO");
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		GLErrors.checkForError(TAG, "glBindBuffer EBO");
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer, GL_STATIC_DRAW);
-		GLErrors.checkForError(TAG, "glBufferData EBO");
+	private static ElementBuffer generateEBO(IntBuffer indexBuffer) {
+		ElementBuffer EBO = new ElementBuffer();
+		EBO.bind();
+		EBO.bufferData(indexBuffer, GL_STATIC_DRAW);
 		return EBO;
 	}
 
@@ -228,18 +220,14 @@ public class VAORenderable implements IRenderable {
 	 *            vertex data in a FloatBuffer. Contains vertex position, texture coordinates, normals, color and maybe
 	 *            other data
 	 * @param dataFormat
-	 *            DataFragmets that describe how the data is stored in the buffer.
+	 *            DataFragments that describe how the data is stored in the buffer.
 	 * @return generated VBO
 	 */
-	private static int generateVBO(FloatBuffer vertexBuffer, DataFragment[] dataFormat) {
-		int VBO;
-		VBO = glGenBuffers();
-		GLErrors.checkForError(TAG, "glGenBuffers VBO");
+	private static VertexBuffer generateVBO(FloatBuffer vertexBuffer, DataFragment[] dataFormat) {
+		VertexBuffer VBO = new VertexBuffer();
+		VBO.bind();
 
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		GLErrors.checkForError(TAG, "glBindBuffer VBO");
-		glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
-		GLErrors.checkForError(TAG, "glBufferData VBO");
+		VBO.bufferData(vertexBuffer, GL_STATIC_DRAW);
 
 		int stride = 0;
 		for (DataFragment dataFragemt : dataFormat) {

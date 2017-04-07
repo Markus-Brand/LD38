@@ -171,7 +171,9 @@ public abstract class GLObject {
 		if (this.exists()) {
 			this.unbind();
 			boolean success = this.glDelete();
-			if (!success) {
+			if (success) {
+				this.glHandle = null;
+			} else {
 				Log.error(TAG, "Object could not be deleted.");
 			}
 			return success;

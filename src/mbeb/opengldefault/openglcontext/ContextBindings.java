@@ -1,10 +1,8 @@
 package mbeb.opengldefault.openglcontext;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 
+import mbeb.opengldefault.gl.buffer.GLBuffer;
 import mbeb.opengldefault.gl.texture.Texture;
 
 /**
@@ -22,6 +20,10 @@ public class ContextBindings {
 	//SLOT FOR FB
 
 	//MAP FOR BUFFERS
+	/**
+	 * A map that saves which buffer is currently bound for each buffer type separately
+	 */
+	private static Map<GLBuffer.Type, GLBuffer> boundBuffers = new HashMap<>();
 
 	//MAP & QUEUE FOR TEXTURES
 	/**
@@ -42,6 +44,37 @@ public class ContextBindings {
 	//METHODS FOR FB
 
 	//METHODS FOR BUFFERS
+
+	/**
+	 * register, that a given buffer with given type is currently bound
+	 * 
+	 * @param buffer
+	 *            the buffer that is bound
+	 */
+	public static void bind(GLBuffer buffer) {
+		boundBuffers.put(buffer.getType(), buffer);
+	}
+
+	/**
+	 * check, if a given buffer is bound
+	 * 
+	 * @param buffer
+	 *            the buffer to check
+	 * @return whether this buffer is currently bound for its type
+	 */
+	public static boolean isBound(GLBuffer buffer) {
+		return Objects.equals(boundBuffers.get(buffer.getType()), buffer);
+	}
+
+	/**
+	 * unbind the given Buffer Object if it was bound
+	 * 
+	 * @param buffer
+	 *            the buffer to unbind
+	 */
+	public static void unbind(GLBuffer buffer) {
+		boundBuffers.put(buffer.getType(), null);
+	}
 
 	//METHODS FOR TEXTURES
 
