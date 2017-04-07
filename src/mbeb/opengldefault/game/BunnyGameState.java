@@ -276,7 +276,6 @@ public class BunnyGameState implements GameState {
 	
 	@Override
 	public void render() {
-		
 		bunnyScene.render(KeyBoard.isKeyDown(GLFW_KEY_TAB)); //bunnyScene.render(); to render without BoundingBoxes
 	}
 
