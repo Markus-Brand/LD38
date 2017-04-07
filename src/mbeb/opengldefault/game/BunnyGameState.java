@@ -290,7 +290,7 @@ public class BunnyGameState implements GameState {
 		glViewport(0, 0, OpenGLContext.getFramebufferWidth(), OpenGLContext.getFramebufferHeight());
 		GLErrors.checkForError(TAG, "glViewport");
 		
-		bunnyScene.render(KeyBoard.isKeyDown(GLFW_KEY_TAB)); //bunnyScene.render(); to render without BoundingBoxes
+		bunnyScene.render(KeyBoard.isKeyDown(GLFW_KEY_TAB));
 		textGUI.render();
 	}
 
