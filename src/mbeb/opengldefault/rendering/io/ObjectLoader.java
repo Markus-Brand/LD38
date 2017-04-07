@@ -293,34 +293,30 @@ public class ObjectLoader {
 
 	/**
 	 * return the scenes node structure as a Bone (where every object is
-	 * (falsely) represented as a bone)
+	 * (maybe falsely) represented as a bone)
 	 *
 	 * @param scene
 	 * @return
 	 */
 	private Bone parseScene(AIScene scene) {
-		AINode rootNode = scene.mRootNode();
-		Bone rootBone = new Bone(rootNode.mName().dataString(), -1);
-		rootBone.setDefaultBoneTransform(BoneTransformation.matrixFromAI(rootNode.mTransformation()));
-		parseBoneChildren(rootBone, rootNode);
-		return rootBone;
+		return parseScene(scene.mRootNode());
 	}
 
 	/**
-	 * sub-routine for #parseScene(AIScene) that recursively converts AINodes to
-	 * Bones.
+	 * return this nodes structure as a Bone (where every object is
+	 * (maybe falsely) represented as a bone)
 	 *
-	 * @param bone
 	 * @param node
+	 * @return
 	 */
-	private void parseBoneChildren(Bone bone, AINode node) {
+	private Bone parseScene(AINode node) {
+		Bone bone = new Bone(node.mName().dataString());
+		bone.setDefaultBoneTransform(BoneTransformation.matrixFromAI(node.mTransformation()));
 		for (int c = 0; c < node.mNumChildren(); c++) {
 			AINode childNode = AINode.create(node.mChildren().get(c));
-			Bone childBone = new Bone(childNode.mName().dataString(), -1);
-			childBone.setDefaultBoneTransform(BoneTransformation.matrixFromAI(childNode.mTransformation()));
-			parseBoneChildren(childBone, childNode);
-			bone.getChildren().add(childBone);
+			bone.getChildren().add(parseScene(childNode));
 		}
+		return bone;
 	}
 
 	/**

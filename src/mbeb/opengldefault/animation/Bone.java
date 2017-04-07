@@ -28,6 +28,14 @@ public class Bone implements BoundingBox.Owner {
 	private List<Bone> children;
 
 	/**
+	 * construct a new bone without an index
+	 * @param name
+	 */
+	public Bone(String name) {
+		this(name, -1);
+	}
+
+	/**
 	 * create a new bone with given name and index
 	 * 
 	 * @param name
