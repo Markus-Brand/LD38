@@ -20,6 +20,23 @@ public abstract class GLObject {
 	private Integer glHandle = null;
 
 	/**
+	 * @return the gl-handle for this object, or null if it is non-existent
+	 */
+	public Integer getHandle() {
+		return glHandle;
+	}
+
+	/**
+	 * This returns the same as {@link GLObject#getHandle()},
+	 * but generates the object if it does not exist.
+	 * @return the gl-handle for this object
+	 */
+	public Integer ensureHandle() {
+		ensureExists();
+		return getHandle();
+	}
+
+	/**
 	 * Performs the object type specific generation.
 	 *
 	 * @return the handle of the generated object or null if generation failed
