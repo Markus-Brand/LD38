@@ -2,7 +2,10 @@ package mbeb.opengldefault.game;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
+import mbeb.opengldefault.options.OptionsMenu;
 
 /**
  * Abstract class to characterize a whole game
@@ -39,7 +42,6 @@ public abstract class Game {
 	 * Init the Game here. The OpenGL context is already created at this Point.
 	 */
 	public void init(){
-		mbeb.opengldefault.options.Options.load();
 	}
 	
 	/**
@@ -53,6 +55,7 @@ public abstract class Game {
 		currentState.update(deltaTime);
 		if (!currentState.isActive()) {
 			currentGameState = currentState.getNextState();
+			KeyBoard.releaseAll();
 			currentState.resetNextGameState();
 			if (currentGameState == GameStateIdentifier.EXIT) {
 				OpenGLContext.close();
@@ -85,7 +88,6 @@ public abstract class Game {
 	 * Clear the Game. The game will close after this method is called.
 	 */
 	public void clear() {
-		mbeb.opengldefault.options.Options.save();
 		for (GameState state : gameStates.values()) {
 			state.clear();
 		}

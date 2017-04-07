@@ -12,13 +12,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.joml.Vector4f;
+
 import mbeb.opengldefault.reflection.ClassFinder;
 
 public class Options {
 	
 	private static File optionsFile = new File("OpenGL-default/src/mbeb/opengldefault/options/options.options");
 	
-	public static void load(){
+	public static void load(OptionsMenu menu){
 		Map<String, String> options = getOptionMap();
 		for(Field f : findOptions()){
 			if(!options.containsKey(f.getName())){
@@ -28,12 +30,18 @@ public class Options {
 			try {
 				if(int.class.isAssignableFrom(f.getType())){
 					f.set(null, Integer.parseInt(options.get(f.getName())));
+				}else if(float.class.isAssignableFrom(f.getType())){
+					f.set(null, Float.parseFloat(options.get(f.getName())));
+				}else if(String.class.isAssignableFrom(f.getType())){
+					f.set(null, options.get(f.getName()));
 				}else{
 					System.out.println(f.getName() + " has a type that is not supported: " + f.getType());					
 				}
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				e.printStackTrace();
 			}
+			Option option = f.getAnnotation(Option.class);
+			menu.addOption(option.category(), f);
 		}
 	}
 	
@@ -66,7 +74,7 @@ public class Options {
 		}
 		try {
 			for(String s : Files.readAllLines(optionsFile.toPath())){
-				String[] subStrings = s.split("\\s");
+				String[] subStrings = s.split("\\s", 2);
 				options.put(subStrings[0], subStrings[1]);
 			};
 		} catch (IOException e) {

@@ -1,5 +1,6 @@
 package mbeb.opengldefault.game;
 
+import mbeb.opengldefault.options.OptionsMenu;
 import mbeb.opengldefault.rendering.textures.*;
 
 public class BunnyGame extends Game {
@@ -8,9 +9,10 @@ public class BunnyGame extends Game {
 
 	@Override
 	public void init() {
-		super.init();
 		addGameState(GameStateIdentifier.MAIN_MENU, new MainMenu());
-		addGameState(GameStateIdentifier.GAME, new BunnyGameState());		
+		addGameState(GameStateIdentifier.GAME, new BunnyGameState());	
+		addGameState(GameStateIdentifier.OPTIONS, new OptionsMenu());	
+		super.init();	
 	}
 
 	@Override

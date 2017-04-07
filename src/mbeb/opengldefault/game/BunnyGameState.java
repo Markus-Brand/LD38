@@ -95,13 +95,16 @@ public class BunnyGameState implements GameState {
 	
 	private TextGUI textGUI;
 
+	@Option(category="game")
+	public static int bezierCurveSize = 10;
+	
 	@Override
 	public void init() {
 		timePassed = 0;
 		final ArrayList<Vector3f> controlPoints = new ArrayList<>();
 
 		final Random random = new Random();
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < bezierCurveSize; i++) {
 			controlPoints.add(new Vector3f(random.nextInt(51) - 25, random.nextInt(51) - 25, random.nextInt(51) - 25));
 		}
 		curve = new BezierCurve(controlPoints, ControlPointInputMode.CAMERAPOINTSCIRCULAR, true);

@@ -21,6 +21,7 @@ import mbeb.opengldefault.gui.elements.GUIElement;
 import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
+import mbeb.opengldefault.options.Option;
 import mbeb.opengldefault.rendering.shader.ShaderProgram;
 import mbeb.opengldefault.rendering.textures.Texture;
 
@@ -35,13 +36,16 @@ public class MainMenu implements GameState {
 
 	private TextGUIElement fps;
 
-	private GUIElement buttonGame, buttonExit;
+	private GUIElement buttonGame, buttonExit, buttonOptions;
 
 	private GameStateIdentifier nextGameState = null;
 
 	public MainMenu() {
 		//Currently empty, because we can do everything in the init() method
 	}
+	
+	@Option
+	public static String startText = "Hallo Welt";
 
 	@Override
 	public void init() {
@@ -56,7 +60,8 @@ public class MainMenu implements GameState {
 		fps.setPositionRelativeToScreen(0, 0);
 		fps.setColor(Color.ORANGE);
 
-		buttonGame = textGUI.addText("Start Game", new Vector2f(), 0.2f).setPositionRelativeToScreen(0.5f, 0.5f);
+		buttonGame = textGUI.addText(startText, new Vector2f(), 0.2f).setPositionRelativeToScreen(0.5f, 0.4f);
+		buttonOptions = textGUI.addText("Options", new Vector2f(), 0.2f).setPositionRelativeToScreen(0.5f, 0.6f);
 		buttonExit = menuGUI.addAtlasGUIElement(0, new Vector2f(), new Vector2f(0.1f, OpenGLContext.getAspectRatio() * 0.1f))
 				.setPositionRelativeToScreen(0.01f, 0.99f);
 	}
@@ -78,6 +83,15 @@ public class MainMenu implements GameState {
 			}
 		} else {
 			buttonGame.setColor(Color.GREEN);
+		}
+
+		if (buttonOptions.selected()) {
+			buttonOptions.setColor(Color.RED);
+			if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
+				nextGameState = GameStateIdentifier.OPTIONS;
+			}
+		} else {
+			buttonOptions.setColor(Color.GREEN);
 		}
 
 		if (buttonExit.selected()) {

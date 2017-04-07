@@ -6,5 +6,5 @@ package mbeb.opengldefault.game;
  *
  */
 public enum GameStateIdentifier {
-	MAIN_MENU, GAME, EXIT
+	MAIN_MENU, GAME, EXIT, OPTIONS
 }
