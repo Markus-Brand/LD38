@@ -129,13 +129,6 @@ public class ShaderPreprocessor {
 
 		private static Cache instance = null;
 
-		public static Cache getInstance() {
-			if (instance == null) {
-				instance = new Cache();
-			}
-			return instance;
-		}
-
 		////
 		private final Map<String, String> rawContent;
 		private final Map<String, String> processedContent;
@@ -143,6 +136,13 @@ public class ShaderPreprocessor {
 		private Cache() {
 			rawContent = new HashMap<>();
 			processedContent = new HashMap<>();
+		}
+
+		public static Cache getInstance() {
+			if (instance == null) {
+				instance = new Cache();
+			}
+			return instance;
 		}
 
 		public String getRawSource(String fileName) {
@@ -169,12 +169,12 @@ public class ShaderPreprocessor {
 		/**
 		 * returns the Shader Source of a given path
 		 *
-		 * @param path
-		 * @return
+		 * @param path the path of the shader to load
+		 * @return the source of the loaded shader
 		 */
 		private static String loadSource(final String path) {
 			try {
-				InputStream shaderURL = ShaderPreprocessor.class.getResourceAsStream("/mbeb/opengldefault/shader/" + path);
+				InputStream shaderURL = ShaderPreprocessor.class.getResourceAsStream("/shaders/" + path);
 				try(Scanner sc = new Scanner(shaderURL, "UTF-8")) {
 					return sc.useDelimiter("\\A").next();
 				}

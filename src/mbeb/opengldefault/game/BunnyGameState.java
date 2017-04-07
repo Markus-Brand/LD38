@@ -2,6 +2,7 @@ package mbeb.opengldefault.game;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_E;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_Q;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_TAB;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
@@ -297,7 +298,7 @@ public class BunnyGameState implements GameState {
 		glViewport(0, 0, OpenGLContext.getFramebufferWidth(), OpenGLContext.getFramebufferHeight());
 		GLErrors.checkForError(TAG, "glViewport");
 
-		bunnyScene.render(); //bunnyScene.render(); to render without BoundingBoxes
+		bunnyScene.render(KeyBoard.isKeyDown(GLFW_KEY_TAB)); //bunnyScene.render(); to render without BoundingBoxes
 		textGUI.render();
 	}
 
