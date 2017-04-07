@@ -4,8 +4,8 @@ import mbeb.opengldefault.logging.Log;
 
 /**
  * Represents an object manages by OpenGL.
- *
  * Each object can be created, bound, unbound and destroyed.
+ * 
  * @author Potti, Erik
  * @version 1.0
  */
@@ -14,7 +14,6 @@ public abstract class GLObject {
 
 	/**
 	 * The OpenGL handle of this object.
-	 *
 	 * Is null if this object does not exist yet or has already been deleted
 	 */
 	private Integer glHandle = null;
@@ -29,6 +28,7 @@ public abstract class GLObject {
 	/**
 	 * This returns the same as {@link GLObject#getHandle()},
 	 * but generates the object if it does not exist.
+	 * 
 	 * @return the gl-handle for this object
 	 */
 	public Integer ensureHandle() {
@@ -53,6 +53,7 @@ public abstract class GLObject {
 	/**
 	 * Tries to generate this object with the OpenGL API,
 	 * complaining when the object already has been generated.
+	 * 
 	 * @return whether the generation succeeded
 	 */
 	public boolean generate() {
@@ -63,7 +64,7 @@ public abstract class GLObject {
 	 * Tries to generate this object with the OpenGL API.
 	 *
 	 * @param errorOnExistence
-	 * 		whether an error should be generated when this object already exists
+	 *            whether an error should be generated when this object already exists
 	 * @return whether the generation succeeded
 	 */
 	public boolean generate(boolean errorOnExistence) {
@@ -83,6 +84,7 @@ public abstract class GLObject {
 
 	/**
 	 * Ensures the existence of this object in the OpenGL context, generating it if need be.
+	 * 
 	 * @return whether the object exists, only false if generation failed
 	 */
 	public boolean ensureExists() {
@@ -92,12 +94,14 @@ public abstract class GLObject {
 	/**
 	 * Tries to bind this object to the current context, updating
 	 * {@link mbeb.opengldefault.openglcontext.ContextBindings} to match the new state.
+	 * 
 	 * @return whether the binding succeeded
 	 */
 	protected abstract boolean glBind();
 
 	/**
 	 * Binds this object to the OpenGL context.
+	 * 
 	 * @return whether the operation succeeded.
 	 */
 	public boolean bind() {
@@ -114,6 +118,7 @@ public abstract class GLObject {
 
 	/**
 	 * Checks with {@link mbeb.opengldefault.openglcontext.ContextBindings} whether this object is currently bound.
+	 * 
 	 * @return whether this object is currently bound to the context
 	 */
 	protected abstract boolean isBoundToContext();
@@ -128,12 +133,14 @@ public abstract class GLObject {
 	/**
 	 * Tries to unbind this object from the current context, updating
 	 * {@link mbeb.opengldefault.openglcontext.ContextBindings} to match the new state.
+	 * 
 	 * @return whether the unbinding (of isaac) succeeded
 	 */
 	protected abstract boolean glUnbind();
 
 	/**
 	 * Unbinds this object from the OpenGL context.
+	 * 
 	 * @return whether the operation succeeded.
 	 */
 	public boolean unbind() {
@@ -155,9 +162,9 @@ public abstract class GLObject {
 	 */
 	protected abstract boolean glDelete();
 
-
 	/**
 	 * Tries to delete this object with the OpenGL API.
+	 * 
 	 * @return whether the operation succeeded
 	 */
 	public boolean delete() {
