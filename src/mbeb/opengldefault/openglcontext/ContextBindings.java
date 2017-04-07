@@ -13,6 +13,10 @@ import mbeb.opengldefault.gl.texture.Texture;
  */
 public class ContextBindings {
 
+	private ContextBindings() {
+		//should never be instantiated
+	}
+
 	//SLOT FOR SHADER
 
 	//SLOT FOR VAO
@@ -105,7 +109,7 @@ public class ContextBindings {
 		Integer textureUnit = freeTextureUnits.poll();
 		if (textureUnit == null) {
 			//allocate next free texture unit
-			textureUnit = boundTextureUnits.size() + 1;
+			textureUnit = boundTextureUnits.size();
 		}
 		boundTextureUnits.put(texture, textureUnit);
 		return textureUnit;

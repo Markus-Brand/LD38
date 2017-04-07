@@ -3,12 +3,13 @@ package mbeb.opengldefault.gl.texture;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 import static org.lwjgl.opengl.GL12.GL_TEXTURE_3D;
-import static org.lwjgl.opengl.GL13.GL_CLAMP_TO_BORDER;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE_CUBE_MAP;
+import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL14.GL_MIRRORED_REPEAT;
 import static org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY;
 
 import mbeb.opengldefault.gl.GLObject;
+import mbeb.opengldefault.logging.GLErrors;
+import mbeb.opengldefault.openglcontext.ContextBindings;
 
 /**
  * Represents any texture created with OpenGL.
@@ -17,6 +18,8 @@ import mbeb.opengldefault.gl.GLObject;
  * @version 1.0
  */
 public abstract class Texture extends GLObject {
+
+	private static final String TAG = "Texture";
 
 	//<editor-fold desc="Enumerations">
 	/**
@@ -169,6 +172,60 @@ public abstract class Texture extends GLObject {
 	}
 	//</editor-fold>
 
+	private boolean temporaryBinding = false;
+	private Type type;
 
+	protected static boolean setActiveTexture(Integer unit) {
+		glActiveTexture(unit != null ? GL_TEXTURE0 + unit : 0);
+		return !GLErrors.checkForError(TAG, "Could not set active texture.");
+	}
+
+	protected boolean setActiveTexture() {
+		if (this.getHandle() != null && this.getTextureUnit() != null) {
+			return Texture.setActiveTexture(this.getTextureUnit());
+		} else {
+			return false;
+		}
+	}
+
+	protected Texture(Type type) {
+		this.type = type;
+	}
+
+	public Integer getTextureUnit() {
+		return ContextBindings.getTextureUnit(this);
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	/**
+	 * Checks whether this texture is bound or not.
+	 * If it is bound, it changes the active texture unit to the unit it is bound to.
+	 * If in is not bound, it starts a temporary binding and binds the object.
+	 * This makes sure any glTex* calls affect this texture.
+	 *
+	 * @return whether the operation succeeded
+	 */
+	protected final boolean beginTransaction() {
+		if (this.isBound()) {
+			return this.setActiveTexture();
+		} else {
+			boolean success = this.bind();
+			this.temporaryBinding = success;
+			return success;
+		}
+	}
+
+	protected final boolean finishTransaction() {
+		if (this.temporaryBinding) {
+			boolean success = this.unbind();
+			this.temporaryBinding = !success;
+			return success;
+		} else {
+			return true;
+		}
+	}
 
 }
