@@ -122,21 +122,12 @@ public class Camera implements ICamera {
 
 	@Override
 	public void updateUniformBlock() {
-		UBO.bind();
-
-		final FloatBuffer projectionBuffer = BufferUtils.createFloatBuffer(Constants.MAT4_COMPONENTS);
-		UBO.bufferSubData(0, getProjection().get(projectionBuffer));
-
-		final FloatBuffer viewBuffer = BufferUtils.createFloatBuffer(Constants.MAT4_COMPONENTS);
-		UBO.bufferSubData(Constants.MAT4_SIZE, getView().get(viewBuffer));
-
-		final FloatBuffer projectionViewBuffer = BufferUtils.createFloatBuffer(Constants.MAT4_COMPONENTS);
-		UBO.bufferSubData(2 * Constants.MAT4_SIZE, getProjectionView().get(projectionViewBuffer));
-
-		final FloatBuffer skyboxViewBuffer = BufferUtils.createFloatBuffer(Constants.MAT4_COMPONENTS);
-		UBO.bufferSubData(3 * Constants.MAT4_SIZE, getSkyboxView().get(skyboxViewBuffer));
-
-		UBO.unbind();
+		UBO.writer(Constants.MAT4_SIZE * 4)
+				.write(getProjection())
+				.write(getView())
+				.write(getProjectionView())
+				.write(getSkyboxView())
+				.flush();
 	}
 
 	@Override

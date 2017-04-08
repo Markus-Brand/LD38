@@ -146,8 +146,8 @@ public abstract class GLBuffer extends GLObject {
 	}
 	public void bufferSubData(long offset, ByteBuffer buffer) {
 		buffer.rewind();
-		glBufferSubData(type.getGLType(),offset,  buffer);
-		GLErrors.checkForError(TAG, "glBufferData " + type);
+		glBufferSubData(type.getGLType(), offset,  buffer);
+		GLErrors.checkForError(TAG, "glBufferData " + type + "" + offset + "" + buffer);
 	}
 	public void bufferSubData(long offset, FloatBuffer buffer) {
 		buffer.rewind();
@@ -163,5 +163,25 @@ public abstract class GLBuffer extends GLObject {
 		GLErrors.checkForError(TAG, "glBufferData " + type);
 	}
 //</editor-fold>
+	
+	/**
+	 * create a GLBufferWriter that starts writing at the beginning of the buffer
+	 * @param capacity the amount of primitives you intent to write
+	 * @return a GLBufferWriter
+	 * @see #writer(int, long)
+	 */
+	public GLBufferWriter writer(int capacity) {
+		return writer(capacity, 0);
+	}
+	
+	/**
+	 * create a new GLBufferWriter to cache multiple write calls and to perform one single glBufferSubData in the end
+	 * @param capacity the amount of primitives you intent to write
+	 * @param offset the offset in the buffer / where to start writing
+	 * @return a GLBufferWriter to write with
+	 */
+	public GLBufferWriter writer(int capacity, long offset) {
+		return new GLBufferWriter(this, offset, capacity);
+	}
 
 }

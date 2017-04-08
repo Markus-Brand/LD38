@@ -2,13 +2,14 @@ package mbeb.opengldefault.light;
 
 import java.awt.*;
 
+import mbeb.opengldefault.gl.buffer.GLBufferWritable;
 import org.joml.*;
 
 /**
  * @author Merlin (and Erik and Markus but if something is wrong blame him and only him) :D
  */
 
-public abstract class Light {
+public abstract class Light implements GLBufferWritable {
 
 	/** a rgb (TODO maybe make others possible) color, usually saved in [0,1]^3 (TODO maybe with variable intensity) */
 	protected Vector3f color;
@@ -80,6 +81,7 @@ public abstract class Light {
 	/**
 	 * @return the lightdata (color, maybe position, direction, constants...)
 	 */
+	@Deprecated
 	public abstract float[] getData();
 
 	/**
