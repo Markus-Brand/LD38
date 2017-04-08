@@ -1,6 +1,6 @@
 package mbeb.opengldefault.game;
 
-import mbeb.opengldefault.rendering.textures.*;
+import mbeb.opengldefault.gl.texture.TextureLoader;
 
 public class BunnyGame extends Game {
 	/** Class Name Tag */
@@ -15,7 +15,7 @@ public class BunnyGame extends Game {
 	@Override
 	public void clear() {
 		super.clear();
-		TextureCache.clearCache();
+		TextureLoader.clearCache();
 	}
 
 }

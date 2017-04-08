@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 
+import mbeb.opengldefault.gl.texture.TextureLoader;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
 
@@ -25,7 +26,7 @@ public class Texture {
 	private int textureHandle;
 
 	public Texture(int width, int height) {
-		this(TextureCache.loadTexture(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB), false,
+		this(TextureLoader.loadTexture(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB), false,
 				GL_CLAMP_TO_EDGE));
 	}
 
@@ -34,7 +35,7 @@ public class Texture {
 	 * @param image the input BufferedImage
 	 */
 	public Texture(BufferedImage image) {
-		this(TextureCache.loadTexture(image, false, GL_CLAMP_TO_EDGE,
+		this(TextureLoader.loadTexture(image, false, GL_CLAMP_TO_EDGE,
 				GL_CLAMP_TO_EDGE));
 	}
 
@@ -45,7 +46,7 @@ public class Texture {
 	 *            where to load the image from
 	 */
 	public Texture(String path) {
-		this(TextureCache.loadTexture(path));
+		this(TextureLoader.loadTexture(path));
 	}
 
 	/**

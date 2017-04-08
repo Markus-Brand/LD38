@@ -3,6 +3,7 @@ package mbeb.opengldefault.rendering.textures;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
 
+import mbeb.opengldefault.gl.texture.TextureLoader;
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.shader.*;
 
@@ -20,7 +21,7 @@ public class CubeMap extends Texture {
 	}
 
 	public CubeMap(String path) {
-		this(TextureCache.loadCubeMap(path));
+		this(TextureLoader.loadCubeMap(path));
 	}
 
 	/**

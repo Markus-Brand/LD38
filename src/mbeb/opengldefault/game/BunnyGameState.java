@@ -41,7 +41,7 @@ import mbeb.opengldefault.rendering.renderable.TexturedRenderable;
 import mbeb.opengldefault.rendering.shader.ShaderProgram;
 import mbeb.opengldefault.rendering.shader.UBOManager;
 import mbeb.opengldefault.rendering.textures.Texture;
-import mbeb.opengldefault.rendering.textures.TextureCache;
+import mbeb.opengldefault.gl.texture.TextureLoader;
 import mbeb.opengldefault.scene.Scene;
 import mbeb.opengldefault.scene.SceneObject;
 import mbeb.opengldefault.scene.behaviour.BezierBehaviour;
@@ -297,7 +297,7 @@ public class BunnyGameState implements GameState {
 
 	@Override
 	public void clear() {
-		TextureCache.clearCache();
+		TextureLoader.clearCache();
 	}
 
 	@Override
