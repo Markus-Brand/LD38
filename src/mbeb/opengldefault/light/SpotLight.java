@@ -2,6 +2,7 @@ package mbeb.opengldefault.light;
 
 import java.awt.*;
 
+import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import org.joml.*;
 
 import mbeb.opengldefault.logging.*;
@@ -334,5 +335,18 @@ public class SpotLight extends Light implements LimitedLight {
 
 		return data;
 	}
-
+	
+	@Override
+	public void writeTo(GLBufferWriter writer) {
+		writer
+			.fillBlock()
+			.write(position)
+			.write(direction)
+			.write(color)
+			.write((float) java.lang.Math.cos(java.lang.Math.toRadians(innerCutoff)))
+			.write((float) java.lang.Math.cos(java.lang.Math.toRadians(outerCutoff)))
+			.write(constant)
+			.write(linear)
+			.write(quadratic);
+	}
 }

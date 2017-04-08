@@ -2,6 +2,7 @@ package mbeb.opengldefault.light;
 
 import java.awt.*;
 
+import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import org.joml.*;
 
 import mbeb.opengldefault.logging.*;
@@ -86,5 +87,12 @@ public class DirectionalLight extends Light {
 
 		return data;
 	}
-
+	
+	@Override
+	public void writeTo(GLBufferWriter writer) {
+		writer
+			.fillBlock()
+			.write(direction)
+			.write(color);
+	}
 }

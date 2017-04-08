@@ -2,6 +2,7 @@ package mbeb.opengldefault.light;
 
 import java.awt.*;
 
+import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import org.joml.*;
 
 /**
@@ -208,5 +209,16 @@ public class PointLight extends Light implements LimitedLight {
 		data[9] = quadratic;
 
 		return data;
+	}
+	
+	@Override
+	public void writeTo(GLBufferWriter writer) {
+		writer
+			.fillBlock()
+			.write(position)
+			.write(color)
+			.write(constant)
+			.write(linear)
+			.write(quadratic);
 	}
 }

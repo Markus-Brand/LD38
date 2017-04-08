@@ -2,13 +2,12 @@ package mbeb.opengldefault.light;
 
 import static org.lwjgl.opengl.GL15.*;
 
-import java.nio.*;
 import java.util.*;
 import java.util.concurrent.atomic.*;
 
 import mbeb.opengldefault.constants.Constants;
+import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import mbeb.opengldefault.gl.buffer.UniformBuffer;
-import org.lwjgl.*;
 
 import mbeb.opengldefault.rendering.shader.*;
 
@@ -52,15 +51,20 @@ public abstract class LightTypeManager {
 	 * adjusts capacity of UBO and keeps it's data up to date
 	 */
 	private void resizeBuffer() {
+		int bufferSize = getBufferSize() + Constants.BLOCK_SIZE;
+		
 		UBO.bind();
-
-		UBO.bufferData(getBufferSize() + Constants.BLOCK_SIZE, GL_STATIC_DRAW);
-
+		
+		UBO.bufferData(bufferSize, GL_STATIC_DRAW);
 		UBO.bindBufferBase();
+		
+		GLBufferWriter combinedWriter = UBO.writer(bufferSize);
 
-		saveBufferSize();
-		bufferData();
+		saveBufferSize(combinedWriter);
+		bufferData(combinedWriter);
 
+		combinedWriter.flush();
+		
 		UBO.unbind();
 	}
 
@@ -70,27 +74,27 @@ public abstract class LightTypeManager {
 	private int getBufferSize() {
 		return lightCapacity * lightBlockSize * Constants.BLOCK_SIZE;
 	}
-
+	
 	/**
 	 * stores the buffer size at the beginning of the UBO
 	 */
 	private void saveBufferSize() {
-		UBO.bind();
-
-		final IntBuffer sizeBuffer = BufferUtils.createIntBuffer(4);
-		sizeBuffer.put(lights.size());
-
-		UBO.bufferSubData(0, sizeBuffer);
+		saveBufferSize(UBO.writer(Constants.INT_SIZE)).flush();
+	}
+	
+	/**
+	 * stores the buffer size at the beginning of the UBO
+	 */
+	private GLBufferWriter saveBufferSize(GLBufferWriter writer) {
+		writer.write(lights.size());
+		return writer;
 	}
 
 	/**
 	 * stores the data for each light in the UBO
 	 */
-	private void bufferData() {
-		final FloatBuffer dataBuffer = BufferUtils.createFloatBuffer(getBufferSize());
-
-		lights.forEach((final Light light) -> dataBuffer.put(light.getData()));
-		UBO.bufferSubData(Constants.BLOCK_SIZE, dataBuffer);
+	private void bufferData(GLBufferWriter writer) {
+		lights.forEach(writer::write);
 	}
 
 	/**
@@ -119,8 +123,8 @@ public abstract class LightTypeManager {
 			final int offset = getTotalBufferOffset(lights.size());
 			lights.add(light);
 			updateSingleLightData(light, offset);
+			saveBufferSize();
 		}
-		saveBufferSize();
 		light.setClean();
 	}
 
@@ -142,14 +146,9 @@ public abstract class LightTypeManager {
 	 *            the position that the light will have afterwards
 	 */
 	private void updateSingleLightData(final Light light, final int offset) {
-		UBO.bind();
-		final FloatBuffer lightBuffer = BufferUtils.createFloatBuffer(lightBlockSize * 4);
-		lightBuffer.put(light.getData());
-
 		final int bufferSizeStorageSpace = Constants.BLOCK_SIZE; //one block reserved space for this at the beginning of the UBO
-		UBO.bufferSubData(bufferSizeStorageSpace + offset, lightBuffer);
-
-		UBO.unbind();
+		UBO.writer(lightBlockSize * Constants.BLOCK_SIZE, bufferSizeStorageSpace + offset)
+				.write(light).flush();
 	}
 
 	/**
@@ -185,7 +184,6 @@ public abstract class LightTypeManager {
 		lights.forEach((final Light light) -> {
 			if (light.isDirty()) {
 				updateLightData(light, lightIndex.get());
-				light.setClean();
 			}
 			lightIndex.incrementAndGet();
 		});
@@ -195,20 +193,24 @@ public abstract class LightTypeManager {
 	 * all Lights that are marked as deleted will be removed here
 	 */
 	private void removeDeletedLightsFromList() {
+		boolean sizeDecreased = false;
 		for (int i = 0; i < lights.size(); i++) {
 			if (lights.get(i).shouldBeRemoved()) {
 				if (i == lights.size() - 1) {
 					lights.remove(i);
+					sizeDecreased = true;
 					saveBufferSize();
 					break;
 				}
 				final Light swap = lights.get(lights.size() - 1);
 				lights.remove(lights.size() - 1);
-				saveBufferSize();
 				lights.set(i, swap);
 				swap.setDirty();
 				i--;
 			}
+		}
+		if (sizeDecreased) {
+			saveBufferSize();
 		}
 	}
 }

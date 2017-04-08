@@ -6,7 +6,11 @@ package mbeb.opengldefault.constants;
  * @author Potti
  */
 public class Constants {
-
+	
+	/**
+	 * The size of an int in bytes
+	 */
+	public static final int INT_SIZE = 4;
 	/**
 	 * The size of a float in bytes
 	 */

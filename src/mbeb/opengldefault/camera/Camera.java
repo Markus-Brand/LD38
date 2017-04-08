@@ -128,8 +128,6 @@ public class Camera implements ICamera {
 				.write(getProjectionView())
 				.write(getSkyboxView())
 				.flush();
-		
-		UBO.bind();
 	}
 
 	@Override

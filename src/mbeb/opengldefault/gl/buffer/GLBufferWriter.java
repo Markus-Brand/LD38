@@ -43,6 +43,12 @@ public class GLBufferWriter {
 		return this;
 	}
 	
+	public GLBufferWriter write(float value) {
+		makeSpaceFor(1);
+		writeBuffer.putFloat(value);
+		return this;
+	}
+	
 	public GLBufferWriter write(Matrix4f value) {
 		makeSpaceFor(16);
 		value.get(writeBuffer);
@@ -50,27 +56,24 @@ public class GLBufferWriter {
 		return this;
 	}
 	
-	public GLBufferWriter write(float value) {
-		makeSpaceFor(1);
-		writeBuffer.putFloat(value);
-		return this;
-	}
-	
 	public GLBufferWriter write(Vector2f value) {
 		makeSpaceFor(2);
 		value.get(writeBuffer);
+		writeBuffer.position(writeBuffer.position() + Constants.VEC2_SIZE);
 		return this;
 	}
 	
 	public GLBufferWriter write(Vector3f value) {
 		makeSpaceFor(3);
 		value.get(writeBuffer);
+		writeBuffer.position(writeBuffer.position() + Constants.VEC3_SIZE);
 		return this;
 	}
 	
 	public GLBufferWriter write(Vector4f value) {
 		makeSpaceFor(4);
 		value.get(writeBuffer);
+		writeBuffer.position(writeBuffer.position() + Constants.VEC4_SIZE);
 		return this;
 	}
 	
@@ -94,6 +97,11 @@ public class GLBufferWriter {
 	 */
 	public GLBufferWriter write(Texture value) {
 		write(value.getTextureUnit());
+		return this;
+	}
+	
+	public GLBufferWriter write(GLBufferWritable value) {
+		value.writeTo(this);
 		return this;
 	}
 //</editor-fold>
@@ -128,8 +136,9 @@ public class GLBufferWriter {
 	/**
 	 * fills up the byteBuffer with zero-floats until the next block is reached
 	 */
-	private void fillBlock() {
+	public GLBufferWriter fillBlock() {
 		fill(freeFloats());
+		return this;
 	}
 	
 	/**
