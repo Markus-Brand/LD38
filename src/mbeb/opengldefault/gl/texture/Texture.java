@@ -4,7 +4,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL14.GL_MIRRORED_REPEAT;
-import static org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY;
+import static org.lwjgl.opengl.GL30.*;
 
 import mbeb.opengldefault.gl.GLObject;
 import mbeb.opengldefault.logging.GLErrors;
@@ -165,6 +165,116 @@ public abstract class Texture extends GLObject {
 
 		/**
 		 * @return the OpenGL enum representing this magnification filter
+		 */
+		public int getGLEnum() {
+			return glEnum;
+		}
+	}
+
+	/**
+	 * The comparison mode of an OpenGL texture with a depth component.
+	 * This determines whether it can be used as a normal or shadow sampler.
+	 */
+	public enum CompareMode {
+		/**
+		 * The texture cannot be used as a shadow sampler, the depth is returned as the r component.
+		 */
+		NONE(GL_NONE),
+		/**
+		 * The texture can be used as a shadow sampler, the depth is compared to an additional given component.
+		 */
+		REFERENCE(GL_COMPARE_REF_TO_TEXTURE);
+
+		private int glEnum;
+
+		CompareMode(int glEnum) {
+			this.glEnum = glEnum;
+		}
+
+		/**
+		 * @return the OpenGL enum representing this comparison mode
+		 */
+		public int getGLEnum() {
+			return glEnum;
+		}
+	}
+
+	/**
+	 * The comparison function of an OpenGL texture with a depth component and {@link CompareMode#REFERENCE}.
+	 * This determines when a comparison with this texture passes.
+	 */
+	public enum CompareFunction {
+		ALWAYS(GL_ALWAYS), NEVER(GL_NEVER), GREATER(GL_GREATER), GREATER_EQUAL(GL_GEQUAL), LESS(GL_LESS), LESS_EQUAL(GL_LEQUAL), EQUAL(GL_EQUAL), NOT_EQUAL(GL_NOTEQUAL);
+
+		private int glEnum;
+
+		CompareFunction(int glEnum) {
+			this.glEnum = glEnum;
+		}
+
+		/**
+		 * @return the OpenGL enum representing this comparison function
+		 */
+		public int getGLEnum() {
+			return glEnum;
+		}
+	}
+
+	/**
+	 * The internal format of an OpenGL texture.
+	 * This determines the number of components for this texture.
+	 */
+	public enum InternalFormat {
+		RED(GL_RED), RG(GL_RG), RGB(GL_RGB), RGBA(GL_RGBA), RGBA8(GL_RGBA8), DEPTH(GL_DEPTH_COMPONENT), STENCIL(GL_STENCIL_INDEX);
+
+		private int glEnum;
+
+		InternalFormat(int glEnum) {
+			this.glEnum = glEnum;
+		}
+
+		/**
+		 * @return the OpenGL enum representing this internal format
+		 */
+		public int getGLEnum() {
+			return glEnum;
+		}
+	}
+
+	/**
+	 * The type of data passed to OpenGL to initialize a texture.
+	 */
+	public enum DataType {
+		UNSIGNED_BYTE(GL_UNSIGNED_BYTE), HALF_FLOAT(GL_HALF_FLOAT), FLOAT(GL_FLOAT);
+
+		private int glEnum;
+
+		DataType(int glEnum) {
+			this.glEnum = glEnum;
+		}
+
+		/**
+		 * @return the OpenGL enum representing this data type
+		 */
+		public int getGLEnum() {
+			return glEnum;
+		}
+	}
+
+	/**
+	 * The format of the data passed to OpenGL to initialize a texture.
+	 */
+	public enum Format {
+		RED(GL_RED), RG(GL_RG), RGB(GL_RGB), RGBA(GL_RGBA), DEPTH(GL_DEPTH_COMPONENT), STENCIL(GL_STENCIL_INDEX);
+
+		private int glEnum;
+
+		Format(int glEnum) {
+			this.glEnum = glEnum;
+		}
+
+		/**
+		 * @return the OpenGL enum representing this format
 		 */
 		public int getGLEnum() {
 			return glEnum;
