@@ -40,6 +40,10 @@ public class ContextBindings {
 	 * If a texture is unbound from its current unit, the unit is added to this queue.
 	 */
 	private static Queue<Integer> freeTextureUnits = new LinkedList<>();
+	/**
+	 * The number of the currently active texture unit, to prevent unnecessary calls to glActiveTexture.
+	 */
+	private static Integer activeTextureUnit = null;
 
 	//METHODS FOR SHADER
 
@@ -132,4 +136,20 @@ public class ContextBindings {
 		}
 	}
 
+	/**
+	 * @return the currently active texture unit
+	 */
+	public static Integer getActiveTextureUnit() {
+		return activeTextureUnit;
+	}
+
+	/**
+	 * @param unit the new active texture unit
+	 * @return whether the texture unit was changed
+	 */
+	public static boolean setActiveTextureUnit(Integer unit) {
+		boolean different = activeTextureUnit != null && activeTextureUnit.equals(unit);
+		activeTextureUnit = unit;
+		return different;
+	}
 }

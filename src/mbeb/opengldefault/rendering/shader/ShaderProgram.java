@@ -8,6 +8,7 @@ import java.util.*;
 
 import mbeb.opengldefault.constants.Constants;
 import mbeb.opengldefault.gl.buffer.UniformBuffer;
+import mbeb.opengldefault.gl.texture.Texture;
 import org.joml.*;
 import org.lwjgl.*;
 import org.lwjgl.opengl.*;
@@ -382,6 +383,31 @@ public class ShaderProgram {
 	 */
 	public int setUniform(final String name, final Matrix4f value) {
 		return setUniform(name, value, false);
+	}
+
+	/**
+	 * Attempts to set the value of the given uniform to the given texture.
+	 * @param name
+	 * 		the name of the uniform
+	 * @param value
+	 * 		the texture
+	 * @param forceBind
+	 * 		whether the texture will be bound if it is not already bound
+	 * @return the location of the set uniform or -1 if an error occurred
+	 */
+	public int setUniform(final String name, final Texture value, final boolean forceBind) {
+		if (!value.isBound()) {
+			if (forceBind) {
+				if (!value.bind()) {
+					Log.error(TAG, "Cannot set unbound texture as uniform.");
+					return -1;
+				}
+			} else {
+				Log.error(TAG, "Cannot set unbound texture as uniform.");
+				return -1;
+			}
+		}
+		return setUniform(name, value.getTextureUnit());
 	}
 
 	//</editor-fold>
