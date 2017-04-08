@@ -3,8 +3,10 @@ package mbeb.opengldefault.gl.texture;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.opengl.GL13.*;
-import static org.lwjgl.opengl.GL14.GL_MIRRORED_REPEAT;
+import static org.lwjgl.opengl.GL14.*;
 import static org.lwjgl.opengl.GL30.*;
+
+import java.awt.*;
 
 import mbeb.opengldefault.gl.GLObject;
 import mbeb.opengldefault.logging.GLErrors;
@@ -464,9 +466,7 @@ public abstract class Texture extends GLObject {
 		if (this.beginTransaction()) {
 			glTexParameteri(this.getType().getGLEnum(), parameter, value);
 			boolean success = !GLErrors.checkForError(TAG, "glTexParameteri");
-			if (!this.finishTransaction()) {
-				Log.error(TAG, "Failed to finish transaction.");
-			}
+			this.finishTransaction();
 			return success;
 		} else {
 			return false;
@@ -547,6 +547,72 @@ public abstract class Texture extends GLObject {
 		}
 		return success;
 	}
+
+	/**
+	 * Sets the comparison mode of this texture.
+	 *
+	 * @param mode
+	 *            the mode to set
+	 * @return whether the operation succeeded
+	 */
+	public boolean setCompareMode(CompareMode mode) {
+		boolean success = this.setParameter(GL_TEXTURE_COMPARE_MODE, mode.getGLEnum());
+		if (!success) {
+			Log.error(TAG, "Failed to set TEXTURE_COMPARE_MODE.");
+		}
+		return success;
+	}
+
+	/**
+	 * Sets the comparison function of this texture.
+	 *
+	 * @param function
+	 *            the function to set
+	 * @return whether the operation succeeded
+	 */
+	public boolean setCompareFunction(CompareFunction function) {
+		boolean success = this.setParameter(GL_TEXTURE_COMPARE_FUNC, function.getGLEnum());
+		if (!success) {
+			Log.error(TAG, "Failed to set TEXTURE_COMPARE_FUNC.");
+		}
+		return success;
+	}
+
+	/**
+	 * Sets the border color of this texture.
+	 * 
+	 * @param color
+	 *            the color to set
+	 * @return whether the operation succeeded
+	 */
+	public boolean setBorderColor(Color color) {
+		if (this.beginTransaction()) {
+			final float maxValue = 255.0f;
+			final float[] colorData = new float[] {color.getRed() / maxValue, color.getGreen() / maxValue, color.getBlue() / maxValue, color.getAlpha() / maxValue};
+			glTexParameterfv(this.getType().getGLEnum(), GL_TEXTURE_BORDER_COLOR, colorData);
+			boolean success = !GLErrors.checkForError(TAG, "glTexParameterfv");
+			this.finishTransaction();
+			return success;
+		} else {
+			return false;
+		}
+	}
 	//</editor-fold>
+
+	/**
+	 * Generates mipmap levels for this texture.
+	 * 
+	 * @return whether the operation succeeded
+	 */
+	public boolean generateMipmaps() {
+		if (this.beginTransaction()) {
+			glGenerateMipmap(this.getType().getGLEnum());
+			boolean success = !GLErrors.checkForError(TAG, "glGenerateMipmap");
+			this.finishTransaction();
+			return success;
+		} else {
+			return false;
+		}
+	}
 
 }
