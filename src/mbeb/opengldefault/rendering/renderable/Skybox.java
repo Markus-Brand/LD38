@@ -4,7 +4,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.rendering.shader.*;
-import mbeb.opengldefault.rendering.textures.*;
+import mbeb.opengldefault.gl.texture.*;
 
 /**
  * Uses a {@link CubeMap} to render a Skybox with the Skybox {@link ShaderProgram}
@@ -51,7 +51,7 @@ public class Skybox {
 		GLErrors.checkForError(TAG, "glDepthMask");
 		glDepthFunc(GL_LEQUAL);
 		GLErrors.checkForError(TAG, "glDepthFunc");
-		cubeMap.bind(shader);
+		shader.setUniform("u_cubeMap", cubeMap, true);
 		skyboxRenderable.render(shader);
 		glDepthFunc(GL_LESS);
 		GLErrors.checkForError(TAG, "glDepthFunc");

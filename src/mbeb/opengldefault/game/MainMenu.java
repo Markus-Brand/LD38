@@ -10,6 +10,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
 import java.awt.Color;
 import java.awt.Font;
 
+import mbeb.opengldefault.gl.texture.Texture2D;
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 

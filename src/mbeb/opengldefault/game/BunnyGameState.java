@@ -25,6 +25,7 @@ import mbeb.opengldefault.camera.ICamera;
 import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.curves.BezierCurve;
 import mbeb.opengldefault.curves.BezierCurve.ControlPointInputMode;
+import mbeb.opengldefault.gl.texture.Texture2D;
 import mbeb.opengldefault.gui.TextGUI;
 import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.light.DirectionalLight;
@@ -40,7 +41,6 @@ import mbeb.opengldefault.rendering.renderable.Skybox;
 import mbeb.opengldefault.rendering.renderable.TexturedRenderable;
 import mbeb.opengldefault.rendering.shader.ShaderProgram;
 import mbeb.opengldefault.rendering.shader.UBOManager;
-import mbeb.opengldefault.rendering.textures.Texture;
 import mbeb.opengldefault.gl.texture.TextureLoader;
 import mbeb.opengldefault.scene.Scene;
 import mbeb.opengldefault.scene.SceneObject;
@@ -113,8 +113,8 @@ public class BunnyGameState implements GameState {
 
 		AnimatedMesh playerAnim = new ObjectLoader().loadFromFileAnim("player.fbx");
 		playerAnim.setTransform(MeshFlip);
-		Texture bunnyTexture = new Texture("player.png");
-		Texture lampTexture = new Texture("lamp.png");
+		Texture2D bunnyTexture = new Texture2D("player.png");
+		Texture2D lampTexture = new Texture2D("lamp.png");
 		playerAnim.getSkeleton().printRecursive("");
 
 		final AnimatedMesh bunnyAnim = new ObjectLoader().loadFromFileAnim("ohrenFlackern.fbx");
