@@ -51,21 +51,14 @@ public abstract class LightTypeManager {
 	 * adjusts capacity of UBO and keeps it's data up to date
 	 */
 	private void resizeBuffer() {
-		int bufferSize = getBufferSize() + Constants.BLOCK_SIZE;
-		
 		UBO.bind();
-		
-		UBO.bufferData(bufferSize, GL_STATIC_DRAW);
+		UBO.setBufferSize(getBufferSize() + Constants.BLOCK_SIZE);
 		UBO.bindBufferBase();
 		
-		GLBufferWriter combinedWriter = UBO.writer(bufferSize);
-
+		GLBufferWriter combinedWriter = UBO.writer();
 		saveBufferSize(combinedWriter);
 		bufferData(combinedWriter);
-
 		combinedWriter.flush();
-		
-		UBO.unbind();
 	}
 
 	/**
@@ -93,8 +86,9 @@ public abstract class LightTypeManager {
 	/**
 	 * stores the data for each light in the UBO
 	 */
-	private void bufferData(GLBufferWriter writer) {
+	private GLBufferWriter bufferData(GLBufferWriter writer) {
 		lights.forEach(writer::write);
+		return writer;
 	}
 
 	/**

@@ -122,12 +122,12 @@ public class Camera implements ICamera {
 
 	@Override
 	public void updateUniformBlock() {
-		UBO.writer(Constants.MAT4_SIZE * 4)
-				.write(getProjection())
-				.write(getView())
-				.write(getProjectionView())
-				.write(getSkyboxView())
-				.flush();
+		UBO.writer()
+			.write(getProjection())
+			.write(getView())
+			.write(getProjectionView())
+			.write(getSkyboxView())
+			.flush();
 	}
 
 	@Override
