@@ -597,6 +597,22 @@ public abstract class Texture extends GLObject {
 			return false;
 		}
 	}
+
+	public boolean setBaseLevel(int level) {
+		boolean success = this.setParameter(GL_TEXTURE_BASE_LEVEL, level);
+		if(!success){
+			Log.error(TAG, "Failed to set TEXTURE_BASE_LEVEL.");
+		}
+		return success;
+	}
+
+	public boolean setMaxLevel(int level) {
+		boolean success = this.setParameter(GL_TEXTURE_MAX_LEVEL, level);
+		if(!success){
+			Log.error(TAG, "Failed to set TEXTURE_MAX_LEVEL.");
+		}
+		return success;
+	}
 	//</editor-fold>
 
 	/**
