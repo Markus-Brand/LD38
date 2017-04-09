@@ -257,15 +257,7 @@ public class BunnyGameState implements GameState {
 			animBunny.ensureRunning("party");
 		}
 		
-		
-		curveObj.setTransformation(new BoneTransformation(
-				new Vector3f(50, 0, 0),
-				new Quaternionf(new AxisAngle4f(timePassed / -50, new Vector3f(0, 1, 0).normalize())),
-				new Vector3f(1, 0.2f, 1)));
-		
-		for (int i = 0; i < 10; i++) {
-			mainBunny.update(deltaTime);
-		}
+		mainBunny.update(deltaTime);
 		followingBunny1.update(deltaTime);
 		followingBunny2.update(deltaTime);
 		followingBunny3.update(deltaTime);

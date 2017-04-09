@@ -8,7 +8,7 @@ import mbeb.opengldefault.logging.*;
 
 /**
  * A Bezier Curve that can be used as a path for a camera or an entity.
- * Example usage in {@link mbeb.opengldefault.camera.BezierCamera}
+ * Example usage in {@link mbeb.opengldefault.scene.behaviour.BezierBehaviour}
  */
 public class BezierCurve {
 
@@ -39,7 +39,7 @@ public class BezierCurve {
 	/** The segments lengths */
 	private List<Float> segmentLengths;
 	/** Total length of all segments */
-	private float maxLength;
+	private float totalLength;
 	/** The input mode of the ControlPoint Data */
 	private final ControlPointInputMode mode;
 
@@ -341,13 +341,13 @@ public class BezierCurve {
 					lastPos = nextPos;
 				}
 				segmentLengths.add(thisSegmentsLength);
-				maxLength += thisSegmentsLength;
+				totalLength += thisSegmentsLength;
 			}
 		} else {
 			for (int i = 0; i < controlPoints.size() - 1; i += 3) {
 				segmentLengths.add(1f);
 			}
-			maxLength = segmentLengths.size();
+			totalLength = segmentLengths.size();
 		}
 	}
 
@@ -359,9 +359,9 @@ public class BezierCurve {
 	 */
 	public final void setSegmentLengths(final List<Float> segmentLengths) {
 		this.segmentLengths = segmentLengths;
-		maxLength = 0;
+		totalLength = 0;
 		for (final float length : segmentLengths) {
-			maxLength += length;
+			totalLength += length;
 		}
 	}
 
@@ -369,7 +369,7 @@ public class BezierCurve {
 	 * Get Position of the Curve with given progress
 	 *
 	 * @param progress
-	 *            total progress on the curve
+	 *            total progress on the curve in [0, curve.getTotalLength()]
 	 * @return resulting position
 	 */
 	public Vector3f getPosition(final float progress) {
@@ -380,7 +380,9 @@ public class BezierCurve {
 	 * Get Position of the Curve with given progress
 	 *
 	 * @param progress
-	 *            total progress on the curve
+	 *            total progress on the curve in [0, curve.getTotalLength()]
+	 * @param modelTransform
+	 *            a matrix to apply to the result
 	 * @return resulting position
 	 */
 	public Vector3f getPosition(final float progress, final Matrix4f modelTransform) {
@@ -468,8 +470,8 @@ public class BezierCurve {
 	 *
 	 * @return the curve length
 	 */
-	public float getMaxLength() {
-		return maxLength;
+	public float getTotalLength() {
+		return totalLength;
 	}
 
 }
