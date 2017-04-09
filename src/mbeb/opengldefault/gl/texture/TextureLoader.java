@@ -84,7 +84,7 @@ public class TextureLoader {
 	 *            Path of the Image
 	 * @return loaded BufferedImage
 	 */
-	private static BufferedImage loadBufferedImage(String path) {
+	static BufferedImage loadBufferedImage(String path) {
 		InputStream in = ClassLoader.getSystemResourceAsStream("textures/" + path);
 		BufferedImage image = null;
 		try {
@@ -173,6 +173,18 @@ public class TextureLoader {
 			return texture;
 		}
 		return texture;
+	}
+
+	public static BufferedImage[] loadCubeMapImages(String path) {
+		String imageFormat = ".jpg";
+		BufferedImage[] img = new BufferedImage[6];
+		img[0] = loadBufferedImage(path + "_r" + imageFormat);
+		img[1] = loadBufferedImage(path + "_l" + imageFormat);
+		img[2] = loadBufferedImage(path + "_top" + imageFormat);
+		img[3] = loadBufferedImage(path + "_bot" + imageFormat);
+		img[4] = loadBufferedImage(path + "_b" + imageFormat);
+		img[5] = loadBufferedImage(path + "_f" + imageFormat);
+		return img;
 	}
 
 	/**
