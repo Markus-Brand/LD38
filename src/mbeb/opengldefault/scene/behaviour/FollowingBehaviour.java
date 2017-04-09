@@ -46,9 +46,4 @@ public class FollowingBehaviour extends ReferenceEntityBehaviour {
 		return getReference().getPosition().sub(entity.getPosition(), new Vector3f());
 	}
 
-	@Override
-	public boolean triggers(IEntity entity) {
-		return true;
-	}
-
 }

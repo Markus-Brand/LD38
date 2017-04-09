@@ -4,16 +4,11 @@ import mbeb.opengldefault.scene.entities.IEntity;
 import org.joml.Vector3f;
 
 /**
- * This behaviour automatically rotates an object based on their movement path
+ * This behaviour automatically rotates an object based on its movement path
  */
 public class AutoRotateBehaviour implements IBehaviour {
 	
 	private Vector3f lastPosition = null;
-	
-	@Override
-	public boolean triggers(IEntity entity) {
-		return true;
-	}
 	
 	@Override
 	public void update(double deltaTime, IEntity entity) {

@@ -18,7 +18,7 @@ public class AnimatedMesh implements IRenderable {
 	/** the Bone-tree animations rely on */
 	private final Bone skeleton;
 	/** all animations associated with this mesh */
-	private List<Animation> animations;
+	private Map<String, Animation> animations;
 
 	/** how much my boundingBox could be bigger than the one of the static mesh */
 	private float boundingBoxSizeFactor;
@@ -50,16 +50,16 @@ public class AnimatedMesh implements IRenderable {
 		return mesh;
 	}
 
-	public List<Animation> getAnimations() {
+	public Map<String, Animation> getAnimations() {
 		if (animations == null) {
-			animations = new ArrayList<>();
+			animations = new HashMap<>();
 		}
 		return animations;
 	}
 
 	public void addAnimation(Animation anim) {
 		anim.setSkeleton(skeleton);
-		getAnimations().add(anim);
+		getAnimations().put(anim.getName(), anim);
 	}
 
 	public Bone getSkeleton() {
@@ -74,12 +74,7 @@ public class AnimatedMesh implements IRenderable {
 	 * @return null if no such animation was found
 	 */
 	public Animation getAnimationByName(String name) {
-		for (Animation animation : getAnimations()) {
-			if (animation.getName().equals(name)) {
-				return animation;
-			}
-		}
-		return null;
+		return getAnimations().get(name);
 	}
 
 	/**

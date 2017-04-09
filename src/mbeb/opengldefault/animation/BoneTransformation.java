@@ -70,7 +70,7 @@ public class BoneTransformation {
 	}
 
 	/**
-	 * createa atrnsformation that translates and rotates
+	 * create a new transformation that translates and rotates
 	 * @param position
 	 * @param rotation
 	 */
@@ -79,13 +79,13 @@ public class BoneTransformation {
 	}
 
 	/**
-	 * create a new BoneTransformation based on the lor-rot-scale - components. Leave null on components you don't intend to use
+	 * create a new BoneTransformation based on the loc-rot-scale - components. Leave null on components you don't intend to use
 	 * @param position
 	 * @param rotation
 	 * @param scale
 	 */
 	public BoneTransformation(Vector3f position, Quaternionf rotation, Vector3f scale) {
-		this.position = position != null ? position : new Vector3f(0);
+		this.position = position != null ? position : new Vector3f();
 		this.rotation = rotation != null ? rotation : new Quaternionf();
 		this.scale = scale != null ? scale : new Vector3f(1);
 		partsRepresentationValid = true;
@@ -137,16 +137,9 @@ public class BoneTransformation {
 	 */
 	private void ensurePartsRepresentationValid() {
 		if (!partsRepresentationValid) {
-			Log.assertTrue(TAG, matrixRepresentationValid, "Undefined Transformation");
-			if (position == null) {
-				position = matrix.getTranslation(new Vector3f());
-			}
-			if (rotation == null) {
-				rotation = matrix.getRotation(new AxisAngle4f()).get(new Quaternionf());
-			}
-			if (scale == null) {
-				scale = matrix.getScale(new Vector3f());
-			}
+			getPosition();
+			getRotation();
+			getScale();
 			partsRepresentationValid = true;
 		}
 	}

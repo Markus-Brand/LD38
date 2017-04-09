@@ -289,7 +289,7 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 	}
 
 	/**
-	 * Getter for the position of the center of the BoundingBox
+	 * Getter for the position of this object in global space
 	 *
 	 * @return Objects position
 	 */
@@ -298,8 +298,7 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 	}
 
 	/**
-	 *
-	 * @param newPosition global
+	 * @param newPosition a new position for this sceneObject (in global space)
 	 */
 	public void setGlobalPosition(Vector3f newPosition) {
 		Matrix4f inverseMatrix = getParentGlobalTranform().asMatrix().invert(new Matrix4f());

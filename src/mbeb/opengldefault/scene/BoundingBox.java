@@ -240,16 +240,16 @@ public class BoundingBox {
 		return Streamerator.map(getGlobalCorners(parentTransform), camera::getPosOnScreen);
 	}
 
-	private BoundingBox getGlobalBoundinBox(final Matrix4f parentTransform) {
+	private BoundingBox getGlobalBoundingBox(final Matrix4f parentTransform) {
 		final List<Vector4f> globalCorners = Streamerator.asList(getGlobalCorners(parentTransform));
 
-
-		float minX = globalCorners.get(0).x;
-		float minY = globalCorners.get(0).y;
-		float minZ = globalCorners.get(0).z;
-		float maxX = globalCorners.get(0).x;
-		float maxY = globalCorners.get(0).y;
-		float maxZ = globalCorners.get(0).z;
+		Vector4f someCorner = globalCorners.get(0);
+		float minX = someCorner.x;
+		float minY = someCorner.y;
+		float minZ = someCorner.z;
+		float maxX = someCorner.x;
+		float maxY = someCorner.y;
+		float maxZ = someCorner.z;
 
 		for (Vector4f globalCorner : globalCorners.subList(1, globalCorners.size() - 1)) {
 			minX = java.lang.Math.min(globalCorner.x, minX);
@@ -289,11 +289,11 @@ public class BoundingBox {
 		if (isEmpty()) {
 			return false;
 		}
-		BoundingBox globalBoundingBox = getGlobalBoundinBox(parentTransform);
+		BoundingBox globalBoundingBox = getGlobalBoundingBox(parentTransform);
 		Vector3f min = globalBoundingBox.getLocalStart();
 		Vector3f max = globalBoundingBox.getLocalEnd();
 		if (min == null || max == null) {
-			System.out.println(min + " " + max);
+			Log.error(TAG, "Undefined BoundingBox");
 			return false;
 		}
 		float tmin = (min.x - origin.x) / direction.x;
@@ -356,6 +356,7 @@ public class BoundingBox {
 	public static class Streamerator {
 
 		/**
+		 * create a new Iterator that iterates over the elements of an array
 		 * @param data the array to wrap
 		 * @param <T> array type
 		 * @return an iterator view of an array
@@ -378,7 +379,7 @@ public class BoundingBox {
 		}
 
 		/**
-		 *
+		 * lazily apply a mapping function to all the elements of an iterator
 		 * @param mapped an iterator to map
 		 * @param mapper the function to apply lazily to all elements of the iterator
 		 * @param <T> source type

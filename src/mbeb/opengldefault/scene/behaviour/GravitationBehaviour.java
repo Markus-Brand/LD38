@@ -35,11 +35,6 @@ public class GravitationBehaviour implements IBehaviour {
 	}
 
 	@Override
-	public boolean triggers(IEntity entity) {
-		return true;
-	}
-
-	@Override
 	public void update(double deltaTime, IEntity entity) {
 		float deltaTimef = (float) deltaTime;
 		Vector3f currentPosition = entity.getPosition();

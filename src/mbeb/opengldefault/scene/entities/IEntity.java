@@ -7,7 +7,7 @@ import org.joml.Vector3f;
 import java.util.Set;
 
 /**
- * A thing inside the world that can obtain behaviours
+ * A thing inside a world that can obtain behaviours
  */
 public interface IEntity extends IEntityConvertable {
 
@@ -90,7 +90,7 @@ public interface IEntity extends IEntityConvertable {
 	 * Add multiple behaviours with given priority.
 	 *
 	 * @param priority
-	 *            low value is higher priority
+	 *            a lower value prioritizes this behaviour over others with higher "priority"-values
 	 * @param behaviours
 	 *            the Behaviours to execute in parallel
 	 * @return this, for chaining

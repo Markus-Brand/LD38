@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 public class EntityWorld {
 	
 	/**
-	 * al the entities in this world
+	 * all the entities in this world
 	 */
 	private Collection<IEntity> entities;
 

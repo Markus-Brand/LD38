@@ -43,9 +43,4 @@ public class ParentBehaviour implements IBehaviour {
 		Vector3f globalDirection3 = new Vector3f(globalDirection.x, globalDirection.y, globalDirection.z).normalize();
 		entity.setDirection(globalDirection3);
 	}
-
-	@Override
-	public boolean triggers(IEntity entity) {
-		return true;
-	}
 }

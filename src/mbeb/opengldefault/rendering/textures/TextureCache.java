@@ -152,6 +152,8 @@ public class TextureCache {
 	 *
 	 * @param path
 	 *            Path in the texture folder
+	 * @param extension
+	 *            the image extension
 	 * @return OpenGL texture handle
 	 */
 	public static int loadCubeMap(String path, String extension) {
@@ -162,8 +164,8 @@ public class TextureCache {
 			BufferedImage[] img = new BufferedImage[6];
 			img[0] = loadBufferedImage(path + "_r." + extension);
 			img[1] = loadBufferedImage(path + "_l." + extension);
-			img[2] = loadBufferedImage(path + "_top." + extension);
-			img[3] = loadBufferedImage(path + "_bot." + extension);
+			img[2] = loadBufferedImage(path + "_u." + extension);
+			img[3] = loadBufferedImage(path + "_d." + extension);
 			img[4] = loadBufferedImage(path + "_b." + extension);
 			img[5] = loadBufferedImage(path + "_f." + extension);
 			texture = loadCubeMap(img);

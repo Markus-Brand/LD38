@@ -17,7 +17,9 @@ public interface IBehaviour {
 	 *            the Entity, that is affected by this behaviour
 	 * @return
 	 */
-	boolean triggers(IEntity entity);
+	default boolean triggers(IEntity entity) {
+		return true;
+	}
 
 	/**
 	 * Updates the entity with this behaviour

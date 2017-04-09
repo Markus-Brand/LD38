@@ -52,12 +52,12 @@ public class VisibleSceneGraphRenderer extends SceneGraphRenderer {
 		float maxZ = corners.get(0).z;
 		float minZ = corners.get(0).z;
 
-		for (final Vector3f e : corners) {
-			maxZ = java.lang.Math.max(maxZ, e.z);
-			minZ = java.lang.Math.min(minZ, e.z);
+		for (final Vector3f c : corners) {
+			maxZ = java.lang.Math.max(maxZ, c.z);
+			minZ = java.lang.Math.min(minZ, c.z);
 		}
 		//todo: could probably not work with giant objects
-		if ((maxZ > 1 || maxZ < 0) && (minZ > 1 || minZ < -1)) {
+		if (minZ > 1 || maxZ < -1) {
 			return false;
 		}
 
@@ -65,18 +65,16 @@ public class VisibleSceneGraphRenderer extends SceneGraphRenderer {
 		float minY = corners.get(0).y;
 		float maxX = corners.get(0).x;
 		float maxY = corners.get(0).y;
-		for (final Vector3f e: corners) {
-			minX = java.lang.Math.min(minX, e.x);
-			maxX = java.lang.Math.max(maxX, e.x);
-			minY = java.lang.Math.min(minY, e.y);
-			maxY = java.lang.Math.max(maxY, e.y);
+		for (final Vector3f c: corners) {
+			minX = java.lang.Math.min(minX, c.x);
+			maxX = java.lang.Math.max(maxX, c.x);
+			minY = java.lang.Math.min(minY, c.y);
+			maxY = java.lang.Math.max(maxY, c.y);
 		}
 
 		final boolean intersect = minX < 1 && maxX > -1 && minY < 1 && maxY > -1;
-		if (!intersect) {
-			return false;
-		}
-		return true;
+		
+		return intersect;
 	}
 
 }
