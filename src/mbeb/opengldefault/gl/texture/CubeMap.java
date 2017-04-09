@@ -68,7 +68,7 @@ public class CubeMap extends Texture {
 	public CubeMap (BufferedImage[] images) {
 		this();
 		this.ensureExists();
-		this.bind();
+		this.beginTransaction();
 		for (int i = 0; i < images.length; i++) {
 			ByteBuffer buffer = TextureLoader.generateBuffer(images[i], false);
 
@@ -76,7 +76,7 @@ public class CubeMap extends Texture {
 					0, Format.RGBA.getGLEnum(), DataType.UNSIGNED_BYTE.getGLEnum(), buffer);
 			GLErrors.checkForError(TAG, "glTexImage2D");
 		}
-		this.unbind();
+		this.finishTransaction();
 	}
 
 	public CubeMap(String path) {

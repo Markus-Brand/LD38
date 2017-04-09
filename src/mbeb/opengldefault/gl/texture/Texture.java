@@ -307,16 +307,16 @@ public abstract class Texture extends GLObject {
 	 * @return whether the operation succeeded
 	 */
 	protected static boolean setActiveTexture(Integer unit) {
-		if (ContextBindings.setActiveTextureUnit(unit)) {
+		//if (ContextBindings.setActiveTextureUnit(unit)) {
 			glActiveTexture(unit != null ? GL_TEXTURE0 + unit : 0);
 			boolean success = !GLErrors.checkForError(TAG, "Could not set active texture.");
 			if (!success) {
 				ContextBindings.setActiveTextureUnit(null);
 			}
 			return success;
-		} else {
-			return true;
-		}
+		//} else {
+		//	return true;
+		//}
 	}
 
 	/**

@@ -72,6 +72,7 @@ public class Texture2D extends Texture {
 		if(interpolate) {
 			this.setMagnificationFilter(MagnificationFilter.LINEAR);
 			this.setMinificationFilter(MinificationFilter.LINEAR_MIPMAP_LINEAR);
+			this.generateMipmaps();
 		} else {
 			this.setMagnificationFilter(MagnificationFilter.NEAREST);
 			this.setMinificationFilter(MinificationFilter.NEAREST_MIPMAP_NEAREST);

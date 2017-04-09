@@ -144,12 +144,13 @@ public class ContextBindings {
 	}
 
 	/**
-	 * @param unit the new active texture unit
+	 * @param unit
+	 *            the new active texture unit
 	 * @return whether the texture unit was changed
 	 */
 	public static boolean setActiveTextureUnit(Integer unit) {
-		boolean different = activeTextureUnit != null && activeTextureUnit.equals(unit);
+		boolean same = activeTextureUnit != null && activeTextureUnit.equals(unit);
 		activeTextureUnit = unit;
-		return different;
+		return !same;
 	}
 }
