@@ -2,13 +2,12 @@ package mbeb.opengldefault.rendering.renderable;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
 
 import java.nio.*;
 
 import mbeb.opengldefault.gl.buffer.ElementBuffer;
 import mbeb.opengldefault.gl.buffer.VertexBuffer;
+import mbeb.opengldefault.gl.vao.VertexArray;
 import org.joml.*;
 import org.lwjgl.*;
 
@@ -26,7 +25,7 @@ public class VAORenderable implements IRenderable {
 	private static final String TAG = "Renderable";
 
 	/** Renderables Vertex Array Object */
-	private int VAO;
+	private VertexArray VAO;
 	/** amount of indices */
 	private int indexSize;
 	/** the boundingBox of all my vertices */
@@ -92,38 +91,17 @@ public class VAORenderable implements IRenderable {
 	}
 
 	/**
-	 * sets VAO
-	 *
-	 * @param VAO
-	 *            new VAO
-	 */
-	public void setVAO(int VAO) {
-		this.VAO = VAO;
-	}
-
-	/**
-	 * get VAO
-	 *
-	 * @return VAO
-	 */
-	public int getVAO() {
-		return VAO;
-	}
-
-	/**
 	 * binds the Renderable
 	 */
 	public void bind() {
-		glBindVertexArray(VAO);
-		GLErrors.checkForError(TAG, "glBindVertexArray");
+		VAO.bind();
 	}
 
 	/**
 	 * unbinds the Renderable
 	 */
 	public void unbind() {
-		glBindVertexArray(0);
-		GLErrors.checkForError(TAG, "glBindVertexArray");
+		VAO.unbind();
 	}
 
 	/**
@@ -150,14 +128,12 @@ public class VAORenderable implements IRenderable {
 	 *            size of the components in the data array in amount of floats. a RGB color would be represented by a 3
 	 * @return generated VAO
 	 */
-	public static int generateVAO(float[] data, int[] indices, DataFragment[] dataFormat) {
+	public static VertexArray generateVAO(float[] data, int[] indices, DataFragment[] dataFormat) {
 
 		FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(data.length);
-
 		vertexBuffer.put(data);
 
 		IntBuffer indexBuffer = BufferUtils.createIntBuffer(indices.length);
-
 		indexBuffer.put(indices);
 
 		return generateVAO(vertexBuffer, indexBuffer, dataFormat);
@@ -175,19 +151,15 @@ public class VAORenderable implements IRenderable {
 	 *            size of the components in the data array in amount of floats. a RGB color would be represented by a 3
 	 * @return generated VAO
 	 */
-	public static int generateVAO(FloatBuffer vertexBuffer, IntBuffer indexBuffer, DataFragment[] dataFormat) {
-		int VAO = glGenVertexArrays();
-		GLErrors.checkForError(TAG, "glGenVertexArrays");
-		glBindVertexArray(VAO);
-		GLErrors.checkForError(TAG, "glBindVertexArray");
-
-		VertexBuffer VBO = generateVBO(vertexBuffer, dataFormat);
+	public static VertexArray generateVAO(FloatBuffer vertexBuffer, IntBuffer indexBuffer, DataFragment[] dataFormat) {
+		VertexArray VAO = new VertexArray();
+		VAO.bind();
+		
+		VertexBuffer VBO = generateVBO(VAO, vertexBuffer, dataFormat);
 
 		ElementBuffer EBO = generateEBO(indexBuffer);
-		GLErrors.checkForError(TAG, "generateEBO");
 
-		glBindVertexArray(0);
-		GLErrors.checkForError(TAG, "glBindVertexArray");
+		VAO.unbind();
 
 		EBO.delete();
 		VBO.delete();
@@ -219,29 +191,14 @@ public class VAORenderable implements IRenderable {
 	 *            DataFragments that describe how the data is stored in the buffer.
 	 * @return generated VBO
 	 */
-	private static VertexBuffer generateVBO(FloatBuffer vertexBuffer, DataFragment[] dataFormat) {
+	private static VertexBuffer generateVBO(VertexArray VAO, FloatBuffer vertexBuffer, DataFragment[] dataFormat) {
 		VertexBuffer VBO = new VertexBuffer();
 		VBO.bind();
 
 		VBO.bufferData(vertexBuffer, GL_STATIC_DRAW);
 
-		int stride = 0;
-		for (DataFragment dataFragemt : dataFormat) {
-			stride += 4 * dataFragemt.size(); //size of float
-		}
-
-		int offset = 0;
-		for (int i = 0; i < dataFormat.length; i++) {
-			if (dataFormat[i].isFloat()) {
-				glVertexAttribPointer(i, dataFormat[i].size(), GL_FLOAT, false, stride, offset);
-			} else {
-				glVertexAttribIPointer(i, dataFormat[i].size(), GL_INT, stride, offset);
-			}
-			GLErrors.checkForError(TAG, "glVertexAttribPointer VBO");
-			glEnableVertexAttribArray(i);
-			GLErrors.checkForError(TAG, "glEnableVertexAttribArray VBO");
-			offset += dataFormat[i].size() * 4;
-		}
+		VAO.attribPointers(dataFormat);
+		
 		return VBO;
 	}
 }

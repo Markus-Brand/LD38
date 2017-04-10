@@ -4,6 +4,7 @@ import java.util.*;
 
 import mbeb.opengldefault.gl.buffer.GLBuffer;
 import mbeb.opengldefault.gl.texture.Texture;
+import mbeb.opengldefault.gl.vao.VertexArray;
 
 /**
  * Static storage for all objects currently bound to the context.
@@ -20,6 +21,7 @@ public class ContextBindings {
 	//SLOT FOR SHADER
 
 	//SLOT FOR VAO
+	private static VertexArray boundVAO = null;
 
 	//SLOT FOR FB
 
@@ -27,7 +29,7 @@ public class ContextBindings {
 	/**
 	 * A map that saves which buffer is currently bound for each buffer type separately
 	 */
-	private static Map<GLBuffer.Type, GLBuffer> boundBuffers = new HashMap<>();
+	private static Map<GLBuffer.Type, GLBuffer> boundBuffers = new EnumMap<>(GLBuffer.Type.class);
 
 	//MAP & QUEUE FOR TEXTURES
 	/**
@@ -48,6 +50,17 @@ public class ContextBindings {
 	//METHODS FOR SHADER
 
 	//METHODS FOR VAO
+	public static void bind(VertexArray array) {
+		boundVAO = array;
+	}
+
+	public static boolean isBound(VertexArray array) {
+		return array == boundVAO;
+	}
+
+	public static void unbindVAO() {
+		boundVAO = null;
+	}
 
 	//METHODS FOR FB
 
@@ -71,7 +84,7 @@ public class ContextBindings {
 	 * @return whether this buffer is currently bound for its type
 	 */
 	public static boolean isBound(GLBuffer buffer) {
-		return Objects.equals(boundBuffers.get(buffer.getType()), buffer);
+		return boundBuffers.get(buffer.getType()) == buffer;
 	}
 
 	/**
