@@ -3,8 +3,8 @@ package mbeb.opengldefault.gui.elements;
 import java.nio.FloatBuffer;
 
 import mbeb.opengldefault.constants.Constants;
+import mbeb.opengldefault.gl.texture.Texture2D;
 import mbeb.opengldefault.gui.AtlasGUI;
-import mbeb.opengldefault.rendering.textures.Texture;
 
 import org.joml.Vector2f;
 import org.joml.Vector4f;
@@ -37,7 +37,7 @@ public class AtlasGUIElement extends GUIElement {
 	private int atlasHeight;
 
 	public AtlasGUIElement(int atlasIndex, int atlasWidth, int atlasHeight, Vector2f position, Vector2f size,
-			float lutRow, Texture lut) {
+			float lutRow, Texture2D lut) {
 		super(position, size, lutRow, lut);
 		this.atlasIndex = atlasIndex;
 		this.atlasWidth = atlasWidth;

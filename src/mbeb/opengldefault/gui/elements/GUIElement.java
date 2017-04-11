@@ -5,8 +5,8 @@ import java.nio.FloatBuffer;
 
 import mbeb.opengldefault.constants.Constants;
 import mbeb.opengldefault.controls.Mouse;
+import mbeb.opengldefault.gl.texture.Texture2D;
 import mbeb.opengldefault.gui.GUI;
-import mbeb.opengldefault.rendering.textures.Texture;
 import mbeb.opengldefault.shapes.Rectangle;
 
 import org.joml.Matrix4f;
@@ -28,7 +28,7 @@ public abstract class GUIElement {
 	/**
 	 * the lut texture
 	 */
-	private Texture lut;
+	private Texture2D lut;
 
 	/**
 	 * Bounding of this GUIElement
@@ -40,7 +40,7 @@ public abstract class GUIElement {
 	 */
 	private boolean dirty;
 
-	public GUIElement(Vector2f position, Vector2f size, float lutRow, Texture lut) {
+	public GUIElement(Vector2f position, Vector2f size, float lutRow, Texture2D lut) {
 		bounding = new Rectangle(position, size);
 		dirty = true;
 		setLut(lut, lutRow);
@@ -283,7 +283,7 @@ public abstract class GUIElement {
 	 * @param lutRow
 	 *            the lutRow in the lut that will be used
 	 */
-	public void setLut(Texture lut, float lutRow) {
+	public void setLut(Texture2D lut, float lutRow) {
 		this.lut = lut;
 		this.lutRow = lutRow;
 	}
@@ -315,7 +315,7 @@ public abstract class GUIElement {
 	/**
 	 * @return the lut Texture
 	 */
-	public Texture getLut() {
+	public Texture2D getLut() {
 		return lut;
 	}
 
@@ -323,7 +323,7 @@ public abstract class GUIElement {
 	 * @param lut
 	 *            the lut Texture to set
 	 */
-	public void setLut(Texture lut) {
+	public void setLut(Texture2D lut) {
 		this.lut = lut;
 	}
 }

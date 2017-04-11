@@ -1,11 +1,11 @@
 package mbeb.opengldefault.gui;
 
+import mbeb.opengldefault.gl.texture.Texture2D;
 import org.joml.Vector2f;
 
 import mbeb.opengldefault.constants.Constants;
 import mbeb.opengldefault.gui.elements.AtlasGUIElement;
 import mbeb.opengldefault.rendering.shader.ShaderProgram;
-import mbeb.opengldefault.rendering.textures.Texture;
 
 /**
  * A {@link GUI} subclass that renders {@link AtlasGUIElement}s from a Texture Atlas in one drawcall
@@ -17,7 +17,7 @@ public class AtlasGUI extends GUI {
 	/**
 	 * The texture atlas
 	 */
-	private Texture atlas;
+	private Texture2D atlas;
 
 	/**
 	 * Width and height of the texture Atlas
@@ -25,10 +25,10 @@ public class AtlasGUI extends GUI {
 	protected int atlasWidth, atlasHeight;
 
 	public AtlasGUI(String atlasName, int atlasWidth, int atlasHeight) {
-		this(new Texture(atlasName), atlasWidth, atlasHeight);
+		this(new Texture2D(atlasName), atlasWidth, atlasHeight);
 	}
 
-	public AtlasGUI(Texture atlas, int atlasWidth, int atlasHeight) {
+	public AtlasGUI(Texture2D atlas, int atlasWidth, int atlasHeight) {
 		super();
 		this.atlasWidth = atlasWidth;
 		this.atlasHeight = atlasHeight;
@@ -55,7 +55,7 @@ public class AtlasGUI extends GUI {
 
 	@Override
 	public void render(ShaderProgram shader) {
-		atlas.bind(shader);
+		shader.setUniform("u_texture", this.atlas, true);
 		super.render(shader);
 	}
 

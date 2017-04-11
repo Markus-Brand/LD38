@@ -8,11 +8,11 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
+import mbeb.opengldefault.gl.texture.Texture2D;
 import mbeb.opengldefault.gui.elements.TextGUIElement;
-import mbeb.opengldefault.rendering.textures.Texture;
 
 /**
- * A class used for generating FontMap {@link Texture}s that can be used to render Strings using a
+ * A class used for generating FontMap {@link Texture2D}s that can be used to render Strings using a
  * {@link TextGUIElement}
  * 
  * @author Markus
@@ -21,7 +21,7 @@ public class FontCache {
 	/**
 	 * Map containing a mapping from {@link Font} to Texture representing the FontCache
 	 */
-	private static Map<Font, Texture> cachedFonts;
+	private static Map<Font, Texture2D> cachedFonts;
 
 	static {
 		cachedFonts = new HashMap<>();
@@ -32,9 +32,9 @@ public class FontCache {
 	 * 
 	 * @param font
 	 *            The font, that will be used to generate the FontMap, if it isn't already loaded
-	 * @return the generated or cached FontMap {@link Texture}
+	 * @return the generated or cached FontMap {@link Texture2D}
 	 */
-	public static Texture getFont(Font font) {
+	public static Texture2D getFont(Font font) {
 		Font resizedFont = getResizedFont(font, font.getSize());
 		if (!cachedFonts.containsKey(resizedFont)) {
 			addFont(resizedFont);
@@ -43,10 +43,10 @@ public class FontCache {
 	}
 
 	/**
-	 * Generates the {@link Texture} and adds it to the cache
+	 * Generates the {@link Texture2D} and adds it to the cache
 	 * 
 	 * @param resizedFont
-	 *            the {@link Font} used for generating the FontMap {@link Texture}
+	 *            the {@link Font} used for generating the FontMap {@link Texture2D}
 	 */
 	private static void addFont(Font resizedFont) {
 		System.out.println("Load font: " + resizedFont.getName() + " Size " + resizedFont.getSize());
@@ -61,7 +61,7 @@ public class FontCache {
 		drawChars(g2d, resizedFont.getSize(), yOffset);
 
 		g2d.dispose();
-		cachedFonts.put(resizedFont, new Texture(rasteredFont));
+		cachedFonts.put(resizedFont, new Texture2D(rasteredFont,false));
 	}
 
 	/**

@@ -11,6 +11,8 @@ import static org.lwjgl.opengl.GL33.*;
 
 import java.nio.*;
 
+import mbeb.opengldefault.gl.texture.Texture;
+import mbeb.opengldefault.gl.texture.Texture2D;
 import org.lwjgl.BufferUtils;
 
 import mbeb.opengldefault.constants.Constants;
@@ -20,7 +22,6 @@ import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.StaticMeshes;
 import mbeb.opengldefault.rendering.renderable.VAORenderable;
 import mbeb.opengldefault.rendering.shader.ShaderProgram;
-import mbeb.opengldefault.rendering.textures.Texture;
 import mbeb.opengldefault.scene.BoundingBox;
 
 /**
@@ -34,7 +35,7 @@ public class GUI implements IRenderable {
 	/**
 	 * The look up table Texture for this GUI
 	 */
-	private Texture lut;
+	private Texture2D lut;
 
 	/**
 	 * The shader used to render this GUI
@@ -76,7 +77,7 @@ public class GUI implements IRenderable {
 		//Store a Matrix and the lut Vector
 		this.stride = Constants.MAT4_COMPONENTS + Constants.VEC4_COMPONENTS;
 		renderable = StaticMeshes.getNewGuiQuad();
-		lut = new Texture(256, 256);
+		lut = new Texture2D(256, 256, mbeb.opengldefault.gl.texture.Texture.InternalFormat.RGBA8);
 	}
 
 	/**
@@ -106,7 +107,7 @@ public class GUI implements IRenderable {
 	}
 
 	/**
-	 * Generates a FloatBuffer using the GUIElements {@link GUIElement#writeToBuffer()}
+	 * Generates a FloatBuffer using the GUIElements {@link GUIElement#writeToBuffer(FloatBuffer, int)}
 	 *
 	 * @return the generated FloatBuffer
 	 */
@@ -155,7 +156,7 @@ public class GUI implements IRenderable {
 		}
 
 		if (lut != null) {
-			lut.bind(shader, "u_lut");
+			shader.setUniform("u_lut", lut, true);
 		}
 
 		glEnable(GL_BLEND);
@@ -195,7 +196,7 @@ public class GUI implements IRenderable {
 	 * 
 	 * @return this GUIs lut
 	 */
-	public Texture getLut() {
+	public Texture2D getLut() {
 		return lut;
 	}
 

@@ -23,7 +23,6 @@ import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
 import mbeb.opengldefault.rendering.shader.ShaderProgram;
-import mbeb.opengldefault.rendering.textures.Texture;
 
 public class MainMenu implements GameState {
 	private static final String TAG = "MainMenu";
@@ -46,7 +45,7 @@ public class MainMenu implements GameState {
 
 	@Override
 	public void init() {
-		menuGUI = new AtlasGUI(new Texture("menu.png"), 4, 4);
+		menuGUI = new AtlasGUI(new Texture2D("menu.png"), 4, 4);
 		guiShader = new ShaderProgram("gui.vert", "gui.frag");
 		textGUI = new TextGUI(new Font("Comic Sans MS", Font.PLAIN, 128));
 

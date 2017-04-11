@@ -1,11 +1,14 @@
 package mbeb.opengldefault.gl.texture;
 
 import static org.lwjgl.opengl.GL11.glTexImage2D;
+import static org.lwjgl.opengl.GL11.glTexSubImage2D;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 
 import mbeb.opengldefault.logging.GLErrors;
+import org.lwjgl.BufferUtils;
 
 /**
  * Represents a two-dimensional texture.
@@ -39,6 +42,12 @@ public class Texture2D extends Texture {
 		this();
 		this.ensureExists();
 		this.setImageData(width, height, format, Format.RED, DataType.UNSIGNED_BYTE, null);
+		this.beginTransaction();
+		this.setMagnificationFilter(MagnificationFilter.NEAREST);
+		this.setMinificationFilter(MinificationFilter.NEAREST);
+		this.setWrapModeS(WrapMode.CLAMP_TO_EDGE);
+		this.setWrapModeT(WrapMode.CLAMP_TO_EDGE);
+		this.finishTransaction();
 	}
 
 	/**
@@ -50,8 +59,26 @@ public class Texture2D extends Texture {
 	public Texture2D(BufferedImage image) {
 		this();
 		this.ensureExists();
-		ByteBuffer imageData = TextureLoader.generateBuffer(image, true);
+		ByteBuffer imageData = Texture.generateBuffer(image, true);
 		this.setImageData(image.getWidth(), image.getHeight(), InternalFormat.RGBA8, Format.RGBA, DataType.UNSIGNED_BYTE, imageData);
+	}
+
+	/**
+	 * Creates a 2D texture and initializes it with the given image.
+	 *
+	 * @param image
+	 *            the image to set
+	 */
+	public Texture2D(BufferedImage image, boolean interpolate) {
+		this(image);
+		if(interpolate) {
+			this.setMagnificationFilter(MagnificationFilter.LINEAR);
+			this.setMinificationFilter(MinificationFilter.LINEAR_MIPMAP_LINEAR);
+			this.generateMipmaps();
+		} else {
+			this.setMagnificationFilter(MagnificationFilter.NEAREST);
+			this.setMinificationFilter(MinificationFilter.NEAREST);
+		}
 	}
 
 	public Texture2D(String path){
@@ -75,7 +102,7 @@ public class Texture2D extends Texture {
 			this.generateMipmaps();
 		} else {
 			this.setMagnificationFilter(MagnificationFilter.NEAREST);
-			this.setMinificationFilter(MinificationFilter.NEAREST_MIPMAP_NEAREST);
+			this.setMinificationFilter(MinificationFilter.NEAREST);
 		}
 		this.setWrapModeS(modeS);
 		this.setWrapModeT(modeT);
@@ -103,6 +130,32 @@ public class Texture2D extends Texture {
 		if (this.beginTransaction()) {
 			glTexImage2D(this.getType().getGLEnum(), 0, internalFormat.getGLEnum(), width, height, 0, dataFormat.getGLEnum(), dataType.getGLEnum(), data);
 			boolean success = !GLErrors.checkForError(TAG, "glTexImage2D");
+			this.finishTransaction();
+			return success;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Hailing from ye olde times of texture access, still used in GUI.
+	 * @param x
+	 * @param y
+	 * @param color
+	 * @return whether the operation succeeded
+	 * @deprecated Why only set a single pixel?
+	 */
+	@Deprecated
+	public boolean setPixel(int x, int y, Color color) {
+		if(this.beginTransaction()) {
+			ByteBuffer buffer = BufferUtils.createByteBuffer(4);
+			buffer.put((byte) color.getRed());
+			buffer.put((byte) color.getGreen());
+			buffer.put((byte) color.getBlue());
+			buffer.put((byte) color.getAlpha());
+			buffer.flip();
+			glTexSubImage2D(this.getType().getGLEnum(), 0, x, y, 1, 1, Format.RGBA.getGLEnum(), DataType.UNSIGNED_BYTE.getGLEnum(), buffer);
+			boolean success = !GLErrors.checkForError(TAG, "glTexSubImage2D");
 			this.finishTransaction();
 			return success;
 		} else {
