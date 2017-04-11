@@ -2,7 +2,6 @@ package mbeb.opengldefault.game;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_E;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_Q;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_TAB;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
@@ -54,6 +53,7 @@ import mbeb.opengldefault.scene.entities.Entity;
 import mbeb.opengldefault.scene.entities.PointLightEntity;
 import mbeb.opengldefault.scene.entities.SceneEntity;
 import mbeb.opengldefault.scene.entities.SpotLightEntity;
+import mbeb.opengldefault.options.ButtonOption;
 import mbeb.opengldefault.options.Option;
 
 import org.joml.Matrix4f;
@@ -63,10 +63,15 @@ import org.lwjgl.glfw.GLFW;
 
 public class BunnyGameState implements GameState {
 
+	@ButtonOption
+	@Option(category="Game")
+	public static boolean showFPS = true;
+	
+	@ButtonOption
+	@Option(category="Game")
+	public static boolean showBBs = true;
+	
 	private static final String TAG = "BunnyGameState";
-
-	@Option
-	public static int hallo = 1;
 	
 	GameStateIdentifier nextGameState;
 
@@ -96,7 +101,7 @@ public class BunnyGameState implements GameState {
 	
 	private TextGUI textGUI;
 
-	@Option(category="game")
+	@Option(category="Game")
 	public static int bezierCurveSize = 10;
 	
 	@Override
@@ -246,7 +251,6 @@ public class BunnyGameState implements GameState {
 	public void update(final double deltaTime) {
 		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_ESCAPE)) {
 			nextGameState = GameStateIdentifier.MAIN_MENU;
-			KeyBoard.releaseAll();
 		}
 
 		fps.setText("FPS: " + (int) (1 / deltaTime));
@@ -298,8 +302,10 @@ public class BunnyGameState implements GameState {
 		glViewport(0, 0, OpenGLContext.getFramebufferWidth(), OpenGLContext.getFramebufferHeight());
 		GLErrors.checkForError(TAG, "glViewport");
 
-		bunnyScene.render(KeyBoard.isKeyDown(GLFW_KEY_TAB)); //bunnyScene.render(); to render without BoundingBoxes
-		textGUI.render();
+		bunnyScene.render(showBBs); //bunnyScene.render(); to render without BoundingBoxes
+		if(showFPS){
+			textGUI.render();			
+		}
 	}
 
 	@Override

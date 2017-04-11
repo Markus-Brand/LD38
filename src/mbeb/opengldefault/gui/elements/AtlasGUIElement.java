@@ -27,6 +27,15 @@ public class AtlasGUIElement extends GUIElement {
 	 */
 	private int atlasIndex;
 
+	public int getAtlasIndex() {
+		return atlasIndex;
+	}
+
+	public void setAtlasIndex(int atlasIndex) {
+		this.atlasIndex = atlasIndex;
+		setDirty();
+	}
+
 	/**
 	 * Width of the texture atlas
 	 */

@@ -1,6 +1,7 @@
 package mbeb.opengldefault.gui;
 
 import org.joml.Vector2f;
+import org.lwjgl.opengl.GL11;
 
 import mbeb.opengldefault.constants.Constants;
 import mbeb.opengldefault.gui.elements.AtlasGUIElement;
@@ -49,7 +50,7 @@ public class AtlasGUI extends GUI {
 	 * @return the generated and added element
 	 */
 	public AtlasGUIElement addAtlasGUIElement(int atlasIndex, Vector2f position, Vector2f size) {
-		AtlasGUIElement newElement = new AtlasGUIElement(atlasIndex, atlasWidth, atlasHeight, size);
+		AtlasGUIElement newElement = new AtlasGUIElement(atlasIndex, atlasWidth, atlasHeight, position, size);
 		return (AtlasGUIElement)addGUIElement(newElement);
 	}
 

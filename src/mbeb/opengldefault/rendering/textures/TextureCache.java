@@ -39,7 +39,7 @@ public class TextureCache {
 	 * @return
 	 */
 	public static int loadTexture(String path) {
-		return loadTexture(path, true);
+		return loadTexture(path, false);
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class TextureCache {
 	 * @return openGl texture
 	 */
 	public static int loadTexture(String path, boolean interpolate) {
-		return loadTexture(path, interpolate, GL_REPEAT, GL_REPEAT);
+		return loadTexture(path, interpolate, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
 	}
 
 	/**

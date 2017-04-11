@@ -5,7 +5,6 @@ import java.util.Map;
 
 import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
-import mbeb.opengldefault.options.OptionsMenu;
 
 /**
  * Abstract class to characterize a whole game

@@ -12,36 +12,38 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.joml.Vector4f;
-
 import mbeb.opengldefault.reflection.ClassFinder;
 
 public class Options {
 	
-	private static File optionsFile = new File("OpenGL-default/src/mbeb/opengldefault/options/options.options");
+	private static File optionsFile = new File("OpenGL-default/resources/options/options.options");
 	
 	public static void load(OptionsMenu menu){
 		Map<String, String> options = getOptionMap();
 		for(Field f : findOptions()){
+			Option option = f.getAnnotation(Option.class);
+			menu.addOption(option.category(), f);
 			if(!options.containsKey(f.getName())){
 				System.out.println("There is no option in the option file for: " + f.getName());
 				continue;
 			}
 			try {
+				System.out.println("Pre: " + f.get(null));
 				if(int.class.isAssignableFrom(f.getType())){
 					f.set(null, Integer.parseInt(options.get(f.getName())));
 				}else if(float.class.isAssignableFrom(f.getType())){
 					f.set(null, Float.parseFloat(options.get(f.getName())));
 				}else if(String.class.isAssignableFrom(f.getType())){
 					f.set(null, options.get(f.getName()));
+				}else if(boolean.class.isAssignableFrom(f.getType())){
+					f.set(null, Boolean.parseBoolean(options.get(f.getName())));
 				}else{
 					System.out.println(f.getName() + " has a type that is not supported: " + f.getType());					
 				}
+				System.out.println("Post: " + f.get(null));
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				e.printStackTrace();
 			}
-			Option option = f.getAnnotation(Option.class);
-			menu.addOption(option.category(), f);
 		}
 	}
 	
@@ -53,6 +55,12 @@ public class Options {
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				e.printStackTrace();
 			}			
+		}
+		optionsFile.delete();
+		try {
+			optionsFile.createNewFile();
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
 		try {
 			Files.write(optionsFile.toPath(), optionLines, StandardOpenOption.WRITE);
