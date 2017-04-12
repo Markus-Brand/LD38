@@ -57,7 +57,8 @@ public class Skybox {
 		GLErrors.checkForError(TAG, "glDepthMask");
 		glDepthFunc(GL_LEQUAL);
 		GLErrors.checkForError(TAG, "glDepthFunc");
-		shader.setUniform("u_cubeMap", cubeMap, true);
+		cubeMap.bind();
+		shader.setUniform("u_cubeMap", cubeMap);
 		skyboxRenderable.render(shader);
 		glDepthFunc(GL_LESS);
 		GLErrors.checkForError(TAG, "glDepthFunc");

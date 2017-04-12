@@ -163,7 +163,8 @@ public class GUI implements IRenderable {
 		}
 
 		if (lut != null) {
-			shader.setUniform("u_lut", lut, true);
+			this.lut.bind();
+			shader.setUniform("u_lut", lut);
 		}
 
 		glEnable(GL_BLEND);

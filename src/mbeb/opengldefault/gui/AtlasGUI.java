@@ -55,7 +55,8 @@ public class AtlasGUI extends GUI {
 
 	@Override
 	public void render(ShaderProgram shader) {
-		shader.setUniform("u_texture", this.atlas, true);
+		this.atlas.bind();
+		shader.setUniform("u_texture", this.atlas);
 		super.render(shader);
 	}
 

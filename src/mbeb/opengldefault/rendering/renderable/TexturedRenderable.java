@@ -50,7 +50,8 @@ public class TexturedRenderable implements IRenderable {
 	 */
 	@Override
 	public void render(ShaderProgram shader) {
-		shader.setUniform("u_texture", texture, true);
+		texture.bind();
+		shader.setUniform("u_texture", texture);
 		renderable.render(shader);
 	}
 
