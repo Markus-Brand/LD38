@@ -5,7 +5,7 @@ import mbeb.opengldefault.gl.texture.Texture2D;
 import org.joml.*;
 
 import mbeb.opengldefault.animation.*;
-import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.gl.shader.*;
 import mbeb.opengldefault.scene.*;
 
 /**

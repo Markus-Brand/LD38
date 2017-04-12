@@ -1,4 +1,4 @@
-package mbeb.opengldefault.rendering.shader;
+package mbeb.opengldefault.gl.shader;
 
 import mbeb.opengldefault.constants.Constants;
 import mbeb.opengldefault.gl.buffer.UniformBuffer;

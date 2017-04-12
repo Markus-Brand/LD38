@@ -2,14 +2,10 @@ package mbeb.opengldefault.camera;
 
 import static org.lwjgl.opengl.GL15.*;
 
-import java.nio.*;
-
-import mbeb.opengldefault.constants.Constants;
 import mbeb.opengldefault.gl.buffer.UniformBuffer;
 import org.joml.*;
-import org.lwjgl.*;
 
-import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.gl.shader.*;
 
 public class Camera implements ICamera {
 

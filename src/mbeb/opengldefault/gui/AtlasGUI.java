@@ -5,7 +5,7 @@ import org.joml.Vector2f;
 
 import mbeb.opengldefault.constants.Constants;
 import mbeb.opengldefault.gui.elements.AtlasGUIElement;
-import mbeb.opengldefault.rendering.shader.ShaderProgram;
+import mbeb.opengldefault.gl.shader.ShaderProgram;
 
 /**
  * A {@link GUI} subclass that renders {@link AtlasGUIElement}s from a Texture Atlas in one drawcall

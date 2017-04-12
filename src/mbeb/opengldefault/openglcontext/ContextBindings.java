@@ -3,6 +3,7 @@ package mbeb.opengldefault.openglcontext;
 import java.util.*;
 
 import mbeb.opengldefault.gl.buffer.GLBuffer;
+import mbeb.opengldefault.gl.shader.ShaderProgram;
 import mbeb.opengldefault.gl.texture.Texture;
 import mbeb.opengldefault.gl.vao.VertexArray;
 
@@ -19,6 +20,7 @@ public class ContextBindings {
 	}
 
 	//SLOT FOR SHADER
+	private static ShaderProgram boundProgram = null;
 
 	//SLOT FOR VAO
 	private static VertexArray boundVAO = null;
@@ -48,6 +50,30 @@ public class ContextBindings {
 	private static Integer activeTextureUnit = null;
 
 	//METHODS FOR SHADER
+
+	/**
+	 * @param program
+	 *            the shader program to bind
+	 */
+	public static void bind(ShaderProgram program) {
+		boundProgram = program;
+	}
+
+	/**
+	 * @param program
+	 *            the program to check for
+	 * @return whether the program is bound
+	 */
+	public static boolean isBound(ShaderProgram program) {
+		return boundProgram == program;
+	}
+
+	/**
+	 * Unbinds the currently bound shader program.
+	 */
+	public static void unbindShader() {
+		boundProgram = null;
+	}
 
 	//METHODS FOR VAO
 	public static void bind(VertexArray array) {

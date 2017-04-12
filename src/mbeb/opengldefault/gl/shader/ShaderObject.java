@@ -1,4 +1,4 @@
-package mbeb.opengldefault.rendering.shader;
+package mbeb.opengldefault.gl.shader;
 
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.logging.Log;
@@ -27,7 +27,7 @@ public class ShaderObject {
 	private final ShaderPreprocessor preprocessor;
 
 	/** the gl-handle to the shader object. Only valid if compiled==true */
-	private int shaderID;
+	private Integer shaderID = null;
 	/** only true if this shader is currently compiled */
 	private boolean compiled;
 
@@ -81,12 +81,25 @@ public class ShaderObject {
 		return shaderID;
 	}
 
+	public boolean wasCompiled() {
+		return shaderID != null;
+	}
+
+	public int getPreviousShaderID() {
+		return shaderID;
+	}
+
+	public void detachShader(ShaderProgram program) {
+		glDetachShader(program.getHandle(), this.getPreviousShaderID());
+		GLErrors.checkForError(TAG, "glDetachShader");
+	}
+
 	/**
 	 * attaches this shader to an openGL shader program
-	 * @param shaderProgramHandle to program to attach to
+	 * @param program to program to attach to
 	 */
-	public void attachShader(int shaderProgramHandle) {
-		glAttachShader(shaderProgramHandle, getCompiledShaderID());
+	public void attachShader(ShaderProgram program) {
+		glAttachShader(program.getHandle(), getCompiledShaderID());
 		GLErrors.checkForError(TAG, "glAttachShader - " + getType().toString());
 	}
 

@@ -10,7 +10,6 @@ import static org.lwjgl.opengl.GL11.glViewport;
 import java.awt.Color;
 import java.awt.Font;
 
-import mbeb.opengldefault.gl.texture.Texture2D;
 import mbeb.opengldefault.gui.GUI;
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
@@ -23,7 +22,7 @@ import mbeb.opengldefault.gui.elements.GUIElement;
 import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
-import mbeb.opengldefault.rendering.shader.ShaderProgram;
+import mbeb.opengldefault.gl.shader.ShaderProgram;
 
 public class MainMenu implements GameState {
 	private static final String TAG = "MainMenu";

@@ -13,7 +13,7 @@ import org.lwjgl.*;
 
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.io.*;
-import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.gl.shader.*;
 import mbeb.opengldefault.scene.*;
 
 /**
@@ -112,7 +112,7 @@ public class VAORenderable implements IRenderable {
 	@Override
 	public void render(ShaderProgram shader) {
 		bind();
-		glDrawElements(shader.getDrawMode(), indexSize, GL_UNSIGNED_INT, 0);
+		glDrawElements(shader.getDrawMode().getGlEnum(), indexSize, GL_UNSIGNED_INT, 0);
 		GLErrors.checkForError(TAG, "glDrawElements");
 		unbind();
 	}

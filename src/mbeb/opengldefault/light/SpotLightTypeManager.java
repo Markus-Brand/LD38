@@ -1,6 +1,6 @@
 package mbeb.opengldefault.light;
 
-import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.gl.shader.*;
 
 /**
  * I'm managing spotlights. (like a lamp with shade or a flashlight, trafficlight, headlight, floodlight or even a spotlight :)

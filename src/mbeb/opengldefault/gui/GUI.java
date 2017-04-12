@@ -21,7 +21,7 @@ import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.StaticMeshes;
 import mbeb.opengldefault.rendering.renderable.VAORenderable;
-import mbeb.opengldefault.rendering.shader.ShaderProgram;
+import mbeb.opengldefault.gl.shader.ShaderProgram;
 import mbeb.opengldefault.scene.BoundingBox;
 
 /**

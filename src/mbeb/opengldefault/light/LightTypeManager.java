@@ -1,7 +1,5 @@
 package mbeb.opengldefault.light;
 
-import static org.lwjgl.opengl.GL15.*;
-
 import java.util.*;
 import java.util.concurrent.atomic.*;
 
@@ -9,7 +7,7 @@ import mbeb.opengldefault.constants.Constants;
 import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import mbeb.opengldefault.gl.buffer.UniformBuffer;
 
-import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.gl.shader.*;
 
 /**
  * I'm an abstract class blueprint used for classes managing lights of one type (e.g. directional, point or spot lights) and there different parameters (e.g. UBOID, capacity, storage size...).

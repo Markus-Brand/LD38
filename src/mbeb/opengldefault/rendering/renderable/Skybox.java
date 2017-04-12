@@ -3,7 +3,7 @@ package mbeb.opengldefault.rendering.renderable;
 import static org.lwjgl.opengl.GL11.*;
 
 import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.gl.shader.*;
 import mbeb.opengldefault.gl.texture.*;
 
 /**
