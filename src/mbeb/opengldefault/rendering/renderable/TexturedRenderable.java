@@ -1,6 +1,7 @@
 package mbeb.opengldefault.rendering.renderable;
 
 import mbeb.opengldefault.gl.texture.Texture;
+import mbeb.opengldefault.gl.texture.Texture2D;
 import org.joml.*;
 
 import mbeb.opengldefault.animation.*;
@@ -14,6 +15,16 @@ public class TexturedRenderable implements IRenderable {
 
 	/** Class Name Tag */
 	private static final String TAG = "TexturedRenderable";
+
+	public static Texture2D loadModelTexture(String path) {
+		Texture2D loaded = new Texture2D(path);
+		loaded.whileBound(texture -> {
+			boolean success = texture.setWrapMode(Texture.WrapMode.REPEAT);
+			success = success && texture.setInterpolates(true);
+			return success && texture.generateMipmaps();
+		});
+		return loaded;
+	}
 
 	/** a renderable to be wrapped and rendered */
 	private IRenderable renderable;

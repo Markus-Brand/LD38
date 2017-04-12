@@ -41,7 +41,6 @@ import mbeb.opengldefault.rendering.renderable.Skybox;
 import mbeb.opengldefault.rendering.renderable.TexturedRenderable;
 import mbeb.opengldefault.rendering.shader.ShaderProgram;
 import mbeb.opengldefault.rendering.shader.UBOManager;
-import mbeb.opengldefault.gl.texture.TextureLoader;
 import mbeb.opengldefault.scene.Scene;
 import mbeb.opengldefault.scene.SceneObject;
 import mbeb.opengldefault.scene.behaviour.BezierBehaviour;
@@ -113,8 +112,8 @@ public class BunnyGameState implements GameState {
 
 		AnimatedMesh playerAnim = new ObjectLoader().loadFromFileAnim("player.fbx");
 		playerAnim.setTransform(MeshFlip);
-		Texture2D bunnyTexture = new Texture2D("player.png");
-		Texture2D lampTexture = new Texture2D("lamp.png");
+		Texture2D bunnyTexture = TexturedRenderable.loadModelTexture("player.png");
+		Texture2D lampTexture = TexturedRenderable.loadModelTexture("lamp.png");
 		playerAnim.getSkeleton().printRecursive("");
 
 		final AnimatedMesh bunnyAnim = new ObjectLoader().loadFromFileAnim("ohrenFlackern.fbx");
@@ -297,7 +296,7 @@ public class BunnyGameState implements GameState {
 
 	@Override
 	public void clear() {
-		TextureLoader.clearCache();
+
 	}
 
 	@Override

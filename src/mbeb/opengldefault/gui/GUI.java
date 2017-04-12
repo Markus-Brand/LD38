@@ -32,6 +32,12 @@ import mbeb.opengldefault.scene.BoundingBox;
 public class GUI implements IRenderable {
 	private static final String TAG = "GUI";
 
+	public static Texture2D loadGUITexture(String path) {
+		Texture2D loaded = new Texture2D(path);
+		loaded.whileBound(texture -> texture.setWrapMode(Texture.WrapMode.CLAMP_TO_EDGE) && texture.setInterpolates(false));
+		return loaded;
+	}
+
 	/**
 	 * The look up table Texture for this GUI
 	 */
@@ -78,6 +84,7 @@ public class GUI implements IRenderable {
 		this.stride = Constants.MAT4_COMPONENTS + Constants.VEC4_COMPONENTS;
 		renderable = StaticMeshes.getNewGuiQuad();
 		lut = new Texture2D(256, 256, mbeb.opengldefault.gl.texture.Texture.InternalFormat.RGBA8);
+		lut.whileBound(texture -> texture.setWrapMode(Texture.WrapMode.CLAMP_TO_EDGE) && texture.setInterpolates(false));
 	}
 
 	/**

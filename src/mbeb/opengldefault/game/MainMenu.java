@@ -11,6 +11,7 @@ import java.awt.Color;
 import java.awt.Font;
 
 import mbeb.opengldefault.gl.texture.Texture2D;
+import mbeb.opengldefault.gui.GUI;
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 
@@ -45,7 +46,7 @@ public class MainMenu implements GameState {
 
 	@Override
 	public void init() {
-		menuGUI = new AtlasGUI(new Texture2D("menu.png"), 4, 4);
+		menuGUI = new AtlasGUI(GUI.loadGUITexture("menu.png"), 4, 4);
 		guiShader = new ShaderProgram("gui.vert", "gui.frag");
 		textGUI = new TextGUI(new Font("Comic Sans MS", Font.PLAIN, 128));
 

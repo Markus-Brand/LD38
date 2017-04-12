@@ -27,6 +27,12 @@ public class Skybox {
 	 */
 	public Skybox(final String texturePath) {
 		cubeMap = new CubeMap(texturePath);
+		cubeMap.whileBound(texture -> {
+			boolean success = cubeMap.setWrapMode(Texture.WrapMode.CLAMP_TO_EDGE);
+			success = success && cubeMap.setInterpolates(false);
+			success = success && cubeMap.setBaseLevel(0);
+			return success && cubeMap.setMaxLevel(0);
+		});
 		shader = new ShaderProgram("skybox.vert", "skybox.frag");
 		shader.addUniformBlockIndex(UBOManager.MATRICES);
 		skyboxRenderable = StaticMeshes.getCube();

@@ -11,14 +11,16 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.function.Function;
+
+import javax.imageio.ImageIO;
+
+import org.lwjgl.BufferUtils;
 
 import mbeb.opengldefault.gl.GLObject;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.logging.Log;
 import mbeb.opengldefault.openglcontext.ContextBindings;
-import org.lwjgl.BufferUtils;
-
-import javax.imageio.ImageIO;
 
 /**
  * Represents any texture created with OpenGL.
@@ -365,16 +367,16 @@ public abstract class Texture extends GLObject {
 	 * @return whether the operation succeeded
 	 */
 	protected static boolean setActiveTexture(Integer unit) {
-		//if (ContextBindings.setActiveTextureUnit(unit)) {
+		if (ContextBindings.setActiveTextureUnit(unit)) {
 			glActiveTexture(unit != null ? GL_TEXTURE0 + unit : 0);
 			boolean success = !GLErrors.checkForError(TAG, "Could not set active texture.");
 			if (!success) {
 				ContextBindings.setActiveTextureUnit(null);
 			}
 			return success;
-		//} else {
-		//	return true;
-		//}
+		} else {
+			return true;
+		}
 	}
 
 	/**
@@ -521,14 +523,10 @@ public abstract class Texture extends GLObject {
 	 * @return whether the operation succeeded
 	 */
 	protected boolean setParameter(final int parameter, final int value) {
-		if (this.beginTransaction()) {
+		return this.whileBound(texture -> {
 			glTexParameteri(this.getType().getGLEnum(), parameter, value);
-			boolean success = !GLErrors.checkForError(TAG, "glTexParameteri");
-			this.finishTransaction();
-			return success;
-		} else {
-			return false;
-		}
+			return !GLErrors.checkForError(TAG, "glTexParameteri");
+		});
 	}
 
 	/**
@@ -644,33 +642,64 @@ public abstract class Texture extends GLObject {
 	 * @return whether the operation succeeded
 	 */
 	public boolean setBorderColor(Color color) {
-		if (this.beginTransaction()) {
+		return this.whileBound(texture -> {
 			final float maxValue = 255.0f;
 			final float[] colorData = new float[] {color.getRed() / maxValue, color.getGreen() / maxValue, color.getBlue() / maxValue, color.getAlpha() / maxValue};
 			glTexParameterfv(this.getType().getGLEnum(), GL_TEXTURE_BORDER_COLOR, colorData);
-			boolean success = !GLErrors.checkForError(TAG, "glTexParameterfv");
-			this.finishTransaction();
-			return success;
-		} else {
-			return false;
-		}
+			return !GLErrors.checkForError(TAG, "glTexParameterfv");
+		});
 	}
 
+	/**
+	 * @param level
+	 *            the minimum level this texture can be sampled from
+	 * @return whether the operation succeeded
+	 */
 	public boolean setBaseLevel(int level) {
 		boolean success = this.setParameter(GL_TEXTURE_BASE_LEVEL, level);
-		if(!success){
+		if (!success) {
 			Log.error(TAG, "Failed to set TEXTURE_BASE_LEVEL.");
 		}
 		return success;
 	}
 
+	/**
+	 * @param level
+	 *            the maximum level this texture can be sampled from
+	 * @return whether the operation succeeded
+	 */
 	public boolean setMaxLevel(int level) {
 		boolean success = this.setParameter(GL_TEXTURE_MAX_LEVEL, level);
-		if(!success){
+		if (!success) {
 			Log.error(TAG, "Failed to set TEXTURE_MAX_LEVEL.");
 		}
 		return success;
 	}
+
+	/**
+	 * Sets whether this texture interpolates on texture fetches.
+	 * Setting this to true results in a texture with {@link MagnificationFilter#LINEAR} and
+	 * {@link MinificationFilter#LINEAR_MIPMAP_LINEAR}.
+	 * Setting this to false results in a texture with {@link MagnificationFilter#NEAREST} and
+	 * {@link MinificationFilter#NEAREST}.
+	 *
+	 * @param interpolate
+	 *            whether to interpolate
+	 * @return whether the operation succeeded
+	 */
+	public boolean setInterpolates(boolean interpolate) {
+		return this.whileBound(texture -> this.setMagnificationFilter(interpolate ? MagnificationFilter.LINEAR : MagnificationFilter.NEAREST)
+				&& this.setMinificationFilter(interpolate ? MinificationFilter.LINEAR_MIPMAP_LINEAR : MinificationFilter.NEAREST));
+	}
+
+	/**
+	 * Sets all appropriate wrap modes to the given mode.
+	 * 
+	 * @param mode
+	 *            the mode to set
+	 * @return whether the operation succeeded
+	 */
+	public abstract boolean setWrapMode(WrapMode mode);
 	//</editor-fold>
 
 	/**
@@ -679,10 +708,23 @@ public abstract class Texture extends GLObject {
 	 * @return whether the operation succeeded
 	 */
 	public boolean generateMipmaps() {
-		if (this.beginTransaction()) {
+		return this.whileBound(texture -> {
 			glGenerateMipmap(this.getType().getGLEnum());
-			boolean success = !GLErrors.checkForError(TAG, "glGenerateMipmap");
-			this.finishTransaction();
+			return !GLErrors.checkForError(TAG, "glGenerateMipmap");
+		});
+	}
+
+	/**
+	 * @param actor
+	 *            a function to execute while this texture is guaranteed to be bound
+	 * @return whether the operation succeeded
+	 */
+	public boolean whileBound(Function<Texture, Boolean> actor) {
+		if (this.beginTransaction()) {
+			boolean success = actor.apply(this);
+			if (!this.finishTransaction()) {
+				Log.error(TAG, "Could not finish transaction.");
+			}
 			return success;
 		} else {
 			return false;

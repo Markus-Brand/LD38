@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
+import mbeb.opengldefault.gl.texture.Texture;
 import mbeb.opengldefault.gl.texture.Texture2D;
 import mbeb.opengldefault.gui.elements.TextGUIElement;
 
@@ -61,7 +62,9 @@ public class FontCache {
 		drawChars(g2d, resizedFont.getSize(), yOffset);
 
 		g2d.dispose();
-		cachedFonts.put(resizedFont, new Texture2D(rasteredFont,false));
+		Texture2D font = new Texture2D(rasteredFont);
+		font.whileBound(texture -> font.setWrapMode(Texture.WrapMode.CLAMP_TO_EDGE) && font.setInterpolates(false));
+		cachedFonts.put(resizedFont, font);
 	}
 
 	/**

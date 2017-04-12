@@ -7,8 +7,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 
-import mbeb.opengldefault.logging.GLErrors;
 import org.lwjgl.BufferUtils;
+
+import mbeb.opengldefault.logging.GLErrors;
 
 /**
  * Represents a two-dimensional texture.
@@ -42,12 +43,6 @@ public class Texture2D extends Texture {
 		this();
 		this.ensureExists();
 		this.setImageData(width, height, format, Format.RED, DataType.UNSIGNED_BYTE, null);
-		this.beginTransaction();
-		this.setMagnificationFilter(MagnificationFilter.NEAREST);
-		this.setMinificationFilter(MinificationFilter.NEAREST);
-		this.setWrapModeS(WrapMode.CLAMP_TO_EDGE);
-		this.setWrapModeT(WrapMode.CLAMP_TO_EDGE);
-		this.finishTransaction();
 	}
 
 	/**
@@ -64,49 +59,13 @@ public class Texture2D extends Texture {
 	}
 
 	/**
-	 * Creates a 2D texture and initializes it with the given image.
-	 *
-	 * @param image
-	 *            the image to set
+	 * Creates a new texture with image data loaded from the given location.
+	 * 
+	 * @param path
+	 *            the path of the image
 	 */
-	public Texture2D(BufferedImage image, boolean interpolate) {
-		this(image);
-		if(interpolate) {
-			this.setMagnificationFilter(MagnificationFilter.LINEAR);
-			this.setMinificationFilter(MinificationFilter.LINEAR_MIPMAP_LINEAR);
-			this.generateMipmaps();
-		} else {
-			this.setMagnificationFilter(MagnificationFilter.NEAREST);
-			this.setMinificationFilter(MinificationFilter.NEAREST);
-		}
-	}
-
-	public Texture2D(String path){
-		this(path, true);
-	}
-
-	public Texture2D(String path, boolean interpolate){
-		this(path, interpolate, WrapMode.REPEAT);
-	}
-
-	public Texture2D(String path, boolean interpolate, WrapMode wrapMode){
-		this(path, interpolate, wrapMode, wrapMode);
-	}
-
-	public Texture2D(String path, boolean interpolate, WrapMode modeS, WrapMode modeT) {
-		this(TextureLoader.loadBufferedImage(path));
-		this.beginTransaction();
-		if(interpolate) {
-			this.setMagnificationFilter(MagnificationFilter.LINEAR);
-			this.setMinificationFilter(MinificationFilter.LINEAR_MIPMAP_LINEAR);
-			this.generateMipmaps();
-		} else {
-			this.setMagnificationFilter(MagnificationFilter.NEAREST);
-			this.setMinificationFilter(MinificationFilter.NEAREST);
-		}
-		this.setWrapModeS(modeS);
-		this.setWrapModeT(modeT);
-		this.finishTransaction();
+	public Texture2D(String path) {
+		this(Texture.loadBufferedImage(path));
 	}
 
 	/**
@@ -127,18 +86,24 @@ public class Texture2D extends Texture {
 	 * @return whether the operation succeeded
 	 */
 	protected boolean setImageData(int width, int height, InternalFormat internalFormat, Format dataFormat, DataType dataType, ByteBuffer data) {
-		if (this.beginTransaction()) {
+		return this.whileBound(texture -> {
 			glTexImage2D(this.getType().getGLEnum(), 0, internalFormat.getGLEnum(), width, height, 0, dataFormat.getGLEnum(), dataType.getGLEnum(), data);
-			boolean success = !GLErrors.checkForError(TAG, "glTexImage2D");
-			this.finishTransaction();
-			return success;
-		} else {
-			return false;
-		}
+			return !GLErrors.checkForError(TAG, "glTexImage2D");
+		});
+	}
+
+	/**
+	 * @param mode
+	 *            the mode to set for this texture
+	 * @return whether the operation succeeded
+	 */
+	public boolean setWrapMode(WrapMode mode) {
+		return this.whileBound(texture -> this.setWrapModeS(mode) && this.setWrapModeT(mode));
 	}
 
 	/**
 	 * Hailing from ye olde times of texture access, still used in GUI.
+	 * 
 	 * @param x
 	 * @param y
 	 * @param color
@@ -147,7 +112,7 @@ public class Texture2D extends Texture {
 	 */
 	@Deprecated
 	public boolean setPixel(int x, int y, Color color) {
-		if(this.beginTransaction()) {
+		return this.whileBound(texture -> {
 			ByteBuffer buffer = BufferUtils.createByteBuffer(4);
 			buffer.put((byte) color.getRed());
 			buffer.put((byte) color.getGreen());
@@ -155,12 +120,8 @@ public class Texture2D extends Texture {
 			buffer.put((byte) color.getAlpha());
 			buffer.flip();
 			glTexSubImage2D(this.getType().getGLEnum(), 0, x, y, 1, 1, Format.RGBA.getGLEnum(), DataType.UNSIGNED_BYTE.getGLEnum(), buffer);
-			boolean success = !GLErrors.checkForError(TAG, "glTexSubImage2D");
-			this.finishTransaction();
-			return success;
-		} else {
-			return false;
-		}
+			return !GLErrors.checkForError(TAG, "glTexSubImage2D");
+		});
 	}
 
 }
