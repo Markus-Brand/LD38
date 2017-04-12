@@ -3,6 +3,7 @@ package mbeb.opengldefault.openglcontext;
 import java.util.*;
 
 import mbeb.opengldefault.gl.buffer.GLBuffer;
+import mbeb.opengldefault.gl.framebuffer.FrameBuffer;
 import mbeb.opengldefault.gl.shader.ShaderProgram;
 import mbeb.opengldefault.gl.texture.Texture;
 import mbeb.opengldefault.gl.vao.VertexArray;
@@ -19,21 +20,26 @@ public class ContextBindings {
 		//should never be instantiated
 	}
 
-	//SLOT FOR SHADER
+	/**
+	 * The currently bound shader.
+	 */
 	private static ShaderProgram boundProgram = null;
 
-	//SLOT FOR VAO
+	/**
+	 * The currently bound vertex array.
+	 */
 	private static VertexArray boundVAO = null;
 
-	//SLOT FOR FB
+	/**
+	 * The currently bound framebuffer.
+	 */
+	private static FrameBuffer boundFBO = null;
 
-	//MAP FOR BUFFERS
 	/**
 	 * A map that saves which buffer is currently bound for each buffer type separately
 	 */
 	private static Map<GLBuffer.Type, GLBuffer> boundBuffers = new EnumMap<>(GLBuffer.Type.class);
 
-	//MAP & QUEUE FOR TEXTURES
 	/**
 	 * A map of currently bound textures and the texture units they are bound to.
 	 * At any point the size of this map is equal to the number texture units in use.
@@ -49,7 +55,53 @@ public class ContextBindings {
 	 */
 	private static Integer activeTextureUnit = null;
 
-	//METHODS FOR SHADER
+	/**
+	 * @param buffer
+	 *            the framebuffer to bind
+	 */
+	public static void bind(FrameBuffer buffer) {
+		boundFBO = buffer;
+	}
+
+	/**
+	 * @param buffer
+	 *            the framebuffer to check for
+	 * @return whether the framebuffer is bound is bound
+	 */
+	public static boolean isBound(FrameBuffer buffer) {
+		return boundFBO == buffer;
+	}
+
+	/**
+	 * Unbinds the currently bound framebuffer.
+	 */
+	public static void unbindFBO() {
+		boundFBO = null;
+	}
+
+	/**
+	 * @param array
+	 *            the vertex array to bind
+	 */
+	public static void bind(VertexArray array) {
+		boundVAO = array;
+	}
+
+	/**
+	 * @param array
+	 *            the vertex array to check for
+	 * @return whether the array is bound
+	 */
+	public static boolean isBound(VertexArray array) {
+		return array == boundVAO;
+	}
+
+	/**
+	 * Unbinds the currently bound vertex array.
+	 */
+	public static void unbindVAO() {
+		boundVAO = null;
+	}
 
 	/**
 	 * @param program
@@ -74,23 +126,6 @@ public class ContextBindings {
 	public static void unbindShader() {
 		boundProgram = null;
 	}
-
-	//METHODS FOR VAO
-	public static void bind(VertexArray array) {
-		boundVAO = array;
-	}
-
-	public static boolean isBound(VertexArray array) {
-		return array == boundVAO;
-	}
-
-	public static void unbindVAO() {
-		boundVAO = null;
-	}
-
-	//METHODS FOR FB
-
-	//METHODS FOR BUFFERS
 
 	/**
 	 * register, that a given buffer with given type is currently bound
@@ -122,8 +157,6 @@ public class ContextBindings {
 	public static void unbind(GLBuffer buffer) {
 		boundBuffers.put(buffer.getType(), null);
 	}
-
-	//METHODS FOR TEXTURES
 
 	/**
 	 * @param texture
