@@ -1,10 +1,9 @@
 package mbeb.opengldefault.gui.elements;
 
 import java.awt.Color;
-import java.nio.FloatBuffer;
-
-import mbeb.opengldefault.constants.Constants;
 import mbeb.opengldefault.controls.Mouse;
+import mbeb.opengldefault.gl.buffer.GLBufferWritable;
+import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import mbeb.opengldefault.gl.texture.Texture2D;
 import mbeb.opengldefault.gui.GUI;
 import mbeb.opengldefault.shapes.Rectangle;
@@ -12,13 +11,14 @@ import mbeb.opengldefault.shapes.Rectangle;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 /**
  * A GUI Element that gets rendered in a {@link GUI}
  *
  * @author Markus
  */
-public abstract class GUIElement {
+public abstract class GUIElement implements GLBufferWritable {
 
 	/**
 	 * the row in the lutTexture that is used for coloring this element
@@ -153,7 +153,7 @@ public abstract class GUIElement {
 	}
 
 	/**
-	 * Calculates Model Matrix based on the {@link #position} and {@link #size}
+	 * Calculates Model Matrix based on the {@link #getPosition()} and {@link #getSize()}
 	 *
 	 * @return
 	 */
@@ -163,20 +163,12 @@ public abstract class GUIElement {
 				scale(new Vector3f(getSize().x, getSize().y, 1));
 	}
 
-	/**
-	 * Writes the model matrix and potentially other instanced gui data to the buffer
-	 *
-	 * @param buffer
-	 *            buffer handle for the GL_ARRAY_BUFFER from the {@link GUI}
-	 * @param offset
-	 *            offset of the data within the buffer
-	 */
-	public int writeToBuffer(FloatBuffer buffer, int offset) {
-		buffer.put(offset, lut != null ? 1.0f : 0.0f);
-		buffer.put(offset + 1, getLutRow());
-		getModelMatrix().get(offset + Constants.VEC4_COMPONENTS, buffer);
+	@Override
+	public void writeTo(GLBufferWriter writer) {
+		writer
+			.write(new Vector4f(lut != null ? 1.0f : 0.0f, getLutRow(), 0, 0))
+			.write(getModelMatrix());
 		setClean();
-		return Constants.VEC4_COMPONENTS + Constants.MAT4_COMPONENTS;
 	}
 
 	/**

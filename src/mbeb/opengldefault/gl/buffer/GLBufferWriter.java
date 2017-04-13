@@ -12,10 +12,30 @@ import org.lwjgl.BufferUtils;
 import java.awt.*;
 import java.nio.ByteBuffer;
 
+import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
+
 /**
  * An object that can be written on, which buffers multiple write calls to one buffer.
  */
 public class GLBufferWriter {
+
+	/**
+	 * All the different write behaviours that a Writer can acquire
+	 */
+	public enum WriteType {
+		/**
+		 * definitely use bufferSubData
+		 */
+		SUB_DATA,
+		/**
+		 * use bufferSubData if (offset > 0 || writtenData < capacity)
+		 */
+		DYNAMIC,
+		/**
+		 * only use bufferSubData if an offset is specified
+		 */
+		FULL_DATA
+	}
 	
 	private static final String TAG = "GLBufferWriter";
 	
@@ -27,6 +47,8 @@ public class GLBufferWriter {
 	private ByteBuffer writeBuffer;
 	/** whether to write data according to the std140 - layout or packed */
 	private boolean useSpacing;
+	/** which method to use for data writing */
+	private WriteType writeType;
 	
 	GLBufferWriter(GLBuffer glBuffer, long offset, int capacity) {
 		this.glBuffer = glBuffer;
@@ -34,6 +56,7 @@ public class GLBufferWriter {
 		
 		writeBuffer = BufferUtils.createByteBuffer(capacity);
 		useSpacing = true;
+		writeType = WriteType.DYNAMIC;
 	}
 	
 //<editor-fold desc="write">
@@ -167,7 +190,17 @@ public class GLBufferWriter {
 		this.useSpacing = useSpacing;
 		return this;
 	}
-	
+
+	/**
+	 * Override the WriteType for this writer. It defaults to {@link WriteType#DYNAMIC}.
+	 * Do this before the flush operation.
+	 * @param writeType
+	 */
+	public GLBufferWriter setWriteType(WriteType writeType) {
+		this.writeType = writeType;
+		return this;
+	}
+
 	/**
 	 * finish adding data to this Writer and upload all that's been written to the GPU
 	 */
@@ -182,7 +215,12 @@ public class GLBufferWriter {
 		if (bindBefore) {
 			glBuffer.bind();
 		}
-		glBuffer.bufferSubData(offset, writeBuffer);
+		if (offset > 0 || writeType == WriteType.SUB_DATA ||
+				(writeType == WriteType.DYNAMIC && writeBuffer.position() < writeBuffer.capacity())) {
+			glBuffer.bufferSubData(offset, writeBuffer);
+		} else {
+			glBuffer.bufferData(writeBuffer, GL_STATIC_DRAW);
+		}
 		if (unbindAfter) {
 			glBuffer.unbind();
 		}
