@@ -18,11 +18,7 @@ public class TexturedRenderable implements IRenderable {
 
 	public static Texture2D loadModelTexture(String path) {
 		Texture2D loaded = new Texture2D(path);
-		loaded.whileBound((Texture texture) -> {
-			boolean success = texture.setWrapMode(Texture.WrapMode.REPEAT);
-			success = success && texture.setInterpolates(true);
-			return success && texture.generateMipmaps();
-		});
+		loaded.whileBound((Texture texture) -> texture.setWrapMode(Texture.WrapMode.REPEAT) && texture.setInterpolates(true) && texture.generateMipmaps());
 		return loaded;
 	}
 

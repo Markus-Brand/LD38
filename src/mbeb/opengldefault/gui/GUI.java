@@ -32,8 +32,12 @@ public class GUI implements IRenderable {
 
 	public static Texture2D loadGUITexture(String path) {
 		Texture2D loaded = new Texture2D(path);
-		loaded.whileBound((Texture texture) -> texture.setWrapMode(Texture.WrapMode.CLAMP_TO_EDGE) && texture.setInterpolates(false));
+		setGUIParameters(loaded);
 		return loaded;
+	}
+
+	public static boolean setGUIParameters (Texture texture) {
+		return texture.whileBound(glObject -> texture.setWrapMode(Texture.WrapMode.CLAMP_TO_EDGE) && texture.setInterpolates(false));
 	}
 
 	/**
@@ -82,7 +86,7 @@ public class GUI implements IRenderable {
 		this.stride = Constants.MAT4_COMPONENTS + VEC4_COMPONENTS;
 		renderable = StaticMeshes.getNewGuiQuad();
 		lut = new Texture2D(256, 256, mbeb.opengldefault.gl.texture.Texture.InternalFormat.RGBA8);
-		lut.whileBound((Texture texture) -> texture.setWrapMode(Texture.WrapMode.CLAMP_TO_EDGE) && texture.setInterpolates(false));
+		setGUIParameters(lut);
 	}
 
 	/**

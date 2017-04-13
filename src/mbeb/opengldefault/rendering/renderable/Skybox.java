@@ -2,9 +2,11 @@ package mbeb.opengldefault.rendering.renderable;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import mbeb.opengldefault.gl.shader.ShaderProgram;
+import mbeb.opengldefault.gl.shader.UBOManager;
+import mbeb.opengldefault.gl.texture.CubeMap;
+import mbeb.opengldefault.gl.texture.Texture;
 import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.gl.shader.*;
-import mbeb.opengldefault.gl.texture.*;
 
 /**
  * Uses a {@link CubeMap} to render a Skybox with the Skybox {@link ShaderProgram}
@@ -27,12 +29,7 @@ public class Skybox {
 	 */
 	public Skybox(final String texturePath) {
 		cubeMap = new CubeMap(texturePath);
-		cubeMap.whileBound(texture -> {
-			boolean success = cubeMap.setWrapMode(Texture.WrapMode.CLAMP_TO_EDGE);
-			success = success && cubeMap.setInterpolates(false);
-			success = success && cubeMap.setBaseLevel(0);
-			return success && cubeMap.setMaxLevel(0);
-		});
+		cubeMap.whileBound(texture -> cubeMap.setWrapMode(Texture.WrapMode.CLAMP_TO_EDGE) && cubeMap.setInterpolates(false) && cubeMap.setBaseLevel(0) && cubeMap.setMaxLevel(0));
 		shader = new ShaderProgram("skybox.vert", "skybox.frag");
 		shader.addUniformBlockIndex(UBOManager.MATRICES);
 		skyboxRenderable = StaticMeshes.getCube();
