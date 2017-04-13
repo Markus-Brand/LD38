@@ -116,25 +116,25 @@ public abstract class GLBuffer extends GLObject {
 	public void bufferData(IntBuffer buffer, int usage) {
 		buffer.rewind();
 		glBufferData(type.getGLType(), buffer, usage);
-		GLErrors.checkForError(TAG, "glBufferData " + type);
+		GLErrors.checkForError(TAG, "glBufferData " + type, true);
 	}
 	public void bufferData(ByteBuffer buffer, int usage) {
 		buffer.rewind();
 		glBufferData(type.getGLType(), buffer, usage);
-		GLErrors.checkForError(TAG, "glBufferData " + type);
+		GLErrors.checkForError(TAG, "glBufferData " + type, true);
 	}
 	public void bufferData(FloatBuffer buffer, int usage) {
 		buffer.rewind();
 		glBufferData(type.getGLType(), buffer, usage);
-		GLErrors.checkForError(TAG, "glBufferData " + type);
+		GLErrors.checkForError(TAG, "glBufferData " + type, true);
 	}
 	public void bufferData(int[] buffer, int usage) {
 		glBufferData(type.getGLType(), buffer, usage);
-		GLErrors.checkForError(TAG, "glBufferData " + type);
+		GLErrors.checkForError(TAG, "glBufferData " + type, true);
 	}
 	public void bufferData(float [] buffer, int usage) {
 		glBufferData(type.getGLType(), buffer, usage);
-		GLErrors.checkForError(TAG, "glBufferData " + type);
+		GLErrors.checkForError(TAG, "glBufferData " + type, true);
 	}
 //</editor-fold>
 
@@ -142,25 +142,25 @@ public abstract class GLBuffer extends GLObject {
 	public void bufferSubData(long offset, IntBuffer buffer) {
 		buffer.rewind();
 		glBufferSubData(type.getGLType(),offset,  buffer);
-		GLErrors.checkForError(TAG, "glBufferData " + type);
+		GLErrors.checkForError(TAG, "glBufferData " + type, true);
 	}
 	public void bufferSubData(long offset, ByteBuffer buffer) {
 		buffer.rewind();
 		glBufferSubData(type.getGLType(), offset,  buffer);
-		GLErrors.checkForError(TAG, "glBufferData " + type + "" + offset + "" + buffer);
+		GLErrors.checkForError(TAG, "glBufferData " + type + " " + offset + " " + buffer, true);
 	}
 	public void bufferSubData(long offset, FloatBuffer buffer) {
 		buffer.rewind();
 		glBufferSubData(type.getGLType(),offset,  buffer);
-		GLErrors.checkForError(TAG, "glBufferData " + type);
+		GLErrors.checkForError(TAG, "glBufferData " + type, true);
 	}
 	public void bufferSubData(long offset, int[] buffer) {
 		glBufferSubData(type.getGLType(),offset,  buffer);
-		GLErrors.checkForError(TAG, "glBufferData " + type);
+		GLErrors.checkForError(TAG, "glBufferData " + type, true);
 	}
 	public void bufferSubData(long offset, float [] buffer) {
 		glBufferSubData(type.getGLType(),offset,  buffer);
-		GLErrors.checkForError(TAG, "glBufferData " + type);
+		GLErrors.checkForError(TAG, "glBufferData " + type, true);
 	}
 //</editor-fold>
 	

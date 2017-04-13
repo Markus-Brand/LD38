@@ -50,13 +50,13 @@ public abstract class LightTypeManager {
 	 */
 	private void resizeBuffer() {
 		UBO.bind();
-		UBO.setBufferSize(getBufferSize() + Constants.BLOCK_SIZE);
+		UBO.setBufferSize(Constants.BLOCK_SIZE + getBufferSize());
 		UBO.bindBufferBase();
 		
 		GLBufferWriter combinedWriter = UBO.writer();
 		saveBufferSize(combinedWriter);
 		bufferData(combinedWriter);
-		combinedWriter.flush();
+		combinedWriter.setWriteType(GLBufferWriter.WriteType.SUB_DATA).flush();
 	}
 
 	/**
@@ -70,7 +70,7 @@ public abstract class LightTypeManager {
 	 * stores the buffer size at the beginning of the UBO
 	 */
 	private void saveBufferSize() {
-		saveBufferSize(UBO.writer(Constants.INT_SIZE)).flush();
+		saveBufferSize(UBO.writer(Constants.INT_SIZE)).setWriteType(GLBufferWriter.WriteType.SUB_DATA).flush();
 	}
 	
 	/**
@@ -191,7 +191,6 @@ public abstract class LightTypeManager {
 				if (i == lights.size() - 1) {
 					lights.remove(i);
 					sizeDecreased = true;
-					saveBufferSize();
 					break;
 				}
 				final Light swap = lights.get(lights.size() - 1);

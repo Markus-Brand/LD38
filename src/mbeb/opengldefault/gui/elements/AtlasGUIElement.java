@@ -1,8 +1,6 @@
 package mbeb.opengldefault.gui.elements;
 
-import java.nio.FloatBuffer;
-
-import mbeb.opengldefault.constants.Constants;
+import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import mbeb.opengldefault.gl.texture.Texture2D;
 import mbeb.opengldefault.gui.AtlasGUI;
 
@@ -71,8 +69,6 @@ public class AtlasGUIElement extends GUIElement {
 	 * Calculates a Vector4f that can be sent to the GPU containing the atlasIndex, the atlasSize, and the x and y
 	 * offset in the atlas
 	 *
-	 * @param atlasSize
-	 *            size of the atlas
 	 * @return generated Vector
 	 */
 	public Vector4f getOffset() {
@@ -82,10 +78,9 @@ public class AtlasGUIElement extends GUIElement {
 	}
 
 	@Override
-	public int writeToBuffer(FloatBuffer buffer, int offset) {
-		int offsetBySuper = super.writeToBuffer(buffer, offset);
-		getOffset().get(offset + offsetBySuper, buffer);
-		return offsetBySuper + Constants.VEC4_COMPONENTS;
+	public void writeTo(GLBufferWriter writer) {
+		super.writeTo(writer);
+		writer.write(getOffset());
 	}
 
 	@Override

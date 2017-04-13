@@ -2,14 +2,12 @@ package mbeb.opengldefault.gui;
 
 import static mbeb.opengldefault.constants.Constants.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL31.glDrawElementsInstanced;
 
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.BufferUtils;
+import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 
 import mbeb.opengldefault.constants.Constants;
 import mbeb.opengldefault.gl.buffer.VertexBuffer;
@@ -112,21 +110,9 @@ public class GUI implements IRenderable {
 	 * Buffers data from the gui elements into the {@link #vbo}
 	 */
 	private void loadBufferData() {
-		vbo.bufferData(getFloatBuffer(), GL_STATIC_DRAW);
-	}
-
-	/**
-	 * Generates a FloatBuffer using the GUIElements {@link GUIElement#writeToBuffer(FloatBuffer, int)}
-	 *
-	 * @return the generated FloatBuffer
-	 */
-	private FloatBuffer getFloatBuffer() {
-		FloatBuffer buffer = BufferUtils.createFloatBuffer(getElementsSize() * stride);
-		int offset = 0;
-		for (GUIElement guiElement : elements) {
-			offset += guiElement.writeToBuffer(buffer, offset);
-		}
-		return buffer;
+		GLBufferWriter writer = vbo.writer(getElementsSize() * stride * FLOAT_SIZE);
+		elements.forEach(writer::write);
+		writer.flush();
 	}
 
 	/**
