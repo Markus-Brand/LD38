@@ -14,6 +14,7 @@ import static org.lwjgl.opengl.GL11.GL_INT;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL33.glVertexAttribDivisor;
 
 /**
  * A VAO
@@ -26,7 +27,7 @@ public class VertexArray extends GLObject {
 	 * an openGL-AttribPointer: one rule on how to understand VBO data
 	 */
 	public static class AttributePointer {
-		
+
 		/**
 		 * The type of data for an AttribPointer
 		 */
@@ -47,6 +48,7 @@ public class VertexArray extends GLObject {
 			}
 		}
 
+		private int id = -1;
 		private int size;
 		private Type type;
 		private boolean normalized;
@@ -60,19 +62,42 @@ public class VertexArray extends GLObject {
 			this.stride = stride;
 			this.offset = offset;
 		}
-		
+
+		public void setId(int id) {
+			this.id = id;
+		}
+
+		public int getId() {
+			return id;
+		}
+
 		/**
 		 * tell openGL my own parameters
-		 * @param id the gl-name that this pointer should have
 		 */
-		public void sync(int id) {
+		public void sync() {
 			if (type == Type.INT) {
 				glVertexAttribIPointer(id, size, type.getGlType(), stride, offset);
 				GLErrors.checkForError(TAG, "glVertexAttribIPointer");
 			} else {
 				glVertexAttribPointer(id, size, type.getGlType(), normalized, stride, offset);
-				GLErrors.checkForError(TAG, "glVertexAttribPointer");
+				GLErrors.checkForError(TAG, "glVertexAttribPointer", true);
 			}
+		}
+
+		/**
+		 * set the divisor for this attribute
+		 * @param divisor
+		 */
+		public void divisor(int divisor) {
+			glVertexAttribDivisor(id, divisor);
+			GLErrors.checkForError(TAG, "glVertexAttribDivisor");
+		}
+
+		/**
+		 * mark this attribute for "instanced rendering": it is only updated once per mesh
+		 */
+		public void instanced() {
+			this.divisor(1);
 		}
 	}
 	
@@ -162,17 +187,46 @@ public class VertexArray extends GLObject {
 	 */
 	public void attribPointer(AttributePointer pointer) {
 		attributePointers.add(pointer);
-		syncPointer(pointer, attributePointers.size() - 1);
+		pointer.setId(attributePointers.size() - 1);
+		syncPointer(pointer);
 	}
-	
+
 	/**
 	 * upload the AttribPointer-data to the GPU and enable the pointer
+	 *
 	 * @param pointer the pointer to enable
-	 * @param id the pointer-id to enable it to
 	 */
-	private void syncPointer(AttributePointer pointer, int id) {
-		pointer.sync(id);
-		glEnableVertexAttribArray(id);
+	private void syncPointer(AttributePointer pointer) {
+		pointer.sync();
+		glEnableVertexAttribArray(pointer.getId());
 		GLErrors.checkForError(TAG, "glEnableVertexAttribArray");
+	}
+
+	/**
+	 * @return the last {@link AttributePointer} in the list of Pointers for this VAO
+	 */
+	public AttributePointer getLastPointer() {
+		return attributePointers.get(attributePointers.size() - 1);
+	}
+
+	/**
+	 * removes the last x pointers (does not sync that removal to ogl)
+	 * @param amount
+	 */
+	public void clearPointers(int amount) {
+		for (int pointer = 0; pointer < amount; pointer++) {
+			attributePointers.remove(attributePointers.size() - 1);
+		}
+	}
+
+	/**
+	 * removes pointers until there are only x left (does not sync that removal to ogl)
+	 * @param maximumAmount
+	 */
+	public void trimPointers(int maximumAmount) {
+		int toRemove = this.attributePointers.size() - maximumAmount;
+		if (toRemove > 0) {
+			clearPointers(toRemove);
+		}
 	}
 }

@@ -90,6 +90,10 @@ public class VAORenderable implements IRenderable {
 		this.transform = transform;
 	}
 
+	public VertexArray getVAO() {
+		return VAO;
+	}
+
 	/**
 	 * binds the Renderable
 	 */
