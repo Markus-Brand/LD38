@@ -11,6 +11,7 @@ import static org.lwjgl.opengl.GL33.*;
 
 import java.nio.*;
 
+import mbeb.opengldefault.gl.GLObject;
 import mbeb.opengldefault.gl.texture.Texture;
 import mbeb.opengldefault.gl.texture.Texture2D;
 import org.lwjgl.BufferUtils;
@@ -34,7 +35,7 @@ public class GUI implements IRenderable {
 
 	public static Texture2D loadGUITexture(String path) {
 		Texture2D loaded = new Texture2D(path);
-		loaded.whileBound(texture -> texture.setWrapMode(Texture.WrapMode.CLAMP_TO_EDGE) && texture.setInterpolates(false));
+		loaded.whileBound((Texture texture) -> texture.setWrapMode(Texture.WrapMode.CLAMP_TO_EDGE) && texture.setInterpolates(false));
 		return loaded;
 	}
 
@@ -84,7 +85,7 @@ public class GUI implements IRenderable {
 		this.stride = Constants.MAT4_COMPONENTS + Constants.VEC4_COMPONENTS;
 		renderable = StaticMeshes.getNewGuiQuad();
 		lut = new Texture2D(256, 256, mbeb.opengldefault.gl.texture.Texture.InternalFormat.RGBA8);
-		lut.whileBound(texture -> texture.setWrapMode(Texture.WrapMode.CLAMP_TO_EDGE) && texture.setInterpolates(false));
+		lut.whileBound((Texture texture) -> texture.setWrapMode(Texture.WrapMode.CLAMP_TO_EDGE) && texture.setInterpolates(false));
 	}
 
 	/**

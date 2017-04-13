@@ -1,12 +1,12 @@
 package mbeb.opengldefault.rendering.renderable;
 
+import org.joml.Matrix4f;
+
+import mbeb.opengldefault.animation.Pose;
+import mbeb.opengldefault.gl.shader.ShaderProgram;
 import mbeb.opengldefault.gl.texture.Texture;
 import mbeb.opengldefault.gl.texture.Texture2D;
-import org.joml.*;
-
-import mbeb.opengldefault.animation.*;
-import mbeb.opengldefault.gl.shader.*;
-import mbeb.opengldefault.scene.*;
+import mbeb.opengldefault.scene.BoundingBox;
 
 /**
  * A renderable with its own texture
@@ -18,7 +18,7 @@ public class TexturedRenderable implements IRenderable {
 
 	public static Texture2D loadModelTexture(String path) {
 		Texture2D loaded = new Texture2D(path);
-		loaded.whileBound(texture -> {
+		loaded.whileBound((Texture texture) -> {
 			boolean success = texture.setWrapMode(Texture.WrapMode.REPEAT);
 			success = success && texture.setInterpolates(true);
 			return success && texture.generateMipmaps();
@@ -46,6 +46,7 @@ public class TexturedRenderable implements IRenderable {
 
 	/**
 	 * binds the texture and then passes the call to the wrapped IRenderable
+	 * 
 	 * @param shader
 	 */
 	@Override

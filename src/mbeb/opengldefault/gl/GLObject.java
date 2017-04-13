@@ -1,5 +1,7 @@
 package mbeb.opengldefault.gl;
 
+import java.util.function.Function;
+
 import mbeb.opengldefault.logging.Log;
 
 /**
@@ -167,8 +169,8 @@ public abstract class GLObject {
 	//<editor-fold desc="Transactions">
 	/**
 	 * Tries to ensure this object is the one being edited.
-	 *
 	 * This is called if a starting transaction found the object already bound.
+	 * 
 	 * @return whether the operation succeeded
 	 */
 	protected boolean glBeginTransaction() {
@@ -218,6 +220,24 @@ public abstract class GLObject {
 			}
 		} else {
 			return true;
+		}
+	}
+
+	/**
+	 * @param actor
+	 *            a function to execute while this texture is guaranteed to be bound
+	 * @return whether the operation succeeded
+	 */
+	@SuppressWarnings("unchecked") //Because <this.class> is not (yet) a thing
+	public final <T extends GLObject> boolean whileBound(Function<T, Boolean> actor) {
+		if (this.beginTransaction()) {
+			boolean success = actor.apply((T) this);
+			if (!this.finishTransaction()) {
+				Log.error(TAG, "Could not finish transaction.");
+			}
+			return success;
+		} else {
+			return false;
 		}
 	}
 	//</editor-fold>
