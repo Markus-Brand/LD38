@@ -294,15 +294,6 @@ public abstract class Texture extends GLObject {
 	//</editor-fold>
 
 	/**
-	 * The current transaction level.
-	 * This stores how many transactions are currently in progress.
-	 */
-	private int transactionLevel = 0;
-	/**
-	 * Whether the texture is currently bound temporarily, for the purposes of a transaction.
-	 */
-	private boolean temporaryBinding = false;
-	/**
 	 * The type of this texture.
 	 */
 	private Type type;
@@ -462,53 +453,6 @@ public abstract class Texture extends GLObject {
 	protected boolean glDelete() {
 		glDeleteTextures(this.getHandle());
 		return !GLErrors.checkForError(TAG, "Could not delete a " + this.getType().name() + ".");
-	}
-	//</editor-fold>
-
-	//<editor-fold desc="Transactions">
-	/**
-	 * Ensures this texture is bound after this method has been called.
-	 * If it is bound, it changes the active texture unit to the unit it is bound to.
-	 * If in is not bound, it starts a temporary binding and binds the object.
-	 * This makes sure any glTex* calls affect this texture.
-	 *
-	 * @return whether the operation succeeded
-	 */
-	protected final boolean beginTransaction() {
-		if (this.isBound()) {
-			boolean success = this.setActiveTexture();
-			if (success) {
-				this.transactionLevel++;
-			}
-			return success;
-		} else {
-			boolean success = this.bind();
-			this.temporaryBinding = success;
-			if (success) {
-				this.transactionLevel++;
-			}
-			return success;
-		}
-	}
-
-	/**
-	 * Releases a temporary binding created by {@link #beginTransaction()}.
-	 * 
-	 * @return whether the operation succeeded
-	 */
-	protected final boolean finishTransaction() {
-		if (this.transactionLevel > 0) {
-			this.transactionLevel--;
-			if (this.temporaryBinding && this.transactionLevel == 0) {
-				boolean success = this.unbind();
-				this.temporaryBinding = !success;
-				return success;
-			} else {
-				return true;
-			}
-		} else {
-			return true;
-		}
 	}
 	//</editor-fold>
 

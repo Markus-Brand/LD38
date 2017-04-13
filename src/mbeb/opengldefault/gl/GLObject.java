@@ -17,11 +17,20 @@ public abstract class GLObject {
 	 * Is null if this object does not exist yet or has already been deleted
 	 */
 	private Integer glHandle = null;
+	/**
+	 * The current transaction level.
+	 * This stores how many transactions are currently in progress.
+	 */
+	private int transactionLevel = 0;
+	/**
+	 * Whether the texture is currently bound temporarily, for the purposes of a transaction.
+	 */
+	private boolean temporaryBinding = false;
 
 	/**
 	 * @return the gl-handle for this object, or null if it is non-existent
 	 */
-	public Integer getHandle() {
+	public final Integer getHandle() {
 		return glHandle;
 	}
 
@@ -31,7 +40,7 @@ public abstract class GLObject {
 	 * 
 	 * @return the gl-handle for this object
 	 */
-	public Integer ensureHandle() {
+	public final Integer ensureHandle() {
 		ensureExists();
 		return getHandle();
 	}
@@ -46,7 +55,7 @@ public abstract class GLObject {
 	/**
 	 * @return whether this GLObject already exists in the OpenGL context
 	 */
-	public boolean exists() {
+	public final boolean exists() {
 		return this.glHandle != null;
 	}
 
@@ -56,7 +65,7 @@ public abstract class GLObject {
 	 * 
 	 * @return whether the generation succeeded
 	 */
-	public boolean generate() {
+	public final boolean generate() {
 		return this.generate(true);
 	}
 
@@ -67,7 +76,7 @@ public abstract class GLObject {
 	 *            whether an error should be generated when this object already exists
 	 * @return whether the generation succeeded
 	 */
-	public boolean generate(boolean errorOnExistence) {
+	public final boolean generate(boolean errorOnExistence) {
 		if (!this.exists()) {
 			this.glHandle = this.glGenerate();
 			if (!this.exists()) {
@@ -87,7 +96,7 @@ public abstract class GLObject {
 	 * 
 	 * @return whether the object exists, only false if generation failed
 	 */
-	public boolean ensureExists() {
+	public final boolean ensureExists() {
 		return this.generate(false);
 	}
 
@@ -104,7 +113,7 @@ public abstract class GLObject {
 	 * 
 	 * @return whether the operation succeeded.
 	 */
-	public boolean bind() {
+	public final boolean bind() {
 		if (!this.isBound()) {
 			boolean success = this.glBind();
 			if (!success) {
@@ -126,7 +135,7 @@ public abstract class GLObject {
 	/**
 	 * @return whether this object is currently bound to the context
 	 */
-	public boolean isBound() {
+	public final boolean isBound() {
 		return this.isBoundToContext();
 	}
 
@@ -143,7 +152,7 @@ public abstract class GLObject {
 	 * 
 	 * @return whether the operation succeeded.
 	 */
-	public boolean unbind() {
+	public final boolean unbind() {
 		if (this.isBound()) {
 			boolean success = this.glUnbind();
 			if (!success) {
@@ -154,6 +163,64 @@ public abstract class GLObject {
 			return true;
 		}
 	}
+
+	//<editor-fold desc="Transactions">
+	/**
+	 * Tries to ensure this object is the one being edited.
+	 *
+	 * This is called if a starting transaction found the object already bound.
+	 * @return whether the operation succeeded
+	 */
+	protected boolean glBeginTransaction() {
+		return true;
+	}
+
+	/**
+	 * Ensures this texture is bound after this method has been called.
+	 * If it is bound, it changes the active texture unit to the unit it is bound to.
+	 * If in is not bound, it starts a temporary binding and binds the object.
+	 * This makes sure any glTex* calls affect this texture.
+	 *
+	 * @return whether the operation succeeded
+	 */
+	protected final boolean beginTransaction() {
+		this.ensureExists();
+		if (this.isBound()) {
+			boolean success = this.glBeginTransaction();
+			if (success) {
+				this.transactionLevel++;
+			}
+			return success;
+		} else {
+			boolean success = this.bind();
+			this.temporaryBinding = success;
+			if (success) {
+				this.transactionLevel++;
+			}
+			return success;
+		}
+	}
+
+	/**
+	 * Releases a temporary binding created by {@link #beginTransaction()}.
+	 *
+	 * @return whether the operation succeeded
+	 */
+	protected final boolean finishTransaction() {
+		if (this.transactionLevel > 0) {
+			this.transactionLevel--;
+			if (this.temporaryBinding && this.transactionLevel == 0) {
+				boolean success = this.unbind();
+				this.temporaryBinding = !success;
+				return success;
+			} else {
+				return true;
+			}
+		} else {
+			return true;
+		}
+	}
+	//</editor-fold>
 
 	/**
 	 * Performs the object type specific deletion.
@@ -167,7 +234,7 @@ public abstract class GLObject {
 	 * 
 	 * @return whether the operation succeeded
 	 */
-	public boolean delete() {
+	public final boolean delete() {
 		if (this.exists()) {
 			this.unbind();
 			boolean success = this.glDelete();
@@ -183,7 +250,7 @@ public abstract class GLObject {
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
+	protected final void finalize() throws Throwable {
 		if (this.exists()) {
 			Log.error(TAG, "DELETE ME!");
 			this.delete();
