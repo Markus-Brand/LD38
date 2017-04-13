@@ -77,7 +77,7 @@ public class Texture2DArray extends Texture {
 		return this.whileBound((Texture2DArray texture) -> {
 			boolean success = true;
 			for (int i = 0; i < images.length && success; i++) {
-				this.setLayer(i, images[i]);
+				success = this.setLayer(i, images[i]);
 			}
 			return success;
 		});
