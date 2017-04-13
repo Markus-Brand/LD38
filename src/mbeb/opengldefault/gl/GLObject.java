@@ -225,7 +225,7 @@ public abstract class GLObject {
 
 	/**
 	 * @param actor
-	 *            a function to execute while this texture is guaranteed to be bound
+	 *            a function to execute while this GLObject is guaranteed to be bound
 	 * @return whether the operation succeeded
 	 */
 	@SuppressWarnings("unchecked") //Because <this.class> is not (yet) a thing
