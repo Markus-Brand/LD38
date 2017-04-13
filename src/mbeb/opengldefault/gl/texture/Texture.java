@@ -235,12 +235,18 @@ public abstract class Texture extends GLObject {
 	 * This determines the number of components for this texture.
 	 */
 	public enum InternalFormat {
-		RED(GL_RED), RG(GL_RG), RGB(GL_RGB), RGBA(GL_RGBA), RGBA8(GL_RGBA8), DEPTH(GL_DEPTH_COMPONENT), STENCIL(GL_STENCIL_INDEX);
+		RED(GL_RED, Format.RED), RG(GL_RG, Format.RED), RGB(GL_RGB, Format.RED), RGBA(GL_RGBA, Format.RED), RGBA8(GL_RGBA8, Format.RED), DEPTH(GL_DEPTH_COMPONENT, Format.DEPTH),
+		STENCIL(GL_STENCIL_INDEX, Format.STENCIL);
 
 		private int glEnum;
+		/**
+		 * A suitable Format to pass OpenGL to initialize the texture.
+		 */
+		private Format minimalData;
 
-		InternalFormat(int glEnum) {
+		InternalFormat(int glEnum, Format minimalData) {
 			this.glEnum = glEnum;
+			this.minimalData = minimalData;
 		}
 
 		/**
@@ -248,6 +254,13 @@ public abstract class Texture extends GLObject {
 		 */
 		public int getGLEnum() {
 			return glEnum;
+		}
+
+		/**
+		 * @return a suitable Format to pass OpenGL for this texture
+		 */
+		public Format getMinimalData() {
+			return minimalData;
 		}
 	}
 

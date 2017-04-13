@@ -42,7 +42,7 @@ public class Texture2D extends Texture {
 	public Texture2D(int width, int height, InternalFormat format) {
 		this();
 		this.ensureExists();
-		this.setImageData(width, height, format, Format.RED, DataType.UNSIGNED_BYTE, null);
+		this.setImageData(width, height, format, format.getMinimalData(), DataType.UNSIGNED_BYTE, null);
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class Texture2D extends Texture {
 	 * @param y
 	 * @param color
 	 * @return whether the operation succeeded
-	 * @deprecated Why only set a single pixel?
+	 * @deprecated For the future: add a method to get a GraphicsContext for this texture
 	 */
 	@Deprecated
 	public boolean setPixel(int x, int y, Color color) {
