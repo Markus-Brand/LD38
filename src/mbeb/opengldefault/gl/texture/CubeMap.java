@@ -54,6 +54,15 @@ public class CubeMap extends Texture {
 		}
 	}
 
+	/**
+	 * Loads the cube map images at the given path with the given extension.
+	 * 
+	 * @param path
+	 *            the path of the cube map
+	 * @param extension
+	 *            the file extension
+	 * @return the loaded images
+	 */
 	public static BufferedImage[] loadCubeMapImages(String path, String extension) {
 		BufferedImage[] img = new BufferedImage[6];
 		img[0] = Texture.loadBufferedImage(path + "_r." + extension);
@@ -65,6 +74,13 @@ public class CubeMap extends Texture {
 		return img;
 	}
 
+	/**
+	 * Loads the cube map images at the given path.
+	 * 
+	 * @param path
+	 *            the path of the cube map
+	 * @return the loaded images
+	 */
 	public static BufferedImage[] loadCubeMapImages(String path) {
 		return loadCubeMapImages(path, "jpg");
 	}
@@ -97,6 +113,23 @@ public class CubeMap extends Texture {
 	 */
 	public CubeMap(String path) {
 		this(CubeMap.loadCubeMapImages(path));
+	}
+
+	/**
+	 * Creates an uninitialized cube map with the given width and height.
+	 * @param width the width
+	 * @param height the height
+	 * @param format the format to use internally
+	 */
+	public CubeMap(int width, int height, InternalFormat format) {
+		this();
+		this.whileBound((CubeMap texture) -> {
+			boolean success = true;
+			for (int i = 0; i < 6 && success; i++) {
+				success = this.setFaceData(Face.POSITIVE_X.getGlEnum() + i, format, format.getMinimalData(), DataType.UNSIGNED_BYTE, width, height, null);
+			}
+			return success;
+		});
 	}
 
 	/**
