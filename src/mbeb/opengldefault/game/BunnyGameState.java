@@ -25,6 +25,7 @@ import mbeb.opengldefault.camera.ICamera;
 import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.curves.BezierCurve;
 import mbeb.opengldefault.curves.BezierCurve.ControlPointInputMode;
+import mbeb.opengldefault.gl.texture.Texture2D;
 import mbeb.opengldefault.gui.TextGUI;
 import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.light.DirectionalLight;
@@ -38,10 +39,8 @@ import mbeb.opengldefault.rendering.renderable.BezierCurveRenderable;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.Skybox;
 import mbeb.opengldefault.rendering.renderable.TexturedRenderable;
-import mbeb.opengldefault.rendering.shader.ShaderProgram;
-import mbeb.opengldefault.rendering.shader.UBOManager;
-import mbeb.opengldefault.rendering.textures.Texture;
-import mbeb.opengldefault.rendering.textures.TextureCache;
+import mbeb.opengldefault.gl.shader.ShaderProgram;
+import mbeb.opengldefault.gl.shader.UBOManager;
 import mbeb.opengldefault.scene.Scene;
 import mbeb.opengldefault.scene.SceneObject;
 import mbeb.opengldefault.scene.behaviour.BezierBehaviour;
@@ -113,8 +112,8 @@ public class BunnyGameState implements GameState {
 
 		AnimatedMesh playerAnim = new ObjectLoader().loadFromFileAnim("player.fbx");
 		playerAnim.setTransform(MeshFlip);
-		Texture bunnyTexture = new Texture("player.png");
-		Texture lampTexture = new Texture("lamp.png");
+		Texture2D bunnyTexture = TexturedRenderable.loadModelTexture("player.png");
+		Texture2D lampTexture = TexturedRenderable.loadModelTexture("lamp.png");
 		playerAnim.getSkeleton().printRecursive("");
 
 		final AnimatedMesh bunnyAnim = new ObjectLoader().loadFromFileAnim("ohrenFlackern.fbx");
@@ -124,7 +123,7 @@ public class BunnyGameState implements GameState {
 
 		final ShaderProgram curveShader = new ShaderProgram("bezier.vert", "bezier.frag", "bezier.geom");
 		curveShader.addUniformBlockIndex(UBOManager.MATRICES);
-		curveShader.setDrawMode(GL_LINES);
+		curveShader.setDrawMode(ShaderProgram.DrawMode.LINES);
 
 		final ShaderProgram animatedShader = new ShaderProgram("boneAnimation.vert", "basic.frag");
 		bunnyScene.getLightManager().addShader(animatedShader);
@@ -297,7 +296,7 @@ public class BunnyGameState implements GameState {
 
 	@Override
 	public void clear() {
-		TextureCache.clearCache();
+
 	}
 
 	@Override

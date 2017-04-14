@@ -2,6 +2,7 @@ package mbeb.opengldefault.light;
 
 import java.awt.*;
 
+import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import org.joml.*;
 
 import mbeb.opengldefault.logging.*;
@@ -61,30 +62,12 @@ public class DirectionalLight extends Light {
 	public Vector3f getDirection() {
 		return this.direction;
 	}
-
-	/**
-	 * contains 2 Blocks (4 32bit floats each)
-	 * <list>
-	 * <li>the direction (3 components + 1 buffer)</li>
-	 * <li>the color (3 components + 1 buffer)</li>
-	 * </list>
-	 * <br>
-	 * if changes occur -> {@link DirectionalLightTypeManager}
-	 */
+	
 	@Override
-	public float[] getData() {
-		final float[] data = new float[8]; //always 4-float / 16-Byte blocks
-		//block1
-		data[0] = direction.x;
-		data[1] = direction.y;
-		data[2] = direction.z;
-
-		//block2
-		data[4] = color.x;
-		data[5] = color.y;
-		data[6] = color.z;
-
-		return data;
+	public void writeTo(GLBufferWriter writer) {
+		writer
+			.fillBlock()
+			.write(direction)
+			.write(color);
 	}
-
 }

@@ -1,9 +1,9 @@
 package mbeb.opengldefault.gui.elements;
 
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import org.joml.Vector2f;
 
 /**
@@ -58,12 +58,8 @@ public class CombinedGUIElement extends GUIElement {
 	}
 
 	@Override
-	public int writeToBuffer(FloatBuffer buffer, int offset) {
-		int totalOffset = 0;
-		for (GUIElement element : elements) {
-			totalOffset += element.writeToBuffer(buffer, offset + totalOffset);
-		}
-		return totalOffset;
+	public void writeTo(GLBufferWriter writer) {
+		elements.forEach(writer::write);
 	}
 
 	/**
@@ -80,7 +76,7 @@ public class CombinedGUIElement extends GUIElement {
 		if (super.isDirty()) {
 			return true;
 		}
-		return elements.stream().anyMatch(element -> element.isDirty());
+		return elements.stream().anyMatch(GUIElement::isDirty);
 	}
 
 	@Override
