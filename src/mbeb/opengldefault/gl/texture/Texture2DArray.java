@@ -36,13 +36,25 @@ public class Texture2DArray extends ThreeDimensionalTexture {
 	}
 
 	/**
+	 * Creates a 2D texture array with the given images and depth
+	 *
+	 * @param images
+	 *            the images to use
+	 * @param depth
+	 *            how many layers this texture should have
+	 */
+	public Texture2DArray(BufferedImage[] images, int depth) {
+		this(images[0].getWidth(), images[0].getHeight(), depth, InternalFormat.RGBA8);
+		this.setLayers(images);
+	}
+
+	/**
 	 * Creates a 2D texture array with the given images.
-	 * 
+	 *
 	 * @param images
 	 *            the images to use
 	 */
 	public Texture2DArray(BufferedImage[] images) {
-		this(images[0].getWidth(), images[0].getHeight(), images.length, InternalFormat.RGBA8);
-		this.setLayers(images);
+		this(images, images.length);
 	}
 }

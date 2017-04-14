@@ -1,29 +1,35 @@
 package mbeb.opengldefault.scene.materials;
 
-import org.joml.Vector4f;
+import mbeb.opengldefault.gl.buffer.GLBufferWritable;
+import mbeb.opengldefault.gl.buffer.GLBufferWriter;
+import mbeb.opengldefault.gl.texture.Texture;
+import mbeb.opengldefault.gl.texture.Texture2DArray;
+
+import java.awt.image.BufferedImage;
 
 /**
  * the look of geometry inside a scene
  */
-public class Material {
-	
-	/** the overall color of the object (used for ambient and diffuse shading) and the specularity in the alpha channel */
-	private final MaterialComponent diffuseSpec;
-	
-	/** an emission color for the object (optional) */
-	private MaterialComponent emission = null;
-	/** a normal map for shading, with a height map in the alpha channel (optional) */
-	private MaterialComponent normalBump = null;
+public class Material implements GLBufferWritable {
+	/**
+	 * diffuse / specular / emission / normalBump
+	 */
+	protected static final int MATERIAL_LAYERS = 4;
 	
 	private int shininess = 64; //todo should this also be mappable?
+
+	private final Texture2DArray myTextures;
 	
-	public Material() {
-		this(new MaterialComponent(new Vector4f(0.5f)));
+	public Material(Texture2DArray texture) {
+		myTextures = texture;
 	}
-	
-	public Material(MaterialComponent diffuse) {
-		this.diffuseSpec = diffuse;
-		this.shininess = 64;
+
+	public Material(BufferedImage[] images) {
+		this(new Texture2DArray(images, MATERIAL_LAYERS));
+	}
+
+	public Material(String path, String extension, int amount) {
+		this(Texture.loadBufferedImages(path, extension, amount));
 	}
 	
 	public int getShininess() {
@@ -33,22 +39,11 @@ public class Material {
 	public void setShininess(int shininess) {
 		this.shininess = shininess;
 	}
-	
-	public MaterialComponent getDiffuseSpec() {
-		return diffuseSpec;
-	}
-	
-	public MaterialComponent getEmission() {
-		if (emission == null) {
-			emission = new MaterialComponent();
-		}
-		return emission;
-	}
-	
-	public MaterialComponent getNormalBump() {
-		if (normalBump == null) {
-			normalBump = new MaterialComponent();
-		}
-		return normalBump;
+
+	@Override
+	public void writeTo(GLBufferWriter writer) {
+		writer
+			.write(myTextures)
+			.write(shininess);
 	}
 }

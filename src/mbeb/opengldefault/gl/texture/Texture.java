@@ -14,11 +14,11 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
-import mbeb.opengldefault.gl.buffer.GLBufferWritable;
-import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import org.lwjgl.BufferUtils;
 
 import mbeb.opengldefault.gl.GLObject;
+import mbeb.opengldefault.gl.buffer.GLBufferWritable;
+import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.logging.Log;
 import mbeb.opengldefault.openglcontext.ContextBindings;
@@ -360,6 +360,25 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 			Log.error(TAG, "Unable to Load Texture: " + path, e);
 		}
 		return image;
+	}
+
+	/**
+	 * Loads multiple BufferedImages from a directory, which are named 0.ext, 1.ext, ...
+	 * 
+	 * @param directory
+	 *            path to the directory of Images
+	 * @param extension
+	 *            file extension of the Images
+	 * @param amount
+	 *            how many images to load
+	 * @return
+	 */
+	public static BufferedImage[] loadBufferedImages(final String directory, final String extension, int amount) {
+		BufferedImage[] images = new BufferedImage[amount];
+		for (int imageNumber = 0; imageNumber < amount; imageNumber++) {
+			images[imageNumber] = loadBufferedImage(directory + imageNumber + "." + extension);
+		}
+		return images;
 	}
 	//</editor-fold>
 
