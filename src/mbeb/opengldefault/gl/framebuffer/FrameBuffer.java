@@ -11,11 +11,12 @@ import mbeb.opengldefault.gl.GLObject;
 import mbeb.opengldefault.gl.texture.CubeMap;
 import mbeb.opengldefault.gl.texture.Texture;
 import mbeb.opengldefault.gl.texture.Texture2DArray;
+import mbeb.opengldefault.gl.texture.Texture3D;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.openglcontext.ContextBindings;
 
 /**
- * Represents a framebuffer object in OpenGL.
+ * Represents a frame buffer object in OpenGL.
  */
 public class FrameBuffer extends GLObject {
 	private static final String TAG = "FrameBuffer";
@@ -172,6 +173,26 @@ public class FrameBuffer extends GLObject {
 	}
 
 	/**
+	 * Convenience method for glFramebufferTexture3D.
+	 *
+	 * @param attachment
+	 *            the attachment target
+	 * @param texture
+	 *            the texture to attach
+	 * @param level
+	 *            the level of the texture to attach
+	 * @param z
+	 *            the z coordinate of the layer of the texture to attach
+	 * @return whether the operation succeeded
+	 */
+	protected boolean attachTexture3D(Attachment attachment, Texture3D texture, int z, int level) {
+		return this.whileBound((FrameBuffer buffer) -> {
+			glFramebufferTexture3D(GL_FRAMEBUFFER, attachment.getGLEnum(), texture.getType().getGLEnum(), texture.getHandle(), level, z);
+			return !GLErrors.checkForError(TAG, "glFramebufferTexture3D");
+		});
+	}
+
+	/**
 	 * Convenience method to remove an existing attachment.
 	 * 
 	 * @param attachment
@@ -193,7 +214,7 @@ public class FrameBuffer extends GLObject {
 	 *            the attachment point to use
 	 * @param texture
 	 *            the texture to attach
-	 * @return
+	 * @return whether the operation succeeded
 	 */
 	public boolean attach(Attachment attachment, Texture texture) {
 		boolean success = this.attachTexture(attachment, texture, 0);
@@ -212,7 +233,7 @@ public class FrameBuffer extends GLObject {
 	 *            the texture to attach
 	 * @param face
 	 *            the face of the cubemap to attach
-	 * @return
+	 * @return whether the operation succeeded
 	 */
 	public boolean attach(Attachment attachment, CubeMap texture, CubeMap.Face face) {
 		boolean success = this.attachCubeMapFace(attachment, texture, face, 0);
@@ -231,7 +252,7 @@ public class FrameBuffer extends GLObject {
 	 *            the texture to attach
 	 * @param layer
 	 *            the layer of the array to attach
-	 * @return
+	 * @return whether the operation succeeded
 	 */
 	public boolean attach(Attachment attachment, Texture2DArray texture, int layer) {
 		boolean success = this.attachTextureLayer(attachment, texture, layer, 0);
@@ -240,6 +261,26 @@ public class FrameBuffer extends GLObject {
 		}
 		return success;
 	}
+
+	/**
+	 * Attaches a layer of the given 3D texture to this framebuffer.
+	 *
+	 * @param attachment
+	 *            the attachment point to use
+	 * @param texture
+	 *            the texture to attach
+	 * @param z
+	 *            the z coordinate of the layer to attach
+	 * @return whether the operation succeeded
+	 */
+	public boolean attach(Attachment attachment, Texture3D texture, int z) {
+		boolean success = this.attachTexture3D(attachment, texture, z, 0);
+		if (success) {
+			this.attachments.put(attachment, texture);
+		}
+		return success;
+	}
+
 
 	/**
 	 * @param key
