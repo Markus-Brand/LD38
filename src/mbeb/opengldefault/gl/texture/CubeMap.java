@@ -9,7 +9,9 @@ import java.nio.ByteBuffer;
 import mbeb.opengldefault.logging.GLErrors;
 
 /**
- * Represents a cube map texture
+ * Represents a cube map texture.
+ * 
+ * @author Potti
  */
 public class CubeMap extends Texture {
 	private static final String TAG = "CubeMap";

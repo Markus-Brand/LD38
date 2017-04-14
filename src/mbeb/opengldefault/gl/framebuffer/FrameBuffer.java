@@ -17,6 +17,8 @@ import mbeb.opengldefault.openglcontext.ContextBindings;
 
 /**
  * Represents a frame buffer object in OpenGL.
+ * 
+ * @author Potti
  */
 public class FrameBuffer extends GLObject {
 	private static final String TAG = "FrameBuffer";
@@ -280,7 +282,6 @@ public class FrameBuffer extends GLObject {
 		}
 		return success;
 	}
-
 
 	/**
 	 * @param key

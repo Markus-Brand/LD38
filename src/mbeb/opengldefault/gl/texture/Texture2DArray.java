@@ -1,15 +1,11 @@
 package mbeb.opengldefault.gl.texture;
 
-import static org.lwjgl.opengl.GL12.glTexImage3D;
-import static org.lwjgl.opengl.GL12.glTexSubImage3D;
-
 import java.awt.image.BufferedImage;
-import java.nio.ByteBuffer;
-
-import mbeb.opengldefault.logging.GLErrors;
 
 /**
  * Represents an array of 2D textures.
+ * 
+ * @author Potti
  */
 public class Texture2DArray extends ThreeDimensionalTexture {
 	private static final String TAG = "Texture2DArray";
