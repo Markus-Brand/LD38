@@ -1,5 +1,6 @@
 package mbeb.opengldefault.gl.framebuffer;
 
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL32.glFramebufferTexture;
 
@@ -9,7 +10,7 @@ import java.util.Map;
 import mbeb.opengldefault.gl.GLObject;
 import mbeb.opengldefault.gl.texture.CubeMap;
 import mbeb.opengldefault.gl.texture.Texture;
-import mbeb.opengldefault.gl.texture.Texture2D;
+import mbeb.opengldefault.gl.texture.Texture2DArray;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.openglcontext.ContextBindings;
 
@@ -18,6 +19,29 @@ import mbeb.opengldefault.openglcontext.ContextBindings;
  */
 public class FrameBuffer extends GLObject {
 	private static final String TAG = "FrameBuffer";
+
+	/**
+	 * The target OpenGL can draw to or read from.
+	 */
+	public enum Target {
+		FRONT(GL_FRONT_LEFT), LEFT(GL_FRONT_LEFT), BACK(GL_BACK_LEFT), RIGHT(GL_FRONT_RIGHT), FRONT_RIGHT(GL_FRONT_RIGHT), FRONT_LEFT(GL_FRONT_LEFT), BACK_RIGHT(GL_BACK_RIGHT),
+		BACK_LEFT(GL_BACK_LEFT), COLOR0(GL_COLOR_ATTACHMENT0), COLOR1(GL_COLOR_ATTACHMENT1), COLOR2(GL_COLOR_ATTACHMENT2), COLOR3(GL_COLOR_ATTACHMENT3), COLOR4(GL_COLOR_ATTACHMENT4),
+		COLOR5(GL_COLOR_ATTACHMENT5), COLOR6(GL_COLOR_ATTACHMENT6), COLOR7(GL_COLOR_ATTACHMENT7);
+
+		private int glEnum;
+
+		Target(int glEnum) {
+			this.glEnum = glEnum;
+		}
+
+		/**
+		 * @return the OpenGL enum representing this target
+		 */
+		public int getGLEnum() {
+			return glEnum;
+
+		}
+	}
 
 	/**
 	 * The attachment point of a texture on a FrameBuffer.
@@ -89,8 +113,9 @@ public class FrameBuffer extends GLObject {
 	}
 
 	/**
-	 * Convenience method for glFramebufferTexture2D.
-	 * 
+	 * Convenience method for glFramebufferTexture.
+	 * This will attach a texture with all its possible layers.
+	 *
 	 * @param attachment
 	 *            the attachment target
 	 * @param texture
@@ -99,10 +124,10 @@ public class FrameBuffer extends GLObject {
 	 *            the level of the texture to attach
 	 * @return whether the operation succeeded
 	 */
-	protected boolean attachTexture2D(Attachment attachment, Texture2D texture, int level) {
+	protected boolean attachTexture(Attachment attachment, Texture texture, int level) {
 		return this.whileBound((FrameBuffer buffer) -> {
-			glFramebufferTexture2D(GL_FRAMEBUFFER, attachment.getGLEnum(), texture.getType().getGLEnum(), texture.getHandle(), level);
-			return !GLErrors.checkForError(TAG, "glFramebufferTexture2D");
+			glFramebufferTexture(GL_FRAMEBUFFER, attachment.getGLEnum(), texture.getHandle(), level);
+			return !GLErrors.checkForError(TAG, "glFramebufferTexture");
 		});
 	}
 
@@ -139,7 +164,7 @@ public class FrameBuffer extends GLObject {
 	 *            the layer of the texture to attach
 	 * @return whether the operation succeeded
 	 */
-	protected boolean attachTextureLayer(Attachment attachment, Texture texture, int layer, int level) {
+	protected boolean attachTextureLayer(Attachment attachment, Texture2DArray texture, int layer, int level) {
 		return this.whileBound((FrameBuffer buffer) -> {
 			glFramebufferTextureLayer(GL_FRAMEBUFFER, attachment.getGLEnum(), texture.getHandle(), level, layer);
 			return !GLErrors.checkForError(TAG, "glFramebufferTextureLayer");
@@ -161,7 +186,8 @@ public class FrameBuffer extends GLObject {
 	}
 
 	/**
-	 * Attaches a Texture2D to this framebuffer.
+	 * Attaches a texture to this framebuffer.
+	 * If this texture is an array of 1D or 2D textures, a 3D texture or a cube map, the
 	 * 
 	 * @param attachment
 	 *            the attachment point to use
@@ -169,8 +195,8 @@ public class FrameBuffer extends GLObject {
 	 *            the texture to attach
 	 * @return
 	 */
-	public boolean attachTexture(Attachment attachment, Texture2D texture) {
-		boolean success = this.attachTexture2D(attachment, texture, 0);
+	public boolean attach(Attachment attachment, Texture texture) {
+		boolean success = this.attachTexture(attachment, texture, 0);
 		if (success) {
 			this.attachments.put(attachment, texture);
 		}
@@ -188,8 +214,27 @@ public class FrameBuffer extends GLObject {
 	 *            the face of the cubemap to attach
 	 * @return
 	 */
-	public boolean attachTexture(Attachment attachment, CubeMap texture, CubeMap.Face face) {
+	public boolean attach(Attachment attachment, CubeMap texture, CubeMap.Face face) {
 		boolean success = this.attachCubeMapFace(attachment, texture, face, 0);
+		if (success) {
+			this.attachments.put(attachment, texture);
+		}
+		return success;
+	}
+
+	/**
+	 * Attaches a layer of the given array to this framebuffer.
+	 *
+	 * @param attachment
+	 *            the attachment point to use
+	 * @param texture
+	 *            the texture to attach
+	 * @param layer
+	 *            the layer of the array to attach
+	 * @return
+	 */
+	public boolean attach(Attachment attachment, Texture2DArray texture, int layer) {
+		boolean success = this.attachTextureLayer(attachment, texture, layer, 0);
 		if (success) {
 			this.attachments.put(attachment, texture);
 		}
