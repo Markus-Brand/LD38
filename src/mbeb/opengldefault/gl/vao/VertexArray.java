@@ -77,7 +77,7 @@ public class VertexArray extends GLObject {
 		public void sync() {
 			if (type == Type.INT) {
 				glVertexAttribIPointer(id, size, type.getGlType(), stride, offset);
-				GLErrors.checkForError(TAG, "glVertexAttribIPointer");
+				GLErrors.checkForError(TAG, "glVertexAttribIPointer", true);
 			} else {
 				glVertexAttribPointer(id, size, type.getGlType(), normalized, stride, offset);
 				GLErrors.checkForError(TAG, "glVertexAttribPointer", true);

@@ -14,6 +14,8 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
+import mbeb.opengldefault.gl.buffer.GLBufferWritable;
+import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import org.lwjgl.BufferUtils;
 
 import mbeb.opengldefault.gl.GLObject;
@@ -27,7 +29,7 @@ import mbeb.opengldefault.openglcontext.ContextBindings;
  * @author Potti
  * @version 1.0
  */
-public abstract class Texture extends GLObject {
+public abstract class Texture extends GLObject implements GLBufferWritable {
 
 	private static final String TAG = "Texture";
 
@@ -673,5 +675,10 @@ public abstract class Texture extends GLObject {
 			glGenerateMipmap(this.getType().getGLEnum());
 			return !GLErrors.checkForError(TAG, "glGenerateMipmap");
 		});
+	}
+
+	@Override
+	public void writeTo(GLBufferWriter writer) {
+		writer.write(this.getTextureUnit());
 	}
 }

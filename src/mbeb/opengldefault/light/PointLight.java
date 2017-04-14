@@ -180,36 +180,6 @@ public class PointLight extends Light implements LimitedLight {
 		setLinear(generateLinearAmount(reach));
 		setQuadratic(generateQuadraticAmount(reach));
 	}
-
-	/**
-	 * contains 3 Blocks (4 32bit floats each)
-	 * <list>
-	 * <li>the position (3 components + 1 buffer)</li>
-	 * <li>the color (3 components + 1 buffer)</li>
-	 * <li>the 3 attenuation factors constant, linear and quadratic</li>
-	 * </list>
-	 * <br>
-	 * if changes occur -> {@link PointLightTypeManager}
-	 */
-	@Override
-	public float[] getData() {
-		final float[] data = new float[12];
-
-		data[0] = position.x;
-		data[1] = position.y;
-		data[2] = position.z;
-
-		data[4] = color.x;
-		data[5] = color.y;
-		data[6] = color.z;
-		data[7] = constant;
-
-		data[8] = linear;
-
-		data[9] = quadratic;
-
-		return data;
-	}
 	
 	@Override
 	public void writeTo(GLBufferWriter writer) {
