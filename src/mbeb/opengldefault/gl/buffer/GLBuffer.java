@@ -141,25 +141,25 @@ public abstract class GLBuffer extends GLObject {
 //<editor-fold desc="bufferSubData">
 	public void bufferSubData(long offset, IntBuffer buffer) {
 		buffer.rewind();
-		glBufferSubData(type.getGLType(),offset,  buffer);
+		glBufferSubData(type.getGLType(), offset,  buffer);
 		GLErrors.checkForError(TAG, "glBufferData " + type, true);
 	}
 	public void bufferSubData(long offset, ByteBuffer buffer) {
 		buffer.rewind();
 		glBufferSubData(type.getGLType(), offset,  buffer);
-		GLErrors.checkForError(TAG, "glBufferData " + type + " " + offset + " " + buffer, true);
+		GLErrors.checkForError(TAG, "glBufferData " + type, true);
 	}
 	public void bufferSubData(long offset, FloatBuffer buffer) {
 		buffer.rewind();
-		glBufferSubData(type.getGLType(),offset,  buffer);
+		glBufferSubData(type.getGLType(), offset,  buffer);
 		GLErrors.checkForError(TAG, "glBufferData " + type, true);
 	}
 	public void bufferSubData(long offset, int[] buffer) {
-		glBufferSubData(type.getGLType(),offset,  buffer);
+		glBufferSubData(type.getGLType(), offset,  buffer);
 		GLErrors.checkForError(TAG, "glBufferData " + type, true);
 	}
 	public void bufferSubData(long offset, float [] buffer) {
-		glBufferSubData(type.getGLType(),offset,  buffer);
+		glBufferSubData(type.getGLType(), offset,  buffer);
 		GLErrors.checkForError(TAG, "glBufferData " + type, true);
 	}
 //</editor-fold>

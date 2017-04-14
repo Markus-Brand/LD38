@@ -96,7 +96,7 @@ public class GUI implements IRenderable {
 		dirty = true;
 		setupBuffer();
 		//Store a Matrix and the lut Vector
-		this.stride = Constants.MAT4_COMPONENTS + VEC4_COMPONENTS;
+		this.stride = MAT4_COMPONENTS + VEC4_COMPONENTS;
 		renderable = StaticMeshes.getNewGuiQuad();
 		lut = new Texture2D(256, 256, mbeb.opengldefault.gl.texture.Texture.InternalFormat.RGBA8);
 		setGUIParameters(lut);

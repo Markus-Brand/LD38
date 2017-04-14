@@ -5,7 +5,7 @@ import java.util.function.Function;
 import mbeb.opengldefault.logging.Log;
 
 /**
- * Represents an object manages by OpenGL.
+ * Represents an object managed by OpenGL.
  * Each object can be created, bound, unbound and destroyed.
  * 
  * @author Potti, Erik
