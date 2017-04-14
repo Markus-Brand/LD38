@@ -79,12 +79,6 @@ public abstract class Light implements GLBufferWritable {
 	}
 
 	/**
-	 * @return the lightdata (color, maybe position, direction, constants...)
-	 */
-	@Deprecated
-	public abstract float[] getData();
-
-	/**
 	 * @return the status of my dirty flag
 	 */
 	public boolean isDirty() {
