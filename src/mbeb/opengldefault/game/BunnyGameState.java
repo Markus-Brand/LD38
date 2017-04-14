@@ -25,7 +25,6 @@ import mbeb.opengldefault.camera.ICamera;
 import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.curves.BezierCurve;
 import mbeb.opengldefault.curves.BezierCurve.ControlPointInputMode;
-import mbeb.opengldefault.gl.texture.Texture2D;
 import mbeb.opengldefault.gui.TextGUI;
 import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.light.DirectionalLight;
@@ -37,8 +36,8 @@ import mbeb.opengldefault.openglcontext.OpenGLContext;
 import mbeb.opengldefault.rendering.io.ObjectLoader;
 import mbeb.opengldefault.rendering.renderable.BezierCurveRenderable;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
+import mbeb.opengldefault.rendering.renderable.MaterialRenderable;
 import mbeb.opengldefault.rendering.renderable.Skybox;
-import mbeb.opengldefault.rendering.renderable.TexturedRenderable;
 import mbeb.opengldefault.gl.shader.ShaderProgram;
 import mbeb.opengldefault.gl.shader.UBOManager;
 import mbeb.opengldefault.scene.Scene;
@@ -54,6 +53,7 @@ import mbeb.opengldefault.scene.entities.PointLightEntity;
 import mbeb.opengldefault.scene.entities.SceneEntity;
 import mbeb.opengldefault.scene.entities.SpotLightEntity;
 
+import mbeb.opengldefault.scene.materials.Material;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -112,8 +112,8 @@ public class BunnyGameState implements GameState {
 
 		AnimatedMesh playerAnim = new ObjectLoader().loadFromFileAnim("player.fbx");
 		playerAnim.setTransform(MeshFlip);
-		Texture2D bunnyTexture = TexturedRenderable.loadModelTexture("player.png");
-		Texture2D lampTexture = TexturedRenderable.loadModelTexture("lamp.png");
+		Material bunnyTexture = new Material("material/player", 2);
+		Material lampTexture = new Material("material/lamp", 3);
 		playerAnim.getSkeleton().printRecursive("");
 
 		final AnimatedMesh bunnyAnim = new ObjectLoader().loadFromFileAnim("ohrenFlackern.fbx");
@@ -134,22 +134,22 @@ public class BunnyGameState implements GameState {
 		stationaryShader.addUniformBlockIndex(UBOManager.MATRICES);
 
 		final IRenderable boxRenderable = new ObjectLoader().loadFromFile("box.obj");
-		SceneObject box = new SceneObject(new TexturedRenderable(boxRenderable, bunnyTexture));
+		SceneObject box = new SceneObject(new MaterialRenderable(boxRenderable, bunnyTexture));
 		box.setShader(stationaryShader);
 
 		final IRenderable lampRenderable = new ObjectLoader().loadFromFile("lamp.obj");
-		SceneObject lamp = new SceneObject(new TexturedRenderable(lampRenderable, lampTexture));
+		SceneObject lamp = new SceneObject(new MaterialRenderable(lampRenderable, lampTexture));
 		lamp.setShader(stationaryShader);
 
 		animPlayer = new AnimationStateFacade(playerAnim);
 		animBunny = new AnimationStateFacade(bunnyAnim);
 
-		playerObj = new SceneObject(new TexturedRenderable(animPlayer, bunnyTexture));
-		bunny0 = new SceneObject(new TexturedRenderable(animBunny, bunnyTexture));
-		bunny1 = new SceneObject(new TexturedRenderable(animBunny, bunnyTexture));
-		bunny2 = new SceneObject(new TexturedRenderable(animBunny, bunnyTexture));
-		bunny3 = new SceneObject(new TexturedRenderable(animBunny, bunnyTexture));
-		bunny4 = new SceneObject(new TexturedRenderable(animBunny, bunnyTexture));
+		playerObj = new SceneObject(new MaterialRenderable(animPlayer, bunnyTexture));
+		bunny0 = new SceneObject(new MaterialRenderable(animBunny, bunnyTexture));
+		bunny1 = new SceneObject(new MaterialRenderable(animBunny, bunnyTexture));
+		bunny2 = new SceneObject(new MaterialRenderable(animBunny, bunnyTexture));
+		bunny3 = new SceneObject(new MaterialRenderable(animBunny, bunnyTexture));
+		bunny4 = new SceneObject(new MaterialRenderable(animBunny, bunnyTexture));
 
 		playerEntity = new SceneEntity(playerObj);
 		mainBunny = new SceneEntity(bunny0);

@@ -6,7 +6,7 @@ in vec3 normal;
 
 out vec4 color;
 
-uniform sampler2D u_texture;
+#include modules/MaterialUniform.glsl
 
 #include modules/Struct_DirLight.glsl
 #include modules/Struct_PointLight.glsl
@@ -35,13 +35,10 @@ uniform int water;
 #include modules/SpotLightLogic.glsl
 
 
-
-
 void main(){
 	vec3 norm = normalize(normal);
 
-    vec4 textureColor = texture(u_texture, tex);
-    vec3 materialColor = textureColor.rgb;
+    vec3 materialColor = materialDiffuse(tex);
 
 	vec3 viewDir = normalize(viewPos - pos);
 
@@ -60,7 +57,6 @@ void main(){
 	}
 
 	vec3 ambient = ambientStrength * materialColor;
-
 	result += ambient;
 
 #ifdef GAMMA_CORRECTION
@@ -74,7 +70,7 @@ void main(){
 	if(alpha == 0){
 		color = vec4(result, 1.0f);
 	}else if(alpha == 1){
-		vec4 texColor = vec4(result, textureColor.a);
+		vec4 texColor = vec4(result, materialTransparency(tex));
 		if(texColor.a > 0.01){
 			color = texColor;
 		}else{

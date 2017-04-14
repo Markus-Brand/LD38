@@ -2,6 +2,7 @@ package mbeb.opengldefault.scene.materials;
 
 import mbeb.opengldefault.gl.buffer.GLBufferWritable;
 import mbeb.opengldefault.gl.buffer.GLBufferWriter;
+import mbeb.opengldefault.gl.shader.ShaderProgram;
 import mbeb.opengldefault.gl.texture.Texture;
 import mbeb.opengldefault.gl.texture.Texture2DArray;
 
@@ -12,9 +13,9 @@ import java.awt.image.BufferedImage;
  */
 public class Material implements GLBufferWritable {
 	/**
-	 * diffuse / specular / emission / normalBump
+	 * diffuseAlpha / specular / emission / normalBump
 	 */
-	protected static final int MATERIAL_LAYERS = 4;
+	private static final int MATERIAL_LAYERS = 4;
 	
 	private int shininess = 64; //todo should this also be mappable?
 
@@ -25,11 +26,15 @@ public class Material implements GLBufferWritable {
 	}
 
 	public Material(BufferedImage[] images) {
-		this(new Texture2DArray(images, MATERIAL_LAYERS));
+		this(new Texture2DArray(images));
 	}
 
 	public Material(String path, String extension, int amount) {
 		this(Texture.loadBufferedImages(path, extension, amount));
+	}
+
+	public Material(String path, int amount) {
+		this(path, "png", amount);
 	}
 	
 	public int getShininess() {
@@ -45,5 +50,23 @@ public class Material implements GLBufferWritable {
 		writer
 			.write(myTextures)
 			.write(shininess);
+	}
+
+	/**
+	 * upload this Material-object to a specified uniform of a shader
+	 * @param program
+	 * @param name
+	 */
+	public void setUniform(ShaderProgram program, String name) {
+		program.setUniform(name + ".textureLayers", myTextures);
+		program.setUniform(name + ".shininess", shininess);
+	}
+
+	public void bind() {
+		myTextures.bind();
+	}
+
+	public void unbind() {
+		myTextures.unbind();
 	}
 }
