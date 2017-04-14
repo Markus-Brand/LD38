@@ -1,15 +1,13 @@
 package mbeb.opengldefault.rendering.renderable;
 
+import static mbeb.opengldefault.constants.Constants.FLOAT_SIZE;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.*;
-
-import java.nio.*;
 
 import mbeb.opengldefault.gl.buffer.ElementBuffer;
+import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import mbeb.opengldefault.gl.buffer.VertexBuffer;
 import mbeb.opengldefault.gl.vao.VertexArray;
 import org.joml.*;
-import org.lwjgl.*;
 
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.io.*;
@@ -25,16 +23,22 @@ public class VAORenderable implements IRenderable {
 	private static final String TAG = "Renderable";
 
 	/** Renderables Vertex Array Object */
-	private VertexArray VAO;
+	private VertexArray VAO = null;
+
+	private VertexBuffer VBO = null;
+	private ElementBuffer EBO = null;
+
 	/** amount of indices */
-	private int indexSize;
+	private final int vertexCount;
+
+	private final DataFragment[] dataFormat;
 	/** the boundingBox of all my vertices */
-	private final BoundingBox boundingBox;
+	private BoundingBox boundingBox;
 	/** the static mesh transformation */
 	private Matrix4f transform;
 
 	/**
-	 * Constructor for Renderable
+	 * Constructor for Renderable with given Data
 	 *
 	 * @param data
 	 *            vertex data. Contains vertex position, texture coordinates, normals, color and maybe other data
@@ -46,31 +50,32 @@ public class VAORenderable implements IRenderable {
 	 *            the bounding box of the vertex data
 	 */
 	public VAORenderable(float[] data, int[] indices, DataFragment[] dataFormat, BoundingBox boundingBox) {
-		this.indexSize = indices.length;
-		this.boundingBox = boundingBox;
-		this.VAO = generateVAO(data, indices, dataFormat);
+		this(indices.length, dataFormat);
+
+		this.dataWriter().write(data).flush();
+		this.indicesWriter().write(indices).flush();
+		this.setAttribPointers();
+
+		setBoundingBox(boundingBox);
 	}
 
 	/**
-	 * Constructor for Renderable
-	 *
-	 * @param vertexBuffer
-	 *            vertex data in a FloatBuffer. Contains vertex position, texture coordinates, normals, color and maybe
-	 *            other data
-	 * @param indexBuffer
-	 *            index data in a IntBuffer. The order in which the vertex data is read
-	 * @param dataFormat
-	 *            size of the components in the data array in amount of floats. a RGB color would be represented by a 3
+	 * Constructor for an empty Renderable: Use the DataWriter to add data, set a BoundingBox and don't forget to set the AttribPointers
+	 * @param vertexCount
+	 * @param format
 	 */
-	public VAORenderable(FloatBuffer vertexBuffer, IntBuffer indexBuffer, DataFragment[] dataFormat, BoundingBox boundingBox) {
-		this.boundingBox = boundingBox;
-		this.indexSize = indexBuffer.capacity();
-		this.VAO = generateVAO(vertexBuffer, indexBuffer, dataFormat);
+	public VAORenderable(int vertexCount, DataFragment[] format) {
+		this.vertexCount = vertexCount;
+		this.dataFormat = format;
 	}
 
 	@Override
 	public BoundingBox getBoundingBox() {
-		return boundingBox;
+		return Log.assertNotNull(TAG, boundingBox);
+	}
+
+	public void setBoundingBox(BoundingBox boundingBox) {
+		this.boundingBox = boundingBox;
 	}
 
 	@Override
@@ -91,21 +96,46 @@ public class VAORenderable implements IRenderable {
 	}
 
 	public VertexArray getVAO() {
+		if (VAO == null) {
+			VAO = new VertexArray();
+		}
 		return VAO;
+	}
+
+	public ElementBuffer getEBO() {
+		if (EBO == null) {
+			bind();
+			EBO = new ElementBuffer();
+			EBO.bind();
+			unbind();
+			EBO.unbind();
+		}
+		return EBO;
+	}
+
+	public VertexBuffer getVBO() {
+		if (VBO == null) {
+			bind();
+			VBO = new VertexBuffer();
+			VBO.bind();
+			unbind();
+			VBO.unbind();
+		}
+		return VBO;
 	}
 
 	/**
 	 * binds the Renderable
 	 */
 	public void bind() {
-		VAO.bind();
+		getVAO().bind();
 	}
 
 	/**
 	 * unbinds the Renderable
 	 */
 	public void unbind() {
-		VAO.unbind();
+		getVAO().unbind();
 	}
 
 	/**
@@ -116,93 +146,38 @@ public class VAORenderable implements IRenderable {
 	@Override
 	public void render(ShaderProgram shader) {
 		bind();
-		glDrawElements(shader.getDrawMode().getGlEnum(), indexSize, GL_UNSIGNED_INT, 0);
-		GLErrors.checkForError(TAG, "glDrawElements");
+		if (EBO == null) {
+			glDrawArrays(shader.getDrawMode().getGlEnum(), 0, vertexCount);
+			GLErrors.checkForError(TAG, "glDrawElements");
+		} else {
+			glDrawElements(shader.getDrawMode().getGlEnum(), vertexCount, GL_UNSIGNED_INT, 0);
+			GLErrors.checkForError(TAG, "glDrawElements");
+		}
 		unbind();
 	}
 
 	/**
-	 * Static method for generating a VAO
 	 *
-	 * @param data
-	 *            vertex data. Contains vertex position, texture coordinates, normals, color and maybe other data
-	 * @param indices
-	 *            index data. The order in which the vertex data is read
-	 * @param dataFormat
-	 *            size of the components in the data array in amount of floats. a RGB color would be represented by a 3
-	 * @return generated VAO
+	 * @return a writer inside this renderables vbo
 	 */
-	public static VertexArray generateVAO(float[] data, int[] indices, DataFragment[] dataFormat) {
-
-		FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(data.length);
-		vertexBuffer.put(data);
-
-		IntBuffer indexBuffer = BufferUtils.createIntBuffer(indices.length);
-		indexBuffer.put(indices);
-
-		return generateVAO(vertexBuffer, indexBuffer, dataFormat);
+	public GLBufferWriter dataWriter() {
+		return getVBO().writer(FLOAT_SIZE * vertexCount * DataFragment.getTotalSize(dataFormat))
+				.setSpacingMode(false).setWriteType(GLBufferWriter.WriteType.FULL_DATA);
 	}
 
 	/**
-	 * Static method for generating a VAO
-	 *
-	 * @param vertexBuffer
-	 *            vertex data in a FloatBuffer. Contains vertex position, texture coordinates, normals, color and maybe
-	 *            other data
-	 * @param indexBuffer
-	 *            index data in a IntBuffer. The order in which the vertex data is read
-	 * @param dataFormat
-	 *            size of the components in the data array in amount of floats. a RGB color would be represented by a 3
-	 * @return generated VAO
+	 * If you never call this one, this Renderable will use glDrawArrays instead of glDrawElements
+	 * @return a writer inside this renderables index buffer.
 	 */
-	public static VertexArray generateVAO(FloatBuffer vertexBuffer, IntBuffer indexBuffer, DataFragment[] dataFormat) {
-		VertexArray VAO = new VertexArray();
-		VAO.bind();
-		
-		VertexBuffer VBO = generateVBO(VAO, vertexBuffer, dataFormat);
-
-		ElementBuffer EBO = generateEBO(indexBuffer);
-
-		VAO.unbind();
-
-		EBO.delete();
-		VBO.delete();
-
-		return VAO;
+	public GLBufferWriter indicesWriter() {
+		return getEBO().writer(FLOAT_SIZE * vertexCount)
+				.setSpacingMode(false).setWriteType(GLBufferWriter.WriteType.FULL_DATA);
 	}
 
-	/**
-	 * Static method for generating a EBO
-	 *
-	 * @param indexBuffer
-	 *            index data in a IntBuffer. The order in which the vertex data is read
-	 * @return generated EBO
-	 */
-	private static ElementBuffer generateEBO(IntBuffer indexBuffer) {
-		ElementBuffer EBO = new ElementBuffer();
-		EBO.bind();
-		EBO.bufferData(indexBuffer, GL_STATIC_DRAW);
-		return EBO;
-	}
-
-	/**
-	 * Static method for generating a VBO
-	 *
-	 * @param vertexBuffer
-	 *            vertex data in a FloatBuffer. Contains vertex position, texture coordinates, normals, color and maybe
-	 *            other data
-	 * @param dataFormat
-	 *            DataFragments that describe how the data is stored in the buffer.
-	 * @return generated VBO
-	 */
-	private static VertexBuffer generateVBO(VertexArray VAO, FloatBuffer vertexBuffer, DataFragment[] dataFormat) {
-		VertexBuffer VBO = new VertexBuffer();
+	public void setAttribPointers() {
+		bind();
 		VBO.bind();
-
-		VBO.bufferData(vertexBuffer, GL_STATIC_DRAW);
-
-		VAO.attribPointers(dataFormat);
-		
-		return VBO;
+		getVAO().attribPointers(dataFormat);
+		unbind();
 	}
 }

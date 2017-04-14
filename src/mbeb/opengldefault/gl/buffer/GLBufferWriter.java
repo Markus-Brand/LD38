@@ -61,14 +61,26 @@ public class GLBufferWriter {
 	
 //<editor-fold desc="write">
 	public GLBufferWriter write(int value) {
-		makeSpaceFor(1);
 		writeBuffer.putInt(value);
+		return this;
+	}
+
+	public GLBufferWriter write(int[] data) {
+		for (int datum: data) {
+			write(datum);
+		}
 		return this;
 	}
 	
 	public GLBufferWriter write(float value) {
-		makeSpaceFor(1);
 		writeBuffer.putFloat(value);
+		return this;
+	}
+
+	public GLBufferWriter write(float[] data) {
+		for (float datum: data) {
+			write(datum);
+		}
 		return this;
 	}
 	
@@ -80,23 +92,41 @@ public class GLBufferWriter {
 	}
 	
 	public GLBufferWriter write(Vector2f value) {
-		makeSpaceFor(2);
-		value.get(writeBuffer);
-		writeBuffer.position(writeBuffer.position() + Constants.VEC2_SIZE);
+		if (useSpacing) {
+			makeSpaceFor(2);
+			value.get(writeBuffer);
+			writeBuffer.position(writeBuffer.position() + Constants.VEC2_SIZE);
+		} else {
+			write(value.x());
+			write(value.y());
+		}
 		return this;
 	}
 	
 	public GLBufferWriter write(Vector3f value) {
-		makeSpaceFor(3);
-		value.get(writeBuffer);
-		writeBuffer.position(writeBuffer.position() + Constants.VEC3_SIZE);
+		if (useSpacing) {
+			makeSpaceFor(3);
+			value.get(writeBuffer);
+			writeBuffer.position(writeBuffer.position() + Constants.VEC3_SIZE);
+		} else {
+			write(value.x());
+			write(value.y());
+			write(value.z());
+		}
 		return this;
 	}
 	
 	public GLBufferWriter write(Vector4f value) {
-		makeSpaceFor(4);
-		value.get(writeBuffer);
-		writeBuffer.position(writeBuffer.position() + Constants.VEC4_SIZE);
+		if (useSpacing) {
+			makeSpaceFor(4);
+			value.get(writeBuffer);
+			writeBuffer.position(writeBuffer.position() + Constants.VEC4_SIZE);
+		} else {
+			write(value.x());
+			write(value.y());
+			write(value.z());
+			write(value.w());
+		}
 		return this;
 	}
 	
@@ -114,15 +144,6 @@ public class GLBufferWriter {
 		return this;
 	}
 	
-	/**
-	 * write a sampler
-	 * @param value the texture to use
-	 */
-	public GLBufferWriter write(Texture value) {
-		write(value.getTextureUnit());
-		return this;
-	}
-	
 	public GLBufferWriter write(GLBufferWritable value) {
 		value.writeTo(this);
 		return this;
@@ -135,7 +156,7 @@ public class GLBufferWriter {
 	 * @param floatCount
 	 */
 	private void makeSpaceFor(int floatCount) {
-		if (freeFloats() < floatCount) {
+		if (useSpacing && freeFloats() < floatCount) {
 			fillBlock();
 		}
 	}
