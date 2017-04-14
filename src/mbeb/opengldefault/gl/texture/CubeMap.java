@@ -117,9 +117,13 @@ public class CubeMap extends Texture {
 
 	/**
 	 * Creates an uninitialized cube map with the given width and height.
-	 * @param width the width
-	 * @param height the height
-	 * @param format the format to use internally
+	 * 
+	 * @param width
+	 *            the width
+	 * @param height
+	 *            the height
+	 * @param format
+	 *            the format to use internally
 	 */
 	public CubeMap(int width, int height, InternalFormat format) {
 		this();

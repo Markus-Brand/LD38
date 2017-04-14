@@ -7,9 +7,8 @@ import static org.lwjgl.opengl.GL31.glDrawElementsInstanced;
 import java.util.ArrayList;
 import java.util.List;
 
-import mbeb.opengldefault.gl.buffer.GLBufferWriter;
-
 import mbeb.opengldefault.constants.Constants;
+import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import mbeb.opengldefault.gl.buffer.VertexBuffer;
 import mbeb.opengldefault.gl.shader.ShaderProgram;
 import mbeb.opengldefault.gl.texture.Texture;
@@ -30,13 +29,27 @@ import mbeb.opengldefault.scene.BoundingBox;
 public class GUI implements IRenderable {
 	private static final String TAG = "GUI";
 
+	/**
+	 * Loads a texture and sets its properties to make it suitable for use in GUI rendering.
+	 * 
+	 * @param path
+	 *            the path of the texture to load
+	 * @return the loaded texture
+	 */
 	public static Texture2D loadGUITexture(String path) {
 		Texture2D loaded = new Texture2D(path);
 		setGUIParameters(loaded);
 		return loaded;
 	}
 
-	public static boolean setGUIParameters (Texture texture) {
+	/**
+	 * Sets a textures properties to make it suitable for GUI rendering.
+	 * 
+	 * @param texture
+	 *            the texture to setup
+	 * @return whether the operation succeeded
+	 */
+	public static boolean setGUIParameters(Texture texture) {
 		return texture.whileBound(glObject -> texture.setWrapMode(Texture.WrapMode.CLAMP_TO_EDGE) && texture.setInterpolates(false));
 	}
 
@@ -128,8 +141,7 @@ public class GUI implements IRenderable {
 		VAO.bind();
 		VAO.trimPointers(2);
 		for (int i = 0; i < stride / VEC4_COMPONENTS; i++) {
-			VAO.attribPointer(FLOAT_SIZE, VertexArray.AttributePointer.Type.FLOAT, false,
-					stride * FLOAT_SIZE, i * VEC4_SIZE);
+			VAO.attribPointer(FLOAT_SIZE, VertexArray.AttributePointer.Type.FLOAT, false, stride * FLOAT_SIZE, i * VEC4_SIZE);
 
 			VAO.getLastPointer().instanced();
 		}
