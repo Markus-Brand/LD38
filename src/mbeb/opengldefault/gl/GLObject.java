@@ -183,20 +183,17 @@ public abstract class GLObject {
 	 */
 	protected final boolean beginTransaction() {
 		this.ensureExists();
+		boolean success;
 		if (this.isBound()) {
-			boolean success = this.glBeginTransaction();
-			if (success) {
-				this.transactionLevel++;
-			}
-			return success;
+			success = this.glBeginTransaction();
 		} else {
-			boolean success = this.bind();
+			success = this.bind();
 			this.temporaryBinding = success;
-			if (success) {
-				this.transactionLevel++;
-			}
-			return success;
 		}
+		if (success) {
+			this.transactionLevel++;
+		}
+		return success;
 	}
 
 	/**
@@ -205,15 +202,14 @@ public abstract class GLObject {
 	 * @return whether the operation succeeded
 	 */
 	protected final boolean finishTransaction() {
-		if (this.transactionLevel > 0) {
-			this.transactionLevel--;
-			if (this.temporaryBinding && this.transactionLevel == 0) {
-				boolean success = this.unbind();
-				this.temporaryBinding = !success;
-				return success;
-			} else {
-				return true;
-			}
+		if (this.transactionLevel <= 0) {
+			return true;
+		}
+		this.transactionLevel--;
+		if (this.temporaryBinding && this.transactionLevel == 0) {
+			boolean success = this.unbind();
+			this.temporaryBinding = !success;
+			return success;
 		} else {
 			return true;
 		}
@@ -268,7 +264,7 @@ public abstract class GLObject {
 	@Override
 	protected final void finalize() throws Throwable {
 		if (this.exists()) {
-			Log.error(TAG, "DELETE ME!");
+			Log.error(TAG, "DELETE ME(" + this.toString() + ")!");
 			this.delete();
 		}
 	}

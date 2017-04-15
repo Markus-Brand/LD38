@@ -35,7 +35,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 
 	//<editor-fold desc="Enumerations">
 	/**
-	 * The type of a OpenGL texture.
+	 * The type of an OpenGL texture.
 	 * The constants of this enumerated type provide the value of the OpenGL enumeration to match their type.
 	 */
 	public enum Type {
@@ -372,16 +372,15 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 	 * @return whether the operation succeeded
 	 */
 	protected static boolean setActiveTexture(final Integer unit) {
-		if (ContextBindings.setActiveTextureUnit(unit)) {
-			glActiveTexture(unit != null ? GL_TEXTURE0 + unit : 0);
-			boolean success = !GLErrors.checkForError(TAG, "Could not set active texture.");
-			if (!success) {
-				ContextBindings.setActiveTextureUnit(null);
-			}
-			return success;
-		} else {
+		if (!ContextBindings.setActiveTextureUnit(unit)) {
 			return true;
 		}
+		glActiveTexture(unit != null ? GL_TEXTURE0 + unit : 0);
+		boolean success = !GLErrors.checkForError(TAG, "Could not set active texture.");
+		if (!success) {
+			ContextBindings.setActiveTextureUnit(null);
+		}
+		return success;
 	}
 
 	/**
@@ -390,11 +389,10 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 	 * @return whether the operation succeeded
 	 */
 	protected final boolean setActiveTexture() {
-		if (this.getHandle() != null && this.getTextureUnit() != null) {
-			return Texture.setActiveTexture(this.getTextureUnit());
-		} else {
+		if (this.getHandle() == null || this.getTextureUnit() == null) {
 			return false;
 		}
+		return Texture.setActiveTexture(this.getTextureUnit());
 	}
 	//</editor-fold>
 
