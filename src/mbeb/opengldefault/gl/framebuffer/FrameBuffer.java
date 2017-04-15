@@ -209,8 +209,10 @@ public class FrameBuffer extends GLObject {
 	}
 
 	/**
-	 * Attaches a texture to this framebuffer.
-	 * If this texture is an array of 1D or 2D textures, a 3D texture or a cube map, the
+	 * Attaches a texture to this frame buffer.
+	 * If this texture is an array of 1D or 2D textures, a 3D texture or a cube map, the texture will be bound as a
+	 * layered image.
+	 * The layers of a cube map are its faces and used in usual order.
 	 * 
 	 * @param attachment
 	 *            the attachment point to use
