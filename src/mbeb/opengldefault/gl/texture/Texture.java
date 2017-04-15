@@ -87,7 +87,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 		CLAMP_TO_EDGE(GL_CLAMP_TO_EDGE),
 		/**
 		 * If the texture is sampled outside of its range, the texture is sampled as if mirrored.
-		 * Please note this is comparable to placing oneself between to mirrors, so if you sample further out of range,
+		 * Please note this is comparable to placing oneself between two mirrors, so if you sample further out of range,
 		 * the results are the original texture once again.
 		 */
 		MIRRORED_REPEAT(GL_MIRRORED_REPEAT),
