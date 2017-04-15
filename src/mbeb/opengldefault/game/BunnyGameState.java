@@ -1,14 +1,9 @@
 package mbeb.opengldefault.game;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glViewport;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -26,8 +21,6 @@ import mbeb.opengldefault.curves.BezierCurve;
 import mbeb.opengldefault.curves.BezierCurve.ControlPointInputMode;
 import mbeb.opengldefault.gl.GLContext;
 import mbeb.opengldefault.gl.texture.Texture2D;
-import mbeb.opengldefault.gui.TextGUI;
-import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.light.DirectionalLight;
 import mbeb.opengldefault.light.Light;
 import mbeb.opengldefault.light.PointLight;
@@ -46,7 +39,6 @@ import mbeb.opengldefault.scene.behaviour.*;
 import mbeb.opengldefault.scene.entities.*;
 
 import org.joml.Matrix4f;
-import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
@@ -202,7 +194,7 @@ public class BunnyGameState implements GameState {
 	 * @param curve the curve to follow
 	 * @return last bunny
 	 */
-	private IEntity createBunnyChain(SceneObject bunnyParent, EntityWorld world, Texture bunnyTexture, AnimatedMesh renderable, BezierCurve curve) {
+	private IEntity createBunnyChain(SceneObject bunnyParent, EntityWorld world, Texture2D bunnyTexture, AnimatedMesh renderable, BezierCurve curve) {
 		AnimationStateFacade mainBunnyFacade = new AnimationStateFacade(renderable);
 		animBunnyList.add(mainBunnyFacade);
 		final SceneObject mainBunnyObj = new SceneObject(new TexturedRenderable(mainBunnyFacade, bunnyTexture));

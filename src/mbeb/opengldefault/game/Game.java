@@ -83,7 +83,7 @@ public abstract class Game {
 	 * executed once before each render call on a gameSate
 	 */
 	protected void preGameStateRender() {
-		glViewport(0, 0, OpenGLContext.getFramebufferWidth(), OpenGLContext.getFramebufferHeight());
+		glViewport(0, 0, GLContext.getFramebufferWidth(), GLContext.getFramebufferHeight());
 		GLErrors.checkForError(TAG, "glViewport");
 
 		glClearColor(0.05f, 0.075f, 0.075f, 1);

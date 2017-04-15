@@ -6,15 +6,14 @@ import mbeb.opengldefault.camera.ICamera;
 import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.light.DirectionalLight;
 import mbeb.opengldefault.light.PointLight;
-import mbeb.opengldefault.openglcontext.OpenGLContext;
+import mbeb.opengldefault.gl.GLContext;
 import mbeb.opengldefault.rendering.io.ObjectLoader;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.Skybox;
 import mbeb.opengldefault.rendering.renderable.TexturedRenderable;
-import mbeb.opengldefault.rendering.shader.ShaderProgram;
-import mbeb.opengldefault.rendering.shader.UBOManager;
-import mbeb.opengldefault.rendering.textures.Texture;
-import mbeb.opengldefault.rendering.textures.TextureCache;
+import mbeb.opengldefault.gl.shader.ShaderProgram;
+import mbeb.opengldefault.gl.shader.UBOManager;
+import mbeb.opengldefault.gl.texture.Texture2D;
 import mbeb.opengldefault.scene.Scene;
 import mbeb.opengldefault.scene.SceneObject;
 import mbeb.opengldefault.scene.behaviour.*;
@@ -44,7 +43,7 @@ public class PhysicsSimulationState implements GameState {
 	
 	@Override
 	public void init() {
-		ICamera camera = new Camera(OpenGLContext.getAspectRatio());
+		ICamera camera = new Camera(GLContext.getAspectRatio());
 		camera.setPosition(new Vector3f(1, 1, 1));
 		Skybox sky = new Skybox("spacebox/s", "png");
 		scene = new Scene(camera, sky);
@@ -52,8 +51,8 @@ public class PhysicsSimulationState implements GameState {
 		ObjectLoader loader = new ObjectLoader();
 		
 		IRenderable bunnyRaw = loader.loadFromFile("ico.obj");
-		Texture blueRed = new Texture("blueRedLight.png");
-		Texture green = new Texture("green.png");
+		Texture2D blueRed = TexturedRenderable.loadModelTexture("blueRedLight.png");
+		Texture2D green = TexturedRenderable.loadModelTexture("green.png");
 		particle = new TexturedRenderable(bunnyRaw, blueRed);
 		greenParticle = new TexturedRenderable(bunnyRaw, green);
 		
@@ -142,7 +141,6 @@ public class PhysicsSimulationState implements GameState {
 	
 	@Override
 	public void clear() {
-		TextureCache.clearCache();
 	}
 	
 	@Override

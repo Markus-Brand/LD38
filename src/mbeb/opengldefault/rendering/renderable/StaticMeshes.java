@@ -1,5 +1,6 @@
 package mbeb.opengldefault.rendering.renderable;
 
+import mbeb.opengldefault.util.Streamerator;
 import org.joml.*;
 
 import mbeb.opengldefault.rendering.io.*;
@@ -122,7 +123,7 @@ public class StaticMeshes {
 			uniformBox = uniformBox.extendTo(new Vector3f(0));
 			uniformBox = uniformBox.extendTo(new Vector3f(1));
 
-			List<Vector3f> corners = BoundingBox.Streamerator.asList(uniformBox.getLocalCorners());
+			List<Vector3f> corners = Streamerator.asList(uniformBox.getLocalCorners());
 
 			float[] data = new float[corners.size() * 3];
 			int index = 0;
