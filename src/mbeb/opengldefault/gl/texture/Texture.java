@@ -14,11 +14,11 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
-import mbeb.opengldefault.gl.buffer.GLBufferWritable;
-import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import org.lwjgl.BufferUtils;
 
 import mbeb.opengldefault.gl.GLObject;
+import mbeb.opengldefault.gl.buffer.GLBufferWritable;
+import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.logging.Log;
 import mbeb.opengldefault.openglcontext.ContextBindings;
@@ -106,7 +106,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 		/**
 		 * @return the OpenGL enum representing this wrap mode
 		 */
-		public int getGLEnum() {
+		protected int getGLEnum() {
 			return glEnum;
 		}
 	}
@@ -150,7 +150,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 		/**
 		 * @return the OpenGL enum representing this minification filter
 		 */
-		public int getGLEnum() {
+		protected int getGLEnum() {
 			return glEnum;
 		}
 	}
@@ -178,7 +178,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 		/**
 		 * @return the OpenGL enum representing this magnification filter
 		 */
-		public int getGLEnum() {
+		protected int getGLEnum() {
 			return glEnum;
 		}
 	}
@@ -206,7 +206,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 		/**
 		 * @return the OpenGL enum representing this comparison mode
 		 */
-		public int getGLEnum() {
+		protected int getGLEnum() {
 			return glEnum;
 		}
 	}
@@ -227,7 +227,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 		/**
 		 * @return the OpenGL enum representing this comparison function
 		 */
-		public int getGLEnum() {
+		protected int getGLEnum() {
 			return glEnum;
 		}
 	}
@@ -254,7 +254,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 		/**
 		 * @return the OpenGL enum representing this internal format
 		 */
-		public int getGLEnum() {
+		protected int getGLEnum() {
 			return glEnum;
 		}
 
@@ -281,7 +281,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 		/**
 		 * @return the OpenGL enum representing this data type
 		 */
-		public int getGLEnum() {
+		protected int getGLEnum() {
 			return glEnum;
 		}
 	}
@@ -301,7 +301,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 		/**
 		 * @return the OpenGL enum representing this format
 		 */
-		public int getGLEnum() {
+		protected int getGLEnum() {
 			return glEnum;
 		}
 	}

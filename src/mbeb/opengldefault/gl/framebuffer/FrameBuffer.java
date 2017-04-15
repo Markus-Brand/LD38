@@ -40,9 +40,8 @@ public class FrameBuffer extends GLObject {
 		/**
 		 * @return the OpenGL enum representing this target
 		 */
-		public int getGLEnum() {
+		protected int getGLEnum() {
 			return glEnum;
-
 		}
 	}
 
@@ -62,9 +61,8 @@ public class FrameBuffer extends GLObject {
 		/**
 		 * @return the OpenGL enum representing this attachment point
 		 */
-		public int getGLEnum() {
+		protected int getGLEnum() {
 			return glEnum;
-
 		}
 	}
 
