@@ -62,7 +62,12 @@ public class DirectionalLight extends Light {
 	public Vector3f getDirection() {
 		return this.direction;
 	}
-	
+
+	/**
+	 * write this light to a GLBufferWriter
+	 * @param writer the object to write on
+	 * @see /shaders/modules/Struct_DirLight
+	 */
 	@Override
 	public void writeTo(GLBufferWriter writer) {
 		writer
