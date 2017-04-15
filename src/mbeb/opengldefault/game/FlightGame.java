@@ -6,13 +6,12 @@ import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.curves.BezierCurve;
 import mbeb.opengldefault.light.DirectionalLight;
 import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.openglcontext.OpenGLContext;
+import mbeb.opengldefault.gl.GLContext;
 import mbeb.opengldefault.rendering.io.ObjectLoader;
 import mbeb.opengldefault.rendering.renderable.*;
-import mbeb.opengldefault.rendering.shader.ShaderProgram;
-import mbeb.opengldefault.rendering.shader.UBOManager;
-import mbeb.opengldefault.rendering.textures.Texture;
-import mbeb.opengldefault.rendering.textures.TextureCache;
+import mbeb.opengldefault.gl.shader.ShaderProgram;
+import mbeb.opengldefault.gl.shader.UBOManager;
+import mbeb.opengldefault.gl.texture.Texture2D;
 import mbeb.opengldefault.scene.Scene;
 import mbeb.opengldefault.scene.SceneObject;
 import mbeb.opengldefault.scene.behaviour.*;
@@ -42,7 +41,7 @@ public class FlightGame implements GameState {
 	
 	@Override
 	public void init() {
-		Camera camera = new Camera(OpenGLContext.getAspectRatio());
+		Camera camera = new Camera(GLContext.getAspectRatio());
 		Skybox skybox = new Skybox("skybox/mountain");
 		
 		scene = new Scene(camera, skybox);
@@ -54,11 +53,11 @@ public class FlightGame implements GameState {
 		scene.getSceneGraph().setShader(defaultShader);
 		
 		ShaderProgram bezierShader = new ShaderProgram("bezier.vert", "bezier.frag", "bezier.geom");
-		bezierShader.setDrawMode(GL_LINES);
+		bezierShader.setDrawMode(ShaderProgram.DrawMode.LINES);
 		bezierShader.addUniformBlockIndex(UBOManager.MATRICES);
 		
 		//textures
-		Texture tex = new Texture("player.png");
+		Texture2D tex = TexturedRenderable.loadModelTexture("player.png");
 		
 		//meshes
 		final ObjectLoader loader = new ObjectLoader();
@@ -131,7 +130,7 @@ public class FlightGame implements GameState {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		GLErrors.checkForError(TAG, "glClear");
 		
-		glViewport(0, 0, OpenGLContext.getFramebufferWidth(), OpenGLContext.getFramebufferHeight());
+		glViewport(0, 0, GLContext.getFramebufferWidth(), GLContext.getFramebufferHeight());
 		GLErrors.checkForError(TAG, "glViewport");
 		
 		scene.render(KeyBoard.isKeyDown(GLFW_KEY_TAB));
@@ -139,7 +138,6 @@ public class FlightGame implements GameState {
 	
 	@Override
 	public void clear() {
-		TextureCache.clearCache();
 	}
 	
 	@Override
