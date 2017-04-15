@@ -112,8 +112,9 @@ public class BunnyGameState implements GameState {
 
 		AnimatedMesh playerAnim = new ObjectLoader().loadFromFileAnim("player.fbx");
 		playerAnim.setTransform(MeshFlip);
-		Material bunnyTexture = new Material("material/player", 2);
-		Material lampTexture = new Material("material/lamp", 2);
+		Material playerMaterial = new Material("material/player", 2);
+		Material lampMaterial = new Material("material/lamp", 3);
+		Material bunnyMaterial = new Material("material/bunny", 2);
 		playerAnim.getSkeleton().printRecursive("");
 
 		final AnimatedMesh bunnyAnim = new ObjectLoader().loadFromFileAnim("ohrenFlackern.fbx");
@@ -134,22 +135,22 @@ public class BunnyGameState implements GameState {
 		stationaryShader.addUniformBlockIndex(UBOManager.MATRICES);
 
 		final IRenderable boxRenderable = new ObjectLoader().loadFromFile("box.obj");
-		SceneObject box = new SceneObject(new MaterialRenderable(boxRenderable, bunnyTexture));
+		SceneObject box = new SceneObject(new MaterialRenderable(boxRenderable, bunnyMaterial));
 		box.setShader(stationaryShader);
 
 		final IRenderable lampRenderable = new ObjectLoader().loadFromFile("lamp.obj");
-		SceneObject lamp = new SceneObject(new MaterialRenderable(lampRenderable, lampTexture));
+		SceneObject lamp = new SceneObject(new MaterialRenderable(lampRenderable, lampMaterial));
 		lamp.setShader(stationaryShader);
 
 		animPlayer = new AnimationStateFacade(playerAnim);
 		animBunny = new AnimationStateFacade(bunnyAnim);
 
-		playerObj = new SceneObject(new MaterialRenderable(animPlayer, bunnyTexture));
-		bunny0 = new SceneObject(new MaterialRenderable(animBunny, bunnyTexture));
-		bunny1 = new SceneObject(new MaterialRenderable(animBunny, bunnyTexture));
-		bunny2 = new SceneObject(new MaterialRenderable(animBunny, bunnyTexture));
-		bunny3 = new SceneObject(new MaterialRenderable(animBunny, bunnyTexture));
-		bunny4 = new SceneObject(new MaterialRenderable(animBunny, bunnyTexture));
+		playerObj = new SceneObject(new MaterialRenderable(animPlayer, playerMaterial));
+		bunny0 = new SceneObject(new MaterialRenderable(animBunny, bunnyMaterial));
+		bunny1 = new SceneObject(new MaterialRenderable(animBunny, bunnyMaterial));
+		bunny2 = new SceneObject(new MaterialRenderable(animBunny, bunnyMaterial));
+		bunny3 = new SceneObject(new MaterialRenderable(animBunny, bunnyMaterial));
+		bunny4 = new SceneObject(new MaterialRenderable(animBunny, bunnyMaterial));
 
 		playerEntity = new SceneEntity(playerObj);
 		mainBunny = new SceneEntity(bunny0);
@@ -311,7 +312,7 @@ public class BunnyGameState implements GameState {
 
 	@Override
 	public void open() {
-		OpenGLContext.hideCursor();
+		//OpenGLContext.hideCursor();
 	}
 
 }

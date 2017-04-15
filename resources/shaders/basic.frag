@@ -41,7 +41,6 @@ void main(){
 	vec3 emissionColor = materialEmit(tex);
     int shininess = materialShininess();
 
-
 	vec3 viewDir = normalize(viewPos - pos);
 
 	vec3 result = vec3(0);
