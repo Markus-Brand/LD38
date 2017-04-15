@@ -7,6 +7,7 @@ import mbeb.opengldefault.gl.framebuffer.FrameBuffer;
 import mbeb.opengldefault.gl.shader.ShaderProgram;
 import mbeb.opengldefault.gl.texture.Texture;
 import mbeb.opengldefault.gl.vao.VertexArray;
+import mbeb.opengldefault.util.IntPagingMap;
 
 /**
  * Static storage for all objects currently bound to the context.
@@ -40,16 +41,8 @@ public class ContextBindings {
 	 */
 	private static Map<GLBuffer.Type, GLBuffer> boundBuffers = new EnumMap<>(GLBuffer.Type.class);
 
-	/**
-	 * A map of currently bound textures and the texture units they are bound to.
-	 * At any point the size of this map is equal to the number texture units in use.
-	 */
-	private static Map<Texture, Integer> boundTextureUnits = new HashMap<>();
-	/**
-	 * A queue of free texture units.
-	 * If a texture is unbound from its current unit, the unit is added to this queue.
-	 */
-	private static Queue<Integer> freeTextureUnits = new LinkedList<>();
+	private static IntPagingMap<Texture> textureUnitBindings = new IntPagingMap<>(48);
+	
 	/**
 	 * The number of the currently active texture unit, to prevent unnecessary calls to glActiveTexture.
 	 */
@@ -164,7 +157,7 @@ public class ContextBindings {
 	 * @return the texture unit that texture is bound to or null if not bound
 	 */
 	public static Integer getTextureUnit(Texture texture) {
-		return boundTextureUnits.get(texture);
+		return textureUnitBindings.getPageOf(texture);
 	}
 
 	/**
@@ -182,13 +175,7 @@ public class ContextBindings {
 	 * @return the number of the used texture unit
 	 */
 	public static Integer bind(Texture texture) {
-		Integer textureUnit = freeTextureUnits.poll();
-		if (textureUnit == null) {
-			//allocate next free texture unit
-			textureUnit = boundTextureUnits.size();
-		}
-		boundTextureUnits.put(texture, textureUnit);
-		return textureUnit;
+		return textureUnitBindings.bind(texture);
 	}
 
 	/**
@@ -199,12 +186,7 @@ public class ContextBindings {
 	 * @return whether the texture was unbound
 	 */
 	public static boolean unbind(Texture texture) {
-		if (!isBound(texture)) {
-			return false;
-		}
-		Integer textureUnit = boundTextureUnits.remove(texture);
-		freeTextureUnits.add(textureUnit);
-		return true;
+		return textureUnitBindings.unbind(texture) != null;
 	}
 
 	/**
