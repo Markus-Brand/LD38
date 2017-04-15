@@ -48,6 +48,38 @@ public abstract class GLBuffer extends GLObject {
 		}
 	}
 
+	/**
+	 * The usage hint to OpenGL for the data store of this buffer.
+	 * This tells the implementation how the data is going to be used.
+	 */
+	public enum Usage {
+		/**
+		 * The data store contents will be modified once by the application and used many times for drawing.
+		 */
+		STATIC_DRAW(GL_STATIC_DRAW),
+		/**
+		 * The data store contents will be repeatedly modified by the application and used many times for drawing.
+		 */
+		DYNAMIC_DRAW(GL_DYNAMIC_DRAW),
+		/**
+		 * The data store contents will be modified once by the application and used a few times for drawing.
+		 */
+		STREAM_DRAW(GL_STREAM_DRAW);
+
+		private int glEnum;
+
+		Usage(int glEnum) {
+			this.glEnum = glEnum;
+		}
+
+		/**
+		 * @return the OpenGL enum representing this format
+		 */
+		public int getGLEnum() {
+			return glEnum;
+		}
+	}
+
 	/** the type of this buffer */
 	private Type type;
 
@@ -108,32 +140,32 @@ public abstract class GLBuffer extends GLObject {
 //</editor-fold>
 
 //<editor-fold desc="bufferData">
-	public void bufferData(long size, int usage) {
-		glBufferData(type.getGLType(), size, usage);
+	public void bufferData(long size, Usage usage) {
+		glBufferData(type.getGLType(), size, usage.getGLEnum());
 		GLErrors.checkForError(TAG, "glBufferData " + type);
 	}
 
-	public void bufferData(IntBuffer buffer, int usage) {
+	public void bufferData(IntBuffer buffer, Usage usage) {
 		buffer.rewind();
-		glBufferData(type.getGLType(), buffer, usage);
+		glBufferData(type.getGLType(), buffer, usage.getGLEnum());
 		GLErrors.checkForError(TAG, "glBufferData " + type, true);
 	}
-	public void bufferData(ByteBuffer buffer, int usage) {
+	public void bufferData(ByteBuffer buffer, Usage usage) {
 		buffer.rewind();
-		glBufferData(type.getGLType(), buffer, usage);
+		glBufferData(type.getGLType(), buffer, usage.getGLEnum());
 		GLErrors.checkForError(TAG, "glBufferData " + type, true);
 	}
-	public void bufferData(FloatBuffer buffer, int usage) {
+	public void bufferData(FloatBuffer buffer, Usage usage) {
 		buffer.rewind();
-		glBufferData(type.getGLType(), buffer, usage);
+		glBufferData(type.getGLType(), buffer, usage.getGLEnum());
 		GLErrors.checkForError(TAG, "glBufferData " + type, true);
 	}
-	public void bufferData(int[] buffer, int usage) {
-		glBufferData(type.getGLType(), buffer, usage);
+	public void bufferData(int[] buffer, Usage usage) {
+		glBufferData(type.getGLType(), buffer, usage.getGLEnum());
 		GLErrors.checkForError(TAG, "glBufferData " + type, true);
 	}
-	public void bufferData(float [] buffer, int usage) {
-		glBufferData(type.getGLType(), buffer, usage);
+	public void bufferData(float [] buffer, Usage usage) {
+		glBufferData(type.getGLType(), buffer, usage.getGLEnum());
 		GLErrors.checkForError(TAG, "glBufferData " + type, true);
 	}
 //</editor-fold>

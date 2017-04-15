@@ -1,7 +1,6 @@
 package mbeb.opengldefault.gl.buffer;
 
 import mbeb.opengldefault.constants.Constants;
-import mbeb.opengldefault.gl.texture.Texture;
 import mbeb.opengldefault.logging.Log;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -11,8 +10,6 @@ import org.lwjgl.BufferUtils;
 
 import java.awt.*;
 import java.nio.ByteBuffer;
-
-import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 
 /**
  * An object that can be written on, which buffers multiple write calls to one buffer.
@@ -240,7 +237,7 @@ public class GLBufferWriter {
 				(writeType == WriteType.DYNAMIC && writeBuffer.position() < writeBuffer.capacity())) {
 			glBuffer.bufferSubData(offset, writeBuffer);
 		} else {
-			glBuffer.bufferData(writeBuffer, GL_STATIC_DRAW);
+			glBuffer.bufferData(writeBuffer, GLBuffer.Usage.STATIC_DRAW);
 		}
 		if (unbindAfter) {
 			glBuffer.unbind();

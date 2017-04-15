@@ -2,7 +2,6 @@ package mbeb.opengldefault.gl.buffer;
 
 import mbeb.opengldefault.logging.GLErrors;
 
-import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL30.glBindBufferBase;
 import static org.lwjgl.opengl.GL31.glGetUniformBlockIndex;
 import static org.lwjgl.opengl.GL31.glUniformBlockBinding;
@@ -65,7 +64,7 @@ public class UniformBuffer extends GLBuffer {
 	 */
 	public void setBufferSize(int bufferSize) {
 		this.bufferSize = bufferSize;
-		bufferData(bufferSize, GL_STATIC_DRAW);
+		bufferData(bufferSize, Usage.STATIC_DRAW);
 	}
 	
 	/**

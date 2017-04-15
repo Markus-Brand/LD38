@@ -1,7 +1,6 @@
 package mbeb.opengldefault.camera;
 
-import static org.lwjgl.opengl.GL15.*;
-
+import mbeb.opengldefault.gl.buffer.GLBuffer;
 import mbeb.opengldefault.gl.buffer.UniformBuffer;
 import org.joml.*;
 
@@ -57,7 +56,7 @@ public class Camera implements ICamera {
 
 
 		UBO.bind();
-		UBO.bufferData(256, GL_DYNAMIC_DRAW);
+		UBO.bufferData(256, GLBuffer.Usage.DYNAMIC_DRAW);
 		UBO.bindBufferBase();
 		UBO.unbind();
 		updateUniformBlock();
