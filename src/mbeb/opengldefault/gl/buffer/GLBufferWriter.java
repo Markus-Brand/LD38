@@ -118,9 +118,13 @@ public class GLBufferWriter {
 	 * @return this, for chaining
 	 */
 	public GLBufferWriter write(Matrix4f value) {
-		makeSpaceFor(16);
-		value.get(writeBuffer);
-		writeBuffer.position(writeBuffer.position() + Constants.MAT4_SIZE);
+		if (useSpacing) {
+			makeSpaceFor(16);
+			value.get(writeBuffer);
+			writeBuffer.position(writeBuffer.position() + Constants.MAT4_SIZE);
+		} else {
+			write(value.get(new float[16]));
+		}
 		return this;
 	}
 

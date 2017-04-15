@@ -33,7 +33,7 @@ public class VAORenderable implements IRenderable {
 
 	private final DataFragment[] dataFormat;
 	/** the boundingBox of all my vertices */
-	private BoundingBox boundingBox;
+	private BoundingBox boundingBox = new BoundingBox.Empty();
 	/** the static mesh transformation */
 	private Matrix4f transform;
 
@@ -74,6 +74,10 @@ public class VAORenderable implements IRenderable {
 		return Log.assertNotNull(TAG, boundingBox);
 	}
 
+	/**
+	 * set a boundingBox for this Renderable.
+	 * @param boundingBox
+	 */
 	public void setBoundingBox(BoundingBox boundingBox) {
 		this.boundingBox = boundingBox;
 	}
@@ -87,9 +91,8 @@ public class VAORenderable implements IRenderable {
 	}
 
 	/**
-	 * this meshes Transformation
-	 * 
-	 * @param transform
+	 * set a dedicated transformation for this mesh
+	 * @param transform this meshes Transformation
 	 */
 	public void setTransform(Matrix4f transform) {
 		this.transform = transform;
@@ -102,6 +105,11 @@ public class VAORenderable implements IRenderable {
 		return VAO;
 	}
 
+	/**
+	 * get the ElementBuffer for this Renderable. If there was none, it will be created.
+	 * If you never call this method, this Renderable will not render indexed.
+	 * @return the ElementBuffer for this Renderable
+	 */
 	public ElementBuffer getEBO() {
 		if (EBO == null) {
 			bind();
@@ -113,6 +121,10 @@ public class VAORenderable implements IRenderable {
 		return EBO;
 	}
 
+	/**
+	 * get the VertexBuffer for this Renderable. If there was none, it will be created.
+	 * @return the VertexBuffer for this Renderable
+	 */
 	public VertexBuffer getVBO() {
 		if (VBO == null) {
 			bind();
@@ -174,10 +186,15 @@ public class VAORenderable implements IRenderable {
 				.setSpacingMode(false);
 	}
 
+	/**
+	 * Sets the attribute pointers for the vao according to the dataFormat.
+	 * Call this once all data is inside the VBO.
+	 */
 	public void setAttribPointers() {
 		bind();
 		VBO.bind();
 		getVAO().attribPointers(dataFormat);
 		unbind();
+		VBO.unbind();
 	}
 }

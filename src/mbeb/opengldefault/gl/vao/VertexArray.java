@@ -11,13 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mbeb.opengldefault.constants.Constants;
+import mbeb.opengldefault.gl.ContextBindings;
 import mbeb.opengldefault.gl.GLObject;
 import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.gl.ContextBindings;
+import mbeb.opengldefault.logging.Log;
 import mbeb.opengldefault.rendering.io.DataFragment;
 
 /**
- * A VAO
+ * A VAO (example usage in the {@link mbeb.opengldefault.rendering.renderable.VAORenderable})
  */
 public class VertexArray extends GLObject {
 
@@ -48,6 +49,7 @@ public class VertexArray extends GLObject {
 			}
 		}
 
+		//see constructor
 		private int id = -1;
 		private int size;
 		private Type type;
@@ -55,6 +57,20 @@ public class VertexArray extends GLObject {
 		private int stride;
 		private int offset;
 
+		/**
+		 * create a new AttributePointer
+		 * 
+		 * @param size
+		 *            how big this attribute is (in bytes)
+		 * @param type
+		 *            the type of the primitives of this attribute
+		 * @param normalized
+		 *            whether the values should get normalized by OpenGL
+		 * @param stride
+		 *            the distance in the buffer between two of these attributes
+		 * @param offset
+		 *            the starting position in the buffer for this attribute
+		 */
 		public AttributePointer(int size, Type type, boolean normalized, int stride, int offset) {
 			this.size = size;
 			this.type = type;
@@ -63,18 +79,27 @@ public class VertexArray extends GLObject {
 			this.offset = offset;
 		}
 
-		public void setId(int id) {
+		/**
+		 * set the index of this Attribute
+		 * 
+		 * @param id
+		 */
+		void setId(int id) {
 			this.id = id;
 		}
 
-		public int getId() {
+		/**
+		 * @return the index of this attribute
+		 */
+		int getId() {
 			return id;
 		}
 
 		/**
 		 * tell openGL my own parameters
 		 */
-		public void sync() {
+		void sync() {
+			Log.assertTrue(TAG, getId() >= 0, "Can't sync an AttribPointer with no id");
 			if (type == Type.INT) {
 				glVertexAttribIPointer(id, size, type.getGlEnum(), stride, offset);
 				GLErrors.checkForError(TAG, "glVertexAttribIPointer", true);
@@ -86,7 +111,7 @@ public class VertexArray extends GLObject {
 
 		/**
 		 * set the divisor for this attribute
-		 * 
+		 *
 		 * @param divisor
 		 */
 		public void divisor(int divisor) {
@@ -102,6 +127,7 @@ public class VertexArray extends GLObject {
 		}
 	}
 
+	/** all the attribute pointer for this VAO: ths index inside this list equals their id */
 	private List<AttributePointer> attributePointers = new ArrayList<>();
 
 	@Override
@@ -173,7 +199,7 @@ public class VertexArray extends GLObject {
 	}
 
 	/**
-	 * Add and enable a new AttribPointer
+	 * add and enable a new AttribPointer
 	 * 
 	 * @param size
 	 * @param type

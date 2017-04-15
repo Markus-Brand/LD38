@@ -28,8 +28,8 @@ public enum DataFragment {
 		}
 
 		@Override
-		protected void addTo(AIMesh mesh, int v, GLBufferWriter writer) {
-			AIVector3D vec = mesh.mVertices().get(v);
+		protected void addTo(AIMesh mesh, int vertexID, GLBufferWriter writer) {
+			AIVector3D vec = mesh.mVertices().get(vertexID);
 			writer.write(new Vector3f(vec.x(), vec.y(), vec.z()));
 		}
 	},
@@ -41,8 +41,8 @@ public enum DataFragment {
 		}
 
 		@Override
-		protected void addTo(AIMesh mesh, int v, GLBufferWriter writer) {
-			AIVector3D vec = mesh.mVertices().get(v);
+		protected void addTo(AIMesh mesh, int vertexID, GLBufferWriter writer) {
+			AIVector3D vec = mesh.mVertices().get(vertexID);
 			writer.write(new Vector2f(vec.x(), vec.y()));
 		}
 	},
@@ -54,8 +54,8 @@ public enum DataFragment {
 		}
 
 		@Override
-		protected void addTo(AIMesh mesh, int v, GLBufferWriter writer) {
-			AIVector3D vec = mesh.mNormals().get(v);
+		protected void addTo(AIMesh mesh, int vertexID, GLBufferWriter writer) {
+			AIVector3D vec = mesh.mNormals().get(vertexID);
 			writer.write(new Vector3f(vec.x(), vec.y(), vec.z()));
 		}
 	},
@@ -67,7 +67,7 @@ public enum DataFragment {
 		}
 
 		@Override
-		protected void addTo(AIMesh mesh, int v, GLBufferWriter writer) {
+		protected void addTo(AIMesh mesh, int vertexID, GLBufferWriter writer) {
 			//todo calculate normals here
 			writer.write(new Vector3f(1, 0, 0));
 		}
@@ -80,8 +80,8 @@ public enum DataFragment {
 		}
 
 		@Override
-		protected void addTo(AIMesh mesh, int v, GLBufferWriter writer) {
-			AIVector3D vec = mesh.mTextureCoords(0).get(v);
+		protected void addTo(AIMesh mesh, int vertexID, GLBufferWriter writer) {
+			AIVector3D vec = mesh.mTextureCoords(0).get(vertexID);
 			writer.write(new Vector2f(vec.x(), vec.y()));
 		}
 	},
@@ -93,8 +93,8 @@ public enum DataFragment {
 		}
 
 		@Override
-		protected void addTo(AIMesh mesh, int v, GLBufferWriter writer) {
-			POSITION2D.addTo(mesh, v, writer);
+		protected void addTo(AIMesh mesh, int vertexID, GLBufferWriter writer) {
+			POSITION2D.addTo(mesh, vertexID, writer);
 		}
 	},
 	BONE_INDICES_3 {
@@ -115,8 +115,8 @@ public enum DataFragment {
 		}
 
 		@Override
-		public void addTo(AIMesh mesh, int v, GLBufferWriter writer, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
-			List<Map.Entry<Integer, Float>> weightsData = vertexBoneWeights.get(v);
+		public void addTo(AIMesh mesh, int vertexID, GLBufferWriter writer, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
+			List<Map.Entry<Integer, Float>> weightsData = vertexBoneWeights.get(vertexID);
 			Log.assertTrue(TAG, weightsData.size() == 3, "unexpected amount of weights");
 			for (Map.Entry<Integer, Float> e : weightsData) {
 				writer.write((float)e.getKey());
@@ -131,8 +131,8 @@ public enum DataFragment {
 		}
 
 		@Override
-		public void addTo(AIMesh mesh, int v, GLBufferWriter writer, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
-			List<Map.Entry<Integer, Float>> weightsData = vertexBoneWeights.get(v);
+		public void addTo(AIMesh mesh, int vertexID, GLBufferWriter writer, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
+			List<Map.Entry<Integer, Float>> weightsData = vertexBoneWeights.get(vertexID);
 			Log.assertTrue(TAG, weightsData.size() == 3, "unexpected amount of weights");
 			for (Map.Entry<Integer, Float> e : weightsData) {
 				writer.write(e.getValue());
@@ -152,11 +152,11 @@ public enum DataFragment {
 	 * 
 	 * @param mesh
 	 *            the mesh to read from
-	 * @param v
+	 * @param vertexID
 	 *            the currently processed vertex index
 	 * @param writer
 	 */
-	protected void addTo(AIMesh mesh, int v, GLBufferWriter writer) {
+	protected void addTo(AIMesh mesh, int vertexID, GLBufferWriter writer) {
 		Log.error(TAG, "addTo not implemented!");
 	}
 
@@ -164,12 +164,12 @@ public enum DataFragment {
 	 * add your data to the buffer, passing vertexWeights as well
 	 * 
 	 * @param mesh
-	 * @param v
+	 * @param vertexID
 	 * @param writer
 	 * @param vertexBoneWeights
 	 */
-	public void addTo(AIMesh mesh, int v, GLBufferWriter writer, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
-		addTo(mesh, v, writer);
+	public void addTo(AIMesh mesh, int vertexID, GLBufferWriter writer, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
+		addTo(mesh, vertexID, writer);
 	}
 
 	/**
