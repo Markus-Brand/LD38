@@ -117,12 +117,11 @@ public abstract class GLBuffer extends GLObject {
 	@Override
 	protected boolean glBind() {
 		glBindBuffer(type.getGLEnum(), this.ensureHandle());
-		if (GLErrors.checkForError(TAG, "glBindBuffer " + type)) {
-			return false;
-		} else {
+		boolean success = !GLErrors.checkForError(TAG, "glBindBuffer " + type);
+		if (success) {
 			ContextBindings.bind(this);
-			return true;
 		}
+		return success;
 	}
 
 	@Override
@@ -133,12 +132,11 @@ public abstract class GLBuffer extends GLObject {
 	@Override
 	protected boolean glUnbind() {
 		glBindBuffer(type.getGLEnum(), 0);
-		if (GLErrors.checkForError(TAG, "glUnBindBuffer " + type)) {
-			return false;
-		} else {
+		boolean success = !GLErrors.checkForError(TAG, "glUnBindBuffer " + type);
+		if (success) {
 			ContextBindings.unbind(this);
-			return true;
 		}
+		return success;
 	}
 	//</editor-fold>
 
