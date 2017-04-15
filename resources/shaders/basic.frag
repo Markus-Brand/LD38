@@ -1,4 +1,3 @@
-#define SHININESS 64
 
 in vec2 tex;
 in vec3 pos;
@@ -12,9 +11,8 @@ out vec4 color;
 #include modules/Struct_PointLight.glsl
 #include modules/Struct_SpotLight.glsl
 
-float ambientStrength = 0.4f;
-float specularStrength = 2.5f;
-float reflectionStrength = 0.4f;
+float ambientStrength = 0.1;
+float specularStrength = 1.0;
 
 #include modules/DirectionalLightBlock.glsl
 #include modules/PointLightBlock.glsl
@@ -39,25 +37,33 @@ void main(){
 	vec3 norm = normalize(normal);
 
     vec3 materialColor = materialDiffuse(tex);
+    vec3 specularColor = materialSpecular(tex);
+	vec3 emissionColor = materialEmit(tex);
+    int shininess = materialShininess();
+
 
 	vec3 viewDir = normalize(viewPos - pos);
 
 	vec3 result = vec3(0);
 
+    //apply lights
 	for(int i = 0; i < numPointLights; i++){
-		result += calcPointLight(pointLights[i], norm, viewDir, materialColor);
+		result += calcPointLight(pointLights[i], norm, viewDir, materialColor, specularColor, shininess);
 	}
-
 	for(int i = 0; i < numDirectionalLights; i++){
-		result += calcDirectionalLight(directionalLights[i], norm, viewDir, materialColor);
+		result += calcDirectionalLight(directionalLights[i], norm, viewDir, materialColor, specularColor, shininess);
 	}
-
 	for(int i = 0; i < numSpotLights; i++){
-		result += calcSpotLight(spotLights[i], norm, viewDir, materialColor);
+		result += calcSpotLight(spotLights[i], norm, viewDir, materialColor, specularColor, shininess);
 	}
 
+    //ambient lighting
 	vec3 ambient = ambientStrength * materialColor;
 	result += ambient;
+
+	//emission
+	result += emissionColor;
+
 
 #ifdef GAMMA_CORRECTION
 	float gamma = 2.2;

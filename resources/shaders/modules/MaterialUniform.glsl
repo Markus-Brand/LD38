@@ -23,3 +23,6 @@ vec3 materialEmit(const in vec2 uv) {
 vec3 materialNormal(const in vec2 uv) {
     return materialFetch(3, uv).rgb;
 }
+int materialShininess() {
+    return materialShininess(material);
+}

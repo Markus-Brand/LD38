@@ -10,3 +10,7 @@ vec4 materialFetch(
     ) {
     return texture(material.textureLayers, vec3(uv, component));
 }
+
+int materialShininess(const in Material material) {
+    return material.shininess;
+}

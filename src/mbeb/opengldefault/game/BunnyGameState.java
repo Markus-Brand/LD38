@@ -113,7 +113,7 @@ public class BunnyGameState implements GameState {
 		AnimatedMesh playerAnim = new ObjectLoader().loadFromFileAnim("player.fbx");
 		playerAnim.setTransform(MeshFlip);
 		Material bunnyTexture = new Material("material/player", 2);
-		Material lampTexture = new Material("material/lamp", 3);
+		Material lampTexture = new Material("material/lamp", 2);
 		playerAnim.getSkeleton().printRecursive("");
 
 		final AnimatedMesh bunnyAnim = new ObjectLoader().loadFromFileAnim("ohrenFlackern.fbx");

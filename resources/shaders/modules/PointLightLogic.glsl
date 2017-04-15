@@ -1,5 +1,11 @@
-vec3 calcPointLight(PointLight light, vec3 norm, vec3 viewDir, vec3 materialColor){
-
+vec3 calcPointLight(
+    const in PointLight light,
+    const in vec3 norm,
+    const in vec3 viewDir,
+    const in vec3 materialColor,
+    const in vec3 specularColor,
+    const in int shininess
+) {
 	vec3 direction = light.position - pos;
 
 	float distance = length(direction);
@@ -9,7 +15,7 @@ vec3 calcPointLight(PointLight light, vec3 norm, vec3 viewDir, vec3 materialColo
 	vec3 diffuse = diff * light.color;
 
 	vec3 halfwayDir = normalize(direction + viewDir);
-	float spec = pow(max(dot(norm, halfwayDir), 0.0f), SHININESS);
+	float spec = pow(max(dot(norm, halfwayDir), 0.0f), shininess);
 	vec3 specular = specularStrength * spec * light.color;
 
 	float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic * distance * distance);
@@ -17,5 +23,5 @@ vec3 calcPointLight(PointLight light, vec3 norm, vec3 viewDir, vec3 materialColo
 	diffuse  *= attenuation;
 	specular *= attenuation;  
 
-	return materialColor * diffuse + materialColor * specular;
+	return materialColor * diffuse + specularColor * specular;
 }
