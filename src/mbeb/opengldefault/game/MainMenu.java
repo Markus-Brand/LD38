@@ -10,6 +10,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
 import java.awt.Color;
 import java.awt.Font;
 
+import mbeb.opengldefault.gui.GUI;
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 
@@ -20,9 +21,8 @@ import mbeb.opengldefault.gui.TextGUI;
 import mbeb.opengldefault.gui.elements.GUIElement;
 import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.openglcontext.OpenGLContext;
-import mbeb.opengldefault.rendering.shader.ShaderProgram;
-import mbeb.opengldefault.rendering.textures.Texture;
+import mbeb.opengldefault.gl.GLContext;
+import mbeb.opengldefault.gl.shader.ShaderProgram;
 
 public class MainMenu implements GameState {
 	private static final String TAG = "MainMenu";
@@ -45,7 +45,7 @@ public class MainMenu implements GameState {
 
 	@Override
 	public void init() {
-		menuGUI = new AtlasGUI(new Texture("menu.png"), 4, 4);
+		menuGUI = new AtlasGUI(GUI.loadGUITexture("menu.png"), 4, 4);
 		guiShader = new ShaderProgram("gui.vert", "gui.frag");
 		textGUI = new TextGUI(new Font("Comic Sans MS", Font.PLAIN, 128));
 
@@ -57,7 +57,7 @@ public class MainMenu implements GameState {
 		fps.setColor(Color.ORANGE);
 
 		buttonGame = textGUI.addText("Start Game", new Vector2f(), 0.2f).setPositionRelativeToScreen(0.5f, 0.5f);
-		buttonExit = menuGUI.addAtlasGUIElement(0, new Vector2f(), new Vector2f(0.1f, OpenGLContext.getAspectRatio() * 0.1f))
+		buttonExit = menuGUI.addAtlasGUIElement(0, new Vector2f(), new Vector2f(0.1f, GLContext.getAspectRatio() * 0.1f))
 				.setPositionRelativeToScreen(0.01f, 0.99f);
 	}
 
@@ -97,7 +97,7 @@ public class MainMenu implements GameState {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		GLErrors.checkForError(TAG, "glClear");
 
-		glViewport(0, 0, OpenGLContext.getFramebufferWidth(), OpenGLContext.getFramebufferHeight());
+		glViewport(0, 0, GLContext.getFramebufferWidth(), GLContext.getFramebufferHeight());
 		GLErrors.checkForError(TAG, "glViewport");
 
 		menuGUI.render();
@@ -111,7 +111,7 @@ public class MainMenu implements GameState {
 
 	@Override
 	public void open() {
-		OpenGLContext.showCursor();
+		GLContext.showCursor();
 	}
 
 	@Override

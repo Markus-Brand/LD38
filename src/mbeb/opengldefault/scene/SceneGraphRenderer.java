@@ -6,7 +6,7 @@ import org.joml.*;
 
 import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.rendering.renderable.*;
-import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.gl.shader.*;
 
 /**
  * A "visitor" of the scenegraph to render it

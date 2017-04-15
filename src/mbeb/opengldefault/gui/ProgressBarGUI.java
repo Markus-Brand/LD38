@@ -3,7 +3,7 @@ package mbeb.opengldefault.gui;
 import static org.lwjgl.opengl.GL11.*;
 import mbeb.opengldefault.constants.Constants;
 import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.rendering.shader.ShaderProgram;
+import mbeb.opengldefault.gl.shader.ShaderProgram;
 
 /**
  * A ProgressBar {@link GUI} that is able to render ProgressBars in one drawcall
