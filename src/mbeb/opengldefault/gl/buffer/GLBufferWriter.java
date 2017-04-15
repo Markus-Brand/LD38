@@ -58,11 +58,26 @@ public class GLBufferWriter {
 	}
 
 	//<editor-fold desc="write">
+
+	/**
+	 * write a single int to the buffer
+	 * 
+	 * @param value
+	 *            the value to write
+	 * @return this, for chaining
+	 */
 	public GLBufferWriter write(int value) {
 		writeBuffer.putInt(value);
 		return this;
 	}
 
+	/**
+	 * write multiple ints to the buffer
+	 *
+	 * @param data
+	 *            the int-array to write
+	 * @return this, for chaining
+	 */
 	public GLBufferWriter write(int[] data) {
 		for (int datum : data) {
 			write(datum);
@@ -70,10 +85,25 @@ public class GLBufferWriter {
 		return this;
 	}
 
+	/**
+	 * write a single float to the buffer
+	 *
+	 * @param value
+	 *            the value to write
+	 * @return this, for chaining
+	 */
 	public GLBufferWriter write(float value) {
 		writeBuffer.putFloat(value);
 		return this;
 	}
+
+	/**
+	 * write multiple floats to the buffer
+	 *
+	 * @param data
+	 *            the float-array to write
+	 * @return this, for chaining
+	 */
 
 	public GLBufferWriter write(float[] data) {
 		for (float datum : data) {
@@ -82,6 +112,14 @@ public class GLBufferWriter {
 		return this;
 	}
 
+	/**
+	 * write a Matrix4f to the buffer
+	 * This method fills up some space if required for the layout.
+	 *
+	 * @param value
+	 *            the value to write
+	 * @return this, for chaining
+	 */
 	public GLBufferWriter write(Matrix4f value) {
 		makeSpaceFor(16);
 		value.get(writeBuffer);
@@ -89,6 +127,14 @@ public class GLBufferWriter {
 		return this;
 	}
 
+	/**
+	 * write a Vector2f to the buffer
+	 * This method fills up some space if required for the layout.
+	 *
+	 * @param value
+	 *            the value to write
+	 * @return this, for chaining
+	 */
 	public GLBufferWriter write(Vector2f value) {
 		if (useSpacing) {
 			makeSpaceFor(2);
@@ -101,6 +147,14 @@ public class GLBufferWriter {
 		return this;
 	}
 
+	/**
+	 * write a Vector3f to the buffer
+	 * This method fills up some space if required for the layout.
+	 *
+	 * @param value
+	 *            the value to write
+	 * @return this, for chaining
+	 */
 	public GLBufferWriter write(Vector3f value) {
 		if (useSpacing) {
 			makeSpaceFor(3);
@@ -114,6 +168,14 @@ public class GLBufferWriter {
 		return this;
 	}
 
+	/**
+	 * write a Vector4f to the buffer
+	 * This method fills up some space if required for the layout.
+	 *
+	 * @param value
+	 *            the value to write
+	 * @return this, for chaining
+	 */
 	public GLBufferWriter write(Vector4f value) {
 		if (useSpacing) {
 			makeSpaceFor(4);
@@ -129,12 +191,15 @@ public class GLBufferWriter {
 	}
 
 	/**
-	 * write the values of a color as 3/4 floats
+	 * write the values of a color as 3 or 4 floats (in range 0 to 1)
 	 * 
 	 * @param color
 	 *            the Color to write
 	 * @param includeAlpha
 	 *            true to use a vec4, false to use a vec3
+	 * @return this, for chaining
+	 * @see #write(Vector3f)
+	 * @see #write(Vector4f)
 	 */
 	public GLBufferWriter write(Color color, boolean includeAlpha) {
 		if (includeAlpha) {
@@ -145,6 +210,14 @@ public class GLBufferWriter {
 		return this;
 	}
 
+	/**
+	 * write a (maybe complex) object to the buffer,
+	 * by calling its {@link GLBufferWritable#writeTo(GLBufferWriter)} - method
+	 * 
+	 * @param value
+	 *            the object to write to this buffer
+	 * @return this, for chaining
+	 */
 	public GLBufferWriter write(GLBufferWritable value) {
 		value.writeTo(this);
 		return this;
@@ -153,9 +226,11 @@ public class GLBufferWriter {
 
 	//<editor-fold desc="spacing">
 	/**
-	 * fill or not, depending on whether a struct with the given primitive-amount still fits inside the buffer
+	 * fill or not, depending on whether a struct with the given primitive-amount still fits inside the buffer.
+	 * Does nothing if {@link #useSpacing} == false.
 	 * 
 	 * @param floatCount
+	 *            the number of floats that want to have space
 	 */
 	private void makeSpaceFor(int floatCount) {
 		if (useSpacing && freeFloats() < floatCount) {
@@ -180,7 +255,10 @@ public class GLBufferWriter {
 	}
 
 	/**
-	 * fills up the byteBuffer with zero-floats until the next block is reached
+	 * fills up the byteBuffer with zero-floats until the next block is reached.
+	 * Does nothing if {@link #useSpacing} == false.
+	 * 
+	 * @return this, for chaining
 	 */
 	public GLBufferWriter fillBlock() {
 		fill(freeFloats());
@@ -188,9 +266,11 @@ public class GLBufferWriter {
 	}
 
 	/**
-	 * fills some empty floats into this buffer
+	 * fills some empty floats into this buffer.
+	 * Does nothing if {@link #useSpacing} == false.
 	 * 
 	 * @param floatCount
+	 *            the amount of floats to fill
 	 */
 	private void fill(int floatCount) {
 		if (!useSpacing) {
@@ -208,6 +288,8 @@ public class GLBufferWriter {
 	 * if not enabled, this writer adds new data right after previous data
 	 *
 	 * @param useSpacing
+	 *            whether to write in spacing mode or not
+	 * @return this, for chaining
 	 */
 	public GLBufferWriter setSpacingMode(boolean useSpacing) {
 		this.useSpacing = useSpacing;
@@ -219,6 +301,8 @@ public class GLBufferWriter {
 	 * Do this before the flush operation.
 	 * 
 	 * @param writeType
+	 *            the writeType to use for the flush-operation
+	 * @return this, for chaining
 	 */
 	public GLBufferWriter setWriteType(WriteType writeType) {
 		this.writeType = writeType;
@@ -234,6 +318,11 @@ public class GLBufferWriter {
 
 	/**
 	 * finish adding data to this Writer and upload all that's been written to the GPU
+	 * 
+	 * @param bindBefore
+	 *            whether to call bind on the GLBuffer-object before the flush
+	 * @param unbindAfter
+	 *            whether to call unbind on the GLBuffer-object after the flush
 	 */
 	public void flush(boolean bindBefore, boolean unbindAfter) {
 		if (bindBefore) {
