@@ -52,8 +52,8 @@ public class VAORenderable implements IRenderable {
 	public VAORenderable(float[] data, int[] indices, DataFragment[] dataFormat, BoundingBox boundingBox) {
 		this(indices.length, dataFormat);
 
-		this.dataWriter().write(data).flush();
-		this.indicesWriter().write(indices).flush();
+		this.dataWriter().write(data).flush(GLBufferWriter.WriteType.FULL_DATA);
+		this.indicesWriter().write(indices).flush(GLBufferWriter.WriteType.FULL_DATA);
 		this.setAttribPointers();
 
 		setBoundingBox(boundingBox);
@@ -162,7 +162,7 @@ public class VAORenderable implements IRenderable {
 	 */
 	public GLBufferWriter dataWriter() {
 		return getVBO().writer(FLOAT_SIZE * vertexCount * DataFragment.getTotalSize(dataFormat))
-				.setSpacingMode(false).setWriteType(GLBufferWriter.WriteType.FULL_DATA);
+				.setSpacingMode(false);
 	}
 
 	/**
@@ -171,7 +171,7 @@ public class VAORenderable implements IRenderable {
 	 */
 	public GLBufferWriter indicesWriter() {
 		return getEBO().writer(FLOAT_SIZE * vertexCount)
-				.setSpacingMode(false).setWriteType(GLBufferWriter.WriteType.FULL_DATA);
+				.setSpacingMode(false);
 	}
 
 	public void setAttribPointers() {

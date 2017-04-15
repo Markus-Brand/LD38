@@ -45,8 +45,6 @@ public class GLBufferWriter {
 	private ByteBuffer writeBuffer;
 	/** whether to write data according to the std140 - layout (instead of packed) */
 	private boolean useSpacing;
-	/** which method to use for data writing */
-	private WriteType writeType;
 
 	GLBufferWriter(GLBuffer glBuffer, long offset, int capacity) {
 		this.glBuffer = glBuffer;
@@ -54,7 +52,6 @@ public class GLBufferWriter {
 
 		writeBuffer = BufferUtils.createByteBuffer(capacity);
 		useSpacing = true;
-		writeType = WriteType.DYNAMIC;
 	}
 
 	//<editor-fold desc="write">
@@ -233,7 +230,7 @@ public class GLBufferWriter {
 	 *            the number of floats that want to have space
 	 */
 	private void makeSpaceFor(int floatCount) {
-		if (useSpacing && freeFloats() < floatCount) {
+		if (freeFloats() < floatCount) {
 			fillBlock();
 		}
 	}
@@ -261,21 +258,19 @@ public class GLBufferWriter {
 	 * @return this, for chaining
 	 */
 	public GLBufferWriter fillBlock() {
-		fill(freeFloats());
+		if (useSpacing) {
+			fill(freeFloats());
+		}
 		return this;
 	}
 
 	/**
 	 * fills some empty floats into this buffer.
-	 * Does nothing if {@link #useSpacing} == false.
 	 * 
 	 * @param floatCount
 	 *            the amount of floats to fill
 	 */
 	private void fill(int floatCount) {
-		if (!useSpacing) {
-			return; //abort if we do not intend to write in spacing-mode
-		}
 		for (int f = 0; f < floatCount; f++) {
 			writeBuffer.putFloat(0f);
 		}
@@ -297,19 +292,6 @@ public class GLBufferWriter {
 	}
 
 	/**
-	 * Override the WriteType for this writer. It defaults to {@link WriteType#DYNAMIC}.
-	 * Do this before the flush operation.
-	 * 
-	 * @param writeType
-	 *            the writeType to use for the flush-operation
-	 * @return this, for chaining
-	 */
-	public GLBufferWriter setWriteType(WriteType writeType) {
-		this.writeType = writeType;
-		return this;
-	}
-
-	/**
 	 * finish adding data to this Writer and upload all that's been written to the GPU
 	 */
 	public void flush() {
@@ -325,6 +307,30 @@ public class GLBufferWriter {
 	 *            whether to call unbind on the GLBuffer-object after the flush
 	 */
 	public void flush(boolean bindBefore, boolean unbindAfter) {
+		flush(bindBefore, unbindAfter, WriteType.DYNAMIC);
+	}
+
+	/**
+	 * finish adding data to this Writer and upload all that's been written to the GPU
+	 *
+	 * @param writeType
+	 *            the behaviour that determines which method to use to write the data
+	 */
+	public void flush(WriteType writeType) {
+		flush(true, true, writeType);
+	}
+
+	/**
+	 * finish adding data to this Writer and upload all that's been written to the GPU
+	 * 
+	 * @param bindBefore
+	 *            whether to call bind on the GLBuffer-object before the flush
+	 * @param unbindAfter
+	 *            whether to call unbind on the GLBuffer-object after the flush
+	 * @param writeType
+	 *            the behaviour that determines which method to use to write the data
+	 */
+	public void flush(boolean bindBefore, boolean unbindAfter, WriteType writeType) {
 		if (bindBefore) {
 			glBuffer.bind();
 		}

@@ -189,7 +189,7 @@ public class ObjectLoader {
 		}
 		mesh.close();
 
-		dataWriter.flush();
+		dataWriter.flush(GLBufferWriter.WriteType.FULL_DATA);
 		vaomesh.setAttribPointers();
 		vaomesh.setBoundingBox(box);
 

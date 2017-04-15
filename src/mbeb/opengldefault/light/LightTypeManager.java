@@ -56,7 +56,7 @@ public abstract class LightTypeManager {
 		GLBufferWriter combinedWriter = UBO.writer();
 		saveBufferSize(combinedWriter);
 		bufferData(combinedWriter);
-		combinedWriter.setWriteType(GLBufferWriter.WriteType.SUB_DATA).flush();
+		combinedWriter.flush(GLBufferWriter.WriteType.SUB_DATA);
 	}
 
 	/**
@@ -70,7 +70,7 @@ public abstract class LightTypeManager {
 	 * stores the buffer size at the beginning of the UBO
 	 */
 	private void saveBufferSize() {
-		saveBufferSize(UBO.writer(Constants.INT_SIZE)).setWriteType(GLBufferWriter.WriteType.SUB_DATA).flush();
+		saveBufferSize(UBO.writer(Constants.INT_SIZE)).flush(GLBufferWriter.WriteType.SUB_DATA);
 	}
 	
 	/**
