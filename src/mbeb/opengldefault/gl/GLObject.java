@@ -206,13 +206,12 @@ public abstract class GLObject {
 			return true;
 		}
 		this.transactionLevel--;
-		if (this.temporaryBinding && this.transactionLevel == 0) {
-			boolean success = this.unbind();
-			this.temporaryBinding = !success;
-			return success;
-		} else {
+		if (!this.temporaryBinding || this.transactionLevel != 0) {
 			return true;
 		}
+		boolean success = this.unbind();
+		this.temporaryBinding = !success;
+		return success;
 	}
 
 	/**

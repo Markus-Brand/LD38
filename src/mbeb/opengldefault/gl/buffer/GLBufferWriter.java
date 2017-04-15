@@ -305,13 +305,13 @@ public class GLBufferWriter {
 	/**
 	 * finish adding data to this Writer and upload all that's been written to the GPU
 	 * 
-	 * @param bindBefore
+	 * @param shouldBindBefore
 	 *            whether to call bind on the GLBuffer-object before the flush
-	 * @param unbindAfter
+	 * @param shouldUnbindAfter
 	 *            whether to call unbind on the GLBuffer-object after the flush
 	 */
-	public void flush(boolean bindBefore, boolean unbindAfter) {
-		flush(bindBefore, unbindAfter, WriteType.DYNAMIC);
+	public void flush(boolean shouldBindBefore, boolean shouldUnbindAfter) {
+		flush(shouldBindBefore, shouldUnbindAfter, WriteType.DYNAMIC);
 	}
 
 	/**
@@ -327,15 +327,15 @@ public class GLBufferWriter {
 	/**
 	 * finish adding data to this Writer and upload all that's been written to the GPU
 	 * 
-	 * @param bindBefore
+	 * @param shouldBindBefore
 	 *            whether to call bind on the GLBuffer-object before the flush
-	 * @param unbindAfter
+	 * @param shouldUnbindAfter
 	 *            whether to call unbind on the GLBuffer-object after the flush
 	 * @param writeType
 	 *            the behaviour that determines which method to use to write the data
 	 */
-	public void flush(boolean bindBefore, boolean unbindAfter, WriteType writeType) {
-		if (bindBefore) {
+	public void flush(boolean shouldBindBefore, boolean shouldUnbindAfter, WriteType writeType) {
+		if (shouldBindBefore) {
 			glBuffer.bind();
 		}
 		if (offset > 0 || writeType == WriteType.SUB_DATA || (writeType == WriteType.DYNAMIC && writeBuffer.position() < writeBuffer.capacity())) {
@@ -343,7 +343,7 @@ public class GLBufferWriter {
 		} else {
 			glBuffer.bufferData(writeBuffer, GLBuffer.Usage.STATIC_DRAW);
 		}
-		if (unbindAfter) {
+		if (shouldUnbindAfter) {
 			glBuffer.unbind();
 		}
 		glBuffer = null; //prevent further writing with this object
