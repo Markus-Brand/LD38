@@ -12,6 +12,10 @@ import org.lwjgl.assimp.*;
  * for parsing files: specify information wanted from the mesh
  */
 public enum DataFragment {
+	/**
+	 * Just one single float.
+	 * This is a mock fragment with no parsing functionality
+	 */
 	FLOAT {
 
 		@Override
@@ -20,6 +24,9 @@ public enum DataFragment {
 		}
 
 	},
+	/**
+	 * the 3d-position of a vertex in local space
+	 */
 	POSITION {
 
 		@Override
@@ -33,6 +40,9 @@ public enum DataFragment {
 			writer.write(new Vector3f(vec.x(), vec.y(), vec.z()));
 		}
 	},
+	/**
+	 * just the x&y component of the position of a vertex in local space
+	 */
 	POSITION2D {
 
 		@Override
@@ -46,6 +56,9 @@ public enum DataFragment {
 			writer.write(new Vector2f(vec.x(), vec.y()));
 		}
 	},
+	/**
+	 * the normal of a vertex
+	 */
 	NORMAL {
 
 		@Override
@@ -59,19 +72,9 @@ public enum DataFragment {
 			writer.write(new Vector3f(vec.x(), vec.y(), vec.z()));
 		}
 	},
-	MOCK_NORMAL {
-
-		@Override
-		public int size() {
-			return 3;
-		}
-
-		@Override
-		protected void addTo(AIMesh mesh, int vertexID, GLBufferWriter writer) {
-			//todo calculate normals here
-			writer.write(new Vector3f(1, 0, 0));
-		}
-	},
+	/**
+	 * the uv-coordinates of the first texture mapping layer of a vertex
+	 */
 	UV {
 
 		@Override
@@ -85,6 +88,9 @@ public enum DataFragment {
 			writer.write(new Vector2f(vec.x(), vec.y()));
 		}
 	},
+	/**
+	 * simulated uv-coordinates (for the cases when no uv is present)
+	 */
 	MOCK_UV {
 
 		@Override
@@ -97,6 +103,9 @@ public enum DataFragment {
 			POSITION2D.addTo(mesh, vertexID, writer);
 		}
 	},
+	/**
+	 * the indices of the 3 bones that a vertex is connected to
+	 */
 	BONE_INDICES_3 {
 
 		@Override
@@ -123,6 +132,9 @@ public enum DataFragment {
 			}
 		}
 	},
+	/**
+	 * the weight of the 3 bones that a vertex is connected to
+	 */
 	BONE_WEIGHTS_3 {
 
 		@Override
@@ -179,6 +191,9 @@ public enum DataFragment {
 		return false;
 	}
 
+	/**
+	 * @return whether this dataFragment uses floats as primitives (and not ints)
+	 */
 	public boolean isFloat() {
 		return true;
 	}
