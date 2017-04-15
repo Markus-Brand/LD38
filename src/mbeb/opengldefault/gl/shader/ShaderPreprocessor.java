@@ -129,7 +129,6 @@ public class ShaderPreprocessor {
 
 		private static Cache instance = null;
 
-		////
 		private final Map<String, String> rawContent;
 		private final Map<String, String> processedContent;
 

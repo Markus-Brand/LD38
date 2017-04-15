@@ -222,15 +222,14 @@ public abstract class GLObject {
 	 */
 	@SuppressWarnings("unchecked") //Because <this.class> is not (yet) a thing
 	public final <T extends GLObject> boolean whileBound(Function<T, Boolean> actor) {
-		if (this.beginTransaction()) {
-			boolean success = actor.apply((T) this);
-			if (!this.finishTransaction()) {
-				Log.error(TAG, "Could not finish transaction.");
-			}
-			return success;
-		} else {
+		if (!this.beginTransaction()) {
 			return false;
 		}
+		boolean success = actor.apply((T) this);
+		if (!this.finishTransaction()) {
+			Log.error(TAG, "Could not finish transaction.");
+		}
+		return success;
 	}
 	//</editor-fold>
 
@@ -247,18 +246,17 @@ public abstract class GLObject {
 	 * @return whether the operation succeeded
 	 */
 	public final boolean delete() {
-		if (this.exists()) {
-			this.unbind();
-			boolean success = this.glDelete();
-			if (success) {
-				this.glHandle = null;
-			} else {
-				Log.error(TAG, "Object could not be deleted.");
-			}
-			return success;
-		} else {
+		if (!this.exists()) {
 			return false;
 		}
+		this.unbind();
+		boolean success = this.glDelete();
+		if (success) {
+			this.glHandle = null;
+		} else {
+			Log.error(TAG, "Object could not be deleted.");
+		}
+		return success;
 	}
 
 	@Override
