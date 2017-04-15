@@ -24,7 +24,7 @@ public class FrameBuffer extends GLObject {
 	private static final String TAG = "FrameBuffer";
 
 	/**
-	 * The target OpenGL can draw to or read from.
+	 * A target OpenGL can draw to or read from.
 	 */
 	public enum Target {
 		FRONT(GL_FRONT_LEFT), LEFT(GL_FRONT_LEFT), BACK(GL_BACK_LEFT), RIGHT(GL_FRONT_RIGHT), FRONT_RIGHT(GL_FRONT_RIGHT), FRONT_LEFT(GL_FRONT_LEFT), BACK_RIGHT(GL_BACK_RIGHT),
@@ -111,6 +111,21 @@ public class FrameBuffer extends GLObject {
 	protected boolean glDelete() {
 		glDeleteFramebuffers(this.getHandle());
 		return !GLErrors.checkForError(TAG, "glDeleteFramebuffers");
+	}
+
+	/**
+	 * If the given boolean is true, the given texture is stored as attached to the frame buffer at attachment.
+	 * 
+	 * @param success
+	 * @param attachment
+	 * @param texture
+	 * @return success
+	 */
+	protected boolean putOnSuccess(boolean success, Attachment attachment, Texture texture) {
+		if (success) {
+			this.attachments.put(attachment, texture);
+		}
+		return success;
 	}
 
 	/**
@@ -219,11 +234,7 @@ public class FrameBuffer extends GLObject {
 	 * @return whether the operation succeeded
 	 */
 	public boolean attach(Attachment attachment, Texture texture) {
-		boolean success = this.attachTexture(attachment, texture, 0);
-		if (success) {
-			this.attachments.put(attachment, texture);
-		}
-		return success;
+		return this.putOnSuccess(this.attachTexture(attachment, texture, 0), attachment, texture);
 	}
 
 	/**
@@ -238,11 +249,7 @@ public class FrameBuffer extends GLObject {
 	 * @return whether the operation succeeded
 	 */
 	public boolean attach(Attachment attachment, CubeMap texture, CubeMap.Face face) {
-		boolean success = this.attachCubeMapFace(attachment, texture, face, 0);
-		if (success) {
-			this.attachments.put(attachment, texture);
-		}
-		return success;
+		return this.putOnSuccess(this.attachCubeMapFace(attachment, texture, face, 0), attachment, texture);
 	}
 
 	/**
@@ -257,11 +264,7 @@ public class FrameBuffer extends GLObject {
 	 * @return whether the operation succeeded
 	 */
 	public boolean attach(Attachment attachment, Texture2DArray texture, int layer) {
-		boolean success = this.attachTextureLayer(attachment, texture, layer, 0);
-		if (success) {
-			this.attachments.put(attachment, texture);
-		}
-		return success;
+		return this.putOnSuccess(this.attachTextureLayer(attachment, texture, layer, 0), attachment, texture);
 	}
 
 	/**
@@ -276,11 +279,7 @@ public class FrameBuffer extends GLObject {
 	 * @return whether the operation succeeded
 	 */
 	public boolean attach(Attachment attachment, Texture3D texture, int z) {
-		boolean success = this.attachTexture3D(attachment, texture, z, 0);
-		if (success) {
-			this.attachments.put(attachment, texture);
-		}
-		return success;
+		return this.putOnSuccess(this.attachTexture3D(attachment, texture, z, 0), attachment, texture);
 	}
 
 	/**
