@@ -9,6 +9,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
 import java.awt.Color;
 import java.awt.Font;
 import java.lang.reflect.Field;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -21,12 +22,16 @@ import mbeb.opengldefault.game.GameState;
 import mbeb.opengldefault.game.GameStateIdentifier;
 import mbeb.opengldefault.gui.AtlasGUI;
 import mbeb.opengldefault.gui.TextGUI;
-import mbeb.opengldefault.gui.elements.BooleanOptionButton;
-import mbeb.opengldefault.gui.elements.Button;
 import mbeb.opengldefault.gui.elements.TextGUIElement;
+import mbeb.opengldefault.gui.elements.buttons.BooleanOptionButton;
+import mbeb.opengldefault.gui.elements.buttons.Button;
+import mbeb.opengldefault.gui.elements.sliders.IntegerOptionSlider;
+import mbeb.opengldefault.gui.elements.sliders.OptionSlider;
+import mbeb.opengldefault.gui.elements.sliders.Slider;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
 import mbeb.opengldefault.rendering.shader.ShaderProgram;
+import mbeb.opengldefault.shapes.Rectangle;
 
 public class OptionsMenu implements GameState {
 	private static final String TAG = "OptionsMenu";
@@ -35,10 +40,11 @@ public class OptionsMenu implements GameState {
 	private boolean dirty;
 
 	private TextGUI optionsHirarchy;
-	
+
 	private AtlasGUI atlasGUI;
 
 	private LinkedList<Button> buttons;
+	private LinkedList<Slider> sliders;
 
 	public OptionsMenu() {
 		options = new HashMap<>();
@@ -54,8 +60,9 @@ public class OptionsMenu implements GameState {
 
 		atlasGUI = new AtlasGUI("menu.png", 4, 4);
 		atlasGUI.setShader(guiShader);
-		
-		buttons = new LinkedList();
+
+		buttons = new LinkedList<>();
+		sliders = new LinkedList<>();
 
 		dirty = true;
 	}
@@ -72,6 +79,9 @@ public class OptionsMenu implements GameState {
 	public void update(double deltaTime) {
 		for (Button button : buttons) {
 			button.update(deltaTime);
+		}
+		for (Slider slider : sliders) {
+			slider.update(deltaTime);
 		}
 		optionsHirarchy.update(deltaTime);
 		atlasGUI.update(deltaTime);
@@ -117,27 +127,61 @@ public class OptionsMenu implements GameState {
 		if (dirty) {
 			dirty = false;
 			float relativeY = 0.98f;
-			for (Map.Entry<String, LinkedList<Field>> categories : options.entrySet()) {
-				optionsHirarchy.addText(categories.getKey(), new Vector2f(), 0.1f)
+			for (Map.Entry<String, LinkedList<Field>> category : options.entrySet()) {
+
+				optionsHirarchy.addText(category.getKey(), new Vector2f(), 0.12f)
 						.setPositionRelativeToScreen(0.5f, relativeY).setColor(Color.RED);
-				relativeY -= 0.09f;
-				for (Field option : categories.getValue()) {
-					Object value = null;
-					try {
-						value = option.get(null);
-					} catch (IllegalArgumentException | IllegalAccessException e) {
-						e.printStackTrace();
+
+				relativeY -= 0.1f;
+				category.getValue().sort(new Comparator<Field>() {
+
+					@Override
+					public int compare(Field o1, Field o2) {
+						return String.CASE_INSENSITIVE_ORDER.compare(o1.getName(), o2.getName());
 					}
-					if (option.isAnnotationPresent(ButtonOption.class)) {
-						addButton(relativeY, option, (boolean) value);
-					} else {
-						optionsHirarchy.addText(option.getName(), new Vector2f(), 0.08f)
-								.setPositionRelativeToScreen(0.5f, relativeY).setColor(Color.DARK_GRAY);
-					}
-					relativeY -= 0.07f;
+				});
+
+				for (Field option : category.getValue()) {
+					relativeY -= setupOption(relativeY, option);
 				}
+
 			}
 		}
+	}
+
+	private float setupOption(float relativeY, Field option) {
+		Object value = null;
+		try {
+			value = option.get(null);
+		} catch(IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		if (option.isAnnotationPresent(ButtonOption.class)) {
+			addButton(relativeY, option, (boolean) value);
+			return 0.065f;
+		} else if (option.isAnnotationPresent(SliderOption.class)) {
+			SliderOption sliderOption = option.getAnnotation(SliderOption.class);
+			float min = sliderOption.min();
+			float max = sliderOption.max();
+			float step = sliderOption.step();
+			addSlider(relativeY, option, min, max, step, (int) value);
+			return 0.1f;
+		} else {
+			optionsHirarchy.addText(option.getName(), new Vector2f(), 0.08f)
+					.setPositionRelativeToScreen(0.5f, relativeY).setColor(Color.DARK_GRAY);
+			return 0.065f;
+		}
+	}
+
+	private void addSlider(float relativeY, Field option, float min, float max, float step, float value) {
+		Rectangle bounding = new Rectangle(new Vector2f(), new Vector2f(1.6f, 0.16f));
+		bounding.setPositionRelativeTo(new Rectangle(new Vector2f(-1), new Vector2f(2)), 0.5f, relativeY);
+		OptionSlider slider =
+				new IntegerOptionSlider(option, value, min, max, step, bounding);
+		slider.showSliderBar(atlasGUI);
+		slider.showValue(optionsHirarchy);
+		slider.showCursor(atlasGUI);
+		sliders.add(slider);
 	}
 
 	private void addButton(float relativeY, Field option, boolean intialValue) {
@@ -145,8 +189,7 @@ public class OptionsMenu implements GameState {
 		element.setPositionRelativeToScreen(0.5f, relativeY);
 
 		BooleanOptionButton button = new BooleanOptionButton(element, option, intialValue, atlasGUI);
-		
-		buttons.add(button);
 
+		buttons.add(button);
 	}
 }

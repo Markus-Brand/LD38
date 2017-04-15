@@ -1,10 +1,11 @@
-package mbeb.opengldefault.gui.elements;
+package mbeb.opengldefault.gui.elements.buttons;
 
 import java.awt.Color;
 
 import org.lwjgl.glfw.GLFW;
 
 import mbeb.opengldefault.controls.Mouse;
+import mbeb.opengldefault.gui.elements.GUIElement;
 
 public abstract class Button {
 
@@ -49,7 +50,7 @@ public abstract class Button {
 					}
 				}
 			}
-		} else {			
+		} else {
 			boolean newState = false;
 			if (referencedElement.contains(Mouse.getNormalizedDeviceCoordinates())) {
 				selected = true;
@@ -63,15 +64,15 @@ public abstract class Button {
 		setColor();
 		referencedElement.update(deltaTime);
 	}
-	
-	protected void setColor(){
-		if(selected){
+
+	protected void setColor() {
+		if (selected) {
 			referencedElement.setColor(hoveringColor);
-		}else{
-			if(isPressed){
-				referencedElement.setColor(pressedColor);				
-			}else{
-				referencedElement.setColor(normalColor);		
+		} else {
+			if (isPressed) {
+				referencedElement.setColor(pressedColor);
+			} else {
+				referencedElement.setColor(normalColor);
 			}
 		}
 	}

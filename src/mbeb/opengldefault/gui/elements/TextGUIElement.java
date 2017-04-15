@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.nio.FloatBuffer;
 
 import mbeb.opengldefault.gui.AtlasGUI;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
@@ -55,13 +56,15 @@ public class TextGUIElement extends CombinedGUIElement {
 	 */
 	public void setText(String text) {
 		this.text = text;
-		generateText();
+		setDirty();
 	}
 
 	@Override
-	public void setPosition(Vector2f position) {
-		super.setPosition(position);
-		generateText();
+	public GUIElement setPositionRelativeTo(Rectangle bounding, float relativeX, float relativeY) {
+		if (isDirty()) {
+			generateText();
+		}
+		return super.setPositionRelativeTo(bounding, relativeX, relativeY);
 	}
 
 	/**
@@ -72,7 +75,7 @@ public class TextGUIElement extends CombinedGUIElement {
 	 */
 	public void setHeight(float height) {
 		this.height = height;
-		generateText();
+		setDirty();
 	}
 
 	/**
@@ -93,16 +96,33 @@ public class TextGUIElement extends CombinedGUIElement {
 			xPos += charWidth;
 		}
 		setSize(new Vector2f(xPos - textPos.x, getSize().y));
+		setClean();
 		return this;
 	}
 
 	/**
 	 * Getter for the FontMetrics
-	 * 
+	 *
 	 * @return the fonts FontMetrics
 	 */
 	public FontMetrics getFont() {
 		return font;
+	}
+
+	@Override
+	public int writeToBuffer(FloatBuffer buffer, int offset) {
+		if (isDirty()) {
+			generateText();
+		}
+		return super.writeToBuffer(buffer, offset);
+	}
+
+	@Override
+	public int getNumElements() {
+		if (isDirty()) {
+			generateText();
+		}
+		return super.getNumElements();
 	}
 
 	/**

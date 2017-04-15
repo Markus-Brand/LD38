@@ -14,7 +14,7 @@ public class Mouse {
 
 	static {
 		cursorPos = new Vector2f();
-		mouseDown = new boolean[32];
+		releaseAll();
 	}
 
 	private Mouse() {
@@ -69,9 +69,14 @@ public class Mouse {
 
 	/**
 	 * Returns the mouse position in normalized device coordinates ([-1, 1], [-1, 1])
+	 * 
 	 * @return the mouse position in normalized device coordinates
 	 */
 	public static Vector2f getNormalizedDeviceCoordinates() {
 		return OpenGLContext.getNDC(getPos());
+	}
+
+	public static void releaseAll() {
+		mouseDown = new boolean[32];
 	}
 }

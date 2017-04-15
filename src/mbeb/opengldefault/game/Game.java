@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mbeb.opengldefault.controls.KeyBoard;
+import mbeb.opengldefault.controls.Mouse;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
 
 /**
@@ -15,14 +16,15 @@ public abstract class Game {
 	 * Current GameStateIdentifier
 	 */
 	private GameStateIdentifier currentGameState;
-	
+
 	/**
 	 * Mapping from the GameStateIdentifier enum to the actual GameState
 	 */
 	private Map<GameStateIdentifier, GameState> gameStates;
 
 	/**
-	 * Adds a GameStateIdentifier -> GameState mapping entry. The first GameState to add will be the startup entry per default
+	 * Adds a GameStateIdentifier -> GameState mapping entry. The first GameState to add will be the startup entry per
+	 * default
 	 *
 	 * @param key
 	 * @param newGameState
@@ -40,9 +42,9 @@ public abstract class Game {
 	/**
 	 * Init the Game here. The OpenGL context is already created at this Point.
 	 */
-	public void init(){
+	public void init() {
 	}
-	
+
 	/**
 	 * Entry Point for the update cycle
 	 *
@@ -55,6 +57,7 @@ public abstract class Game {
 		if (!currentState.isActive()) {
 			currentGameState = currentState.getNextState();
 			KeyBoard.releaseAll();
+			Mouse.releaseAll();
 			currentState.resetNextGameState();
 			if (currentGameState == GameStateIdentifier.EXIT) {
 				OpenGLContext.close();

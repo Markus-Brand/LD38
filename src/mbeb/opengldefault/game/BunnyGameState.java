@@ -55,6 +55,7 @@ import mbeb.opengldefault.scene.entities.SceneEntity;
 import mbeb.opengldefault.scene.entities.SpotLightEntity;
 import mbeb.opengldefault.options.ButtonOption;
 import mbeb.opengldefault.options.Option;
+import mbeb.opengldefault.options.SliderOption;
 
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -64,19 +65,19 @@ import org.lwjgl.glfw.GLFW;
 public class BunnyGameState implements GameState {
 
 	@ButtonOption
-	@Option(category="Game")
+	@Option(category = "Game")
 	public static boolean showFPS = true;
-	
+
 	@ButtonOption
-	@Option(category="Game")
+	@Option(category = "Game")
 	public static boolean showBBs = true;
-	
+
 	private static final String TAG = "BunnyGameState";
-	
+
 	GameStateIdentifier nextGameState;
 
 	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1);
-	
+
 	private float timePassed;
 
 	private TextGUIElement fps;
@@ -89,6 +90,8 @@ public class BunnyGameState implements GameState {
 	//DirectionalLight dl;
 	SpotLight sl;
 
+	ShaderProgram curveShader;
+
 	ArrayList<Light> lights = new ArrayList<>();
 
 	BezierCurve curve;
@@ -97,23 +100,18 @@ public class BunnyGameState implements GameState {
 
 	SceneObject playerObj, bunny0, bunny1, bunny2, bunny3, bunny4, curveObj;
 
-	Entity mainBunny, followingBunny1, followingBunny2, followingBunny3, followingBunny4, camEntity, playerEntity, spotLightEntity, ple, lampEntity;
-	
+	Entity mainBunny, followingBunny1, followingBunny2, followingBunny3, followingBunny4, camEntity, playerEntity,
+			spotLightEntity, ple, lampEntity;
+
 	private TextGUI textGUI;
 
-	@Option(category="Game")
+	@Option(category = "Game")
+	@SliderOption(min = 3, max = 200, step = 1)
 	public static int bezierCurveSize = 10;
-	
+
 	@Override
 	public void init() {
 		timePassed = 0;
-		final ArrayList<Vector3f> controlPoints = new ArrayList<>();
-
-		final Random random = new Random();
-		for (int i = 0; i < bezierCurveSize; i++) {
-			controlPoints.add(new Vector3f(random.nextInt(51) - 25, random.nextInt(51) - 25, random.nextInt(51) - 25));
-		}
-		curve = new BezierCurve(controlPoints, ControlPointInputMode.CAMERAPOINTSCIRCULAR, true);
 
 		camera = new Camera(OpenGLContext.getAspectRatio());
 
@@ -134,7 +132,7 @@ public class BunnyGameState implements GameState {
 		System.out.println();
 		bunnyAnim.getSkeleton().printRecursive("");
 
-		final ShaderProgram curveShader = new ShaderProgram("bezier.vert", "bezier.frag", "bezier.geom");
+		curveShader = new ShaderProgram("bezier.vert", "bezier.frag", "bezier.geom");
 		curveShader.addUniformBlockIndex(UBOManager.MATRICES);
 		curveShader.setDrawMode(GL_LINES);
 
@@ -188,21 +186,16 @@ public class BunnyGameState implements GameState {
 
 		camEntity.addBehaviour(1, new PlayerControlBehaviour());
 
-		curveObj = new SceneObject(new BezierCurveRenderable(curve));
-		curveObj.setShader(curveShader);
-
 		bunnyScene.getSceneGraph().addSubObject(playerObj);
 		bunnyScene.getSceneGraph().addSubObject(bunny0);
 		bunnyScene.getSceneGraph().addSubObject(bunny1);
 		bunnyScene.getSceneGraph().addSubObject(bunny2);
 		bunnyScene.getSceneGraph().addSubObject(bunny3);
 		bunnyScene.getSceneGraph().addSubObject(bunny4);
-		bunnyScene.getSceneGraph().addSubObject(curveObj);
 		bunnyScene.getSceneGraph().addSubObject(box);
 		bunnyScene.getSceneGraph().addSubObject(lamp);
 
 		bunnyScene.getSceneGraph().setShader(animatedShader);
-
 
 		//a light on the hand
 		PointLight pl = new PointLight(new Color(240, 245, 255), new Vector3f(), 50);
@@ -210,8 +203,8 @@ public class BunnyGameState implements GameState {
 		bunnyScene.getLightManager().addLight(pl);
 		ple.addBehaviour(1, new ParentBehaviour(lamp, new Vector3f(0, -0.5f, 0)));
 
-		lampEntity.addBehaviour(1, new BoneTrackingBehaviour(playerObj, animPlayer.getRenderable(), "Hand.L", new Vector3f(0, 0.5f, 0)).fixedDirection());
-
+		lampEntity.addBehaviour(1, new BoneTrackingBehaviour(playerObj, animPlayer.getRenderable(), "Hand.L",
+				new Vector3f(0, 0.5f, 0)).fixedDirection());
 
 		//pl = new PointLight(Color.GREEN, new Vector3f(0, 10, 0), 1000);
 		//bunnyScene.getLightManager().addLight(pl);
@@ -235,9 +228,7 @@ public class BunnyGameState implements GameState {
 		animBunny.registerAnimation("ohr1", "OhrenFlackern1", 4);
 		animBunny.registerAnimation("ohr2", "OhrenFlackern2", 4);
 		animBunny.registerAnimation("party", "HeadBang", 4);
-		
-		
-		
+
 		textGUI = new TextGUI(new Font("Comic Sans MS", Font.PLAIN, 128));
 		guiShader = new ShaderProgram("gui.vert", "gui.frag");
 		textGUI.setShader(guiShader);
@@ -245,6 +236,23 @@ public class BunnyGameState implements GameState {
 		fps.setColor(Color.ORANGE);
 		fps.setPositionRelativeToScreen(0, 0);
 
+		generateBezierCurve();
+	}
+
+	private void generateBezierCurve() {
+		final ArrayList<Vector3f> controlPoints = new ArrayList<>();
+
+		final Random random = new Random();
+		for (int i = 0; i < bezierCurveSize; i++) {
+			controlPoints.add(new Vector3f(random.nextInt(51) - 25, random.nextInt(51) - 25, random.nextInt(51) - 25));
+		}
+		curve = new BezierCurve(controlPoints, ControlPointInputMode.CAMERAPOINTSCIRCULAR, true);
+		mainBunny.getBehaviours().clear();
+		mainBunny.addBehaviour(1, new BezierBehaviour(curve, 4));
+		bunnyScene.getSceneGraph().removeSubObject(curveObj);
+		curveObj = new SceneObject(new BezierCurveRenderable(curve));
+		curveObj.setShader(curveShader);
+		bunnyScene.getSceneGraph().addSubObject(curveObj);
 	}
 
 	@Override
@@ -252,12 +260,16 @@ public class BunnyGameState implements GameState {
 		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_ESCAPE)) {
 			nextGameState = GameStateIdentifier.MAIN_MENU;
 		}
+		if (curve.getControlPoints().size() != bezierCurveSize * 3 + 1) {
+			generateBezierCurve();
+		}
 
 		fps.setText("FPS: " + (int) (1 / deltaTime));
+		//fps.setPositionRelativeToScreen(0, 0);
 		textGUI.update(deltaTime);
 
 		timePassed += deltaTime;
-		
+
 		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
 			animPlayer.slideSpeed("jogging", 50, deltaTime, 5);
 		} else {
@@ -303,8 +315,8 @@ public class BunnyGameState implements GameState {
 		GLErrors.checkForError(TAG, "glViewport");
 
 		bunnyScene.render(showBBs); //bunnyScene.render(); to render without BoundingBoxes
-		if(showFPS){
-			textGUI.render();			
+		if (showFPS) {
+			textGUI.render();
 		}
 	}
 

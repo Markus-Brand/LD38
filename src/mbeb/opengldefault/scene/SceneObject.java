@@ -290,4 +290,8 @@ public class SceneObject implements BoundingBox.Owner {
 	public void setSelected(boolean selected) {
 		this.selected = selected;
 	}
+
+	public void removeSubObject(SceneObject curveObj) {
+		subObjects.remove(curveObj);
+	}
 }
