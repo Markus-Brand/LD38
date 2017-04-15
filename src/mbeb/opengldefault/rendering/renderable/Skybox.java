@@ -2,9 +2,11 @@ package mbeb.opengldefault.rendering.renderable;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import mbeb.opengldefault.gl.shader.ShaderProgram;
+import mbeb.opengldefault.gl.shader.UBOManager;
+import mbeb.opengldefault.gl.texture.CubeMap;
+import mbeb.opengldefault.gl.texture.Texture;
 import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.rendering.shader.*;
-import mbeb.opengldefault.rendering.textures.*;
 
 /**
  * Uses a {@link CubeMap} to render a Skybox with the Skybox {@link ShaderProgram}
@@ -39,6 +41,7 @@ public class Skybox {
 		 */
 	public Skybox(final String texturePath, String extension) {
 		cubeMap = new CubeMap(texturePath, extension);
+		cubeMap.whileBound(texture -> cubeMap.setWrapMode(Texture.WrapMode.CLAMP_TO_EDGE) && cubeMap.setInterpolates(false) && cubeMap.setBaseLevel(0) && cubeMap.setMaxLevel(0));
 		shader = new ShaderProgram("skybox.vert", "skybox.frag");
 		shader.addUniformBlockIndex(UBOManager.MATRICES);
 		skyboxRenderable = StaticMeshes.getCube();
@@ -63,7 +66,8 @@ public class Skybox {
 		GLErrors.checkForError(TAG, "glDepthMask");
 		glDepthFunc(GL_LEQUAL);
 		GLErrors.checkForError(TAG, "glDepthFunc");
-		cubeMap.bind(shader);
+		cubeMap.bind();
+		shader.setUniform("u_cubeMap", cubeMap);
 		skyboxRenderable.render(shader);
 		glDepthFunc(GL_LESS);
 		GLErrors.checkForError(TAG, "glDepthFunc");

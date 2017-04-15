@@ -6,7 +6,7 @@ import org.lwjgl.opengl.*;
 
 import mbeb.opengldefault.curves.*;
 import mbeb.opengldefault.rendering.io.*;
-import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.gl.shader.*;
 import mbeb.opengldefault.scene.*;
 
 /**

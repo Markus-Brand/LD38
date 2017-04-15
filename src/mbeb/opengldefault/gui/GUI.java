@@ -1,26 +1,24 @@
 package mbeb.opengldefault.gui;
 
+import static mbeb.opengldefault.constants.Constants.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL31.glDrawElementsInstanced;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL31.*;
-import static org.lwjgl.opengl.GL33.*;
-
-import java.nio.*;
-
-import org.lwjgl.BufferUtils;
-
 import mbeb.opengldefault.constants.Constants;
+import mbeb.opengldefault.gl.buffer.GLBufferWriter;
+import mbeb.opengldefault.gl.buffer.VertexBuffer;
+import mbeb.opengldefault.gl.shader.ShaderProgram;
+import mbeb.opengldefault.gl.texture.Texture;
+import mbeb.opengldefault.gl.texture.Texture2D;
+import mbeb.opengldefault.gl.vao.VertexArray;
 import mbeb.opengldefault.gui.elements.GUIElement;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.StaticMeshes;
 import mbeb.opengldefault.rendering.renderable.VAORenderable;
-import mbeb.opengldefault.rendering.shader.ShaderProgram;
-import mbeb.opengldefault.rendering.textures.Texture;
 import mbeb.opengldefault.scene.BoundingBox;
 
 /**
@@ -32,9 +30,33 @@ public class GUI implements IRenderable {
 	private static final String TAG = "GUI";
 
 	/**
+	 * Loads a texture and sets its properties to make it suitable for use in GUI rendering.
+	 * 
+	 * @param path
+	 *            the path of the texture to load
+	 * @return the loaded texture
+	 */
+	public static Texture2D loadGUITexture(String path) {
+		Texture2D loaded = new Texture2D(path);
+		setGUIParameters(loaded);
+		return loaded;
+	}
+
+	/**
+	 * Sets a textures properties to make it suitable for GUI rendering.
+	 * 
+	 * @param texture
+	 *            the texture to setup
+	 * @return whether the operation succeeded
+	 */
+	public static boolean setGUIParameters(Texture texture) {
+		return texture.whileBound(glObject -> texture.setWrapMode(Texture.WrapMode.CLAMP_TO_EDGE) && texture.setInterpolates(false));
+	}
+
+	/**
 	 * The look up table Texture for this GUI
 	 */
-	private Texture lut;
+	private Texture2D lut;
 
 	/**
 	 * The shader used to render this GUI
@@ -56,7 +78,7 @@ public class GUI implements IRenderable {
 	/**
 	 * gui specific instanced vertex data buffer handle
 	 */
-	protected int buffer;
+	protected VertexBuffer vbo;
 
 	/**
 	 * dirty flag
@@ -74,14 +96,17 @@ public class GUI implements IRenderable {
 		dirty = true;
 		setupBuffer();
 		//Store a Matrix and the lut Vector
-		this.stride = Constants.MAT4_COMPONENTS + Constants.VEC4_COMPONENTS;
+		this.stride = MAT4_COMPONENTS + VEC4_COMPONENTS;
 		renderable = StaticMeshes.getNewGuiQuad();
-		lut = new Texture(256, 256);
+		lut = new Texture2D(256, 256, mbeb.opengldefault.gl.texture.Texture.InternalFormat.RGBA8);
+		setGUIParameters(lut);
 	}
 
 	/**
 	 * Adds a new GUIElement and sets its lut level
-	 * @param newElement the new element
+	 * 
+	 * @param newElement
+	 *            the new element
 	 * @return the new element
 	 */
 	protected GUIElement addGUIElement(GUIElement newElement) {
@@ -89,34 +114,22 @@ public class GUI implements IRenderable {
 		elements.add(newElement);
 		return newElement;
 	}
-	
+
 	/**
 	 * Generates a new buffer
 	 */
 	private void setupBuffer() {
-		buffer = glGenBuffers();
+		vbo = new VertexBuffer();
+		vbo.ensureExists();
 	}
 
 	/**
-	 * Buffers data from the gui elements into the {@link #buffer}
+	 * Buffers data from the gui elements into the {@link #vbo}
 	 */
 	private void loadBufferData() {
-		glBufferData(GL_ARRAY_BUFFER, getFloatBuffer(), GL_STATIC_DRAW);
-		GLErrors.checkForError(TAG, "glBufferData");
-	}
-
-	/**
-	 * Generates a FloatBuffer using the GUIElements {@link GUIElement#writeToBuffer()}
-	 *
-	 * @return the generated FloatBuffer
-	 */
-	private FloatBuffer getFloatBuffer() {
-		FloatBuffer buffer = BufferUtils.createFloatBuffer(getElementsSize() * stride);
-		int offset = 0;
-		for (GUIElement guiElement : elements) {
-			offset += guiElement.writeToBuffer(buffer, offset);
-		}
-		return buffer;
+		GLBufferWriter writer = vbo.writer(getElementsSize() * stride * FLOAT_SIZE);
+		elements.forEach(writer::write);
+		writer.flush();
 	}
 
 	/**
@@ -124,20 +137,15 @@ public class GUI implements IRenderable {
 	 * Per default this only contains data for the model matrix
 	 */
 	public void setupVAO() {
-		renderable.bind();
-		for (int i = 0; i < stride / Constants.VEC4_COMPONENTS; i++) {
-			/* The first two Vertex Attributes are reserved for position and texCoordinates*/
-			int vertexAttribArrayIndex = i + 2;
-			glEnableVertexAttribArray(vertexAttribArrayIndex);
-			GLErrors.checkForError(TAG, "glEnableVertexAttribArray");
-			glVertexAttribPointer(vertexAttribArrayIndex, 4, GL_FLOAT, false, stride * Constants.FLOAT_SIZE, i
-					* Constants.VEC4_SIZE);
-			GLErrors.checkForError(TAG, "glVertexAttribPointer");
+		VertexArray VAO = renderable.getVAO();
+		VAO.bind();
+		VAO.trimPointers(2);
+		for (int i = 0; i < stride / VEC4_COMPONENTS; i++) {
+			VAO.attribPointer(FLOAT_SIZE, VertexArray.AttributePointer.Type.FLOAT, false, stride * FLOAT_SIZE, i * VEC4_SIZE);
 
-			glVertexAttribDivisor(vertexAttribArrayIndex, 1);
-			GLErrors.checkForError(TAG, "glVertexAttribDivisor");
+			VAO.getLastPointer().instanced();
 		}
-		renderable.unbind();
+		VAO.unbind();
 	}
 
 	public void render() {
@@ -147,7 +155,7 @@ public class GUI implements IRenderable {
 
 	@Override
 	public void render(ShaderProgram shader) {
-		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+		vbo.bind();
 		if (dirty) {
 			setupVAO();
 			loadBufferData();
@@ -155,22 +163,24 @@ public class GUI implements IRenderable {
 		}
 
 		if (lut != null) {
-			lut.bind(shader, "u_lut");
+			this.lut.bind();
+			shader.setUniform("u_lut", lut);
 		}
 
 		glEnable(GL_BLEND);
 		glDisable(GL_DEPTH_TEST);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		GLErrors.checkForError(TAG, "glDepthFunc");
+
 		renderable.bind();
 		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, getElementsSize());
 		GLErrors.checkForError(TAG, "glDrawElementsInstanced");
 		renderable.unbind();
+
 		glDisable(GL_BLEND);
 		glEnable(GL_DEPTH_TEST);
 		GLErrors.checkForError(TAG, "glDepthFunc");
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		GLErrors.checkForError(TAG, "glBindBuffer");
+		vbo.unbind();
 	}
 
 	public int getElementsSize() {
@@ -195,7 +205,7 @@ public class GUI implements IRenderable {
 	 * 
 	 * @return this GUIs lut
 	 */
-	public Texture getLut() {
+	public Texture2D getLut() {
 		return lut;
 	}
 

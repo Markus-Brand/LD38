@@ -1,6 +1,6 @@
 package mbeb.opengldefault.controls;
 
-import mbeb.opengldefault.openglcontext.OpenGLContext;
+import mbeb.opengldefault.gl.GLContext;
 
 import org.joml.*;
 
@@ -72,6 +72,6 @@ public class Mouse {
 	 * @return the mouse position in normalized device coordinates
 	 */
 	public static Vector2f getNormalizedDeviceCoordinates() {
-		return OpenGLContext.getNDC(getPos());
+		return GLContext.getNDC(getPos());
 	}
 }

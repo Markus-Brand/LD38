@@ -2,7 +2,7 @@ package mbeb.opengldefault.light;
 
 import java.util.*;
 
-import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.gl.shader.*;
 
 /**
  * I am managing different lights (like directional, point or spot lights), e.g. adding, deleting and updating their data on the graphics card.

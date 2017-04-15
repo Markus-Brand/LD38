@@ -3,7 +3,7 @@ package mbeb.opengldefault.animation;
 import java.util.*;
 
 import mbeb.opengldefault.rendering.renderable.*;
-import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.gl.shader.*;
 import mbeb.opengldefault.scene.*;
 
 /**

@@ -90,13 +90,6 @@ public interface ICamera extends IEntityConvertable {
 	Matrix4f getSkyboxView();
 
 	/**
-	 * get UBO that stores the view and projection as well as a viewProjection matrix
-	 *
-	 * @return the UBO
-	 */
-	int getUBO();
-
-	/**
 	 * updates the UBO: Buffers the view, projection and viewProjection matrix into the UBO
 	 */
 	void updateUniformBlock();
