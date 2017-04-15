@@ -1,4 +1,4 @@
-package mbeb.opengldefault.openglcontext;
+package mbeb.opengldefault.gl;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.*;
@@ -16,12 +16,12 @@ import mbeb.opengldefault.controls.*;
 import mbeb.opengldefault.game.*;
 import mbeb.opengldefault.logging.*;
 
-public class OpenGLContext {
+public class GLContext {
 
 	/**
 	 * Class Name Tag
 	 */
-	private static final String TAG = "OpenGLContext";
+	private static final String TAG = "GLContext";
 
 	/**
 	 * Console option constant to switch to console logging
@@ -66,7 +66,7 @@ public class OpenGLContext {
 	 * the main loop and cleans when the window is closed
 	 */
 	public static void startGame(Game game, String[] args) {
-		OpenGLContext.game = game;
+		GLContext.game = game;
 		init(args);
 		loop();
 		clean();

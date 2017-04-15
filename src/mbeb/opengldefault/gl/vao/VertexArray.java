@@ -13,7 +13,7 @@ import java.util.List;
 import mbeb.opengldefault.constants.Constants;
 import mbeb.opengldefault.gl.GLObject;
 import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.openglcontext.ContextBindings;
+import mbeb.opengldefault.gl.ContextBindings;
 import mbeb.opengldefault.rendering.io.DataFragment;
 
 /**
@@ -186,7 +186,7 @@ public class VertexArray extends GLObject {
 	}
 
 	/**
-	 * add a nd enable an AttribPointer
+	 * add and enable an AttribPointer
 	 * 
 	 * @param pointer
 	 */

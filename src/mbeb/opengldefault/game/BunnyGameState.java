@@ -7,7 +7,6 @@ import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.GL_LINES;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glEnable;
@@ -25,6 +24,7 @@ import mbeb.opengldefault.camera.ICamera;
 import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.curves.BezierCurve;
 import mbeb.opengldefault.curves.BezierCurve.ControlPointInputMode;
+import mbeb.opengldefault.gl.GLContext;
 import mbeb.opengldefault.gl.texture.Texture2D;
 import mbeb.opengldefault.gui.TextGUI;
 import mbeb.opengldefault.gui.elements.TextGUIElement;
@@ -33,7 +33,6 @@ import mbeb.opengldefault.light.Light;
 import mbeb.opengldefault.light.PointLight;
 import mbeb.opengldefault.light.SpotLight;
 import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.openglcontext.OpenGLContext;
 import mbeb.opengldefault.rendering.io.ObjectLoader;
 import mbeb.opengldefault.rendering.renderable.BezierCurveRenderable;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
@@ -102,7 +101,7 @@ public class BunnyGameState implements GameState {
 		}
 		curve = new BezierCurve(controlPoints, ControlPointInputMode.CAMERAPOINTSCIRCULAR, true);
 
-		camera = new Camera(OpenGLContext.getAspectRatio());
+		camera = new Camera(GLContext.getAspectRatio());
 
 		camEntity = new CameraEntity(camera);
 
@@ -287,7 +286,7 @@ public class BunnyGameState implements GameState {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		GLErrors.checkForError(TAG, "glClear");
 
-		glViewport(0, 0, OpenGLContext.getFramebufferWidth(), OpenGLContext.getFramebufferHeight());
+		glViewport(0, 0, GLContext.getFramebufferWidth(), GLContext.getFramebufferHeight());
 		GLErrors.checkForError(TAG, "glViewport");
 
 		bunnyScene.render(KeyBoard.isKeyDown(GLFW_KEY_TAB)); //bunnyScene.render(); to render without BoundingBoxes
@@ -311,7 +310,7 @@ public class BunnyGameState implements GameState {
 
 	@Override
 	public void open() {
-		OpenGLContext.hideCursor();
+		GLContext.hideCursor();
 	}
 
 }

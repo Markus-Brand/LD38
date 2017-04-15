@@ -21,7 +21,7 @@ import mbeb.opengldefault.gl.buffer.GLBufferWritable;
 import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.logging.Log;
-import mbeb.opengldefault.openglcontext.ContextBindings;
+import mbeb.opengldefault.gl.ContextBindings;
 
 /**
  * Represents any texture created with OpenGL.
@@ -72,7 +72,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 	}
 
 	/**
-	 * The wrap mode of a OpenGL texture.
+	 * The wrap mode of an OpenGL texture.
 	 * This determines how sampling out of texture range is handled.
 	 * The constants of this enumerated type provide the value of the OpenGL enumeration to match their mode.
 	 */
@@ -438,17 +438,16 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 	@Override
 	protected final boolean glBind() {
 		ContextBindings.bind(this);
-		if (this.setActiveTexture()) {
-			glBindTexture(this.getType().getGLEnum(), this.getHandle());
-			boolean success = !GLErrors.checkForError(TAG, "Could not bind a " + this.getType().name() + ".");
-			if (!success) {
-				ContextBindings.unbind(this);
-			}
-			return success;
-		} else {
+		if (!this.setActiveTexture()) {
 			ContextBindings.unbind(this);
 			return false;
 		}
+		glBindTexture(this.getType().getGLEnum(), this.getHandle());
+		boolean success = !GLErrors.checkForError(TAG, "Could not bind a " + this.getType().name() + ".");
+		if (!success) {
+			ContextBindings.unbind(this);
+		}
+		return success;
 	}
 
 	@Override

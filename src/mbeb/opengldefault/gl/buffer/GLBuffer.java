@@ -11,7 +11,7 @@ import java.nio.IntBuffer;
 import mbeb.opengldefault.gl.GLObject;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.logging.Log;
-import mbeb.opengldefault.openglcontext.ContextBindings;
+import mbeb.opengldefault.gl.ContextBindings;
 
 /**
  * Describing all the Buffers that exist in OpenGL

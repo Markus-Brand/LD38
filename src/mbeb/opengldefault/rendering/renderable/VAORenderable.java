@@ -148,7 +148,7 @@ public class VAORenderable implements IRenderable {
 		bind();
 		if (EBO == null) {
 			glDrawArrays(shader.getDrawMode().getGlEnum(), 0, vertexCount);
-			GLErrors.checkForError(TAG, "glDrawElements");
+			GLErrors.checkForError(TAG, "glDrawArrays");
 		} else {
 			glDrawElements(shader.getDrawMode().getGlEnum(), vertexCount, GL_UNSIGNED_INT, 0);
 			GLErrors.checkForError(TAG, "glDrawElements");

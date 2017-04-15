@@ -102,7 +102,7 @@ public abstract class GLObject {
 
 	/**
 	 * Tries to bind this object to the current context, updating
-	 * {@link mbeb.opengldefault.openglcontext.ContextBindings} to match the new state.
+	 * {@link ContextBindings} to match the new state.
 	 *
 	 * @return whether the binding succeeded
 	 */
@@ -125,7 +125,7 @@ public abstract class GLObject {
 	}
 
 	/**
-	 * Checks with {@link mbeb.opengldefault.openglcontext.ContextBindings} whether this object is currently bound.
+	 * Checks with {@link ContextBindings} whether this object is currently bound.
 	 *
 	 * @return whether this object is currently bound to the context
 	 */
@@ -140,7 +140,7 @@ public abstract class GLObject {
 
 	/**
 	 * Tries to unbind this object from the current context, updating
-	 * {@link mbeb.opengldefault.openglcontext.ContextBindings} to match the new state.
+	 * {@link ContextBindings} to match the new state.
 	 *
 	 * @return whether the unbinding (of isaac) succeeded
 	 */

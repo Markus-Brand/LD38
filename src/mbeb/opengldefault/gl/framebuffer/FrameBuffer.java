@@ -13,7 +13,7 @@ import mbeb.opengldefault.gl.texture.Texture;
 import mbeb.opengldefault.gl.texture.Texture2DArray;
 import mbeb.opengldefault.gl.texture.Texture3D;
 import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.openglcontext.ContextBindings;
+import mbeb.opengldefault.gl.ContextBindings;
 
 /**
  * Represents a frame buffer object in OpenGL.

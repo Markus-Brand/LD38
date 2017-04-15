@@ -1,4 +1,4 @@
-package mbeb.opengldefault.openglcontext;
+package mbeb.opengldefault.gl;
 
 import java.util.*;
 
@@ -44,7 +44,7 @@ public class ContextBindings {
 	 * A map of currently bound textures and the texture units they are bound to.
 	 * At any point the size of this map is equal to the number texture units in use.
 	 */
-	private static Map<Texture, Integer> boundTextureUnits = new HashMap<>(48, 1.0f);
+	private static Map<Texture, Integer> boundTextureUnits = new HashMap<>();
 	/**
 	 * A queue of free texture units.
 	 * If a texture is unbound from its current unit, the unit is added to this queue.
@@ -199,13 +199,12 @@ public class ContextBindings {
 	 * @return whether the texture was unbound
 	 */
 	public static boolean unbind(Texture texture) {
-		if (isBound(texture)) {
-			Integer textureUnit = boundTextureUnits.remove(texture);
-			freeTextureUnits.add(textureUnit);
-			return true;
-		} else {
+		if (!isBound(texture)) {
 			return false;
 		}
+		Integer textureUnit = boundTextureUnits.remove(texture);
+		freeTextureUnits.add(textureUnit);
+		return true;
 	}
 
 	/**
