@@ -127,7 +127,7 @@ public class VertexArray extends GLObject {
 		}
 	}
 
-	/** all the attribute pointer for this VAO: ths index inside this list equals their id */
+	/** stores all the attribute pointers for this VAO: the index inside this list equals their id */
 	private List<AttributePointer> attributePointers = new ArrayList<>();
 
 	@Override
