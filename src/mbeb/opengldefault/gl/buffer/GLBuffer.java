@@ -3,6 +3,7 @@ package mbeb.opengldefault.gl.buffer;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -143,65 +144,80 @@ public abstract class GLBuffer extends GLObject {
 	//<editor-fold desc="bufferData">
 	public void bufferData(long size, Usage usage) {
 		glBufferData(type.getGLEnum(), size, usage.getGLEnum());
-		GLErrors.checkForError(TAG, "glBufferData " + type);
+		checkBufferError();
 	}
 
 	public void bufferData(IntBuffer buffer, Usage usage) {
-		buffer.rewind();
-		glBufferData(type.getGLEnum(), buffer, usage.getGLEnum());
-		GLErrors.checkForError(TAG, "glBufferData " + type, true);
+		glBufferData(type.getGLEnum(), prepareBuffer(buffer), usage.getGLEnum());
+		checkBufferError();
 	}
 
 	public void bufferData(ByteBuffer buffer, Usage usage) {
-		buffer.rewind();
-		glBufferData(type.getGLEnum(), buffer, usage.getGLEnum());
-		GLErrors.checkForError(TAG, "glBufferData " + type, true);
+		glBufferData(type.getGLEnum(), prepareBuffer(buffer), usage.getGLEnum());
+		checkBufferError();
 	}
 
 	public void bufferData(FloatBuffer buffer, Usage usage) {
-		buffer.rewind();
-		glBufferData(type.getGLEnum(), buffer, usage.getGLEnum());
-		GLErrors.checkForError(TAG, "glBufferData " + type, true);
+		glBufferData(type.getGLEnum(), prepareBuffer(buffer), usage.getGLEnum());
+		checkBufferError();
 	}
 
 	public void bufferData(int[] buffer, Usage usage) {
 		glBufferData(type.getGLEnum(), buffer, usage.getGLEnum());
-		GLErrors.checkForError(TAG, "glBufferData " + type, true);
+		checkBufferError();
 	}
 
 	public void bufferData(float[] buffer, Usage usage) {
 		glBufferData(type.getGLEnum(), buffer, usage.getGLEnum());
+		checkBufferError();
+	}
+
+	/**
+	 * prepare a java.nio.Buffer to be sent on a GLBuffer
+	 * 
+	 * @param buffer
+	 *            the Buffer object to prepare
+	 * @param <B>
+	 *            the type of the buffer
+	 * @return the prepared buffer
+	 */
+	private <B extends Buffer> B prepareBuffer(B buffer) {
+		buffer.rewind();
+		return buffer;
+	}
+
+	/**
+	 * check for an error after calling glBufferData
+	 */
+	private void checkBufferError() {
 		GLErrors.checkForError(TAG, "glBufferData " + type, true);
 	}
 	//</editor-fold>
 
 	//<editor-fold desc="bufferSubData">
 	public void bufferSubData(long offset, IntBuffer buffer) {
-		buffer.rewind();
-		glBufferSubData(type.getGLEnum(), offset, buffer);
-		GLErrors.checkForError(TAG, "glBufferData " + type, true);
+		glBufferSubData(type.getGLEnum(), offset, prepareBuffer(buffer));
+		checkBufferError();
 	}
 
 	public void bufferSubData(long offset, ByteBuffer buffer) {
-		buffer.rewind();
-		glBufferSubData(type.getGLEnum(), offset, buffer);
-		GLErrors.checkForError(TAG, "glBufferData " + type, true);
+		glBufferSubData(type.getGLEnum(), offset, prepareBuffer(buffer));
+		checkBufferError();
 	}
 
 	public void bufferSubData(long offset, FloatBuffer buffer) {
-		buffer.rewind();
-		glBufferSubData(type.getGLEnum(), offset, buffer);
-		GLErrors.checkForError(TAG, "glBufferData " + type, true);
+		glBufferSubData(type.getGLEnum(), offset, prepareBuffer(buffer));
+		checkBufferError();
 	}
 
 	public void bufferSubData(long offset, int[] buffer) {
 		glBufferSubData(type.getGLEnum(), offset, buffer);
-		GLErrors.checkForError(TAG, "glBufferData " + type, true);
+		checkBufferError();
 	}
 
 	public void bufferSubData(long offset, float[] buffer) {
 		glBufferSubData(type.getGLEnum(), offset, buffer);
-		GLErrors.checkForError(TAG, "glBufferData " + type, true);
+		checkBufferError();
 	}
 	//</editor-fold>
 
