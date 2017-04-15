@@ -3,7 +3,7 @@ package mbeb.opengldefault.gui;
 import java.awt.Font;
 
 import mbeb.opengldefault.gui.elements.TextGUIElement;
-import mbeb.opengldefault.openglcontext.OpenGLContext;
+import mbeb.opengldefault.gl.GLContext;
 
 import org.joml.Vector2f;
 
@@ -61,7 +61,7 @@ public class TextGUI extends AtlasGUI {
 	 * @return new Font with given size
 	 */
 	private Font getFont(float size) {
-		return font.deriveFont(size * OpenGLContext.getFramebufferHeight());
+		return font.deriveFont(size * GLContext.getFramebufferHeight());
 	}
 
 	/**

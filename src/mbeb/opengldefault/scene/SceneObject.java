@@ -6,7 +6,7 @@ import org.joml.*;
 
 import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.rendering.renderable.*;
-import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.gl.shader.*;
 
 /**
  * A (potentially) complex object inside a scene, with transformations

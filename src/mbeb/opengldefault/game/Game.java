@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import java.util.Map;
 
-import mbeb.opengldefault.openglcontext.OpenGLContext;
+import mbeb.opengldefault.gl.GLContext;
 
 /**
  * Abstract class to characterize a whole game
@@ -55,7 +55,7 @@ public abstract class Game {
 			currentGameState = currentState.getNextState();
 			currentState.resetNextGameState();
 			if (currentGameState == GameStateIdentifier.EXIT) {
-				OpenGLContext.close();
+				GLContext.close();
 			} else {
 				getCurrentGameState().open();
 			}

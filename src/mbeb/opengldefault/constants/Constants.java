@@ -6,7 +6,11 @@ package mbeb.opengldefault.constants;
  * @author Potti
  */
 public class Constants {
-
+	
+	/**
+	 * The size of an int in bytes
+	 */
+	public static final int INT_SIZE = 4;
 	/**
 	 * The size of a float in bytes
 	 */
@@ -15,6 +19,10 @@ public class Constants {
 	 * The size of a block in bytes
 	 */
 	public static final int BLOCK_SIZE = 16;
+	/**
+	 * the number of floats that fit into one block
+	 */
+	public static final int FLOATS_PER_BLOCK = BLOCK_SIZE / FLOAT_SIZE;
 
 	//<editor-fold desc="VECTORS">
 	/**

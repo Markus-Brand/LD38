@@ -6,7 +6,7 @@ import org.lwjgl.opengl.*;
 import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.rendering.renderable.*;
-import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.gl.shader.*;
 
 public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 
@@ -17,7 +17,7 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 	static {
 		shader = new ShaderProgram("boundingbox.vert", "boundingbox.frag");
 		shader.addUniformBlockIndex(UBOManager.MATRICES);
-		shader.setDrawMode(GL11.GL_LINES);
+		shader.setDrawMode(ShaderProgram.DrawMode.LINES);
 	}
 
 	public BoundingBoxRenderer(final SceneObject root, final ICamera cam) {

@@ -2,6 +2,7 @@ package mbeb.opengldefault.light;
 
 import java.awt.*;
 
+import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import org.joml.*;
 
 import mbeb.opengldefault.logging.*;
@@ -42,12 +43,6 @@ public class SpotLight extends Light implements LimitedLight {
 	 *            as angle in degrees
 	 * @param outerCutoff
 	 *            as angle in degrees
-	 * @param constant
-	 *            attenuation factor
-	 * @param linear
-	 *            attenuation factor
-	 * @param quadratic
-	 *            attenuation factor
 	 * @throws AssertionError
 	 *             if direction is zero vector
 	 */
@@ -296,43 +291,21 @@ public class SpotLight extends Light implements LimitedLight {
 	}
 
 	/**
-	 * contains 4 Blocks (4 32bit floats each)
-	 * <list>
-	 * <li>the position (3 components + 1 buffer)</li>
-	 * <li>the direction (3 components + 1 buffer)</li>
-	 * <li>the color (3 components)</li>
-	 * <li><b>cos</b>(cutoff), <b>cos</b>(outerCutoff) and the 3 attenuation factors constant, linear and quadratic</li>
-	 * </list>
-	 * <br>
-	 * if changes occur -> {@link SpotLightTypeManager}
+	 * write this light to a GLBufferWriter
+	 * @param writer the object to write on
+	 * @see /shaders/modules/Struct_SpotLight
 	 */
 	@Override
-	public float[] getData() {
-		final float[] data = new float[16];
-
-		data[0] = position.x;
-		data[1] = position.y;
-		data[2] = position.z;
-
-		data[4] = direction.x;
-		data[5] = direction.y;
-		data[6] = direction.z;
-
-		data[8] = color.x;
-		data[9] = color.y;
-		data[10] = color.z;
-
-		data[11] = (float) java.lang.Math.cos(java.lang.Math.toRadians(innerCutoff));
-
-		data[12] = (float) java.lang.Math.cos(java.lang.Math.toRadians(outerCutoff));
-
-		data[13] = constant;
-
-		data[14] = linear;
-
-		data[15] = quadratic;
-
-		return data;
+	public void writeTo(GLBufferWriter writer) {
+		writer
+			.fillBlock()
+			.write(position)
+			.write(direction)
+			.write(color)
+			.write((float) java.lang.Math.cos(java.lang.Math.toRadians(innerCutoff)))
+			.write((float) java.lang.Math.cos(java.lang.Math.toRadians(outerCutoff)))
+			.write(constant)
+			.write(linear)
+			.write(quadratic);
 	}
-
 }

@@ -1,6 +1,6 @@
 package mbeb.opengldefault.light;
 
-import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.gl.shader.*;
 
 /**
  * I'm managing directional lights. (like a sun that is far far away so her rays are [almost] parallel)

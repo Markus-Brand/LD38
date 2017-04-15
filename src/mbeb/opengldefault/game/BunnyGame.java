@@ -1,8 +1,5 @@
 package mbeb.opengldefault.game;
 
-
-import mbeb.opengldefault.rendering.textures.*;
-
 public class BunnyGame extends Game {
 	/** Class Name Tag */
 	private static final String TAG = "BunnyGame";
@@ -17,7 +14,6 @@ public class BunnyGame extends Game {
 	@Override
 	public void clear() {
 		super.clear();
-		TextureCache.clearCache();
 	}
 
 }

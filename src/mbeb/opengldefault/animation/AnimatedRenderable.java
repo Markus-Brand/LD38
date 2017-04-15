@@ -4,9 +4,8 @@ import java.util.*;
 
 import org.joml.*;
 
-import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.renderable.*;
-import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.gl.shader.*;
 import mbeb.opengldefault.scene.*;
 
 /**
