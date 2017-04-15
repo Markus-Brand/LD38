@@ -16,12 +16,12 @@ import javax.imageio.ImageIO;
 
 import org.lwjgl.BufferUtils;
 
+import mbeb.opengldefault.gl.ContextBindings;
 import mbeb.opengldefault.gl.GLObject;
 import mbeb.opengldefault.gl.buffer.GLBufferWritable;
 import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.logging.Log;
-import mbeb.opengldefault.gl.ContextBindings;
 
 /**
  * Represents any texture created with OpenGL.
@@ -490,6 +490,23 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 	}
 
 	/**
+	 * Tries to set the given parameter and complains if an error occurred.
+	 * 
+	 * @param parameter
+	 * @param value
+	 * @param parameterName
+	 *            the name to use for the complaint message
+	 * @return whether the operation succeeded
+	 */
+	protected final boolean setParameter(final int parameter, final int value, final String parameterName) {
+		boolean success = this.setParameter(parameter, value);
+		if (!success) {
+			Log.error(TAG, "Failed to set " + parameterName + "!");
+		}
+		return success;
+	}
+
+	/**
 	 * Sets the wrap mode of the r texture coordinate.
 	 * 
 	 * @param mode
@@ -497,11 +514,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 	 * @return whether the operation succeeded
 	 */
 	public final boolean setWrapModeR(final WrapMode mode) {
-		boolean success = this.setParameter(GL_TEXTURE_WRAP_R, mode.getGLEnum());
-		if (!success) {
-			Log.error(TAG, "Failed to set TEXTURE_WRAP_R.");
-		}
-		return success;
+		return this.setParameter(GL_TEXTURE_WRAP_R, mode.getGLEnum(), "TEXTURE_WRAP_R");
 	}
 
 	/**
@@ -512,11 +525,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 	 * @return whether the operation succeeded
 	 */
 	public final boolean setWrapModeS(final WrapMode mode) {
-		boolean success = this.setParameter(GL_TEXTURE_WRAP_S, mode.getGLEnum());
-		if (!success) {
-			Log.error(TAG, "Failed to set TEXTURE_WRAP_S.");
-		}
-		return success;
+		return this.setParameter(GL_TEXTURE_WRAP_S, mode.getGLEnum(), "TEXTURE_WRAP_S");
 	}
 
 	/**
@@ -527,11 +536,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 	 * @return whether the operation succeeded
 	 */
 	public final boolean setWrapModeT(final WrapMode mode) {
-		boolean success = this.setParameter(GL_TEXTURE_WRAP_T, mode.getGLEnum());
-		if (!success) {
-			Log.error(TAG, "Failed to set TEXTURE_WRAP_T.");
-		}
-		return success;
+		return this.setParameter(GL_TEXTURE_WRAP_T, mode.getGLEnum(), "TEXTURE_WRAP_T");
 	}
 
 	/**
@@ -542,11 +547,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 	 * @return whether the operation succeeded
 	 */
 	public final boolean setMinificationFilter(final MinificationFilter filter) {
-		boolean success = this.setParameter(GL_TEXTURE_MIN_FILTER, filter.getGLEnum());
-		if (!success) {
-			Log.error(TAG, "Failed to set TEXTURE_MIN_FILTER.");
-		}
-		return success;
+		return this.setParameter(GL_TEXTURE_MIN_FILTER, filter.getGLEnum(), "TEXTURE_MIN_FILTER");
 	}
 
 	/**
@@ -557,11 +558,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 	 * @return whether the operation succeeded
 	 */
 	public final boolean setMagnificationFilter(final MagnificationFilter filter) {
-		boolean success = this.setParameter(GL_TEXTURE_MAG_FILTER, filter.getGLEnum());
-		if (!success) {
-			Log.error(TAG, "Failed to set TEXTURE_MAG_FILTER.");
-		}
-		return success;
+		return this.setParameter(GL_TEXTURE_MAG_FILTER, filter.getGLEnum(), "TEXTURE_MAG_FILTER");
 	}
 
 	/**
@@ -572,11 +569,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 	 * @return whether the operation succeeded
 	 */
 	public final boolean setCompareMode(final CompareMode mode) {
-		boolean success = this.setParameter(GL_TEXTURE_COMPARE_MODE, mode.getGLEnum());
-		if (!success) {
-			Log.error(TAG, "Failed to set TEXTURE_COMPARE_MODE.");
-		}
-		return success;
+		return this.setParameter(GL_TEXTURE_COMPARE_MODE, mode.getGLEnum(), "TEXTURE_COMPARE_MODE");
 	}
 
 	/**
@@ -587,11 +580,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 	 * @return whether the operation succeeded
 	 */
 	public final boolean setCompareFunction(final CompareFunction function) {
-		boolean success = this.setParameter(GL_TEXTURE_COMPARE_FUNC, function.getGLEnum());
-		if (!success) {
-			Log.error(TAG, "Failed to set TEXTURE_COMPARE_FUNC.");
-		}
-		return success;
+		return this.setParameter(GL_TEXTURE_COMPARE_FUNC, function.getGLEnum(), "TEXTURE_COMPARE_FUNC");
 	}
 
 	/**
@@ -616,11 +605,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 	 * @return whether the operation succeeded
 	 */
 	public final boolean setBaseLevel(final int level) {
-		boolean success = this.setParameter(GL_TEXTURE_BASE_LEVEL, level);
-		if (!success) {
-			Log.error(TAG, "Failed to set TEXTURE_BASE_LEVEL.");
-		}
-		return success;
+		return this.setParameter(GL_TEXTURE_BASE_LEVEL, level, "TEXTURE_BASE_LEVEL");
 	}
 
 	/**
@@ -629,11 +614,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 	 * @return whether the operation succeeded
 	 */
 	public final boolean setMaxLevel(final int level) {
-		boolean success = this.setParameter(GL_TEXTURE_MAX_LEVEL, level);
-		if (!success) {
-			Log.error(TAG, "Failed to set TEXTURE_MAX_LEVEL.");
-		}
-		return success;
+		return this.setParameter(GL_TEXTURE_MAX_LEVEL, level, "TEXTURE_MAX_LEVEL");
 	}
 
 	/**
