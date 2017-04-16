@@ -13,7 +13,6 @@ public abstract class Slider {
 	protected float step;
 
 	protected float cursorXPos;
-	protected float relativeCursorXPos;
 
 	protected String name;
 
@@ -26,29 +25,38 @@ public abstract class Slider {
 		this.step = step;
 		this.name = name;
 		this.bounding = bounding;
-		this.relativeCursorXPos = (initialValue - min) / (max - min);
-		cursorXPos = relativeCursorXPos * bounding.getWidth() + bounding.getPosition().x;
+		cursorXPos = (initialValue - min) / (max - min) * bounding.getWidth() + bounding.getPosition().x;
 
 	}
 
 	public void update(double deltaTime) {
 		if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
 			if (bounding.contains(Mouse.getNormalizedDeviceCoordinates())) {
-				relativeCursorXPos =
-						Math.max(
-								Math.min(
-										(Mouse.getNormalizedDeviceCoordinates().x - bounding.getPosition().x)
-												/ bounding.getWidth(), 1), 0);
-				int numSteps = Math.round((maxValue - minValue) / step);
-				float stepSize = 1.0f / numSteps;
-				int stepNum = Math.round(relativeCursorXPos / stepSize);
-				float newValue = stepNum * step + minValue;
+				float realMouseXPos = (Mouse.getNormalizedDeviceCoordinates().x - bounding.getPosition().x)
+						/ bounding.getWidth();
+				float normalizedMouseXPos = Math.max(Math.min(realMouseXPos, 1), 0);
+				float newValue = getNearestValue(normalizedMouseXPos);
 				if (newValue != currentValue) {
-					cursorXPos = stepSize * stepNum * bounding.getWidth() + bounding.getPosition().x;
+					cursorXPos =
+							(newValue - minValue) / (maxValue - minValue) * bounding.getWidth()
+									+ bounding.getPosition().x;
 					setValue(newValue);
 				}
 			}
 		}
+	}
+
+	public float getNearestValue(float relativeMousePos) {
+		float mouseValue = relativeMousePos * (maxValue - minValue);
+		float lowerValue = Math.max(mouseValue - mouseValue % step + minValue, minValue);
+		float higherValue = Math.min(mouseValue - mouseValue % step + step + minValue, maxValue);
+		float optimalValue;
+		if ((lowerValue + higherValue) / 2 > mouseValue + minValue) {
+			optimalValue = lowerValue;
+		} else {
+			optimalValue = higherValue;
+		}
+		return optimalValue;
 	}
 
 	public void setValue(float currentValue) {

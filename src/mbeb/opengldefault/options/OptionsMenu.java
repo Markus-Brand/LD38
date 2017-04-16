@@ -25,10 +25,12 @@ import mbeb.opengldefault.gui.TextGUI;
 import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.gui.elements.buttons.BooleanOptionButton;
 import mbeb.opengldefault.gui.elements.buttons.Button;
+import mbeb.opengldefault.gui.elements.sliders.FloatOptionSlider;
 import mbeb.opengldefault.gui.elements.sliders.IntegerOptionSlider;
 import mbeb.opengldefault.gui.elements.sliders.OptionSlider;
 import mbeb.opengldefault.gui.elements.sliders.Slider;
 import mbeb.opengldefault.logging.GLErrors;
+import mbeb.opengldefault.logging.Log;
 import mbeb.opengldefault.openglcontext.OpenGLContext;
 import mbeb.opengldefault.rendering.shader.ShaderProgram;
 import mbeb.opengldefault.shapes.Rectangle;
@@ -164,7 +166,7 @@ public class OptionsMenu implements GameState {
 			float min = sliderOption.min();
 			float max = sliderOption.max();
 			float step = sliderOption.step();
-			addSlider(relativeY, option, min, max, step, (int) value);
+			addSlider(relativeY, option, min, max, step, (float) value);
 			return 0.1f;
 		} else {
 			optionsHirarchy.addText(option.getName(), new Vector2f(), 0.08f)
@@ -176,8 +178,16 @@ public class OptionsMenu implements GameState {
 	private void addSlider(float relativeY, Field option, float min, float max, float step, float value) {
 		Rectangle bounding = new Rectangle(new Vector2f(), new Vector2f(1.6f, 0.16f));
 		bounding.setPositionRelativeTo(new Rectangle(new Vector2f(-1), new Vector2f(2)), 0.5f, relativeY);
-		OptionSlider slider =
-				new IntegerOptionSlider(option, value, min, max, step, bounding);
+		OptionSlider slider;
+		if (int.class.isAssignableFrom(option.getType())) {
+			slider = new IntegerOptionSlider(option, (int) value, (int) min, (int) max, step, bounding);
+		} else if (float.class.isAssignableFrom(option.getType())) {
+			slider = new FloatOptionSlider(option, value, min, max, step, bounding);
+		} else {
+			Log.error(TAG, "Type " + option.getType() + " of Field " + option.getName()
+					+ " is not supported for sliders");
+			return;
+		}
 		slider.showSliderBar(atlasGUI);
 		slider.showValue(optionsHirarchy);
 		slider.showCursor(atlasGUI);

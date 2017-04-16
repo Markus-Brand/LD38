@@ -58,12 +58,10 @@ public class OptionSlider extends Slider {
 	public void onValueChange() {
 		if (value != null) {
 			value.setColor(Color.GREEN);
-			System.out.println(value.getSize());
 			value.setPositionRelativeTo(bounding, 0.5f, 1);
 		}
 		if (cursor != null) {
 			cursor.setColor(Color.RED);
-			//cursor.setPositionRelativeTo(bounding, relativeCursorXPos, 0.5f);
 			cursor.setPosition(new Vector2f(cursorXPos - cursor.getSize().x / 2, cursor.getPosition().y));
 		}
 	}
