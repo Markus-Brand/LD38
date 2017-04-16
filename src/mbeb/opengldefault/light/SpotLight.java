@@ -289,7 +289,12 @@ public class SpotLight extends Light implements LimitedLight {
 		setLinear(generateLinearAmount(reach));
 		setQuadratic(generateQuadraticAmount(reach));
 	}
-	
+
+	/**
+	 * write this light to a GLBufferWriter
+	 * @param writer the object to write on
+	 * @see /shaders/modules/Struct_SpotLight
+	 */
 	@Override
 	public void writeTo(GLBufferWriter writer) {
 		writer

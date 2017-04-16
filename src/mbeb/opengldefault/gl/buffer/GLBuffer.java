@@ -1,17 +1,17 @@
 package mbeb.opengldefault.gl.buffer;
 
-import mbeb.opengldefault.gl.GLObject;
-import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.logging.Log;
-import mbeb.opengldefault.openglcontext.ContextBindings;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER;
+import mbeb.opengldefault.gl.GLObject;
+import mbeb.opengldefault.logging.GLErrors;
+import mbeb.opengldefault.logging.Log;
+import mbeb.opengldefault.gl.ContextBindings;
 
 /**
  * Describing all the Buffers that exist in OpenGL
@@ -37,14 +37,49 @@ public abstract class GLBuffer extends GLObject {
 		 */
 		UBO(GL_UNIFORM_BUFFER);
 
-		private final int glType;
+		private final int glEnum;
 
-		Type(int glType) {
-			this.glType = glType;
+		Type(int glEnum) {
+			this.glEnum = glEnum;
 		}
 
-		public int getGLType() {
-			return glType;
+		/**
+		 * @return the OpenGL enum representing this buffer type
+		 */
+		protected int getGLEnum() {
+			return glEnum;
+		}
+	}
+
+	/**
+	 * The usage hint to OpenGL for the data store of this buffer.
+	 * This tells the implementation how the data is going to be used.
+	 */
+	public enum Usage {
+		/**
+		 * The data store contents will be modified once by the application and used many times for drawing.
+		 */
+		STATIC_DRAW(GL_STATIC_DRAW),
+		/**
+		 * The data store contents will be repeatedly modified by the application and used many times for drawing.
+		 */
+		DYNAMIC_DRAW(GL_DYNAMIC_DRAW),
+		/**
+		 * The data store contents will be modified once by the application and used a few times for drawing.
+		 */
+		STREAM_DRAW(GL_STREAM_DRAW);
+
+		private int glEnum;
+
+		Usage(int glEnum) {
+			this.glEnum = glEnum;
+		}
+
+		/**
+		 * @return the OpenGL enum representing this format
+		 */
+		protected int getGLEnum() {
+			return glEnum;
 		}
 	}
 
@@ -53,6 +88,7 @@ public abstract class GLBuffer extends GLObject {
 
 	/**
 	 * create a new Buffer with a specified Type
+	 * 
 	 * @param type
 	 */
 	GLBuffer(Type type) {
@@ -66,7 +102,7 @@ public abstract class GLBuffer extends GLObject {
 		return type;
 	}
 
-//<editor-fold desc="GLObject">
+	//<editor-fold desc="GLObject">
 	@Override
 	protected Integer glGenerate() {
 		int generated = glGenBuffers();
@@ -81,13 +117,12 @@ public abstract class GLBuffer extends GLObject {
 
 	@Override
 	protected boolean glBind() {
-		glBindBuffer(type.getGLType(), this.ensureHandle());
-		if (GLErrors.checkForError(TAG, "glBindBuffer " + type)) {
-			return false;
-		} else {
+		glBindBuffer(type.getGLEnum(), this.ensureHandle());
+		boolean success = !GLErrors.checkForError(TAG, "glBindBuffer " + type);
+		if (success) {
 			ContextBindings.bind(this);
-			return true;
 		}
+		return success;
 	}
 
 	@Override
@@ -97,87 +132,114 @@ public abstract class GLBuffer extends GLObject {
 
 	@Override
 	protected boolean glUnbind() {
-		glBindBuffer(type.getGLType(), 0);
-		if (GLErrors.checkForError(TAG, "glUnBindBuffer " + type)) {
-			return false;
-		} else {
+		glBindBuffer(type.getGLEnum(), 0);
+		boolean success = !GLErrors.checkForError(TAG, "glUnBindBuffer " + type);
+		if (success) {
 			ContextBindings.unbind(this);
-			return true;
 		}
+		return success;
 	}
-//</editor-fold>
+	//</editor-fold>
 
-//<editor-fold desc="bufferData">
-	public void bufferData(long size, int usage) {
-		glBufferData(type.getGLType(), size, usage);
-		GLErrors.checkForError(TAG, "glBufferData " + type);
+	//<editor-fold desc="bufferData">
+	public void bufferData(long size, Usage usage) {
+		glBufferData(type.getGLEnum(), size, usage.getGLEnum());
+		checkBufferError();
 	}
 
-	public void bufferData(IntBuffer buffer, int usage) {
-		buffer.rewind();
-		glBufferData(type.getGLType(), buffer, usage);
-		GLErrors.checkForError(TAG, "glBufferData " + type, true);
+	public void bufferData(IntBuffer buffer, Usage usage) {
+		glBufferData(type.getGLEnum(), prepareBuffer(buffer), usage.getGLEnum());
+		checkBufferError();
 	}
-	public void bufferData(ByteBuffer buffer, int usage) {
-		buffer.rewind();
-		glBufferData(type.getGLType(), buffer, usage);
-		GLErrors.checkForError(TAG, "glBufferData " + type, true);
-	}
-	public void bufferData(FloatBuffer buffer, int usage) {
-		buffer.rewind();
-		glBufferData(type.getGLType(), buffer, usage);
-		GLErrors.checkForError(TAG, "glBufferData " + type, true);
-	}
-	public void bufferData(int[] buffer, int usage) {
-		glBufferData(type.getGLType(), buffer, usage);
-		GLErrors.checkForError(TAG, "glBufferData " + type, true);
-	}
-	public void bufferData(float [] buffer, int usage) {
-		glBufferData(type.getGLType(), buffer, usage);
-		GLErrors.checkForError(TAG, "glBufferData " + type, true);
-	}
-//</editor-fold>
 
-//<editor-fold desc="bufferSubData">
+	public void bufferData(ByteBuffer buffer, Usage usage) {
+		glBufferData(type.getGLEnum(), prepareBuffer(buffer), usage.getGLEnum());
+		checkBufferError();
+	}
+
+	public void bufferData(FloatBuffer buffer, Usage usage) {
+		glBufferData(type.getGLEnum(), prepareBuffer(buffer), usage.getGLEnum());
+		checkBufferError();
+	}
+
+	public void bufferData(int[] buffer, Usage usage) {
+		glBufferData(type.getGLEnum(), buffer, usage.getGLEnum());
+		checkBufferError();
+	}
+
+	public void bufferData(float[] buffer, Usage usage) {
+		glBufferData(type.getGLEnum(), buffer, usage.getGLEnum());
+		checkBufferError();
+	}
+
+	/**
+	 * prepare a java.nio.Buffer to be sent on a GLBuffer
+	 * 
+	 * @param buffer
+	 *            the Buffer object to prepare
+	 * @param <B>
+	 *            the type of the buffer
+	 * @return the prepared buffer
+	 */
+	private <B extends Buffer> B prepareBuffer(B buffer) {
+		buffer.rewind();
+		return buffer;
+	}
+
+	/**
+	 * check for an error after calling glBufferData
+	 */
+	private void checkBufferError() {
+		GLErrors.checkForError(TAG, "glBufferData " + type, true);
+	}
+	//</editor-fold>
+
+	//<editor-fold desc="bufferSubData">
 	public void bufferSubData(long offset, IntBuffer buffer) {
-		buffer.rewind();
-		glBufferSubData(type.getGLType(), offset,  buffer);
-		GLErrors.checkForError(TAG, "glBufferData " + type, true);
+		glBufferSubData(type.getGLEnum(), offset, prepareBuffer(buffer));
+		checkBufferError();
 	}
+
 	public void bufferSubData(long offset, ByteBuffer buffer) {
-		buffer.rewind();
-		glBufferSubData(type.getGLType(), offset,  buffer);
-		GLErrors.checkForError(TAG, "glBufferData " + type, true);
+		glBufferSubData(type.getGLEnum(), offset, prepareBuffer(buffer));
+		checkBufferError();
 	}
+
 	public void bufferSubData(long offset, FloatBuffer buffer) {
-		buffer.rewind();
-		glBufferSubData(type.getGLType(), offset,  buffer);
-		GLErrors.checkForError(TAG, "glBufferData " + type, true);
+		glBufferSubData(type.getGLEnum(), offset, prepareBuffer(buffer));
+		checkBufferError();
 	}
+
 	public void bufferSubData(long offset, int[] buffer) {
-		glBufferSubData(type.getGLType(), offset,  buffer);
-		GLErrors.checkForError(TAG, "glBufferData " + type, true);
+		glBufferSubData(type.getGLEnum(), offset, buffer);
+		checkBufferError();
 	}
-	public void bufferSubData(long offset, float [] buffer) {
-		glBufferSubData(type.getGLType(), offset,  buffer);
-		GLErrors.checkForError(TAG, "glBufferData " + type, true);
+
+	public void bufferSubData(long offset, float[] buffer) {
+		glBufferSubData(type.getGLEnum(), offset, buffer);
+		checkBufferError();
 	}
-//</editor-fold>
-	
+	//</editor-fold>
+
 	/**
 	 * create a GLBufferWriter that starts writing at the beginning of the buffer
-	 * @param capacity the amount of primitives you intent to write
+	 * 
+	 * @param capacity
+	 *            the amount of primitives you intent to write
 	 * @return a GLBufferWriter
 	 * @see #writer(int, long)
 	 */
 	public GLBufferWriter writer(int capacity) {
 		return writer(capacity, 0);
 	}
-	
+
 	/**
 	 * create a new GLBufferWriter to cache multiple write calls and to perform one single glBufferSubData in the end
-	 * @param capacity the amount of primitives you intent to write
-	 * @param offset the offset in the buffer / where to start writing
+	 * 
+	 * @param capacity
+	 *            the amount of primitives you intent to write
+	 * @param offset
+	 *            the offset in the buffer / where to start writing
 	 * @return a GLBufferWriter to write with
 	 */
 	public GLBufferWriter writer(int capacity, long offset) {

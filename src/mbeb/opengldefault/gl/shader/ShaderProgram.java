@@ -17,7 +17,7 @@ import mbeb.opengldefault.gl.buffer.UniformBuffer;
 import mbeb.opengldefault.gl.texture.Texture;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.logging.Log;
-import mbeb.opengldefault.openglcontext.ContextBindings;
+import mbeb.opengldefault.gl.ContextBindings;
 
 /**
  * Shader Object used for rendering a {@link mbeb.opengldefault.rendering.renderable.IRenderable}

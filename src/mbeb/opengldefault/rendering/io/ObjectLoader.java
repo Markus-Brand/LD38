@@ -4,13 +4,13 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 
+import mbeb.opengldefault.gl.GLContext;
 import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import org.joml.*;
 import org.lwjgl.assimp.*;
 
 import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.logging.*;
-import mbeb.opengldefault.openglcontext.*;
 import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.scene.*;
 
@@ -133,7 +133,7 @@ public class ObjectLoader {
 		File export = new File(res, rawPath);
 		if (!export.exists()) {
 			try {
-				InputStream inStream = OpenGLContext.class.getResourceAsStream("/models/" + rawPath);
+				InputStream inStream = GLContext.class.getResourceAsStream("/models/" + rawPath);
 				if (inStream == null) {
 					return null;
 				}
@@ -189,7 +189,7 @@ public class ObjectLoader {
 		}
 		mesh.close();
 
-		dataWriter.flush();
+		dataWriter.flush(GLBufferWriter.WriteType.FULL_DATA);
 		vaomesh.setAttribPointers();
 		vaomesh.setBoundingBox(box);
 

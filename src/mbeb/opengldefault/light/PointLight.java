@@ -180,7 +180,14 @@ public class PointLight extends Light implements LimitedLight {
 		setLinear(generateLinearAmount(reach));
 		setQuadratic(generateQuadraticAmount(reach));
 	}
-	
+
+	/**
+	 * write this light to a GLBufferWriter
+	 * 
+	 * @param writer
+	 *            the object to write on
+	 * @see /shaders/modules/Struct_PointLight
+	 */
 	@Override
 	public void writeTo(GLBufferWriter writer) {
 		writer
