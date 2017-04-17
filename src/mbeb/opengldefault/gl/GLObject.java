@@ -101,8 +101,7 @@ public abstract class GLObject {
 	}
 
 	/**
-	 * Tries to bind this object to the current context, updating
-	 * {@link ContextBindings} to match the new state.
+	 * Tries to bind this object to the current context, updating {@link ContextBindings} to match the new state.
 	 *
 	 * @return whether the binding succeeded
 	 */
@@ -139,8 +138,7 @@ public abstract class GLObject {
 	}
 
 	/**
-	 * Tries to unbind this object from the current context, updating
-	 * {@link ContextBindings} to match the new state.
+	 * Tries to unbind this object from the current context, updating {@link ContextBindings} to match the new state.
 	 *
 	 * @return whether the unbinding (of isaac) succeeded
 	 */
@@ -219,8 +217,10 @@ public abstract class GLObject {
 	 *            a function to execute while this GLObject is guaranteed to be bound
 	 * @return whether the operation succeeded
 	 */
-	@SuppressWarnings("unchecked") //Because <this.class> is not (yet) a thing
-	public final <T extends GLObject> boolean whileBound(Function<T, Boolean> actor) {
+	@SuppressWarnings("unchecked")
+	//Because <this.class> is not (yet) a thing
+			public final
+			<T extends GLObject> boolean whileBound(Function<T, Boolean> actor) {
 		if (!this.beginTransaction()) {
 			return false;
 		}
@@ -230,6 +230,7 @@ public abstract class GLObject {
 		}
 		return success;
 	}
+
 	//</editor-fold>
 
 	/**
@@ -262,7 +263,7 @@ public abstract class GLObject {
 	protected final void finalize() throws Throwable {
 		if (this.exists()) {
 			Log.error(TAG, "DELETE ME(" + this.toString() + ")!");
-			this.delete();
+			//			this.delete();
 		}
 	}
 }

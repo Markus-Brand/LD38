@@ -1,0 +1,10 @@
+sizeFactor: 1.5
+animations:
+  wave:
+    Chest: 4
+    Arm.L: 10
+    Hat: 10
+    Arm.R: 2
+  running:
+    Torso: 3
+    Leg: 8

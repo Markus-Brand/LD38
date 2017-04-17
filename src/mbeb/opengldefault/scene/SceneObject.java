@@ -2,6 +2,9 @@ package mbeb.opengldefault.scene;
 
 import java.util.*;
 
+import mbeb.opengldefault.scene.entities.IEntity;
+import mbeb.opengldefault.scene.entities.IEntityConvertable;
+import mbeb.opengldefault.scene.entities.SceneEntity;
 import org.joml.*;
 
 import mbeb.opengldefault.animation.*;
@@ -11,7 +14,7 @@ import mbeb.opengldefault.gl.shader.*;
 /**
  * A (potentially) complex object inside a scene, with transformations
  */
-public class SceneObject implements BoundingBox.Owner {
+public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 
 	private static final String TAG = "SceneObject";
 
@@ -23,6 +26,8 @@ public class SceneObject implements BoundingBox.Owner {
 	private BoundingBox box;
 	/** this objects Transformation */
 	private BoneTransformation transformation;
+	/** cached version of the global Transformation */
+	private BoneTransformation globalTransformation = null;
 	/** all subObjects (which inherit transformations) */
 	private List<SceneObject> subObjects;
 	/** the parent in the Scene-graph */
@@ -195,7 +200,7 @@ public class SceneObject implements BoundingBox.Owner {
 		if (getRenderable() != null) {
 			getRenderable().update(deltaTime);
 		}
-		getSubObjects().forEach((SceneObject obj) -> obj.update(deltaTime));
+		getSubObjects().forEach((obj) -> obj.update(deltaTime));
 
 	}
 
@@ -206,8 +211,9 @@ public class SceneObject implements BoundingBox.Owner {
 	 */
 	@Override
 	public BoundingBox getBoundingBox() {
-		//TODO: Only recalculate BB if needed
-		reCalculateBoundingBox();
+		if (box == null) {
+			reCalculateBoundingBox();
+		}
 		box.setModelTransform(getTransformation().asMatrix());
 		return box;
 	}
@@ -257,7 +263,7 @@ public class SceneObject implements BoundingBox.Owner {
 		if (parent == null) {
 			return BoneTransformation.identity();
 		}
-		return parent.getGLobalTransformation();
+		return parent.getGlobalTransformation();
 	}
 
 	/**
@@ -265,22 +271,40 @@ public class SceneObject implements BoundingBox.Owner {
 	 *
 	 * @return global Transformation
 	 */
-	public BoneTransformation getGLobalTransformation() {
-		if (parent == null) {
-			return getTransformation();
-		} else {
-			return getParentGlobalTranform().and(getTransformation());
+	public BoneTransformation getGlobalTransformation() {
+		if (globalTransformation == null) {
+			if (parent == null) {
+				globalTransformation = getTransformation();
+			} else {
+				globalTransformation = getParentGlobalTranform().and(getTransformation());
+			}
 		}
+		return globalTransformation;
+	}
 
+	public void invalidatePosition() {
+		globalTransformation = null;
+		box = null;
+		getSubObjects().forEach(SceneObject::invalidatePosition);
 	}
 
 	/**
-	 * Getter for the position of the center of the BoundingBox
+	 * Getter for the position of this object in global space
 	 *
 	 * @return Objects position
 	 */
-	public Vector3f getPosition() {
-		return getGLobalTransformation().applyTo3(new Vector3f());
+	public Vector3f getGlobalPosition() {
+		return getGlobalTransformation().getPosition();
+	}
+
+	/**
+	 * @param newPosition
+	 *            a new position for this sceneObject (in global space)
+	 */
+	public void setGlobalPosition(Vector3f newPosition) {
+		Matrix4f inverseMatrix = getParentGlobalTranform().asMatrix().invert(new Matrix4f());
+		getTransformation().setPosition(inverseMatrix.transform(new Vector4f(newPosition, 1)));
+		invalidatePosition();
 	}
 
 	public boolean isSelected() {
@@ -293,5 +317,10 @@ public class SceneObject implements BoundingBox.Owner {
 
 	public void removeSubObject(SceneObject curveObj) {
 		subObjects.remove(curveObj);
+	}
+
+	@Override
+	public IEntity asNewEntity() {
+		return new SceneEntity(this);
 	}
 }

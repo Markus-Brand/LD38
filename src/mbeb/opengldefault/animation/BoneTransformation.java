@@ -1,5 +1,6 @@
 package mbeb.opengldefault.animation;
 
+import mbeb.opengldefault.logging.Log;
 import org.joml.*;
 import org.lwjgl.assimp.*;
 
@@ -10,8 +11,10 @@ import java.lang.Math;
  */
 public class BoneTransformation {
 
+	private static final String TAG = "BoneTransformation";
+
 	public static BoneTransformation identity() {
-		return new BoneTransformation(null, null, null);
+		return new BoneTransformation(new Matrix4f());
 	}
 
 	public static Matrix4f matrixFromAI(AIMatrix4x4 aimat) {
@@ -50,27 +53,53 @@ public class BoneTransformation {
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////
-	private Vector3f position;
-	private Quaternionf rotation;
-	private Vector3f scale;
+	private Matrix4f matrix;
+	private boolean matrixRepresentationValid;
 
+	private Vector3f position = null;
+	private Quaternionf rotation = null;
+	private Vector3f scale = null;
+	private boolean partsRepresentationValid;
+
+	/**
+	 * create a new transformation which only consists of a translation
+	 * @param position
+	 */
 	public BoneTransformation(Vector3f position) {
 		this(position, null);
 	}
 
+	/**
+	 * create a new transformation that translates and rotates
+	 * @param position
+	 * @param rotation
+	 */
 	public BoneTransformation(Vector3f position, Quaternionf rotation) {
 		this(position, rotation, null);
 	}
 
+	/**
+	 * create a new BoneTransformation based on the loc-rot-scale - components. Leave null on components you don't intend to use
+	 * @param position
+	 * @param rotation
+	 * @param scale
+	 */
 	public BoneTransformation(Vector3f position, Quaternionf rotation, Vector3f scale) {
-		this.position = position != null ? position : new Vector3f(0);
+		this.position = position != null ? position : new Vector3f();
 		this.rotation = rotation != null ? rotation : new Quaternionf();
 		this.scale = scale != null ? scale : new Vector3f(1);
+		partsRepresentationValid = true;
+		matrixRepresentationValid = false;
 	}
 
-	public BoneTransformation(Matrix4f mat) {
-		this(mat.getTranslation(new Vector3f()), mat.getNormalizedRotation(new Quaternionf()), mat.getScale(new Vector3f()));
-
+	/**
+	 * create a new BoneTransformation based on a Matrix
+	 * @param matrix
+	 */
+	public BoneTransformation(Matrix4f matrix) {
+		this.matrix = matrix;
+		matrixRepresentationValid = true;
+		partsRepresentationValid = false;
 	}
 
 	/**
@@ -81,17 +110,45 @@ public class BoneTransformation {
 	 * @return a new combined transformation
 	 */
 	public BoneTransformation and(BoneTransformation other) {
-		//todo check if this method is used the right way always
-		Matrix4f mul = new Matrix4f();
-		this.asMatrix().mul(other.asMatrix(), mul);
-		return new BoneTransformation(mul);
+		return new BoneTransformation(this.asMatrix().mul(other.asMatrix(), new Matrix4f()));
 	}
 
 	/**
 	 * @return a matrix representing this transformation
 	 */
 	public Matrix4f asMatrix() {
-		return new Matrix4f().translate(getPosition()).scale(getScale()).rotate(getRotation().normalize());
+		ensureMatrixRepresentationValid();
+		return matrix;
+	}
+
+	/**
+	 * after this method returns, this BoneTransformation is also present in matrix representation
+	 */
+	private void ensureMatrixRepresentationValid() {
+		if (!matrixRepresentationValid) {
+			Log.assertTrue(TAG, partsRepresentationValid, "Undefined Transformation");
+			matrix = new Matrix4f().translate(position).rotate(rotation.normalize()).scale(scale);
+			matrixRepresentationValid = true;
+		}
+	}
+
+	/**
+	 * after this method returns, this BoneTransformation is also present in component representation
+	 */
+	private void ensurePartsRepresentationValid() {
+		if (!partsRepresentationValid) {
+			getPosition();
+			getRotation();
+			getScale();
+			partsRepresentationValid = true;
+		}
+	}
+
+	/**
+	 * mark the matrix as outdated
+	 */
+	private void invalidateMatrixRepresentation() {
+		matrixRepresentationValid = false;
 	}
 
 	/**
@@ -133,11 +190,17 @@ public class BoneTransformation {
 	}
 
 	public Vector3f getPosition() {
+		if (position == null) {
+			Log.assertTrue(TAG, matrixRepresentationValid, "Undefined Transformation");
+			position = matrix.getTranslation(new Vector3f());
+		}
 		return position;
 	}
 
 	public void setPosition(Vector3f position) {
+		ensurePartsRepresentationValid();
 		this.position = position;
+		invalidateMatrixRepresentation();
 	}
 
 	public void setPosition(Vector4f position) {
@@ -145,18 +208,30 @@ public class BoneTransformation {
 	}
 
 	public Quaternionf getRotation() {
+		if (rotation == null) {
+			Log.assertTrue(TAG, matrixRepresentationValid, "Undefined Transformation");
+			rotation = matrix.getRotation(new AxisAngle4f()).get(new Quaternionf());
+		}
 		return rotation;
 	}
 
 	public void setRotation(Quaternionf rotation) {
+		ensurePartsRepresentationValid();
 		this.rotation = rotation;
+		invalidateMatrixRepresentation();
 	}
 
 	public Vector3f getScale() {
+		if (scale == null) {
+			Log.assertTrue(TAG, matrixRepresentationValid, "Undefined Transformation");
+			scale = matrix.getScale(new Vector3f());
+		}
 		return scale;
 	}
 
 	public void setScale(Vector3f scale) {
+		ensurePartsRepresentationValid();
 		this.scale = scale;
+		invalidateMatrixRepresentation();
 	}
 }

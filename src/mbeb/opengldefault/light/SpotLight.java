@@ -2,6 +2,8 @@ package mbeb.opengldefault.light;
 
 import java.awt.*;
 
+import mbeb.opengldefault.scene.entities.IEntity;
+import mbeb.opengldefault.scene.entities.SpotLightEntity;
 import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import org.joml.*;
 
@@ -307,5 +309,10 @@ public class SpotLight extends Light implements LimitedLight {
 			.write(constant)
 			.write(linear)
 			.write(quadratic);
+	}
+
+	@Override
+	public IEntity asNewEntity() {
+		return new SpotLightEntity(this);
 	}
 }

@@ -8,9 +8,10 @@ public class BunnyGame extends Game {
 	public void init() {
 		OptionsMenu options = new OptionsMenu();
 		addGameState(GameStateIdentifier.MAIN_MENU, new MainMenu());
-		addGameState(GameStateIdentifier.GAME, new BunnyGameState());	
-		addGameState(GameStateIdentifier.OPTIONS, options);	
-		super.init();	
+		addGameState(GameStateIdentifier.GAME, new BunnyGameState());
+		//waddGameState(GameStateIdentifier.GAME, new PhysicsSimulationState());
+		addGameState(GameStateIdentifier.OPTIONS, options);
+		super.init();
 	}
 
 	@Override

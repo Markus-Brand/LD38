@@ -17,5 +17,5 @@ vec3 calcPointLight(PointLight light, vec3 norm, vec3 viewDir, vec3 materialColo
 	diffuse  *= attenuation;
 	specular *= attenuation;  
 
-	return materialColor * diffuse + materialColor * specular;
+	return materialColor * diffuse + specular;
 }
