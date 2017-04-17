@@ -106,8 +106,8 @@ public class BunnyGameState implements GameState {
 	private TextGUI textGUI;
 
 	@Option(category = "Game")
-	@SliderOption(min = 3, max = 300, step = 0.25f)
-	public static float bezierCurveSize = 10;
+	@SliderOption(min = 3, max = 300, step = 1)
+	public static int bezierCurveSize = 10;
 
 	@Override
 	public void init() {

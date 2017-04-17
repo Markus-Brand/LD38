@@ -1,6 +1,5 @@
 package mbeb.opengldefault.game;
 
-import mbeb.opengldefault.options.OptionsMenu;
 import mbeb.opengldefault.rendering.textures.*;
 
 public class BunnyGame extends Game {
