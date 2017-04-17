@@ -80,7 +80,7 @@ public abstract class Game {
 	}
 
 	/**
-	 * executed once before each render call on a gameSate
+	 * executed once before each render call on a gameState
 	 */
 	protected void preGameStateRender() {
 		glViewport(0, 0, GLContext.getFramebufferWidth(), GLContext.getFramebufferHeight());

@@ -158,10 +158,6 @@ public class PhysicsSimulationState implements GameState {
 	}
 	
 	@Override
-	public void clear() {
-	}
-	
-	@Override
 	public GameStateIdentifier getNextState() {
 		return KeyBoard.isKeyDown(GLFW_KEY_ESCAPE) ? GameStateIdentifier.MAIN_MENU : null;
 	}
