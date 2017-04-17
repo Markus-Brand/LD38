@@ -1,13 +1,13 @@
 package mbeb.opengldefault.rendering.renderable;
 
-import mbeb.opengldefault.logging.GLErrors;
-import org.joml.*;
-import org.lwjgl.opengl.*;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.lwjgl.opengl.GL11;
 
-import mbeb.opengldefault.curves.*;
-import mbeb.opengldefault.rendering.io.*;
-import mbeb.opengldefault.gl.shader.*;
-import mbeb.opengldefault.scene.*;
+import mbeb.opengldefault.curves.BezierCurve;
+import mbeb.opengldefault.gl.shader.ShaderProgram;
+import mbeb.opengldefault.logging.GLErrors;
+import mbeb.opengldefault.scene.BoundingBox;
 
 /**
  * Renders a {@link BezierCurve}

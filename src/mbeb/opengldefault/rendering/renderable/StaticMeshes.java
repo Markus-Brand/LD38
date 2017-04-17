@@ -1,12 +1,13 @@
 package mbeb.opengldefault.rendering.renderable;
 
-import mbeb.opengldefault.util.Streamerator;
-import org.joml.*;
-
-import mbeb.opengldefault.rendering.io.*;
-import mbeb.opengldefault.scene.*;
-
 import java.util.List;
+
+import org.joml.Vector3f;
+
+import mbeb.opengldefault.rendering.io.DataFragment;
+import mbeb.opengldefault.scene.BoundingBox;
+import mbeb.opengldefault.util.Streamerator;
+
 /**
  * Provides static Meshes
  *
@@ -146,6 +147,7 @@ public class StaticMeshes {
 
 	/**
 	 * A Renderable that can get used for drawing curves: has two vertices that only have a progress value (0 / 1)
+	 * 
 	 * @return a vao that consists of two vertices with a float of 0 and 1
 	 */
 	public static VAORenderable getBezierData() {
@@ -156,7 +158,7 @@ public class StaticMeshes {
 
 			final BoundingBox bb = new BoundingBox.Empty();
 
-			bezierData = new VAORenderable(vertexData, indexData, new DataFragment[]{DataFragment.FLOAT}, bb);
+			bezierData = new VAORenderable(vertexData, indexData, new DataFragment[] {DataFragment.FLOAT}, bb);
 		}
 		return bezierData;
 	}
