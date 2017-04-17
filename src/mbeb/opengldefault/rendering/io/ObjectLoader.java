@@ -74,11 +74,11 @@ public class ObjectLoader {
 		YAMLParser.YAMLNode root = new YAMLParser(new File(extractedPath)).getRoot();
 
 		YAMLParser.YAMLNode animations = root.getChildByName("animations");
-		for (YAMLParser.YAMLNode animNode: animations.getChildren()) {
+		for (YAMLParser.YAMLNode animNode: animations.getChildren().values()) {
 			Animation anim = mesh.getAnimationByName(animNode.getName());
 
 			if (anim != null) {
-				for (YAMLParser.YAMLNode boneNode : animNode.getChildren()) {
+				for (YAMLParser.YAMLNode boneNode : animNode.getChildren().values()) {
 					adjustBoneAnimationPriorities(anim, anim.getSkeleton(), boneNode);
 				}
 			}
@@ -201,6 +201,7 @@ public class ObjectLoader {
 		dataWriter.flush(GLBufferWriter.WriteType.FULL_DATA);
 		vaomesh.setAttribPointers();
 		vaomesh.setBoundingBox(box);
+		vaomesh.finishWriting();
 
 		if (isAnimated) {
 			AnimatedMesh animMesh = new AnimatedMesh(vaomesh, skeleton);

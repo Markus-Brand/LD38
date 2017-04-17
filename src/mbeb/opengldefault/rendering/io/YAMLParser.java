@@ -92,15 +92,15 @@ public class YAMLParser {
 			return name;
 		}
 
-		public Collection<YAMLNode> getChildren() {
+		public Map<String, YAMLNode> getChildren() {
 			if (children == null) {
 				children = new HashMap<>();
 			}
-			return children.values();
+			return children;
 		}
 
 		public void addChild(YAMLNode newChild){
-			getChildren().add(newChild);
+			getChildren().put(newChild.getName(), newChild);
 		}
 
 		public String getData() {

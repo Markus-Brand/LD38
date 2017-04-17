@@ -84,7 +84,7 @@ public class BunnyGameState implements GameState {
 		AnimatedMesh playerAnimMesh = new ObjectLoader().loadFromFileAnim("player.fbx");
 		playerAnimMesh.setTransform(MeshFlip);
 		Texture2D bunnyTexture = TexturedRenderable.loadModelTexture("player.png");
-		Texture2D lampTexture = TexturedRenderable.loadModelTexture("lamp.png");
+		//Texture2D lampTexture = TexturedRenderable.loadModelTexture("lamp.png");
 		playerAnimMesh.getSkeleton().printRecursive("");
 
 		final AnimatedMesh bunnyAnimMesh = new ObjectLoader().loadFromFileAnim("ohrenFlackern.fbx");
@@ -104,18 +104,18 @@ public class BunnyGameState implements GameState {
 		bunnyScene.getLightManager().addShader(stillShader);
 		stillShader.addUniformBlockIndex(UBOManager.MATRICES);
 
-		final IRenderable boxRenderable = new ObjectLoader().loadFromFile("box.obj");
-		SceneObject box = new SceneObject(new TexturedRenderable(boxRenderable, bunnyTexture));
-		box.setShader(stillShader);
+		//final IRenderable boxRenderable = new ObjectLoader().loadFromFile("box.obj");
+		//SceneObject box = new SceneObject(new TexturedRenderable(boxRenderable, bunnyTexture));
+		//box.setShader(stillShader);
 
-		final IRenderable lampRenderable = new ObjectLoader().loadFromFile("lamp.obj");
-		SceneObject lamp = new SceneObject(new TexturedRenderable(lampRenderable, lampTexture));
-		lamp.setShader(stillShader);
+		//final IRenderable lampRenderable = new ObjectLoader().loadFromFile("lamp.obj");
+		//SceneObject lamp = new SceneObject(new TexturedRenderable(lampRenderable, lampTexture));
+		//lamp.setShader(stillShader);
 
 		animPlayer = new AnimationStateFacade(playerAnimMesh);
 
-		playerObj = new SceneObject(new TexturedRenderable(animPlayer, bunnyTexture));
-		playerObj.setShader(animatedShader);
+		//playerObj = new SceneObject(new TexturedRenderable(animPlayer, bunnyTexture));
+		//playerObj.setShader(animatedShader);
 
 		entityWorld = new EntityWorld();
 
@@ -124,9 +124,9 @@ public class BunnyGameState implements GameState {
 		IEntity lastBunnyEntity = createBunnyChain(bunnyScene.getSceneGraph(), entityWorld, bunnyTexture, bunnyAnimMesh, curve);
 		createBunnyChain(bunnyScene.getSceneGraph(), entityWorld, bunnyTexture, bunnyAnimMesh, curve2);
 
-		entityWorld.add(lamp).addBehaviour(1,
-				new BoneTrackingBehaviour(playerObj, animPlayer.getRenderable(), "Hand.L", new Vector3f(0, 0.5f, 0))
-						.fixedDirection());
+		//entityWorld.add(lamp).addBehaviour(1,
+		//		new BoneTrackingBehaviour(playerObj, animPlayer.getRenderable(), "Hand.L", new Vector3f(0, 0.5f, 0))
+		//				.fixedDirection());
 
 
 		curveObj = new SceneObject(new BezierCurveRenderable(curve));
@@ -143,10 +143,10 @@ public class BunnyGameState implements GameState {
 
 
 		//a light on the hand
-		PointLight pl = new PointLight(new Color(0, 245, 5), new Vector3f(), 75);
-		ple = new PointLightEntity(pl);
-		bunnyScene.getLightManager().addLight(pl);
-		ple.addBehaviour(1, new ParentBehaviour(lamp, new Vector3f(0, -1.5f, 0)));
+		//PointLight pl = new PointLight(new Color(0, 245, 5), new Vector3f(), 75);
+		//ple = new PointLightEntity(pl);
+		//bunnyScene.getLightManager().addLight(pl);
+		//ple.addBehaviour(1, new ParentBehaviour(lamp, new Vector3f(0, -1.5f, 0)));
 
 		//pl = new PointLight(Color.GREEN, new Vector3f(0, 10, 0), 1000);
 		//bunnyScene.getLightManager().addLight(pl);
@@ -255,7 +255,7 @@ public class BunnyGameState implements GameState {
 
 		//pl.setColor(new Color((float) java.lang.Math.sin(timepassed) / 2 + 0.5f, (float) 1.0, (float) java.lang.Math.cos(timepassed) / 2 + 0.5f));
 		//pl.setPosition(new Vector3f((float) java.lang.Math.sin(timepassed) * 5, 10, (float) java.lang.Math.cos(timepassed) * 5));
-		ple.update(deltaTime);
+		//ple.update(deltaTime);
 		spotLightEntity.update(deltaTime);
 		bunnyScene.update(deltaTime);
 
@@ -281,7 +281,7 @@ public class BunnyGameState implements GameState {
 
 	@Override
 	public void open() {
-		GLContext.hideCursor();
+		//GLContext.hideCursor();
 	}
 
 }

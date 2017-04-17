@@ -22,13 +22,9 @@ public class BezierCurveRenderable implements IRenderable {
 
 	public BezierCurveRenderable(final BezierCurve curve) {
 		this.curve = curve;
-		final float[] vertexData = {0, 1};
 
-		final int[] indexData = {0, 1};
-
-		final BoundingBox bb = generateBoundingBox();
-
-		renderable = new VAORenderable(vertexData, indexData, new DataFragment[] {DataFragment.FLOAT}, bb);
+		renderable = new VAORenderable(StaticMeshes.getBezierData());
+		renderable.setBoundingBox(generateBoundingBox());
 	}
 
 	/**
