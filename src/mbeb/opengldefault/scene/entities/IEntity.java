@@ -1,14 +1,15 @@
 package mbeb.opengldefault.scene.entities;
 
+import mbeb.opengldefault.scene.behaviour.CombinedBehaviour;
 import mbeb.opengldefault.scene.behaviour.IBehaviour;
 import org.joml.Vector3f;
 
 import java.util.Set;
 
 /**
- * A thing inside the world that can obtain behaviours
+ * A thing inside a world that can obtain behaviours
  */
-public interface IEntity {
+public interface IEntity extends IEntityConvertable {
 
 	/**
 	 * Contains a Behaviour and a priority. The class is used to sort the Behaviours
@@ -81,8 +82,35 @@ public interface IEntity {
 	 *            low value is higher priority
 	 * @param behaviour
 	 *            the new Behaviour
+	 * @return this, for chaining
 	 */
-	void addBehaviour(int priority, IBehaviour behaviour);
+	IEntity addBehaviour(int priority, IBehaviour behaviour);
 
-
+	/**
+	 * Add multiple behaviours with given priority.
+	 *
+	 * @param priority
+	 *            a lower value prioritizes this behaviour over others with higher "priority"-values
+	 * @param behaviours
+	 *            the Behaviours to execute in parallel
+	 * @return this, for chaining
+	 */
+	default IEntity addBehaviour(int priority, IBehaviour... behaviours) {
+		if (behaviours.length == 1) {
+			return addBehaviour(priority, behaviours[0]);
+		}
+		CombinedBehaviour combined = new CombinedBehaviour(behaviours);
+		return addBehaviour(priority, combined);
+	}
+	
+	
+	@Override
+	default IEntity asEntity() {
+		return this;
+	}
+	
+	@Override
+	default IEntity asNewEntity() {
+		throw new UnsupportedOperationException("An Entity cannot be cloned for now");
+	}
 }
