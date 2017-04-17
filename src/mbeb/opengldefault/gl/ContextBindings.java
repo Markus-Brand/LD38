@@ -41,7 +41,8 @@ public class ContextBindings {
 	 */
 	private static Map<GLBuffer.Type, GLBuffer> boundBuffers = new EnumMap<>(GLBuffer.Type.class);
 
-	private static IntPagingMap<Texture> textureUnitBindings = new IntPagingMap<>(48);
+	private static final int MIN_SUPPORTED_TEXTURE_UNITS = 48; //see OpenGL 3.3 spec
+	private static IntPagingMap<Texture> textureUnitBindings = new IntPagingMap<>(MIN_SUPPORTED_TEXTURE_UNITS);
 	
 	/**
 	 * The number of the currently active texture unit, to prevent unnecessary calls to glActiveTexture.

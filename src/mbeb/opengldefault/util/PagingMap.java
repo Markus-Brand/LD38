@@ -50,7 +50,7 @@ public class PagingMap<P, V> {
 	//the paging data structure
 	private final Map<P, Node> bindings = new HashMap<>();
 	private final Queue<BindingEntry> freePages = new LinkedList<>();
-	private final Map<V, P> reverseBindings = new HashMap<>(); //this one never gets decreased
+	private final Map<V, P> reverseBindings = new HashMap<>();
 	
 	//page creation
 	private final Iterator<P> universeCreator;
