@@ -27,11 +27,6 @@ public class FlyingKeyboardBehaviour implements IBehaviour {
 	}
 
 	@Override
-	public boolean triggers(IEntity entity) {
-		return true;
-	}
-
-	@Override
 	public void update(double deltaTime, IEntity entity) {
 		Vector3f direction = entity.getDirection();
 

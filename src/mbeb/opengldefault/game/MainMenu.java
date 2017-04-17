@@ -105,11 +105,6 @@ public class MainMenu implements GameState {
 	}
 
 	@Override
-	public void clear() {
-		//Currently nothing to do here (thanks Java GC)
-	}
-
-	@Override
 	public void open() {
 		GLContext.showCursor();
 	}

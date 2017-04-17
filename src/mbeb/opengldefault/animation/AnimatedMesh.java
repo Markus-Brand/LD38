@@ -13,18 +13,32 @@ import mbeb.opengldefault.scene.*;
  */
 public class AnimatedMesh implements IRenderable {
 
+	/** the actual vertex data */
 	private final VAORenderable mesh;
+	/** the Bone-tree animations rely on */
 	private final Bone skeleton;
-	private List<Animation> animations;
+	/** all animations associated with this mesh */
+	private Map<String, Animation> animations;
+
+	/** how much my boundingBox could be bigger than the one of the static mesh */
+	private float boundingBoxSizeFactor;
+	/** my actual boundingBox */
+	private BoundingBox scaledBox;
 
 	public AnimatedMesh(VAORenderable mesh, Bone skeleton) {
 		this.mesh = mesh;
 		this.skeleton = skeleton;
+		this.boundingBoxSizeFactor = 1f;
+		scaledBox = null;
 	}
 
 	@Override
 	public BoundingBox getBoundingBox() {
-		return mesh.getBoundingBox();
+		if (scaledBox == null) {
+			scaledBox = mesh.getBoundingBox().duplicate();
+			scaledBox.scale(boundingBoxSizeFactor);
+		}
+		return scaledBox;
 	}
 
 	@Override
@@ -36,16 +50,16 @@ public class AnimatedMesh implements IRenderable {
 		return mesh;
 	}
 
-	public List<Animation> getAnimations() {
+	public Map<String, Animation> getAnimations() {
 		if (animations == null) {
-			animations = new ArrayList<>();
+			animations = new HashMap<>();
 		}
 		return animations;
 	}
 
 	public void addAnimation(Animation anim) {
 		anim.setSkeleton(skeleton);
-		getAnimations().add(anim);
+		getAnimations().put(anim.getName(), anim);
 	}
 
 	public Bone getSkeleton() {
@@ -60,12 +74,7 @@ public class AnimatedMesh implements IRenderable {
 	 * @return null if no such animation was found
 	 */
 	public Animation getAnimationByName(String name) {
-		for (Animation animation : getAnimations()) {
-			if (animation.getName().equals(name)) {
-				return animation;
-			}
-		}
-		return null;
+		return getAnimations().get(name);
 	}
 
 	/**
@@ -94,4 +103,8 @@ public class AnimatedMesh implements IRenderable {
 		mesh.setTransform(transform);
 	}
 
+	public void setBoundingBoxSizeFactor(float boundingBoxSizeFactor) {
+		this.boundingBoxSizeFactor = boundingBoxSizeFactor;
+		scaledBox = null;
+	}
 }
