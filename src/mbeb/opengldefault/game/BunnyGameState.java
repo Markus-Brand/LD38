@@ -270,11 +270,6 @@ public class BunnyGameState implements GameState {
 	}
 
 	@Override
-	public void clear() {
-
-	}
-
-	@Override
 	public GameStateIdentifier getNextState() {
 		return nextGameState;
 	}
