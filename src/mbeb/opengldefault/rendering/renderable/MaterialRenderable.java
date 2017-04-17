@@ -25,10 +25,17 @@ public class MaterialRenderable implements IRenderable{
 		this.material = material;
 	}
 
+	@Override
 	public Material getMaterial() {
 		return material;
 	}
-
+	
+	@Override
+	public IRenderable withMaterial(Material material) {
+		this.material = material;
+		return this;
+	}
+	
 	/**
 	 * binds the material and then passes the call to the wrapped IRenderable
 	 *

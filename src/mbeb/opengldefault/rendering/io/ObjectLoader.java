@@ -22,11 +22,13 @@ public class ObjectLoader {
 	private static final DataFragment[] PosNormUv = new DataFragment[] {
 			DataFragment.POSITION,
 			DataFragment.NORMAL,
+			DataFragment.TANGENT,
 			DataFragment.UV
 	};
 	private static final DataFragment[] PosNormUvAnim3 = new DataFragment[] {
 			DataFragment.POSITION,
 			DataFragment.NORMAL,
+			DataFragment.TANGENT,
 			DataFragment.UV,
 			DataFragment.BONE_INDICES_3,
 			DataFragment.BONE_WEIGHTS_3
@@ -112,7 +114,7 @@ public class ObjectLoader {
 	public IRenderable loadFromFile(String path, DataFragment[] format) {
 
 		String realPath = getExtractedPath(path);
-		AIScene scene = Assimp.aiImportFile(realPath, Assimp.aiProcess_Triangulate);
+		AIScene scene = Assimp.aiImportFile(realPath, Assimp.aiProcess_Triangulate | Assimp.aiProcess_CalcTangentSpace);
 
 		Bone sceneStructure = parseScene(scene);
 

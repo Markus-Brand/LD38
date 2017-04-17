@@ -2,6 +2,7 @@
 in vec2 tex;
 in vec3 pos;
 in vec3 normal;
+in mat3 tbn;
 
 out vec4 color;
 
@@ -34,14 +35,22 @@ uniform int water;
 
 
 void main(){
-	vec3 norm = normalize(normal);
+	vec3 norm = normal;
 
     vec3 materialColor = materialDiffuse(tex);
     vec3 specularColor = materialSpecular(tex);
 	vec3 emissionColor = materialEmit(tex);
+	vec3 normalFromMap = materialNormal(tex);
     int shininess = materialShininess();
 
 	vec3 viewDir = normalize(viewPos - pos);
+
+	//normal mapping
+    if (length(normalFromMap) > 0.01) {
+        normalFromMap = normalize(normalFromMap * 2.0 - 1.0);
+        norm = normalize(tbn * normalFromMap);
+    }
+
 
 	vec3 result = vec3(0);
 

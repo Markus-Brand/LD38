@@ -113,7 +113,7 @@ public class BunnyGameState implements GameState {
 		playerAnim.setTransform(MeshFlip);
 		Material playerMaterial = new Material("material/player", 2);
 		Material lampMaterial = new Material("material/lamp", 3);
-		Material bunnyMaterial = new Material("material/bunny", 2);
+		Material bunnyMaterial = new Material("material/bunny", 4);
 		playerAnim.getSkeleton().printRecursive("");
 
 		final AnimatedMesh bunnyAnim = new ObjectLoader().loadFromFileAnim("ohrenFlackern.fbx");
@@ -137,19 +137,19 @@ public class BunnyGameState implements GameState {
 		SceneObject box = new SceneObject(new MaterialRenderable(boxRenderable, bunnyMaterial));
 		box.setShader(stationaryShader);
 
-		final IRenderable lampRenderable = new ObjectLoader().loadFromFile("lamp.obj");
-		SceneObject lamp = new SceneObject(new MaterialRenderable(lampRenderable, lampMaterial));
+		final IRenderable lampRenderable = new ObjectLoader().loadFromFile("lamp.obj").withMaterial(lampMaterial);
+		SceneObject lamp = new SceneObject(lampRenderable);
 		lamp.setShader(stationaryShader);
 
-		animPlayer = new AnimationStateFacade(playerAnim);
-		animBunny = new AnimationStateFacade(bunnyAnim);
+		animPlayer = new AnimationStateFacade(playerAnim, playerMaterial);
+		animBunny = new AnimationStateFacade(bunnyAnim, bunnyMaterial);
 
-		playerObj = new SceneObject(new MaterialRenderable(animPlayer, playerMaterial));
-		bunny0 = new SceneObject(new MaterialRenderable(animBunny, bunnyMaterial));
-		bunny1 = new SceneObject(new MaterialRenderable(animBunny, bunnyMaterial));
-		bunny2 = new SceneObject(new MaterialRenderable(animBunny, bunnyMaterial));
-		bunny3 = new SceneObject(new MaterialRenderable(animBunny, bunnyMaterial));
-		bunny4 = new SceneObject(new MaterialRenderable(animBunny, bunnyMaterial));
+		playerObj = new SceneObject(animPlayer);
+		bunny0 = new SceneObject(animBunny);
+		bunny1 = new SceneObject(animBunny);
+		bunny2 = new SceneObject(animBunny);
+		bunny3 = new SceneObject(animBunny);
+		bunny4 = new SceneObject(animBunny);
 
 		playerEntity = new SceneEntity(playerObj);
 		mainBunny = new SceneEntity(bunny0);
@@ -159,18 +159,18 @@ public class BunnyGameState implements GameState {
 		followingBunny4 = new SceneEntity(bunny4);
 		lampEntity = new SceneEntity(lamp);
 
-		mainBunny.addBehaviour(1, new BezierBehaviour(curve, 4));
+		mainBunny.addBehaviour(1, new BezierBehaviour(curve, 0.4f));
 
-		followingBunny1.addBehaviour(1, new FollowingBehaviour(mainBunny, 3f).limited(5));
+		followingBunny1.addBehaviour(1, new FollowingBehaviour(mainBunny, 0.3f).limited(5));
 		followingBunny1.addBehaviour(2, new FollowingBehaviour(mainBunny, 7.6f));
 
-		followingBunny2.addBehaviour(1, new FollowingBehaviour(followingBunny1, 3f).limited(5));
+		followingBunny2.addBehaviour(1, new FollowingBehaviour(followingBunny1, 0.3f).limited(5));
 		followingBunny2.addBehaviour(2, new FollowingBehaviour(followingBunny1, 7.6f));
 
-		followingBunny3.addBehaviour(1, new FollowingBehaviour(followingBunny2, 3f).limited(5));
+		followingBunny3.addBehaviour(1, new FollowingBehaviour(followingBunny2, 0.3f).limited(5));
 		followingBunny3.addBehaviour(2, new FollowingBehaviour(followingBunny2, 7.6f));
 
-		followingBunny4.addBehaviour(1, new FollowingBehaviour(followingBunny3, 3f).limited(5));
+		followingBunny4.addBehaviour(1, new FollowingBehaviour(followingBunny3, 0.3f).limited(5));
 		followingBunny4.addBehaviour(2, new FollowingBehaviour(followingBunny3, 7.6f));
 
 		camEntity.addBehaviour(1, new PlayerControlBehaviour());
@@ -197,7 +197,7 @@ public class BunnyGameState implements GameState {
 		bunnyScene.getLightManager().addLight(pl);
 		ple.addBehaviour(1, new ParentBehaviour(lamp, new Vector3f(0, -0.5f, 0)));
 
-		lampEntity.addBehaviour(1, new BoneTrackingBehaviour(playerObj, animPlayer.getRenderable(), "Hand.L", new Vector3f(0, 0.5f, 0)).fixedDirection());
+		lampEntity.addBehaviour(1, new BoneTrackingBehaviour(playerObj, animPlayer.getAnimatedRenderable(), "Hand.L", new Vector3f(0, 0.5f, 0)).fixedDirection());
 
 
 		//pl = new PointLight(Color.GREEN, new Vector3f(0, 10, 0), 1000);
