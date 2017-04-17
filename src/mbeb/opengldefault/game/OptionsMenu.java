@@ -21,7 +21,6 @@ import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.gl.GLContext;
 import mbeb.opengldefault.gl.shader.ShaderProgram;
 import mbeb.opengldefault.gui.AtlasGUI;
-import mbeb.opengldefault.gui.GUI;
 import mbeb.opengldefault.gui.TextGUI;
 import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.gui.elements.buttons.BooleanOptionButton;
@@ -62,7 +61,7 @@ public class OptionsMenu implements GameState {
 		ShaderProgram guiShader = new ShaderProgram("gui.vert", "gui.frag");
 		optionsHirarchy.setShader(guiShader);
 
-		atlasGUI = new AtlasGUI(GUI.loadGUITexture("menu.png"), 4, 4);
+		atlasGUI = new AtlasGUI("menu.png", 4, 4);
 		atlasGUI.setShader(guiShader);
 
 		buttons = new LinkedList<>();
@@ -190,9 +189,7 @@ public class OptionsMenu implements GameState {
 					+ " is not supported for sliders");
 			return;
 		}
-		slider.showSliderBar(atlasGUI);
-		slider.showValue(optionsHirarchy);
-		slider.showCursor(atlasGUI);
+		slider.show(atlasGUI, optionsHirarchy);
 		sliders.add(slider);
 	}
 

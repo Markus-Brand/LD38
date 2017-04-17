@@ -5,6 +5,11 @@ import org.lwjgl.glfw.GLFW;
 import mbeb.opengldefault.controls.Mouse;
 import mbeb.opengldefault.shapes.Rectangle;
 
+/**
+ * Abstract class containing all the logic needed for a slider
+ * 
+ * @author Markus
+ */
 public abstract class Slider {
 
 	protected float currentValue;

@@ -2,8 +2,6 @@ package mbeb.opengldefault.gui;
 
 import mbeb.opengldefault.gl.texture.Texture2D;
 import org.joml.Vector2f;
-import org.lwjgl.opengl.GL11;
-
 import mbeb.opengldefault.constants.Constants;
 import mbeb.opengldefault.gui.elements.AtlasGUIElement;
 import mbeb.opengldefault.gl.shader.ShaderProgram;
@@ -26,7 +24,7 @@ public class AtlasGUI extends GUI {
 	protected int atlasWidth, atlasHeight;
 
 	public AtlasGUI(String atlasName, int atlasWidth, int atlasHeight) {
-		this(new Texture2D(atlasName), atlasWidth, atlasHeight);
+		this(GUI.loadGUITexture(atlasName), atlasWidth, atlasHeight);
 	}
 
 	public AtlasGUI(Texture2D atlas, int atlasWidth, int atlasHeight) {
@@ -51,7 +49,7 @@ public class AtlasGUI extends GUI {
 	 */
 	public AtlasGUIElement addAtlasGUIElement(int atlasIndex, Vector2f position, Vector2f size) {
 		AtlasGUIElement newElement = new AtlasGUIElement(atlasIndex, atlasWidth, atlasHeight, position, size);
-		return (AtlasGUIElement)addGUIElement(newElement);
+		return (AtlasGUIElement) addGUIElement(newElement);
 	}
 
 	@Override

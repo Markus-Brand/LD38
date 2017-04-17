@@ -2,7 +2,6 @@ package mbeb.opengldefault.gui.elements.sliders;
 
 import java.awt.Color;
 import java.lang.reflect.Field;
-
 import mbeb.opengldefault.gui.AtlasGUI;
 import mbeb.opengldefault.gui.TextGUI;
 import mbeb.opengldefault.gui.elements.AtlasGUIElement;
@@ -12,6 +11,13 @@ import mbeb.opengldefault.shapes.Rectangle;
 
 import org.joml.Vector2f;
 
+/**
+ * Class describing a Slider that can be used as a Superclass for Sliders, that change values of Fields with certain
+ * types.
+ * Mostly describes the design of these OptionSliders
+ *
+ * @author Markus
+ */
 public class OptionSlider extends Slider {
 
 	protected TextGUIElement value;
@@ -27,6 +33,19 @@ public class OptionSlider extends Slider {
 		this.option = option;
 	}
 
+	/**
+	 * Adds the neccessary GUIElements to the GUIs for the Slider to be displayed
+	 *
+	 * @param atlasGUI
+	 * @param textGUI
+	 */
+	public void show(AtlasGUI atlasGUI, TextGUI textGUI) {
+		showSliderBar(atlasGUI);
+		showValue(textGUI);
+		showMinMax(textGUI);
+		showCursor(atlasGUI);
+	}
+
 	public void showSliderBar(AtlasGUI atlasGUI) {
 		atlasGUI.addAtlasGUIElement(
 				15,
@@ -38,6 +57,13 @@ public class OptionSlider extends Slider {
 	public void showValue(TextGUI textGUI) {
 		value = textGUI.addText(" ", new Vector2f(), bounding.getHeight() / 2);
 		onValueChange();
+	}
+
+	public void showMinMax(TextGUI textGUI) {
+		textGUI.addText(minValue + "", new Vector2f(), bounding.getHeight() / 2).setPositionRelativeTo(bounding, 0, 1)
+				.setColor(Color.GREEN);
+		textGUI.addText(maxValue + "", new Vector2f(), bounding.getHeight() / 2).setPositionRelativeTo(bounding, 1, 1)
+				.setColor(Color.GREEN);
 	}
 
 	public void showCursor(AtlasGUI atlasGUI) {
