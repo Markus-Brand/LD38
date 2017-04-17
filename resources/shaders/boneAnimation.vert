@@ -1,8 +1,9 @@
 layout (location = 0) in vec3 position; 
-layout (location = 1) in vec3 normalVec; 
-layout (location = 2) in vec2 texCoord; 
-layout (location = 3) in vec3 boneIDs;
-layout (location = 4) in vec3 boneWeights;
+layout (location = 1) in vec3 normalVec;
+layout (location = 2) in vec3 tangentVec;
+layout (location = 3) in vec2 texCoord;
+layout (location = 4) in vec3 boneIDs;
+layout (location = 5) in vec3 boneWeights;
 
 const int MAX_JOINTS = 50;//max joints allowed in a skeleton//todo remove this
 #define MAX_WEIGHTS 3
@@ -11,6 +12,7 @@ const int MAX_JOINTS = 50;//max joints allowed in a skeleton//todo remove this
 out vec2 tex;
 out vec3 pos;
 out vec3 normal;
+out mat3 tbn;
 
 #include modules/UBO_Matrices.glsl
 
@@ -52,6 +54,9 @@ void main() {
 
 	pos = vec3(model * totalLocalPos);
 	gl_Position = projectionView * vec4(pos, 1.0);
-	normal = mat3(model) * normalize(totalNormal.xyz);
+	normal = normalize(mat3(model) * normalize(totalNormal.xyz));
+	vec3 tangent = mat3(model) * tangentVec;
 	tex = texCoord;
+
+    #include modules/tangentSpace.glsl
 }

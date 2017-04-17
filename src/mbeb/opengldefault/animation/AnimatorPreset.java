@@ -1,9 +1,13 @@
 package mbeb.opengldefault.animation;
 
+import mbeb.opengldefault.logging.Log;
+
 /**
  * An Animation with additional information that doesn't come from the file (like fade in / out times and a playback speed)
  */
 public class AnimatorPreset {
+
+	private static final String TAG = "AnimatorPreset";
 	
 	private final Animation animation;
 
@@ -25,7 +29,7 @@ public class AnimatorPreset {
 		this(animation, speed, fadeInTime, fadeOutTime, 1);
 	}
 	public AnimatorPreset(Animation animation, double speed, double fadeInTime, double fadeOutTime, double intensity) {
-		this.animation = animation;
+		this.animation = Log.assertNotNull(TAG, animation);
 		this.speed = speed;
 		this.fadeInTime = fadeInTime;
 		this.fadeOutTime = fadeOutTime;

@@ -10,7 +10,6 @@ import mbeb.opengldefault.gl.GLContext;
 import mbeb.opengldefault.rendering.io.ObjectLoader;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.Skybox;
-import mbeb.opengldefault.rendering.renderable.TexturedRenderable;
 import mbeb.opengldefault.gl.shader.ShaderProgram;
 import mbeb.opengldefault.gl.shader.UBOManager;
 import mbeb.opengldefault.gl.texture.Texture2D;
@@ -19,8 +18,11 @@ import mbeb.opengldefault.scene.SceneObject;
 import mbeb.opengldefault.scene.behaviour.*;
 import mbeb.opengldefault.scene.entities.EntityWorld;
 import mbeb.opengldefault.scene.entities.IEntity;
+import mbeb.opengldefault.scene.materials.ColorMaterial;
+import mbeb.opengldefault.scene.materials.Material;
 import org.joml.Vector3f;
 
+import java.awt.*;
 import java.util.Random;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
@@ -37,8 +39,8 @@ public class PhysicsSimulationState implements GameState {
 	private Scene scene;
 	private EntityWorld particles;
 	private EntityWorld others;
-	private TexturedRenderable particle;
-	private TexturedRenderable greenParticle;
+	private IRenderable particle;
+	private IRenderable greenParticle;
 	private GravitationBehaviour gravitation;
 	
 	@Override
@@ -51,10 +53,10 @@ public class PhysicsSimulationState implements GameState {
 		ObjectLoader loader = new ObjectLoader();
 		
 		IRenderable bunnyRaw = loader.loadFromFile("ico.obj");
-		Texture2D blueRed = TexturedRenderable.loadModelTexture("blueRedLight.png");
-		Texture2D green = TexturedRenderable.loadModelTexture("green.png");
-		particle = new TexturedRenderable(bunnyRaw, blueRed);
-		greenParticle = new TexturedRenderable(bunnyRaw, green);
+		Material blueRed = new Material("material/blueRedLight", 1);
+		Material green = new ColorMaterial(Color.GREEN, Color.BLACK, Color.GREEN);
+		particle = bunnyRaw.withMaterial(blueRed);
+		greenParticle = bunnyRaw.withMaterial(green);
 		
 		particles = new EntityWorld();
 		others = new EntityWorld();

@@ -1,6 +1,7 @@
 package mbeb.opengldefault.rendering.renderable;
 
 import mbeb.opengldefault.animation.Pose;
+import mbeb.opengldefault.scene.materials.Material;
 import org.joml.*;
 
 import mbeb.opengldefault.gl.shader.*;
@@ -38,5 +39,16 @@ public interface IRenderable extends IRenderableHolder{
 
 	default Pose getCurrentPose() {
 		return null;
+	}
+	
+	/**
+	 * @return the material that this renderable wants to use for rendering
+	 */
+	default Material getMaterial() {
+		return null;
+	}
+	
+	default IRenderable withMaterial(Material material) {
+		return new MaterialRenderable(this, material);
 	}
 }

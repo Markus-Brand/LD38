@@ -21,6 +21,8 @@ import mbeb.opengldefault.curves.BezierCurve;
 import mbeb.opengldefault.curves.BezierCurve.ControlPointInputMode;
 import mbeb.opengldefault.gl.GLContext;
 import mbeb.opengldefault.gl.texture.Texture2D;
+import mbeb.opengldefault.gui.TextGUI;
+import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.light.DirectionalLight;
 import mbeb.opengldefault.light.Light;
 import mbeb.opengldefault.light.PointLight;
@@ -29,8 +31,8 @@ import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.rendering.io.ObjectLoader;
 import mbeb.opengldefault.rendering.renderable.BezierCurveRenderable;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
+import mbeb.opengldefault.rendering.renderable.MaterialRenderable;
 import mbeb.opengldefault.rendering.renderable.Skybox;
-import mbeb.opengldefault.rendering.renderable.TexturedRenderable;
 import mbeb.opengldefault.gl.shader.ShaderProgram;
 import mbeb.opengldefault.gl.shader.UBOManager;
 import mbeb.opengldefault.scene.Scene;
@@ -38,6 +40,7 @@ import mbeb.opengldefault.scene.SceneObject;
 import mbeb.opengldefault.scene.behaviour.*;
 import mbeb.opengldefault.scene.entities.*;
 
+import mbeb.opengldefault.scene.materials.Material;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
@@ -83,8 +86,9 @@ public class BunnyGameState implements GameState {
 
 		AnimatedMesh playerAnimMesh = new ObjectLoader().loadFromFileAnim("player.fbx");
 		playerAnimMesh.setTransform(MeshFlip);
-		Texture2D bunnyTexture = TexturedRenderable.loadModelTexture("player.png");
-		Texture2D lampTexture = TexturedRenderable.loadModelTexture("lamp.png");
+		Material playerMaterial = new Material("material/player", 2);
+		Material lampMaterial = new Material("material/lamp", 3);
+		Material bunnyMaterial = new Material("material/bunny", 4);
 		playerAnimMesh.getSkeleton().printRecursive("");
 
 		final AnimatedMesh bunnyAnimMesh = new ObjectLoader().loadFromFileAnim("ohrenFlackern.fbx");
@@ -105,28 +109,30 @@ public class BunnyGameState implements GameState {
 		stillShader.addUniformBlockIndex(UBOManager.MATRICES);
 
 		final IRenderable boxRenderable = new ObjectLoader().loadFromFile("box.obj");
-		SceneObject box = new SceneObject(new TexturedRenderable(boxRenderable, bunnyTexture));
+		
+		SceneObject box = new SceneObject(new MaterialRenderable(boxRenderable, bunnyMaterial));
 		box.setShader(stillShader);
-
-		final IRenderable lampRenderable = new ObjectLoader().loadFromFile("lamp.obj");
-		SceneObject lamp = new SceneObject(new TexturedRenderable(lampRenderable, lampTexture));
+		
+		final IRenderable lampRenderable = new ObjectLoader().loadFromFile("lamp.obj").withMaterial(lampMaterial);
+		SceneObject lamp = new SceneObject(lampRenderable);
 		lamp.setShader(stillShader);
-
-		animPlayer = new AnimationStateFacade(playerAnimMesh);
-
-		playerObj = new SceneObject(new TexturedRenderable(animPlayer, bunnyTexture));
+		
+		animPlayer = new AnimationStateFacade(playerAnimMesh, playerMaterial);
+		
+		playerObj = new SceneObject(animPlayer);
 		playerObj.setShader(animatedShader);
 
 		entityWorld = new EntityWorld();
 
 		entityWorld.add(camera).addBehaviour(1, new PlayerControlBehaviour());
 
-		IEntity lastBunnyEntity = createBunnyChain(bunnyScene.getSceneGraph(), entityWorld, bunnyTexture, bunnyAnimMesh, curve);
-		createBunnyChain(bunnyScene.getSceneGraph(), entityWorld, bunnyTexture, bunnyAnimMesh, curve2);
+		IEntity lastBunnyEntity = createBunnyChain(bunnyScene.getSceneGraph(), entityWorld, bunnyMaterial, bunnyAnimMesh, curve);
+		createBunnyChain(bunnyScene.getSceneGraph(), entityWorld, bunnyMaterial, bunnyAnimMesh, curve2);
 
 		entityWorld.add(lamp).addBehaviour(1,
-				new BoneTrackingBehaviour(playerObj, animPlayer.getRenderable(), "Hand.L", new Vector3f(0, 0.5f, 0))
+				new BoneTrackingBehaviour(playerObj, animPlayer.getAnimatedRenderable(), "Hand.L", new Vector3f(0, 0.5f, 0))
 						.fixedDirection());
+
 
 
 		curveObj = new SceneObject(new BezierCurveRenderable(curve));
@@ -189,15 +195,15 @@ public class BunnyGameState implements GameState {
 	 * creates a list of following bunnys
 	 * @param bunnyParent the SceneOIbject to add the list to
 	 * @param world the entityWorld to animate the bunnies in
-	 * @param bunnyTexture the texture to apply
+	 * @param bunnyMaterial the material to apply
 	 * @param renderable the renderable to display
 	 * @param curve the curve to follow
 	 * @return last bunny
 	 */
-	private IEntity createBunnyChain(SceneObject bunnyParent, EntityWorld world, Texture2D bunnyTexture, AnimatedMesh renderable, BezierCurve curve) {
-		AnimationStateFacade mainBunnyFacade = new AnimationStateFacade(renderable);
+	private IEntity createBunnyChain(SceneObject bunnyParent, EntityWorld world, Material bunnyMaterial, AnimatedMesh renderable, BezierCurve curve) {
+		AnimationStateFacade mainBunnyFacade = new AnimationStateFacade(renderable, bunnyMaterial);
 		animBunnyList.add(mainBunnyFacade);
-		final SceneObject mainBunnyObj = new SceneObject(new TexturedRenderable(mainBunnyFacade, bunnyTexture));
+		final SceneObject mainBunnyObj = new SceneObject(mainBunnyFacade);
 		bunnyParent.addSubObject(mainBunnyObj);
 
 		SceneObject toFollowObject = mainBunnyObj;
@@ -205,9 +211,9 @@ public class BunnyGameState implements GameState {
 
 		int bunnyCount = 100;
 		for (int b = 0; b < bunnyCount; b++) {
-			AnimationStateFacade followingBunnyFacade = new AnimationStateFacade(renderable);
+			AnimationStateFacade followingBunnyFacade = new AnimationStateFacade(renderable, bunnyMaterial);
 			animBunnyList.add(followingBunnyFacade);
-			SceneObject followerObject = new SceneObject(new TexturedRenderable(followingBunnyFacade, bunnyTexture), createStartMatrix());
+			SceneObject followerObject = new SceneObject(followingBunnyFacade, createStartMatrix());
 			bunnyParent.addSubObject(followerObject);
 			toFollow = world.add(followerObject)
 					           .addBehaviour(1, new SmoothFollowingBehaviour(toFollow, 1f));

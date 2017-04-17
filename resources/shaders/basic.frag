@@ -1,19 +1,19 @@
-#define SHININESS 256
 
 in vec2 tex;
 in vec3 pos;
 in vec3 normal;
+in mat3 tbn;
 
 out vec4 color;
 
-uniform sampler2D u_texture;
+#include modules/MaterialUniform.glsl
 
 #include modules/Struct_DirLight.glsl
 #include modules/Struct_PointLight.glsl
 #include modules/Struct_SpotLight.glsl
 
-float ambientStrength = 0.1f;
-float specularStrength = 2.5f;
+float ambientStrength = 0.1;
+float specularStrength = 1.0;
 
 #include modules/DirectionalLightBlock.glsl
 #include modules/PointLightBlock.glsl
@@ -34,33 +34,44 @@ uniform int water;
 #include modules/SpotLightLogic.glsl
 
 
-
-
 void main(){
-	vec3 norm = normalize(normal);
+	vec3 norm = normal;
 
-    vec4 textureColor = texture(u_texture, tex);
-    vec3 materialColor = textureColor.rgb;
+    vec3 materialColor = materialDiffuse(tex);
+    vec3 specularColor = materialSpecular(tex);
+	vec3 emissionColor = materialEmit(tex);
+	vec3 normalFromMap = materialNormal(tex);
+    int shininess = materialShininess();
 
 	vec3 viewDir = normalize(viewPos - pos);
 
+	//normal mapping
+    if (length(normalFromMap) > 0.01) {
+        normalFromMap = normalize(normalFromMap * 2.0 - 1.0);
+        norm = normalize(tbn * normalFromMap);
+    }
+
+
 	vec3 result = vec3(0);
 
+    //apply lights
 	for(int i = 0; i < numPointLights; i++){
-		result += calcPointLight(pointLights[i], norm, viewDir, materialColor);
+		result += calcPointLight(pointLights[i], norm, viewDir, materialColor, specularColor, shininess);
 	}
-
 	for(int i = 0; i < numDirectionalLights; i++){
-		result += calcDirectionalLight(directionalLights[i], norm, viewDir, materialColor);
+		result += calcDirectionalLight(directionalLights[i], norm, viewDir, materialColor, specularColor, shininess);
 	}
-
 	for(int i = 0; i < numSpotLights; i++){
-		result += calcSpotLight(spotLights[i], norm, viewDir, materialColor);
+		result += calcSpotLight(spotLights[i], norm, viewDir, materialColor, specularColor, shininess);
 	}
 
+    //ambient lighting
 	vec3 ambient = ambientStrength * materialColor;
-
 	result += ambient;
+
+	//emission
+	result += emissionColor;
+
 
 #ifdef GAMMA_CORRECTION
 	float gamma = 2.2;
@@ -73,7 +84,7 @@ void main(){
 	if(alpha == 0){
 		color = vec4(result, 1.0f);
 	}else if(alpha == 1){
-		vec4 texColor = vec4(result, textureColor.a);
+		vec4 texColor = vec4(result, materialTransparency(tex));
 		if(texColor.a > 0.01){
 			color = texColor;
 		}else{
