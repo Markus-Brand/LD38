@@ -3,6 +3,8 @@ package mbeb.opengldefault.light;
 import java.awt.*;
 
 import mbeb.opengldefault.gl.buffer.GLBufferWriter;
+import mbeb.opengldefault.scene.entities.DirectionalLightEntity;
+import mbeb.opengldefault.scene.entities.IEntity;
 import org.joml.*;
 
 import mbeb.opengldefault.logging.*;
@@ -74,5 +76,10 @@ public class DirectionalLight extends Light {
 			.fillBlock()
 			.write(direction)
 			.write(color);
+	}
+
+	@Override
+	public IEntity asNewEntity() {
+		return new DirectionalLightEntity(this);
 	}
 }

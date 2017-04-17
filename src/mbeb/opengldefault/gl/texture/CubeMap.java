@@ -69,8 +69,8 @@ public class CubeMap extends Texture {
 		BufferedImage[] img = new BufferedImage[6];
 		img[0] = Texture.loadBufferedImage(path + "_r." + extension);
 		img[1] = Texture.loadBufferedImage(path + "_l." + extension);
-		img[2] = Texture.loadBufferedImage(path + "_top." + extension);
-		img[3] = Texture.loadBufferedImage(path + "_bot." + extension);
+		img[2] = Texture.loadBufferedImage(path + "_u." + extension);
+		img[3] = Texture.loadBufferedImage(path + "_d." + extension);
 		img[4] = Texture.loadBufferedImage(path + "_b." + extension);
 		img[5] = Texture.loadBufferedImage(path + "_f." + extension);
 		return img;
@@ -114,7 +114,12 @@ public class CubeMap extends Texture {
 	 *            the path to load the images from
 	 */
 	public CubeMap(String path) {
-		this(CubeMap.loadCubeMapImages(path));
+		this(path, "png");
+	}
+
+
+	public CubeMap(String texturePath, String extension) {
+		this(loadCubeMapImages(texturePath, extension));
 	}
 
 	/**

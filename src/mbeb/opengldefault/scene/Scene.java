@@ -29,7 +29,7 @@ public class Scene {
 		this.skybox = skybox;
 		this.lightManager = new LightManager();
 		this.sceneGraphRoot = new SceneObject();
-		renderer = new VisibleSceneGraphRenderer(sceneGraphRoot, camera);
+		renderer = new SceneGraphRenderer(sceneGraphRoot, camera);
 		boundingBoxRenderer = new BoundingBoxRenderer(sceneGraphRoot, camera);
 		picker = new MousePicker3D(camera);
 	}

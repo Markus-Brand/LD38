@@ -23,13 +23,12 @@ public class SceneEntity extends Entity {
 
 	@Override
 	public Vector3f getPosition() {
-		return sceneObject.getPosition();
+		return sceneObject.getGlobalPosition();
 	}
 
 	@Override
 	public void setPosition(Vector3f position) {
-		Matrix4f inverseMatrix = sceneObject.getParentGlobalTranform().asMatrix().invert(new Matrix4f());
-		sceneObject.getTransformation().setPosition(inverseMatrix.transform(new Vector4f(position, 1)));
+		sceneObject.setGlobalPosition(position);
 	}
 
 	@Override

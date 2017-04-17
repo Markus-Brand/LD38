@@ -5,9 +5,7 @@ import mbeb.opengldefault.logging.Log;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Parse the content of a simple YAML file
@@ -83,7 +81,7 @@ public class YAMLParser {
 	public static class YAMLNode {
 		private final String name;
 		private final String data;
-		private List<YAMLNode> children = null;
+		private Map<String, YAMLNode> children = null;
 
 		public YAMLNode(String name, String data) {
 			this.name = name;
@@ -94,11 +92,11 @@ public class YAMLParser {
 			return name;
 		}
 
-		public List<YAMLNode> getChildren() {
+		public Collection<YAMLNode> getChildren() {
 			if (children == null) {
-				children = new ArrayList<>();
+				children = new HashMap<>();
 			}
-			return children;
+			return children.values();
 		}
 
 		public void addChild(YAMLNode newChild){
@@ -107,6 +105,10 @@ public class YAMLParser {
 
 		public String getData() {
 			return data;
+		}
+
+		public YAMLNode getChildByName(String name) {
+			return children.get(name);
 		}
 	}
 

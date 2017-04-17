@@ -4,12 +4,18 @@ import java.util.HashMap;
 
 import java.util.Map;
 
+import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.gl.GLContext;
+
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 
 /**
  * Abstract class to characterize a whole game
  */
 public abstract class Game {
+
+	private static final String TAG = "Game";
 
 	/**
 	 * Current GameStateIdentifier
@@ -68,8 +74,22 @@ public abstract class Game {
 	public void render() {
 		GameState currentGameState = getCurrentGameState();
 		if (currentGameState != null) {
+			preGameStateRender();
 			currentGameState.render();
 		}
+	}
+
+	/**
+	 * executed once before each render call on a gameSate
+	 */
+	protected void preGameStateRender() {
+		glViewport(0, 0, GLContext.getFramebufferWidth(), GLContext.getFramebufferHeight());
+		GLErrors.checkForError(TAG, "glViewport");
+
+		glClearColor(0.05f, 0.075f, 0.075f, 1);
+		GLErrors.checkForError(TAG, "glClearColor");
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		GLErrors.checkForError(TAG, "glClear");
 	}
 
 	/**

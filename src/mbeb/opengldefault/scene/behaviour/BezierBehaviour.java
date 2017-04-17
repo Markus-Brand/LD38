@@ -35,9 +35,4 @@ public class BezierBehaviour implements IBehaviour {
 
 		entity.setPosition(entity.getPosition().add(direction, new Vector3f()));
 	}
-
-	@Override
-	public boolean triggers(IEntity entity) {
-		return true;
-	}
 }
