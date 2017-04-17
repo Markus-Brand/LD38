@@ -211,6 +211,9 @@ public class VAORenderable implements IRenderable {
 		VBO.unbind();
 	}
 
+	/**
+	 * call this when you are done adding data to the buffers: This will clean up (delete the buffer objects)
+	 */
 	public void finishWriting() {
 		VBO.delete();
 		if (EBO != null) {
