@@ -18,7 +18,10 @@ import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 
 import mbeb.opengldefault.controls.KeyBoard;
+import mbeb.opengldefault.gl.GLContext;
+import mbeb.opengldefault.gl.shader.ShaderProgram;
 import mbeb.opengldefault.gui.AtlasGUI;
+import mbeb.opengldefault.gui.GUI;
 import mbeb.opengldefault.gui.TextGUI;
 import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.gui.elements.buttons.BooleanOptionButton;
@@ -29,11 +32,9 @@ import mbeb.opengldefault.gui.elements.sliders.OptionSlider;
 import mbeb.opengldefault.gui.elements.sliders.Slider;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.logging.Log;
-import mbeb.opengldefault.openglcontext.OpenGLContext;
 import mbeb.opengldefault.options.ButtonOption;
 import mbeb.opengldefault.options.Options;
 import mbeb.opengldefault.options.SliderOption;
-import mbeb.opengldefault.rendering.shader.ShaderProgram;
 import mbeb.opengldefault.shapes.Rectangle;
 
 public class OptionsMenu implements GameState {
@@ -61,7 +62,7 @@ public class OptionsMenu implements GameState {
 		ShaderProgram guiShader = new ShaderProgram("gui.vert", "gui.frag");
 		optionsHirarchy.setShader(guiShader);
 
-		atlasGUI = new AtlasGUI("menu.png", 4, 4);
+		atlasGUI = new AtlasGUI(GUI.loadGUITexture("menu.png"), 4, 4);
 		atlasGUI.setShader(guiShader);
 
 		buttons = new LinkedList<>();
@@ -97,7 +98,7 @@ public class OptionsMenu implements GameState {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		GLErrors.checkForError(TAG, "glClear");
 
-		glViewport(0, 0, OpenGLContext.getFramebufferWidth(), OpenGLContext.getFramebufferHeight());
+		glViewport(0, 0, GLContext.getFramebufferWidth(), GLContext.getFramebufferHeight());
 		GLErrors.checkForError(TAG, "glViewport");
 
 		setup();

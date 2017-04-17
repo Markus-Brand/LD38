@@ -1,6 +1,6 @@
 package mbeb.opengldefault.light;
 
-import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.gl.shader.*;
 
 /**
  * I'm managing point lights. (like a lamp without shade or a near sun)

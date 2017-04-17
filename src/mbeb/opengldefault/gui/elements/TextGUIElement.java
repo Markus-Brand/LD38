@@ -4,10 +4,9 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.nio.FloatBuffer;
-
+import mbeb.opengldefault.gl.GLContext;
+import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import mbeb.opengldefault.gui.AtlasGUI;
-import mbeb.opengldefault.openglcontext.OpenGLContext;
 import mbeb.opengldefault.shapes.Rectangle;
 
 import org.joml.Vector2f;
@@ -42,7 +41,7 @@ public class TextGUIElement extends CombinedGUIElement {
 		this.atlasWidth = atlasWidth;
 		this.atlasHeight = atlasHeight;
 		this.text = text;
-		height = font.getSize() / (float) OpenGLContext.getFramebufferHeight();
+		height = font.getSize() / (float) GLContext.getFramebufferHeight();
 		setFont(font);
 		setBounding(new Rectangle(position, new Vector2f()));
 		generateText();
@@ -88,10 +87,10 @@ public class TextGUIElement extends CombinedGUIElement {
 		resetElements();
 		float xPos = textPos.x;
 		for (char c : text.toCharArray()) {
-			float charWidth = font.stringWidth("" + c) / (float) OpenGLContext.getFramebufferWidth();
+			float charWidth = font.stringWidth("" + c) / (float) GLContext.getFramebufferWidth();
 			addGUIElement(new AtlasGUIElement(c, atlasWidth, atlasHeight, new Vector2f(xPos, textPos.y),
 					new Vector2f(
-							height / OpenGLContext.getAspectRatio(),
+							height / GLContext.getAspectRatio(),
 							height), getLutRow(), getLut()));
 			xPos += charWidth;
 		}
@@ -110,11 +109,11 @@ public class TextGUIElement extends CombinedGUIElement {
 	}
 
 	@Override
-	public int writeToBuffer(FloatBuffer buffer, int offset) {
+	public void writeTo(GLBufferWriter writer) {
 		if (isDirty()) {
 			generateText();
 		}
-		return super.writeToBuffer(buffer, offset);
+		super.writeTo(writer);
 	}
 
 	@Override

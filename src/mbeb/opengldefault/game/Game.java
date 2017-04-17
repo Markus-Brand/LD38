@@ -5,7 +5,7 @@ import java.util.Map;
 
 import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.controls.Mouse;
-import mbeb.opengldefault.openglcontext.OpenGLContext;
+import mbeb.opengldefault.gl.GLContext;
 
 /**
  * Abstract class to characterize a whole game
@@ -60,7 +60,7 @@ public abstract class Game {
 			Mouse.releaseAll();
 			currentState.resetNextGameState();
 			if (currentGameState == GameStateIdentifier.EXIT) {
-				OpenGLContext.close();
+				GLContext.close();
 			} else {
 				getCurrentGameState().open();
 			}

@@ -6,7 +6,7 @@ import java.util.*;
 import org.joml.*;
 
 import mbeb.opengldefault.logging.Log;
-import mbeb.opengldefault.rendering.shader.*;
+import mbeb.opengldefault.gl.shader.*;
 
 /**
  * orientations of a bone-construct

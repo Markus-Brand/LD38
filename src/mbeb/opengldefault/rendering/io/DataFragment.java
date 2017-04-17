@@ -2,13 +2,20 @@ package mbeb.opengldefault.rendering.io;
 
 import java.util.*;
 
+import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import mbeb.opengldefault.logging.Log;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.lwjgl.assimp.*;
 
 /**
  * for parsing files: specify information wanted from the mesh
  */
 public enum DataFragment {
+	/**
+	 * Just one single float.
+	 * This is a mock fragment with no parsing functionality
+	 */
 	FLOAT {
 
 		@Override
@@ -17,6 +24,9 @@ public enum DataFragment {
 		}
 
 	},
+	/**
+	 * the 3d-position of a vertex in local space
+	 */
 	POSITION {
 
 		@Override
@@ -25,13 +35,14 @@ public enum DataFragment {
 		}
 
 		@Override
-		protected void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
-			AIVector3D vec = mesh.mVertices().get(v);
-			data[dataPointer++] = vec.x();
-			data[dataPointer++] = vec.y();
-			data[dataPointer++] = vec.z();
+		protected void addTo(AIMesh mesh, int vertexID, GLBufferWriter writer) {
+			AIVector3D vec = mesh.mVertices().get(vertexID);
+			writer.write(new Vector3f(vec.x(), vec.y(), vec.z()));
 		}
 	},
+	/**
+	 * just the x&y component of the position of a vertex in local space
+	 */
 	POSITION2D {
 
 		@Override
@@ -40,12 +51,14 @@ public enum DataFragment {
 		}
 
 		@Override
-		protected void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
-			AIVector3D vec = mesh.mVertices().get(v);
-			data[dataPointer++] = vec.x();
-			data[dataPointer++] = vec.y();
+		protected void addTo(AIMesh mesh, int vertexID, GLBufferWriter writer) {
+			AIVector3D vec = mesh.mVertices().get(vertexID);
+			writer.write(new Vector2f(vec.x(), vec.y()));
 		}
 	},
+	/**
+	 * the normal of a vertex
+	 */
 	NORMAL {
 
 		@Override
@@ -54,28 +67,14 @@ public enum DataFragment {
 		}
 
 		@Override
-		protected void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
-			AIVector3D vec = mesh.mNormals().get(v);
-			data[dataPointer++] = vec.x();
-			data[dataPointer++] = vec.y();
-			data[dataPointer++] = vec.z();
+		protected void addTo(AIMesh mesh, int vertexID, GLBufferWriter writer) {
+			AIVector3D vec = mesh.mNormals().get(vertexID);
+			writer.write(new Vector3f(vec.x(), vec.y(), vec.z()));
 		}
 	},
-	MOCK_NORMAL {
-
-		@Override
-		public int size() {
-			return 3;
-		}
-
-		@Override
-		protected void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
-			//todo calculate normals here
-			data[dataPointer++] = 1;
-			data[dataPointer++] = 0;
-			data[dataPointer++] = 0;
-		}
-	},
+	/**
+	 * the uv-coordinates of the first texture mapping layer of a vertex
+	 */
 	UV {
 
 		@Override
@@ -84,12 +83,14 @@ public enum DataFragment {
 		}
 
 		@Override
-		protected void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
-			AIVector3D vec = mesh.mTextureCoords(0).get(v);
-			data[dataPointer++] = vec.x();
-			data[dataPointer++] = vec.y();
+		protected void addTo(AIMesh mesh, int vertexID, GLBufferWriter writer) {
+			AIVector3D vec = mesh.mTextureCoords(0).get(vertexID);
+			writer.write(new Vector2f(vec.x(), vec.y()));
 		}
 	},
+	/**
+	 * simulated uv-coordinates (for the cases when no uv is present)
+	 */
 	MOCK_UV {
 
 		@Override
@@ -98,10 +99,13 @@ public enum DataFragment {
 		}
 
 		@Override
-		protected void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
-			POSITION2D.addTo(mesh, v, data, dataPointer);
+		protected void addTo(AIMesh mesh, int vertexID, GLBufferWriter writer) {
+			POSITION2D.addTo(mesh, vertexID, writer);
 		}
 	},
+	/**
+	 * the indices of the 3 bones that a vertex is connected to
+	 */
 	BONE_INDICES_3 {
 
 		@Override
@@ -120,13 +124,17 @@ public enum DataFragment {
 		}
 
 		@Override
-		public void addTo(AIMesh mesh, int v, float[] data, int dataPointer, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
-			List<Map.Entry<Integer, Float>> weightsData = vertexBoneWeights.get(v);
+		public void addTo(AIMesh mesh, int vertexID, GLBufferWriter writer, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
+			List<Map.Entry<Integer, Float>> weightsData = vertexBoneWeights.get(vertexID);
+			Log.assertTrue(TAG, weightsData.size() == 3, "unexpected amount of weights");
 			for (Map.Entry<Integer, Float> e : weightsData) {
-				data[dataPointer++] = e.getKey();
+				writer.write((float)e.getKey());
 			}
 		}
 	},
+	/**
+	 * the weight of the 3 bones that a vertex is connected to
+	 */
 	BONE_WEIGHTS_3 {
 
 		@Override
@@ -135,10 +143,11 @@ public enum DataFragment {
 		}
 
 		@Override
-		public void addTo(AIMesh mesh, int v, float[] data, int dataPointer, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
-			List<Map.Entry<Integer, Float>> weightsData = vertexBoneWeights.get(v);
+		public void addTo(AIMesh mesh, int vertexID, GLBufferWriter writer, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
+			List<Map.Entry<Integer, Float>> weightsData = vertexBoneWeights.get(vertexID);
+			Log.assertTrue(TAG, weightsData.size() == 3, "unexpected amount of weights");
 			for (Map.Entry<Integer, Float> e : weightsData) {
-				data[dataPointer++] = e.getValue();
+				writer.write(e.getValue());
 			}
 		}
 	};
@@ -155,28 +164,24 @@ public enum DataFragment {
 	 * 
 	 * @param mesh
 	 *            the mesh to read from
-	 * @param v
+	 * @param vertexID
 	 *            the currently processed vertex index
-	 * @param data
-	 *            the data array to store in
-	 * @param dataPointer
-	 *            current array offset
+	 * @param writer
 	 */
-	protected void addTo(AIMesh mesh, int v, float[] data, int dataPointer) {
+	protected void addTo(AIMesh mesh, int vertexID, GLBufferWriter writer) {
 		Log.error(TAG, "addTo not implemented!");
 	}
 
 	/**
-	 * add your data to the buffer, passing vertexWeights aswell
+	 * add your data to the buffer, passing vertexWeights as well
 	 * 
 	 * @param mesh
-	 * @param v
-	 * @param data
-	 * @param dataPointer
+	 * @param vertexID
+	 * @param writer
 	 * @param vertexBoneWeights
 	 */
-	public void addTo(AIMesh mesh, int v, float[] data, int dataPointer, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
-		addTo(mesh, v, data, dataPointer);
+	public void addTo(AIMesh mesh, int vertexID, GLBufferWriter writer, Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights) {
+		addTo(mesh, vertexID, writer);
 	}
 
 	/**
@@ -186,6 +191,9 @@ public enum DataFragment {
 		return false;
 	}
 
+	/**
+	 * @return whether this dataFragment uses floats as primitives (and not ints)
+	 */
 	public boolean isFloat() {
 		return true;
 	}
