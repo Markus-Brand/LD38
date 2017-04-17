@@ -52,11 +52,9 @@ public class PhysicsSimulationState implements GameState {
 		
 		ObjectLoader loader = new ObjectLoader();
 		
-		IRenderable bunnyRaw = loader.loadFromFile("ico.obj");
-		Material blueRed = new Material("material/blueRedLight", 1);
-		Material green = new ColorMaterial(Color.GREEN, Color.BLACK, Color.GREEN);
-		particle = bunnyRaw.withMaterial(blueRed);
-		greenParticle = bunnyRaw.withMaterial(green);
+		IRenderable icoSphere = loader.loadFromFile("ico.obj");
+		Material blueRed = new Material("material/blueRedLight", 2);
+		particle = icoSphere.withMaterial(blueRed);
 		
 		particles = new EntityWorld();
 		others = new EntityWorld();
@@ -79,8 +77,8 @@ public class PhysicsSimulationState implements GameState {
 		for (int i = 0; i < 100; i++) {
 			addAParticle();
 		}
-		for (int i = 0; i < 5; i++) {
-			addALight();
+		for (int i = 0; i < 20; i++) {
+			addALight(icoSphere, generateLightColor(i));
 		}
 	}
 
@@ -90,19 +88,37 @@ public class PhysicsSimulationState implements GameState {
 		particles.add(newParticle).addBehaviour(1, gravitation);
 	}
 
-	private void addALight() {
+	private void addALight(IRenderable lightParticle, Color color) {
+		Material material = new ColorMaterial(color, Color.BLACK, color);
+		
 		//here are materials missing: emission on these should be at max
-		SceneObject newLightObject = new SceneObject(greenParticle, getStartTransform().and(new BoneTransformation(null, null, new Vector3f(0.02f))));
+		SceneObject newLightObject = new SceneObject(lightParticle.withMaterial(material), getStartTransform().and(new BoneTransformation(null, null, new Vector3f(0.02f))));
 		scene.getSceneGraph().addSubObject(newLightObject);
 		particles.add(newLightObject).addBehaviour(1, gravitation);
 
-		PointLight newLight = new PointLight(generateLightColor(), randomVec(), 3);
+		PointLight newLight = new PointLight(color, randomVec(), 6);
 		scene.getLightManager().addLight(newLight);
 		particles.add(newLight).addBehaviour(1, new ParentBehaviour(newLightObject));
 	}
 
-	private Vector3f generateLightColor() {
-		return new Vector3f(0, 1, 0);
+	private Color generateLightColor(int num) {
+		int maxColors = 3;
+		switch (num % maxColors) {
+			case 0:
+				return Color.GREEN;
+			case 1:
+				return Color.RED;
+			case 2:
+				return Color.BLUE;
+			case 3:
+				return Color.CYAN;
+			case 4:
+				return Color.MAGENTA;
+			case 5:
+				return Color.YELLOW;
+		}
+		
+		return Color.WHITE;
 	}
 	
 	private BoneTransformation getStartTransform() {
