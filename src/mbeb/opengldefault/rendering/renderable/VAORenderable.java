@@ -55,8 +55,21 @@ public class VAORenderable implements IRenderable {
 		this.dataWriter().write(data).flush(GLBufferWriter.WriteType.FULL_DATA);
 		this.indicesWriter().write(indices).flush(GLBufferWriter.WriteType.FULL_DATA);
 		this.setAttribPointers();
+		this.setBoundingBox(boundingBox);
+		this.finishWriting();
+	}
 
-		setBoundingBox(boundingBox);
+	/**
+	 * copy constructor
+	 * @param reference
+	 */
+	public VAORenderable(VAORenderable reference) {
+		this(reference.vertexCount, reference.dataFormat);
+		this.VAO = reference.VAO;
+		this.EBO = reference.EBO;
+		this.VBO = reference.VBO;
+		this.boundingBox = reference.boundingBox;
+		this.transform = reference.transform;
 	}
 
 	/**
@@ -196,5 +209,12 @@ public class VAORenderable implements IRenderable {
 		getVAO().attribPointers(dataFormat);
 		unbind();
 		VBO.unbind();
+	}
+
+	public void finishWriting() {
+		VBO.delete();
+		if (EBO != null) {
+			EBO.delete();
+		}
 	}
 }

@@ -29,7 +29,7 @@ public class YAMLParser {
 	public YAMLNode getRoot() {
 		if (root == null) {
 			try {
-				Iterator<String> lines = Files.lines(file.toPath()).filter((String s) -> !s.startsWith("#")).iterator();
+				Iterator<String> lines = Files.lines(file.toPath()).filter((s) -> !s.startsWith("#")).iterator();
 				root = parse(new PeekableIterator<>(lines), new YAMLNode("root", null), 0);
 			} catch(IOException e) {
 				Log.error(TAG, "Cannot find file " + file.getName(), e);

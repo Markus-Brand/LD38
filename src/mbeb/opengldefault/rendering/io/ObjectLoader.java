@@ -208,6 +208,7 @@ public class ObjectLoader {
 		dataWriter.flush(GLBufferWriter.WriteType.FULL_DATA);
 		vaomesh.setAttribPointers();
 		vaomesh.setBoundingBox(box);
+		vaomesh.finishWriting();
 
 		if (isAnimated) {
 			AnimatedMesh animMesh = new AnimatedMesh(vaomesh, skeleton);

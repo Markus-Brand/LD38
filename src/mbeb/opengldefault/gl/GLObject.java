@@ -263,7 +263,6 @@ public abstract class GLObject {
 	protected final void finalize() throws Throwable {
 		if (this.exists()) {
 			Log.error(TAG, "DELETE ME(" + this.toString() + ")!");
-			//			this.delete();
 		}
 	}
 }

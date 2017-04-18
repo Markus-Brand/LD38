@@ -8,7 +8,6 @@ import java.util.function.Consumer;
  * A Collection of entities that can interact with each other
  */
 public class EntityWorld {
-
 	/**
 	 * all the entities in this world
 	 */

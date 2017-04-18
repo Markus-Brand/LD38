@@ -24,7 +24,7 @@ import mbeb.opengldefault.gui.AtlasGUI;
 import mbeb.opengldefault.gui.TextGUI;
 import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.gui.elements.buttons.BooleanOptionButton;
-import mbeb.opengldefault.gui.elements.buttons.Button;
+import mbeb.opengldefault.gui.elements.buttons.AbstractButton;
 import mbeb.opengldefault.gui.elements.sliders.FloatOptionSlider;
 import mbeb.opengldefault.gui.elements.sliders.IntegerOptionSlider;
 import mbeb.opengldefault.gui.elements.sliders.OptionSlider;
@@ -46,7 +46,7 @@ public class OptionsMenu implements GameState {
 
 	private AtlasGUI atlasGUI;
 
-	private LinkedList<Button> buttons;
+	private LinkedList<AbstractButton> buttons;
 	private LinkedList<Slider> sliders;
 
 	public OptionsMenu() {
@@ -80,7 +80,7 @@ public class OptionsMenu implements GameState {
 
 	@Override
 	public void update(double deltaTime) {
-		for (Button button : buttons) {
+		for (AbstractButton button : buttons) {
 			button.update(deltaTime);
 		}
 		for (Slider slider : sliders) {

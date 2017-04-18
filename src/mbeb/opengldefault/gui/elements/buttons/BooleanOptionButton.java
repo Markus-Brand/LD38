@@ -10,7 +10,7 @@ import mbeb.opengldefault.gui.elements.AtlasGUIElement;
 import mbeb.opengldefault.gui.elements.CombinedGUIElement;
 import mbeb.opengldefault.gui.elements.TextGUIElement;
 
-public class BooleanOptionButton extends Button {
+public class BooleanOptionButton extends Switch {
 
 	private Field option;
 
@@ -21,7 +21,7 @@ public class BooleanOptionButton extends Button {
 	private TextGUIElement buttonText;
 
 	public BooleanOptionButton(TextGUIElement text, Field option, boolean initialState, AtlasGUI atlasGUI) {
-		super(text, true, initialState, Color.LIGHT_GRAY, Color.GRAY, new Color(160, 160, 255));
+		super(text, initialState, Color.LIGHT_GRAY, Color.GRAY, new Color(160, 160, 255));
 		this.option = option;
 
 		button = new CombinedGUIElement();
