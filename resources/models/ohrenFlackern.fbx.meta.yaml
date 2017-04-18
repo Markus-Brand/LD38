@@ -1,0 +1,8 @@
+sizeFactor: 1.5
+animations:
+  OhrenFlackern1:
+    EarLeft: 5
+  OhrenFlackern2:
+    EarRight: 5
+  HeadBang:
+    Head: 2

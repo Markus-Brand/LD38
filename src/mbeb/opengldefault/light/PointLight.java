@@ -3,6 +3,8 @@ package mbeb.opengldefault.light;
 import java.awt.*;
 
 import mbeb.opengldefault.gl.buffer.GLBufferWriter;
+import mbeb.opengldefault.scene.entities.IEntity;
+import mbeb.opengldefault.scene.entities.PointLightEntity;
 import org.joml.*;
 
 /**
@@ -183,7 +185,7 @@ public class PointLight extends Light implements LimitedLight {
 
 	/**
 	 * write this light to a GLBufferWriter
-	 * 
+	 *
 	 * @param writer
 	 *            the object to write on
 	 * @see /shaders/modules/Struct_PointLight
@@ -197,5 +199,10 @@ public class PointLight extends Light implements LimitedLight {
 			.write(constant)
 			.write(linear)
 			.write(quadratic);
+	}
+
+	@Override
+	public IEntity asNewEntity() {
+		return new PointLightEntity(this);
 	}
 }

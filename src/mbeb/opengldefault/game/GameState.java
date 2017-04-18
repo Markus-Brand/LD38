@@ -30,7 +30,9 @@ public interface GameState {
 	/**
 	 * Clear the GameState. The game will close after this method is called.
 	 */
-	void clear();
+	default void clear() {
+		//most GameStates don't need to clear anything
+	}
 
 	/**
 	 * Getter for the nextGameState

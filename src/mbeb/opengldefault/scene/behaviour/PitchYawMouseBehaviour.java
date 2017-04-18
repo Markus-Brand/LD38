@@ -34,11 +34,6 @@ public class PitchYawMouseBehaviour implements IBehaviour {
 	}
 
 	@Override
-	public boolean triggers(IEntity entity) {
-		return true;
-	}
-
-	@Override
 	public void update(double deltaTime, IEntity entity) {
 
 		final Vector2f delta = lastMousePosition.sub(Mouse.getPos(), new Vector2f());

@@ -1,13 +1,13 @@
 package mbeb.opengldefault.rendering.renderable;
 
-import mbeb.opengldefault.logging.GLErrors;
-import org.joml.*;
-import org.lwjgl.opengl.*;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.lwjgl.opengl.GL11;
 
-import mbeb.opengldefault.curves.*;
-import mbeb.opengldefault.rendering.io.*;
-import mbeb.opengldefault.gl.shader.*;
-import mbeb.opengldefault.scene.*;
+import mbeb.opengldefault.curves.BezierCurve;
+import mbeb.opengldefault.gl.shader.ShaderProgram;
+import mbeb.opengldefault.logging.GLErrors;
+import mbeb.opengldefault.scene.BoundingBox;
 
 /**
  * Renders a {@link BezierCurve}
@@ -22,13 +22,9 @@ public class BezierCurveRenderable implements IRenderable {
 
 	public BezierCurveRenderable(final BezierCurve curve) {
 		this.curve = curve;
-		final float[] vertexData = {0, 1};
 
-		final int[] indexData = {0, 1};
-
-		final BoundingBox bb = generateBoundingBox();
-
-		renderable = new VAORenderable(vertexData, indexData, new DataFragment[] {DataFragment.FLOAT}, bb);
+		renderable = new VAORenderable(StaticMeshes.getBezierData());
+		renderable.setBoundingBox(generateBoundingBox());
 	}
 
 	/**
