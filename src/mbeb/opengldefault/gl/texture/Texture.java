@@ -468,7 +468,11 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 	@Override
 	protected final boolean glDelete() {
 		glDeleteTextures(this.getHandle());
-		return !GLErrors.checkForError(TAG, "Could not delete a " + this.getType().name() + ".");
+		boolean success = !GLErrors.checkForError(TAG, "Could not delete a " + this.getType().name() + ".");
+		if (success) {
+			ContextBindings.forceUnbind(this);
+		}
+		return success;
 	}
 	//</editor-fold>
 

@@ -191,6 +191,17 @@ public class ContextBindings {
 	}
 
 	/**
+	 * Totally forget a texture
+	 *
+	 * @param texture
+	 *            the texture to unbind
+	 * @return whether the texture was unbound
+	 */
+	public static boolean forceUnbind(Texture texture) {
+		return textureUnitBindings.forceUnbind(texture) != null;
+	}
+
+	/**
 	 * @return the currently active texture unit
 	 */
 	public static Integer getActiveTextureUnit() {

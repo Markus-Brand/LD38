@@ -179,4 +179,15 @@ public class PagingMap<P, V> {
 		}
 		return page;
 	}
+
+	/**
+	 * unbind a value totally
+	 * @param value the object that is no longer needed
+	 * @return the Page it was bound to, or null if it wasn't
+	 */
+	public P forceUnbind(V value) {
+		P page = unbind(value);
+		reverseBindings.put(value, null);
+		return page;
+	}
 }

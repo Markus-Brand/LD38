@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 /**
  * A PagingMap with integers as pages
+ * @param <V> the class of the objects that get paged (values)
  */
 public class IntPagingMap<V> extends PagingMap<Integer, V> {
 	/**
