@@ -1,11 +1,13 @@
 package mbeb.opengldefault.rendering.io;
 
-import mbeb.opengldefault.logging.Log;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import mbeb.opengldefault.logging.Log;
 
 /**
  * Parse the content of a simple YAML file
@@ -23,6 +25,7 @@ public class YAMLParser {
 
 	/**
 	 * parse the yaml file if not happened already
+	 * 
 	 * @return the YAML root-node
 	 */
 	public YAMLNode getRoot() {
@@ -30,7 +33,7 @@ public class YAMLParser {
 			try {
 				Iterator<String> lines = Files.lines(file.toPath()).filter((String s) -> !s.startsWith("#")).iterator();
 				root = parse(new PeekableIterator<>(lines), new YAMLNode("root", null), 0);
-			} catch (IOException e) {
+			} catch(IOException e) {
 				Log.error(TAG, "Cannot find file " + file.getName(), e);
 			}
 		}
@@ -39,12 +42,15 @@ public class YAMLParser {
 
 	/**
 	 * parse the content of a Node
-	 * @param lines the Content iterator
-	 * @param depth all lines with indentation of <code>depth</code> are my children
+	 * 
+	 * @param lines
+	 *            the Content iterator
+	 * @param depth
+	 *            all lines with indentation of <code>depth</code> are my children
 	 * @return me
 	 */
 	private YAMLNode parse(PeekableIterator<String> lines, YAMLNode me, int depth) {
-		while (lines.hasNext()) {
+		while(lines.hasNext()) {
 			String nextLine = lines.peek();
 
 			if (indentation(nextLine) == depth) {
@@ -92,15 +98,15 @@ public class YAMLParser {
 			return name;
 		}
 
-		public Collection<YAMLNode> getChildren() {
+		public Map<String, YAMLNode> getChildren() {
 			if (children == null) {
 				children = new HashMap<>();
 			}
-			return children.values();
+			return children;
 		}
 
-		public void addChild(YAMLNode newChild){
-			getChildren().add(newChild);
+		public void addChild(YAMLNode newChild) {
+			getChildren().put(newChild.getName(), newChild);
 		}
 
 		public String getData() {
@@ -118,9 +124,11 @@ public class YAMLParser {
 	private static class PeekableIterator<T> {
 		private T next = null;
 		private Iterator<T> it;
+
 		public PeekableIterator(Iterator<T> it) {
 			this.it = it;
 		}
+
 		public T next() {
 			if (next != null) {
 				T result = next;
@@ -130,6 +138,7 @@ public class YAMLParser {
 				return it.next();
 			}
 		}
+
 		public boolean hasNext() {
 			return next != null || it.hasNext();
 		}
