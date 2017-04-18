@@ -8,11 +8,8 @@ vec4 materialFetch(const in int component, const in vec2 uv) {
 	return materialFetch(material, component, uv);
 }
 
-vec3 materialDiffuse(const in vec2 uv) {
-	return materialFetch(0, uv).rgb;
-}
-float materialTransparency(const in vec2 uv) {
-	return materialFetch(0, uv).a;
+vec4 materialDiffuseAlpha(const in vec2 uv) {
+	return materialFetch(0, uv);
 }
 vec3 materialSpecular(const in vec2 uv) {
 	return materialFetch(1, uv).rgb;

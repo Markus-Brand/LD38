@@ -37,7 +37,9 @@ uniform int water;
 void main(){
 	vec3 norm = normal;
 
-	vec3 materialColor = materialDiffuse(tex);
+	vec4 materialColorAlpha = materialDiffuseAlpha(tex);
+	vec3 materialColor = materialColorAlpha.rgb;
+	float materialAlpha = materialColorAlpha.a;
 	vec3 specularColor = materialSpecular(tex);
 	vec3 emissionColor = materialEmit(tex);
 	vec3 normalFromMap = materialNormal(tex);
@@ -81,14 +83,10 @@ void main(){
 	result.z = pow(result.z, gi);
 #endif
 
-	if(alpha == 0){
-		color = vec4(result, 1.0f);
-	}else if(alpha == 1){
-		vec4 texColor = vec4(result, materialTransparency(tex));
-		if(texColor.a > 0.01){
-			color = texColor;
-		}else{
-			discard;
-		}
+	vec4 texColor = vec4(result, materialAlpha);
+	if(texColor.a > 0.01){
+		color = texColor;
+	}else{
+		discard;
 	}
 }
