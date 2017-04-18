@@ -11,38 +11,67 @@ import mbeb.opengldefault.gl.texture.Texture2DArray;
 
 /**
  * the look of geometry inside a scene
+ *
+ * The 4 layers are defined as:
+ * (diffuseAlpha / specular(empty) / emission(empty) / normalBump)
  */
 public class Material implements GLBufferWritable {
-	/**
-	 * diffuseAlpha / specular(Shininess) / emission(AO) / normalBump
-	 */
-	private static final int MATERIAL_LAYERS = 4;
 
-	private int shininess = 64; //todo should this also be mappable?
+	/** the exponent for specular lights: controls the hardness-feel of a material */
+	private int shininess = 64;
 
+	/** the texture for this material: multiple layers defining different properties of a material */
 	private final Texture2DArray myTextures;
 
+	/**
+	 * create a new material based on a texture
+	 * @param texture
+	 */
 	public Material(Texture2DArray texture) {
 		myTextures = texture;
 		texture.whileBound((Texture t) -> t.setInterpolates(true) && t.generateMipmaps() && t.setWrapModeR(Texture.WrapMode.CLAMP_TO_BORDER) && t.setBorderColor(Color.BLACK));
 	}
 
+	/**
+	 * construct a new Material based on some images
+	 * @param images the material components (all in same resolution)
+	 */
 	public Material(BufferedImage[] images) {
 		this(new Texture2DArray(images));
 	}
 
+	/**
+	 * construct a new Material based on images in a resource path.
+	 * The images are named <code>path/[imageNumber].extension</code>
+	 * @param path the path to the material
+	 * @param extension the image file extension
+	 * @param amount how many layers this material should use
+	 */
 	public Material(String path, String extension, int amount) {
 		this(Texture.loadBufferedImages(path, extension, amount));
 	}
 
+	/**
+	 * overloaded constructor with "png" as file extension
+	 * @param path the path to the material
+	 * @param amount how many layers this material should use
+	 * @see #Material(String, String, int)
+	 */
 	public Material(String path, int amount) {
 		this(path, "png", amount);
 	}
 
+	/**
+	 * @return the shininess of this material
+	 */
 	public int getShininess() {
 		return shininess;
 	}
 
+	/**
+	 * set a new shininess value for this material (updated on next usage)
+	 * @param shininess
+	 */
 	public void setShininess(int shininess) {
 		this.shininess = shininess;
 	}
@@ -60,13 +89,19 @@ public class Material implements GLBufferWritable {
 	 */
 	public void setUniform(ShaderProgram program, String name) {
 		program.setUniform(name + ".textureLayers", myTextures);
-		program.setUniform(name + ".shininess", shininess);
+		program.setUniform(name + ".shininess", getShininess());
 	}
 
+	/**
+	 * prepare this material for usage
+	 */
 	public void bind() {
 		myTextures.bind();
 	}
 
+	/**
+	 * call this after you are done using this material
+	 */
 	public void unbind() {
 		myTextures.unbind();
 	}
