@@ -10,7 +10,7 @@ import mbeb.opengldefault.gl.vao.VertexArray;
 import mbeb.opengldefault.util.IntPagingMap;
 
 /**
- * Static storage for all objects currently bound to the context.
+ * Static storage for all objects currently bound to the {@link GLContext}.
  *
  * @author Erik, Potti
  * @version 1.0
@@ -191,7 +191,8 @@ public class ContextBindings {
 	}
 
 	/**
-	 * Totally forget a texture
+	 * Remove a Texture absolutely from all bindings.
+	 * Only call this when you do not intend to use the texture anymore.
 	 *
 	 * @param texture
 	 *            the texture to unbind

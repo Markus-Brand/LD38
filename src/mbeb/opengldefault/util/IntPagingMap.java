@@ -13,7 +13,7 @@ public class IntPagingMap<V> extends PagingMap<Integer, V> {
 	 * @param universeCreator an iterator that creates the Page-objects
 	 */
 	public IntPagingMap(Iterator<Integer> universeCreator) {
-		super(universeCreator, PageGatherStrategy.DEPLETE_UNIVERSE);
+		super(universeCreator, PageGatherStrategy.FILL_FREE);
 	}
 	
 	/**

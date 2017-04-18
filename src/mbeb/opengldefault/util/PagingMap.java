@@ -3,7 +3,7 @@ package mbeb.opengldefault.util;
 import java.util.*;
 
 /**
- * a Map with a limited amount of pages that implements lazy outpaging via LIFO
+ * a Map with a limited amount of pages that implements lazy outpaging via FIFO
  * @param <P> the class of the page
  * @param <V> the class of the objects that get paged (values)
  */
@@ -16,11 +16,11 @@ public class PagingMap<P, V> {
 		/**
 		 * prefer creating a new page over unbinding soft-bound objects
 		 */
-		DEPLETE_UNIVERSE,
+		FILL_FREE,
 		/**
 		 * prefer unbinding a soft-bound object over creating a new page
 		 */
-		SMALL_UNIVERSE
+		REPLACE_SOFT
 	}
 	
 	/**
@@ -36,7 +36,7 @@ public class PagingMap<P, V> {
 	}
 	
 	/**
-	 * an in-paged value together with an unbindable-mark
+	 * an in-paged value together with a mark whether it is bound or can be removed from the mapping
 	 */
 	private class Node {
 		private final V value;
@@ -68,18 +68,18 @@ public class PagingMap<P, V> {
 	
 	/**
 	 * tries to find a Page that is empty.
-	 * @return a Page where no object is bound to
+	 * @return a Page that is free (no object bound to it)
 	 * @throws RuntimeException when there are no free pages left anymore
 	 */
 	private P findEmptyPage() {
 		P page = null;
-		if (pageGatherStrategy == PageGatherStrategy.SMALL_UNIVERSE) {
+		if (pageGatherStrategy == PageGatherStrategy.REPLACE_SOFT) {
 			page = findEmptyPageFromExisting();
 			if (page == null) {
-				page = creteNewEmptyPage();
+				page = createNewEmptyPage();
 			}
-		} else if (pageGatherStrategy == PageGatherStrategy.DEPLETE_UNIVERSE){
-			page = creteNewEmptyPage();
+		} else if (pageGatherStrategy == PageGatherStrategy.FILL_FREE){
+			page = createNewEmptyPage();
 			if (page == null) {
 				page = findEmptyPageFromExisting();
 			}
@@ -110,7 +110,7 @@ public class PagingMap<P, V> {
 	 * create a new page object
 	 * @return a new page object, or null if the universe is depleted
 	 */
-	private P creteNewEmptyPage() {
+	private P createNewEmptyPage() {
 		if (!universeCreator.hasNext()) {
 			return null;
 		}
