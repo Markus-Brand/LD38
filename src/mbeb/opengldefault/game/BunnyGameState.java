@@ -1,8 +1,17 @@
 package mbeb.opengldefault.game;
 
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_E;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_Q;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_TAB;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +33,8 @@ import mbeb.opengldefault.gl.GLContext;
 import mbeb.opengldefault.gl.shader.ShaderProgram;
 import mbeb.opengldefault.gl.shader.UBOManager;
 import mbeb.opengldefault.gl.texture.Texture2D;
+import mbeb.opengldefault.gui.TextGUI;
+import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.light.DirectionalLight;
 import mbeb.opengldefault.light.Light;
 import mbeb.opengldefault.light.SpotLight;
@@ -42,6 +53,8 @@ import mbeb.opengldefault.scene.entities.Entity;
 import mbeb.opengldefault.scene.entities.EntityWorld;
 import mbeb.opengldefault.scene.entities.IEntity;
 import mbeb.opengldefault.scene.entities.SpotLightEntity;
+
+import org.joml.*;
 
 public class BunnyGameState implements GameState {
 
@@ -68,15 +81,23 @@ public class BunnyGameState implements GameState {
 
 	SceneObject playerObj, curveObj;
 
+	private TextGUI textGUI;
+
 	Entity spotLightEntity, ple;
 
 	EntityWorld entityWorld;
 
+	TextGUIElement fps;
+
 	@Override
 	public void init() {
 		timePassed = 0;
-		curve = generateRandomBezier();
-		BezierCurve curve2 = generateRandomBezier();
+		final ArrayList<Vector3f> controlPoints = new ArrayList<>();
+		final Random random = new Random();
+		for (int i = 0; i < 10; i++) {
+			controlPoints.add(new Vector3f(random.nextInt(51) - 25, random.nextInt(51) - 25, random.nextInt(51) - 25));
+		}
+		curve = new BezierCurve(controlPoints, ControlPointInputMode.CAMERAPOINTSCIRCULAR, true);
 
 		camera = new Camera(GLContext.getAspectRatio());
 		final Skybox skybox = new Skybox("skybox/mountain");
@@ -122,33 +143,19 @@ public class BunnyGameState implements GameState {
 
 		entityWorld.add(camera).addBehaviour(1, new PlayerControlBehaviour());
 
-		IEntity lastBunnyEntity = createBunnyChain(bunnyScene.getSceneGraph(), entityWorld, bunnyTexture, bunnyAnimMesh, curve);
-		createBunnyChain(bunnyScene.getSceneGraph(), entityWorld, bunnyTexture, bunnyAnimMesh, curve2);
+		curveObj = new SceneObject(new BezierCurveRenderable(curve));
+		curveObj.setShader(curveShader);
+
+		IEntity lastBunnyEntity =
+				createBunnyChain(bunnyScene.getSceneGraph(), entityWorld, bunnyTexture, bunnyAnimMesh, curveObj);
 
 		//entityWorld.add(lamp).addBehaviour(1,
 		//		new BoneTrackingBehaviour(playerObj, animPlayer.getRenderable(), "Hand.L", new Vector3f(0, 0.5f, 0))
 		//				.fixedDirection());
 
-		curveObj = new SceneObject(new BezierCurveRenderable(curve));
-		curveObj.setShader(curveShader);
-		SceneObject curveObj2 = new SceneObject(new BezierCurveRenderable(curve2));
-		curveObj2.setShader(curveShader);
-
-		//bunnyScene.getSceneGraph().addSubObject(playerObj);
 		bunnyScene.getSceneGraph().addSubObject(curveObj);
-		//bunnyScene.getSceneGraph().addSubObject(box);
-		//bunnyScene.getSceneGraph().addSubObject(lamp);
-
 		bunnyScene.getSceneGraph().setShader(animatedShader);
 
-		//a light on the hand
-		//PointLight pl = new PointLight(new Color(0, 245, 5), new Vector3f(), 75);
-		//ple = new PointLightEntity(pl);
-		//bunnyScene.getLightManager().addLight(pl);
-		//ple.addBehaviour(1, new ParentBehaviour(lamp, new Vector3f(0, -1.5f, 0)));
-
-		//pl = new PointLight(Color.GREEN, new Vector3f(0, 10, 0), 1000);
-		//bunnyScene.getLightManager().addLight(pl);
 		DirectionalLight dl = new DirectionalLight(new Vector3f(1, 0.9f, 0.5f), new Vector3f(-0.1f, -1f, 0));
 		bunnyScene.getLightManager().addLight(dl);
 
@@ -166,6 +173,12 @@ public class BunnyGameState implements GameState {
 		animPlayer.registerAnimation("jogging", "running", 25, 2, 0.5);
 		animPlayer.registerAnimation("hat", "wave", 10, 0.5, 0.5);
 
+		textGUI = new TextGUI(new Font("Comic Sans MS", Font.PLAIN, 128));
+		ShaderProgram guiShader = new ShaderProgram("gui.vert", "gui.frag");
+		textGUI.setShader(guiShader);
+		fps = textGUI.addText("0", new Vector2f(), 0.03f);
+		fps.setColor(Color.ORANGE);
+		fps.setPositionRelativeToScreen(0, 0);
 		for (AnimationStateFacade facade : animBunnyList) {
 			facade.registerAnimation("ohr1", "OhrenFlackern1", 4);
 			facade.registerAnimation("ohr2", "OhrenFlackern2", 4);
@@ -174,18 +187,9 @@ public class BunnyGameState implements GameState {
 
 	}
 
-	private BezierCurve generateRandomBezier() {
-		final ArrayList<Vector3f> controlPoints = new ArrayList<>();
-		final Random random = new Random();
-		for (int i = 0; i < 10; i++) {
-			controlPoints.add(new Vector3f(random.nextInt(51) - 25, random.nextInt(51) - 25, random.nextInt(51) - 25));
-		}
-		return new BezierCurve(controlPoints, ControlPointInputMode.CAMERAPOINTSCIRCULAR, true);
-	}
-
 	/**
 	 * creates a list of following bunnys
-	 * 
+	 *
 	 * @param bunnyParent
 	 *            the SceneOIbject to add the list to
 	 * @param world
@@ -198,20 +202,22 @@ public class BunnyGameState implements GameState {
 	 *            the curve to follow
 	 * @return last bunny
 	 */
-	private IEntity createBunnyChain(SceneObject bunnyParent, EntityWorld world, Texture2D bunnyTexture, AnimatedMesh renderable, BezierCurve curve) {
+	private IEntity createBunnyChain(SceneObject bunnyParent, EntityWorld world, Texture2D bunnyTexture,
+			AnimatedMesh renderable, SceneObject curve) {
 		AnimationStateFacade mainBunnyFacade = new AnimationStateFacade(renderable);
 		animBunnyList.add(mainBunnyFacade);
 		final SceneObject mainBunnyObj = new SceneObject(new TexturedRenderable(mainBunnyFacade, bunnyTexture));
 		bunnyParent.addSubObject(mainBunnyObj);
 
 		SceneObject toFollowObject = mainBunnyObj;
-		IEntity toFollow = world.add(toFollowObject).addBehaviour(1, new BezierBehaviour(curve, 3));
+		IEntity toFollow = world.add(toFollowObject).addBehaviour(1, new BezierBehaviour(curve, 3.0f));
 
 		int bunnyCount = 100;
 		for (int b = 0; b < bunnyCount; b++) {
 			AnimationStateFacade followingBunnyFacade = new AnimationStateFacade(renderable);
 			animBunnyList.add(followingBunnyFacade);
-			SceneObject followerObject = new SceneObject(new TexturedRenderable(followingBunnyFacade, bunnyTexture), createStartMatrix());
+			SceneObject followerObject =
+					new SceneObject(new TexturedRenderable(followingBunnyFacade, bunnyTexture), createStartMatrix());
 			bunnyParent.addSubObject(followerObject);
 			toFollow = world.add(followerObject).addBehaviour(1, new SmoothFollowingBehaviour(toFollow, 1f));
 			//.addBehaviour(1, new FollowingBehaviour(toFollow, 0.5f).limited(5))
@@ -262,13 +268,27 @@ public class BunnyGameState implements GameState {
 		bunnyScene.update(deltaTime);
 
 		if (KeyBoard.isKeyDown(GLFW_KEY_ESCAPE)) {
+			KeyBoard.releaseAll();
 			nextGameState = GameStateIdentifier.MAIN_MENU;
 		}
 	}
 
 	@Override
 	public void render() {
-		bunnyScene.render(KeyBoard.isKeyDown(GLFW_KEY_TAB)); //bunnyScene.render(); to render without BoundingBoxes
+		glClearColor(0.05f, 0.075f, 0.075f, 1);
+		GLErrors.checkForError(TAG, "glClearColor");
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		GLErrors.checkForError(TAG, "glClear");
+
+		glViewport(0, 0, GLContext.getFramebufferWidth(), GLContext.getFramebufferHeight());
+		GLErrors.checkForError(TAG, "glViewport");
+		bunnyScene.render(KeyBoard.isKeyDown(GLFW_KEY_TAB));
+		textGUI.render();
+	}
+
+	@Override
+	public void clear() {
+
 	}
 
 	@Override
@@ -283,7 +303,8 @@ public class BunnyGameState implements GameState {
 
 	@Override
 	public void open() {
-		//GLContext.hideCursor();
+		GLContext.hideCursor();
+		bunnyScene.getLightManager().rewriteUBO();
 	}
 
 }

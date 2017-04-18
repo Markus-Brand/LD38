@@ -4,7 +4,6 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import mbeb.opengldefault.controls.Mouse;
-import mbeb.opengldefault.scene.entities.Entity;
 import mbeb.opengldefault.scene.entities.IEntity;
 
 import java.lang.Math;
