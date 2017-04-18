@@ -18,7 +18,6 @@ import java.util.Random;
 
 import mbeb.opengldefault.animation.AnimatedMesh;
 import mbeb.opengldefault.animation.AnimationStateFacade;
-import mbeb.opengldefault.animation.BoneTransformation;
 import mbeb.opengldefault.camera.Camera;
 import mbeb.opengldefault.camera.ICamera;
 import mbeb.opengldefault.controls.KeyBoard;
@@ -63,7 +62,7 @@ public class BunnyGameState implements GameState {
 	GameStateIdentifier nextGameState;
 
 	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1);
-	
+
 	private float timePassed;
 
 	private TextGUIElement fps;
@@ -84,8 +83,9 @@ public class BunnyGameState implements GameState {
 
 	SceneObject playerObj, bunny0, bunny1, bunny2, bunny3, bunny4, curveObj;
 
-	Entity mainBunny, followingBunny1, followingBunny2, followingBunny3, followingBunny4, camEntity, playerEntity, spotLightEntity, ple, lampEntity;
-	
+	Entity mainBunny, followingBunny1, followingBunny2, followingBunny3, followingBunny4, camEntity, playerEntity,
+			spotLightEntity, ple, lampEntity;
+
 	private TextGUI textGUI;
 
 	@Override
@@ -183,15 +183,14 @@ public class BunnyGameState implements GameState {
 
 		bunnyScene.getSceneGraph().setShader(animatedShader);
 
-
 		//a light on the hand
 		PointLight pl = new PointLight(new Color(240, 245, 255), new Vector3f(), 50);
 		ple = new PointLightEntity(pl);
 		bunnyScene.getLightManager().addLight(pl);
 		ple.addBehaviour(1, new ParentBehaviour(lamp, new Vector3f(0, -0.5f, 0)));
 
-		lampEntity.addBehaviour(1, new BoneTrackingBehaviour(playerObj, animPlayer.getRenderable(), "Hand.L", new Vector3f(0, 0.5f, 0)).fixedDirection());
-
+		lampEntity.addBehaviour(1, new BoneTrackingBehaviour(playerObj, animPlayer.getRenderable(), "Hand.L",
+				new Vector3f(0, 0.5f, 0)).fixedDirection());
 
 		//pl = new PointLight(Color.GREEN, new Vector3f(0, 10, 0), 1000);
 		//bunnyScene.getLightManager().addLight(pl);
@@ -235,7 +234,7 @@ public class BunnyGameState implements GameState {
 		textGUI.update(deltaTime);
 
 		timePassed += deltaTime;
-		
+
 		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
 			animPlayer.slideSpeed("jogging", 50, deltaTime, 5);
 		} else {
@@ -300,6 +299,7 @@ public class BunnyGameState implements GameState {
 	@Override
 	public void open() {
 		GLContext.hideCursor();
+		bunnyScene.getLightManager().rewriteUBO();
 	}
 
 }

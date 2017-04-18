@@ -10,7 +10,8 @@ import mbeb.opengldefault.gl.buffer.UniformBuffer;
 import mbeb.opengldefault.gl.shader.*;
 
 /**
- * I'm an abstract class blueprint used for classes managing lights of one type (e.g. directional, point or spot lights) and there different parameters (e.g. UBOID, capacity, storage size...).
+ * I'm an abstract class blueprint used for classes managing lights of one type (e.g. directional, point or spot lights)
+ * and there different parameters (e.g. UBOID, capacity, storage size...).
  * I'm encapsulating all basic functions probably useful for a concrete LightTypeManager.
  *
  * @author Merlin (and Erik and Markus but if something is wrong blame him and only him) :D
@@ -36,7 +37,8 @@ public abstract class LightTypeManager {
 	 * @param UBO
 	 * @param lightCapacity
 	 */
-	public LightTypeManager(final String shaderLightTypeParameterName, final int lightBlockSize, final UniformBuffer UBO, final int lightCapacity) {
+	public LightTypeManager(final String shaderLightTypeParameterName, final int lightBlockSize,
+			final UniformBuffer UBO, final int lightCapacity) {
 		this.shaderLightTypeParameterName = shaderLightTypeParameterName;
 		this.lightBlockSize = lightBlockSize;
 		this.lightCapacity = lightCapacity;
@@ -48,11 +50,11 @@ public abstract class LightTypeManager {
 	/**
 	 * adjusts capacity of UBO and keeps it's data up to date
 	 */
-	private void resizeBuffer() {
+	void resizeBuffer() {
 		UBO.bind();
 		UBO.setBufferSize(Constants.BLOCK_SIZE + getBufferSize());
 		UBO.bindBufferBase();
-		
+
 		GLBufferWriter combinedWriter = UBO.writer();
 		saveBufferSize(combinedWriter);
 		bufferData(combinedWriter);
@@ -65,14 +67,14 @@ public abstract class LightTypeManager {
 	private int getBufferSize() {
 		return lightCapacity * lightBlockSize * Constants.BLOCK_SIZE;
 	}
-	
+
 	/**
 	 * stores the buffer size at the beginning of the UBO
 	 */
 	private void saveBufferSize() {
 		saveBufferSize(UBO.writer(Constants.INT_SIZE)).flush(GLBufferWriter.WriteType.SUB_DATA);
 	}
-	
+
 	/**
 	 * stores the buffer size at the beginning of the UBO
 	 */
