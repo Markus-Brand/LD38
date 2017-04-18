@@ -1,10 +1,10 @@
 vec3 calcSpotLight(
-    const in SpotLight light,
-    const in vec3 norm,
-    const in vec3 viewDir,
-    const in vec3 materialColor,
-    const in vec3 specularColor,
-    const in int shininess
+	const in SpotLight light,
+	const in vec3 norm,
+	const in vec3 viewDir,
+	const in vec3 materialColor,
+	const in vec3 specularColor,
+	const in int shininess
 ) {
 	vec3 direction = light.position - pos;
 
@@ -26,7 +26,7 @@ vec3 calcSpotLight(
 	specular *= intensity * 2;
 
 	diffuse  *= attenuation;
-	specular *= attenuation;  
+	specular *= attenuation;
 
 	return materialColor * diffuse + specularColor * specular;
 }

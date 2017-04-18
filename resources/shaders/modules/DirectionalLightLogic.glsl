@@ -1,10 +1,10 @@
 vec3 calcDirectionalLight(
-    const in DirectionalLight light,
-    const in vec3 norm,
-    const in vec3 viewDir,
-    const in vec3 materialColor,
-    const in vec3 specularColor,
-    const in int shininess
+	const in DirectionalLight light,
+	const in vec3 norm,
+	const in vec3 viewDir,
+	const in vec3 materialColor,
+	const in vec3 specularColor,
+	const in int shininess
 ) {
 	vec3 direction = normalize(-light.direction);
 

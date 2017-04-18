@@ -19,5 +19,5 @@ void main(){
 	normal = normalize(mat3(model) * normalVec);
 	vec3 tangent = mat3(model) * tangentVec;
 
-    #include modules/tangentSpace.glsl
+	#include modules/tangentSpace.glsl
 }
