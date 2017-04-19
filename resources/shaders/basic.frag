@@ -77,10 +77,10 @@ void main(){
 
 #ifdef GAMMA_CORRECTION
 	float gamma = 2.2;
-	float gi = 1.0 / gamma;
-	result.x = pow(result.x, gi);
-	result.y = pow(result.y, gi);
-	result.z = pow(result.z, gi);
+	float gammaInverse = 1.0 / gamma;
+	result.x = pow(result.x, gammaInverse);
+	result.y = pow(result.y, gammaInverse);
+	result.z = pow(result.z, gammaInverse);
 #endif
 
 	vec4 texColor = vec4(result, materialAlpha);
