@@ -1,13 +1,13 @@
 package mbeb.opengldefault.rendering.renderable;
 
-import mbeb.opengldefault.logging.GLErrors;
-import org.joml.*;
-import org.lwjgl.opengl.*;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.lwjgl.opengl.GL11;
 
-import mbeb.opengldefault.curves.*;
-import mbeb.opengldefault.rendering.io.*;
-import mbeb.opengldefault.gl.shader.*;
-import mbeb.opengldefault.scene.*;
+import mbeb.opengldefault.curves.BezierCurve;
+import mbeb.opengldefault.gl.shader.ShaderProgram;
+import mbeb.opengldefault.logging.GLErrors;
+import mbeb.opengldefault.scene.BoundingBox;
 
 /**
  * Renders a {@link BezierCurve}
@@ -34,7 +34,8 @@ public class BezierCurveRenderable implements IRenderable {
 	 */
 	private BoundingBox generateBoundingBox() {
 		final Vector3f curveStart = curve.getControlPoints().get(0);
-		float minX = curveStart.x, minY = curveStart.y, minZ = curveStart.z, maxX = curveStart.x, maxY = curveStart.y, maxZ = curveStart.z;
+		float minX = curveStart.x, minY = curveStart.y, minZ = curveStart.z;
+		float maxX = curveStart.x, maxY = curveStart.y, maxZ = curveStart.z;
 
 		for (final Vector3f curvePoint : curve.getControlPoints()) {
 			minX = java.lang.Math.min(minX, curvePoint.x);
@@ -71,5 +72,9 @@ public class BezierCurveRenderable implements IRenderable {
 	@Override
 	public BoundingBox getBoundingBox() {
 		return renderable.getBoundingBox();
+	}
+
+	public BezierCurve getCurve() {
+		return curve;
 	}
 }

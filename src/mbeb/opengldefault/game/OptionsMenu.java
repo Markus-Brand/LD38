@@ -193,7 +193,7 @@ public class OptionsMenu implements GameState {
 	}
 
 	private void addButton(float relativeY, Field option, boolean intialValue) {
-		Rectangle bounding = new Rectangle(new Vector2f(), new Vector2f(1.6f, 0.16f));
+		Rectangle bounding = new Rectangle(new Vector2f(), new Vector2f(0.3f, 0.16f));
 		bounding.setPositionRelativeTo(new Rectangle(new Vector2f(-1), new Vector2f(2)), 0.5f, relativeY);
 
 		BooleanOptionButton button = new BooleanOptionButton(bounding, option, intialValue);

@@ -13,7 +13,7 @@ import mbeb.opengldefault.shapes.Rectangle;
 
 /**
  * A Class that adds a Button in the Options for changing a boolean type field
- * 
+ *
  * @author Markus
  */
 public class BooleanOptionButton extends Switch {
@@ -34,23 +34,23 @@ public class BooleanOptionButton extends Switch {
 
 	/**
 	 * Show the guiElements of this button in the guis
-	 * 
+	 *
 	 * @param atlasGUI
 	 * @param textGUI
 	 */
 	public void show(AtlasGUI atlasGUI, TextGUI textGUI) {
 		buttonAtlas =
 				atlasGUI.addAtlasGUIElement(2 + (isPressed ? 1 : 0), new Vector2f(),
-						new Vector2f(0.3f));
+						new Vector2f(bounding.getWidth()));
 		buttonAtlas.setPositionRelativeTo(bounding, 0.5f, 0.5f);
 		buttonAtlas.setColor(new Color(30, 30, 30), 0);
 		buttonAtlas.setColor(Color.DARK_GRAY, 200);
 		buttonAtlas.setColor(Color.LIGHT_GRAY, 220);
 		buttonAtlas.setColor(Color.GRAY, 255);
 
-		buttonText = textGUI.addText(option.getName(), new Vector2f());
+		buttonText = textGUI.addText(option.getName(), new Vector2f(), bounding.getHeight() / 2);
 		buttonText.setColor(Color.BLACK);
-		buttonText.setPositionRelativeTo(bounding, 0.5f, 0.5f);
+		onButtonChanged();
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class BooleanOptionButton extends Switch {
 
 	@Override
 	public void gotFocus() {
-		buttonAtlas.setColor(Color.BLUE, 220);
+		buttonAtlas.setColor(new Color(0.8f, 0.9f, 0.8f), 220);
 	}
 
 	@Override
@@ -73,10 +73,10 @@ public class BooleanOptionButton extends Switch {
 		if (buttonAtlas != null && buttonText != null) {
 			if (isPressed) {
 				buttonAtlas.setAtlasIndex(3);
-				buttonText.setPositionRelativeTo(bounding, 0.5f, 0.45f);
+				buttonText.setPositionRelativeTo(bounding, 0.5f, 0.35f);
 			} else {
 				buttonAtlas.setAtlasIndex(2);
-				buttonText.setPositionRelativeTo(bounding, 0.5f, 0.55f);
+				buttonText.setPositionRelativeTo(bounding, 0.5f, 0.65f);
 			}
 		}
 

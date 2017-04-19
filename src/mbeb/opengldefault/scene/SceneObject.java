@@ -117,6 +117,10 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 		return transformation;
 	}
 
+	public void setTransformation(BoneTransformation transformation) {
+		this.transformation = transformation;
+	}
+
 	/**
 	 * add SubObjects via addSubObject instead
 	 *
@@ -299,6 +303,7 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 
 	/**
 	 * <<<<<<< HEAD
+	 * <<<<<<< HEAD
 	 *
 	 * @param newPosition
 	 *            a new position for this sceneObject (in global space)
@@ -306,6 +311,10 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 	 * @param newPosition
 	 *            a new position for this sceneObject (in global space)
 	 *            >>>>>>> hotfix/object-deletion-fix
+	 *            =======
+	 * @param newPosition
+	 *            a new position for this sceneObject (in global space)
+	 *            >>>>>>> master
 	 */
 	public void setGlobalPosition(Vector3f newPosition) {
 		Matrix4f inverseMatrix = getParentGlobalTranform().asMatrix().invert(new Matrix4f());

@@ -1,11 +1,13 @@
 package mbeb.opengldefault.rendering.io;
 
-import mbeb.opengldefault.logging.Log;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import mbeb.opengldefault.logging.Log;
 
 /**
  * Parse the content of a simple YAML file
@@ -23,7 +25,7 @@ public class YAMLParser {
 
 	/**
 	 * parse the yaml file if not happened already
-	 *
+	 * 
 	 * @return the YAML root-node
 	 */
 	public YAMLNode getRoot() {
@@ -40,7 +42,12 @@ public class YAMLParser {
 
 	/**
 	 * parse the content of a Node
+	 * <<<<<<< HEAD
 	 *
+	 =======
+	 * 
+	 >>>>>>> master
+	 * 
 	 * @param lines
 	 *            the Content iterator
 	 * @param depth

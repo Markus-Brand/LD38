@@ -3,16 +3,17 @@ package mbeb.opengldefault.rendering.renderable;
 import static mbeb.opengldefault.constants.Constants.FLOAT_SIZE;
 import static org.lwjgl.opengl.GL11.*;
 
+import org.joml.Matrix4f;
+
 import mbeb.opengldefault.gl.buffer.ElementBuffer;
 import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import mbeb.opengldefault.gl.buffer.VertexBuffer;
+import mbeb.opengldefault.gl.shader.ShaderProgram;
 import mbeb.opengldefault.gl.vao.VertexArray;
-import org.joml.*;
-
-import mbeb.opengldefault.logging.*;
-import mbeb.opengldefault.rendering.io.*;
-import mbeb.opengldefault.gl.shader.*;
-import mbeb.opengldefault.scene.*;
+import mbeb.opengldefault.logging.GLErrors;
+import mbeb.opengldefault.logging.Log;
+import mbeb.opengldefault.rendering.io.DataFragment;
+import mbeb.opengldefault.scene.BoundingBox;
 
 /**
  * Leaf Renderable - an actual OpenGL-VAO that can be rendered
@@ -61,6 +62,7 @@ public class VAORenderable implements IRenderable {
 
 	/**
 	 * copy constructor
+	 * 
 	 * @param reference
 	 */
 	public VAORenderable(VAORenderable reference) {
@@ -73,7 +75,9 @@ public class VAORenderable implements IRenderable {
 	}
 
 	/**
-	 * Constructor for an empty Renderable: Use the DataWriter to add data, set a BoundingBox and don't forget to set the AttribPointers
+	 * Constructor for an empty Renderable: Use the DataWriter to add data, set a BoundingBox and don't forget to set
+	 * the AttribPointers
+	 * 
 	 * @param vertexCount
 	 * @param format
 	 */
@@ -89,6 +93,7 @@ public class VAORenderable implements IRenderable {
 
 	/**
 	 * set a boundingBox for this Renderable.
+	 * 
 	 * @param boundingBox
 	 */
 	public void setBoundingBox(BoundingBox boundingBox) {
@@ -105,7 +110,9 @@ public class VAORenderable implements IRenderable {
 
 	/**
 	 * set a dedicated transformation for this mesh
-	 * @param transform this meshes Transformation
+	 * 
+	 * @param transform
+	 *            this meshes Transformation
 	 */
 	public void setTransform(Matrix4f transform) {
 		this.transform = transform;
@@ -121,6 +128,7 @@ public class VAORenderable implements IRenderable {
 	/**
 	 * get the ElementBuffer for this Renderable. If there was none, it will be created.
 	 * If you never call this method, this Renderable will not render indexed.
+	 * 
 	 * @return the ElementBuffer for this Renderable
 	 */
 	public ElementBuffer getEBO() {
@@ -136,6 +144,7 @@ public class VAORenderable implements IRenderable {
 
 	/**
 	 * get the VertexBuffer for this Renderable. If there was none, it will be created.
+	 * 
 	 * @return the VertexBuffer for this Renderable
 	 */
 	public VertexBuffer getVBO() {
@@ -182,21 +191,19 @@ public class VAORenderable implements IRenderable {
 	}
 
 	/**
-	 *
 	 * @return a writer inside this renderables vbo
 	 */
 	public GLBufferWriter dataWriter() {
-		return getVBO().writer(FLOAT_SIZE * vertexCount * DataFragment.getTotalSize(dataFormat))
-				.setSpacingMode(false);
+		return getVBO().writer(FLOAT_SIZE * vertexCount * DataFragment.getTotalSize(dataFormat)).setSpacingMode(false);
 	}
 
 	/**
 	 * If you never call this one, this Renderable will use glDrawArrays instead of glDrawElements
+	 * 
 	 * @return a writer inside this renderables index buffer.
 	 */
 	public GLBufferWriter indicesWriter() {
-		return getEBO().writer(FLOAT_SIZE * vertexCount)
-				.setSpacingMode(false);
+		return getEBO().writer(FLOAT_SIZE * vertexCount).setSpacingMode(false);
 	}
 
 	/**
@@ -211,6 +218,9 @@ public class VAORenderable implements IRenderable {
 		VBO.unbind();
 	}
 
+	/**
+	 * call this when you are done adding data to the buffers: This will clean up (delete the buffer objects)
+	 */
 	public void finishWriting() {
 		VBO.delete();
 		if (EBO != null) {

@@ -18,7 +18,8 @@ public class BoneTransformation {
 	}
 
 	public static Matrix4f matrixFromAI(AIMatrix4x4 aimat) {
-		return new Matrix4f(aimat.a1(), aimat.b1(), aimat.c1(), aimat.d1(), aimat.a2(), aimat.b2(), aimat.c2(), aimat.d2(), aimat.a3(), aimat.b3(), aimat.c3(), aimat.d3(), aimat.a4(),
+		return new Matrix4f(aimat.a1(), aimat.b1(), aimat.c1(), aimat.d1(), aimat.a2(), aimat.b2(), aimat.c2(),
+				aimat.d2(), aimat.a3(), aimat.b3(), aimat.c3(), aimat.d3(), aimat.a4(),
 				aimat.b4(), aimat.c4(), aimat.d4());
 	}
 
@@ -63,6 +64,7 @@ public class BoneTransformation {
 
 	/**
 	 * create a new transformation which only consists of a translation
+	 * 
 	 * @param position
 	 */
 	public BoneTransformation(Vector3f position) {
@@ -71,6 +73,7 @@ public class BoneTransformation {
 
 	/**
 	 * create a new transformation that translates and rotates
+	 * 
 	 * @param position
 	 * @param rotation
 	 */
@@ -79,7 +82,9 @@ public class BoneTransformation {
 	}
 
 	/**
-	 * create a new BoneTransformation based on the loc-rot-scale - components. Leave null on components you don't intend to use
+	 * create a new BoneTransformation based on the loc-rot-scale - components. Leave null on components you don't
+	 * intend to use
+	 * 
 	 * @param position
 	 * @param rotation
 	 * @param scale
@@ -94,6 +99,7 @@ public class BoneTransformation {
 
 	/**
 	 * create a new BoneTransformation based on a Matrix
+	 * 
 	 * @param matrix
 	 */
 	public BoneTransformation(Matrix4f matrix) {

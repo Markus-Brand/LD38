@@ -1,18 +1,26 @@
 package mbeb.opengldefault.rendering.io;
 
-import java.io.*;
-import java.nio.file.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import mbeb.opengldefault.gl.GLContext;
-import mbeb.opengldefault.gl.buffer.GLBufferWriter;
-import org.joml.*;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import org.lwjgl.assimp.*;
 
 import mbeb.opengldefault.animation.*;
-import mbeb.opengldefault.logging.*;
-import mbeb.opengldefault.rendering.renderable.*;
-import mbeb.opengldefault.scene.*;
+import mbeb.opengldefault.gl.GLContext;
+import mbeb.opengldefault.gl.buffer.GLBufferWriter;
+import mbeb.opengldefault.logging.Log;
+import mbeb.opengldefault.rendering.renderable.IRenderable;
+import mbeb.opengldefault.rendering.renderable.VAORenderable;
+import mbeb.opengldefault.scene.BoundingBox;
 
 /**
  * Contains logic to create Renderables from Files
@@ -105,8 +113,7 @@ public class ObjectLoader {
 	 */
 	private void adjustBoneAnimationPriorities(Animation anim, Bone bone, YAMLParser.YAMLNode boneNode) {
 		if (bone.getName().toLowerCase().contains(boneNode.getName().toLowerCase())) {
-			bone.foreach((Bone ancestor) ->
-					anim.setBonePriority(ancestor, Integer.valueOf(boneNode.getData())));
+			bone.foreach((Bone ancestor) -> anim.setBonePriority(ancestor, Integer.valueOf(boneNode.getData())));
 		} else {
 			for (Bone child : bone.getChildren()) {
 				adjustBoneAnimationPriorities(anim, child, boneNode);
@@ -364,18 +371,15 @@ public class ObjectLoader {
 					AIQuatKey rot = node.mRotationKeys().get(key);
 					AIVectorKey scale = node.mScalingKeys().get(key);
 
-					BoneTransformation transform = new BoneTransformation(
-							new Vector3f(pos.mValue().x(), pos.mValue().y(), pos.mValue().z()),
-							new Quaternionf(rot.mValue().x(), rot.mValue().y(), rot.mValue().z(), rot.mValue().w()),
-							new Vector3f(scale.mValue().x(), scale.mValue().y(), scale.mValue().z())
-							);
-					KeyFrame keyFrame = new KeyFrame(
-							pos.mTime(),
-							new Pose(
-									animMesh.getSkeleton(),
-									animMesh.getTransform()).put(boneName, transform
-									)
-							);
+					BoneTransformation transform =
+							new BoneTransformation(new Vector3f(pos.mValue().x(), pos.mValue().y(), pos.mValue().z()),
+									new Quaternionf(rot.mValue().x(), rot.mValue().y(), rot.mValue().z(), rot.mValue()
+											.w()), new Vector3f(scale.mValue().x(), scale.mValue().y(), scale.mValue()
+											.z()));
+					KeyFrame keyFrame =
+							new KeyFrame(pos.mTime(), new Pose(animMesh.getSkeleton(), animMesh.getTransform()).put(
+									boneName, transform));
+
 					anim.mergeKeyFrame(keyFrame);
 				}
 				node.close();
