@@ -1,67 +1,74 @@
 package mbeb.opengldefault.gui.elements.buttons;
 
-import java.awt.Color;
+import org.lwjgl.glfw.GLFW;
 
-import mbeb.opengldefault.gui.elements.GUIElement;
+import mbeb.opengldefault.controls.IFocusable;
+import mbeb.opengldefault.controls.Mouse;
+import mbeb.opengldefault.shapes.Rectangle;
 
 /**
  * An abstract class that is used to define the logic of a Button
  *
  * @author Markus
  */
-public abstract class AbstractButton {
+public abstract class AbstractButton implements IFocusable {
 
-	protected boolean selected;
-
+	/**
+	 * Is this button currently pressed
+	 */
 	protected boolean isPressed;
 
-	protected GUIElement referencedElement;
+	protected Rectangle bounding;
 
-	protected static float minClickTime = 0.2f;
+	private boolean releasedMouseSinceLastButtonPress;
 
-	protected float timeSinceLastPress = 0;
+	public AbstractButton(Rectangle bounding, boolean initialState) {
+		this.isPressed = initialState;
+		this.bounding = bounding;
+		releasedMouseSinceLastButtonPress = true;
+	}
 
-	protected Color normalColor;
-	protected Color pressedColor;
-	protected Color hoveringColor;
-
-	public AbstractButton(GUIElement element, boolean initialState, Color normalColor,
-			Color pressedColor, Color hoveringColor) {
-		this.setPressed(initialState);
-		referencedElement = element;
-		this.pressedColor = pressedColor;
-		this.normalColor = normalColor;
-		this.hoveringColor = hoveringColor;
+	@Override
+	public boolean keepFocus() {
+		return !releasedMouseSinceLastButtonPress;
 	}
 
 	public void update(double deltaTime) {
-		setColor();
-		referencedElement.update(deltaTime);
-	}
-
-	protected void setColor() {
-		if (selected) {
-			referencedElement.setColor(hoveringColor);
-		} else {
-			if (isPressed) {
-				referencedElement.setColor(pressedColor);
+		if (releasedMouseSinceLastButtonPress) {
+			if (bounding.contains(Mouse.getNormalizedDeviceCoordinates())) {
+				requestFocus();
+				if (hasFocus()) {
+					if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
+						wasPressed();
+						releasedMouseSinceLastButtonPress = false;
+					}
+				}
 			} else {
-				referencedElement.setColor(normalColor);
+				releaseFocus();
+			}
+		} else {
+			if (!Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
+				wasReleased();
+				releasedMouseSinceLastButtonPress = true;
 			}
 		}
 	}
 
-	public abstract void onButtonPress();
+	public abstract void wasReleased();
 
-	public static void setMinClickTime(float minClickTime) {
-		AbstractButton.minClickTime = minClickTime;
-	}
+	public abstract void wasPressed();
+
+	public abstract void onButtonChanged();
 
 	public boolean isPressed() {
 		return isPressed;
 	}
 
 	public void setPressed(boolean isPressed) {
+		boolean changed = this.isPressed != isPressed;
 		this.isPressed = isPressed;
+		if (changed) {
+			onButtonChanged();
+		}
 	}
 }

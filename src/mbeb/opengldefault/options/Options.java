@@ -13,14 +13,17 @@ import java.util.Map;
 import java.util.Set;
 
 import mbeb.opengldefault.game.OptionsMenu;
+import mbeb.opengldefault.logging.Log;
 import mbeb.opengldefault.reflection.ClassFinder;
 
 /**
  * Class containing static methods for loading and saving options
- * 
+ *
  * @author Markus
  */
 public class Options {
+
+	private static final String TAG = "Options";
 
 	/**
 	 * File to save the options in the form of a mapping from Field names to their serialized values
@@ -29,7 +32,7 @@ public class Options {
 
 	/**
 	 * Loads all Options and adds them to a OptionsMenu
-	 * 
+	 *
 	 * @param menu
 	 *            the OptionsMenu that will manage the options
 	 */
@@ -39,7 +42,7 @@ public class Options {
 			Option option = field.getAnnotation(Option.class);
 			menu.addOption(option.category(), field);
 			if (!options.containsKey(field.getName())) {
-				System.out.println("There is no option in the option file for: " + field.getName());
+				Log.error(TAG, "There is no option in the option file for: " + field.getName());
 				continue;
 			}
 			loadField(options.get(field.getName()), field);
@@ -48,7 +51,7 @@ public class Options {
 
 	/**
 	 * Loads a single field by interpreting the value String based on the Fields type
-	 * 
+	 *
 	 * @param value
 	 *            the String containing the seralized value of the option
 	 * @param field
@@ -56,7 +59,6 @@ public class Options {
 	 */
 	private static void loadField(String value, Field field) {
 		try {
-			System.out.println("Pre: " + field.get(null));
 			if (int.class.isAssignableFrom(field.getType())) {
 				field.set(null, Integer.parseInt(value));
 			} else if (float.class.isAssignableFrom(field.getType())) {
@@ -66,9 +68,8 @@ public class Options {
 			} else if (boolean.class.isAssignableFrom(field.getType())) {
 				field.set(null, Boolean.parseBoolean(value));
 			} else {
-				System.out.println(field.getName() + " has a type that is not supported: " + field.getType());
+				Log.error(TAG, field.getName() + " has a type that is not supported: " + field.getType());
 			}
-			System.out.println("Post: " + field.get(null));
 		} catch(IllegalArgumentException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
@@ -109,7 +110,7 @@ public class Options {
 
 	/**
 	 * Returns a @{link Map} for the name of the option @{link Field}s to their serialized values.
-	 * 
+	 *
 	 * @return a @{link Map} for the name of the option @{link Field}s to their serialized values
 	 */
 	private static Map<String, String> getOptionMap() {
@@ -135,13 +136,13 @@ public class Options {
 
 	/**
 	 * Returns a @{link Set} Set with all @{link Field}s with a Option Annotation in the Project
-	 * 
+	 *
 	 * @return a @{link Set} Set with all @{link Field}s with a Option Annotation in the Project
 	 */
 	private static Set<Field> findOptions() {
 		Set<Field> set = new HashSet<>();
 
-		for (Class<?> c : ClassFinder.find("mbeb")) {
+		for (Class<?> c : ClassFinder.findAllClassesInPackage("mbeb")) {
 			for (Field field : c.getDeclaredFields()) {
 				if (field.isAnnotationPresent(Option.class)
 						&& java.lang.reflect.Modifier.isStatic(field.getModifiers())) {

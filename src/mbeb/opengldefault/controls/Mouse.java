@@ -12,6 +12,8 @@ public class Mouse {
 	private static Vector2f cursorPos;
 	private static boolean[] mouseDown;
 
+	private static IFocusable focus;
+
 	static {
 		cursorPos = new Vector2f();
 		releaseAll();
@@ -69,7 +71,7 @@ public class Mouse {
 
 	/**
 	 * Returns the mouse position in normalized device coordinates ([-1, 1], [-1, 1])
-	 * 
+	 *
 	 * @return the mouse position in normalized device coordinates
 	 */
 	public static Vector2f getNormalizedDeviceCoordinates() {
@@ -78,5 +80,42 @@ public class Mouse {
 
 	public static void releaseAll() {
 		mouseDown = new boolean[32];
+	}
+
+	public static boolean requestFocus(IFocusable focus) {
+		if (getFocus() == null || !getFocus().keepFocus()) {
+			setFocus(focus);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * @return the focus
+	 */
+	public static IFocusable getFocus() {
+		return focus;
+	}
+
+	/**
+	 * @param focus
+	 *            the focus to set
+	 */
+	public static void setFocus(IFocusable focus) {
+		if (focus != Mouse.focus && focus != null) {
+			if (Mouse.focus != null) {
+				Mouse.focus.releasedFocus();
+			}
+			focus.gotFocus();
+		}
+		Mouse.focus = focus;
+	}
+
+	public static void releaseFocus(IFocusable focus) {
+		if (focus.equals(getFocus())) {
+			focus.releasedFocus();
+			setFocus(null);
+		}
 	}
 }

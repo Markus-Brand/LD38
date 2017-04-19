@@ -22,7 +22,6 @@ import mbeb.opengldefault.gl.GLContext;
 import mbeb.opengldefault.gl.shader.ShaderProgram;
 import mbeb.opengldefault.gui.AtlasGUI;
 import mbeb.opengldefault.gui.TextGUI;
-import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.gui.elements.buttons.BooleanOptionButton;
 import mbeb.opengldefault.gui.elements.buttons.AbstractButton;
 import mbeb.opengldefault.gui.elements.sliders.FloatOptionSlider;
@@ -194,11 +193,11 @@ public class OptionsMenu implements GameState {
 	}
 
 	private void addButton(float relativeY, Field option, boolean intialValue) {
-		TextGUIElement element = optionsHirarchy.addText(option.getName(), new Vector2f(), 0.08f);
-		element.setPositionRelativeToScreen(0.5f, relativeY);
+		Rectangle bounding = new Rectangle(new Vector2f(), new Vector2f(1.6f, 0.16f));
+		bounding.setPositionRelativeTo(new Rectangle(new Vector2f(-1), new Vector2f(2)), 0.5f, relativeY);
 
-		BooleanOptionButton button = new BooleanOptionButton(element, option, intialValue, atlasGUI);
-
+		BooleanOptionButton button = new BooleanOptionButton(bounding, option, intialValue);
+		button.show(atlasGUI, optionsHirarchy);
 		buttons.add(button);
 	}
 }

@@ -6,67 +6,80 @@ import java.lang.reflect.Field;
 import org.joml.Vector2f;
 
 import mbeb.opengldefault.gui.AtlasGUI;
+import mbeb.opengldefault.gui.TextGUI;
 import mbeb.opengldefault.gui.elements.AtlasGUIElement;
-import mbeb.opengldefault.gui.elements.CombinedGUIElement;
 import mbeb.opengldefault.gui.elements.TextGUIElement;
+import mbeb.opengldefault.shapes.Rectangle;
 
+/**
+ * A Class that adds a Button in the Options for changing a boolean type field
+ * 
+ * @author Markus
+ */
 public class BooleanOptionButton extends Switch {
 
+	/** the option field to set */
 	private Field option;
 
-	private CombinedGUIElement button;
-
+	/** the button guiElement, not including the text */
 	private AtlasGUIElement buttonAtlas;
 
+	/** the TextGUIElement on the button */
 	private TextGUIElement buttonText;
 
-	public BooleanOptionButton(TextGUIElement text, Field option, boolean initialState, AtlasGUI atlasGUI) {
-		super(text, initialState, Color.LIGHT_GRAY, Color.GRAY, new Color(160, 160, 255));
+	public BooleanOptionButton(Rectangle bounding, Field option, boolean initialState) {
+		super(bounding, initialState);
 		this.option = option;
-
-		button = new CombinedGUIElement();
-
-		this.buttonText = text;
-		button.addGUIElement(text);
-
-		buttonAtlas =
-				atlasGUI.addAtlasGUIElement(2 + (initialState ? 1 : 0), text.getPosition(),
-						new Vector2f(buttonText.getSize().y * 4f));
-		buttonAtlas.setPositionRelativeTo(buttonText, 0.5f, 0.5f);
-		buttonAtlas.setColor(new Color(30, 30, 30), 0);
-		buttonAtlas.setColor(Color.DARK_GRAY, 200);
-		buttonAtlas.setColor(normalColor, 220);
-		buttonAtlas.setColor(Color.GRAY, 255);
-		button.addGUIElement(buttonAtlas);
-
 	}
 
-	@Override
-	protected void setColor() {
-		buttonText.setColor(Color.BLACK);
-		if (selected) {
-			buttonAtlas.setColor(hoveringColor, 220);
-		} else {
-			buttonAtlas.setColor(normalColor, 220);
-		}
+	/**
+	 * Show the guiElements of this button in the guis
+	 * 
+	 * @param atlasGUI
+	 * @param textGUI
+	 */
+	public void show(AtlasGUI atlasGUI, TextGUI textGUI) {
+		buttonAtlas =
+				atlasGUI.addAtlasGUIElement(2 + (isPressed ? 1 : 0), new Vector2f(),
+						new Vector2f(0.3f));
+		buttonAtlas.setPositionRelativeTo(bounding, 0.5f, 0.5f);
+		buttonAtlas.setColor(new Color(30, 30, 30), 0);
+		buttonAtlas.setColor(Color.DARK_GRAY, 200);
+		buttonAtlas.setColor(Color.LIGHT_GRAY, 220);
+		buttonAtlas.setColor(Color.GRAY, 255);
 
-		if (isPressed) {
-			buttonAtlas.setAtlasIndex(3);
-			buttonText.setPositionRelativeTo(buttonAtlas, 0.5f, 0.45f);
-		} else {
-			buttonAtlas.setAtlasIndex(2);
-			buttonText.setPositionRelativeTo(buttonAtlas, 0.5f, 0.55f);
-		}
+		buttonText = textGUI.addText(option.getName(), new Vector2f());
+		buttonText.setColor(Color.BLACK);
+		buttonText.setPositionRelativeTo(bounding, 0.5f, 0.5f);
 	}
 
 	@Override
 	public void update(double deltaTime) {
 		super.update(deltaTime);
-
 	}
 
 	@Override
-	public void onButtonPress() {
+	public void gotFocus() {
+		buttonAtlas.setColor(Color.BLUE, 220);
+	}
+
+	@Override
+	public void releasedFocus() {
+		buttonAtlas.setColor(Color.LIGHT_GRAY, 220);
+	}
+
+	@Override
+	public void onButtonChanged() {
+		if (buttonAtlas != null && buttonText != null) {
+			if (isPressed) {
+				buttonAtlas.setAtlasIndex(3);
+				buttonText.setPositionRelativeTo(bounding, 0.5f, 0.45f);
+			} else {
+				buttonAtlas.setAtlasIndex(2);
+				buttonText.setPositionRelativeTo(bounding, 0.5f, 0.55f);
+			}
+		}
+
 		try {
 			option.set(null, isPressed());
 		} catch(IllegalArgumentException | IllegalAccessException e) {
