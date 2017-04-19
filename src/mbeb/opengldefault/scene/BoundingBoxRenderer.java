@@ -9,8 +9,6 @@ import mbeb.opengldefault.gl.shader.*;
 
 public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 
-	private static final String TAG = "BoundingBoxRenderer";
-
 	public static final boolean RENDER_BONE_BOXES = true;
 
 	private static ShaderProgram shader;
@@ -58,7 +56,7 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 	}
 
 	private void trySettingModelUniform(final Matrix4f transform) {
-		shader.setUniform(ModelMatrixUniformName, transform, true);
+		shader.setUniform(ModelMatrixUniformName, transform, false);
 	}
 
 	private Vector3f colorFor(final boolean selected) {

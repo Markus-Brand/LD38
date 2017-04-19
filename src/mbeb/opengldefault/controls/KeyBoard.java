@@ -63,6 +63,23 @@ public class KeyBoard {
 		return keys[keyCode];
 	}
 
+	/**
+	 * "pull a key-event"
+	 *
+	 * returns true if the keyCode key is pressed at the moment and false if the key is not pressed or if the keyCode is
+	 * outside of the Array.
+	 * After this method returns, the key is not marked as down anymore
+	 *
+	 * @param keyCode
+	 *            GLWF keyCode of the key
+	 * @return
+	 */
+	public static boolean pullKeyDown(int keyCode) {
+		boolean isDown = isKeyDown(keyCode);
+		keyUp(keyCode);
+		return isDown;
+	}
+
 	public static void releaseAll() {
 		keys = new boolean[MAX_NUM_KEYS];
 	}

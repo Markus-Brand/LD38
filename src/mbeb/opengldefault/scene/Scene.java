@@ -57,6 +57,10 @@ public class Scene {
 		render(false);
 	}
 
+	/**
+	 * render the scene completely
+	 * @param renderBoundingBoxes true to also display bounding boxes
+	 */
 	public void render(final boolean renderBoundingBoxes) {
 		renderer.render();
 		picker.searchBoundingBoxes(sceneGraphRoot, new Matrix4f());
