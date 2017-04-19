@@ -1,6 +1,7 @@
 vec3 calcDirectionalLight(
 	const in DirectionalLight light,
 	const in vec3 norm,
+	const in vec3 viewPos,
 	const in vec3 viewDir,
 	const in vec3 diffuseColor,
 	const in vec3 specularColor,

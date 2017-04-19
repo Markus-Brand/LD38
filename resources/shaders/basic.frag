@@ -1,8 +1,8 @@
 
-in vec2 tex;
-in vec3 pos;
-in vec3 normal;
-in mat3 tbn; //tangent-bitangent-normal (needed for normal mapping)
+in vec2 frag_in_tex;
+in vec3 frag_in_pos;
+in vec3 frag_in_norm;
+in mat3 frag_in_tbn; //tangent-bitangent-normal (needed for normal mapping)
 
 out vec4 color;
 
@@ -35,22 +35,22 @@ uniform int water;
 
 
 void main(){
-	vec3 norm = normal;
+	vec3 normal = frag_in_norm;
 
-	vec4 diffuseColorAlpha = materialDiffuseAlpha(tex);
+	vec4 diffuseColorAlpha = materialDiffuseAlpha(frag_in_tex);
 	vec3 diffuseColor = diffuseColorAlpha.rgb;
 	float materialAlpha = diffuseColorAlpha.a;
-	vec3 specularColor = materialSpecular(tex);
-	vec3 emissionColor = materialEmit(tex);
-	vec3 normalFromMap = materialNormal(tex);
+	vec3 specularColor = materialSpecular(frag_in_tex);
+	vec3 emissionColor = materialEmit(frag_in_tex);
+	vec3 normalFromMap = materialNormal(frag_in_tex);
 	int shininess = materialShininess();
 
-	vec3 viewDir = normalize(viewPos - pos);
+	vec3 viewDir = normalize(viewPos - frag_in_pos);
 
 	//normal mapping
 	if (length(normalFromMap) > 0.01) {
 		normalFromMap = normalize(normalFromMap * 2.0 - 1.0);
-		norm = normalize(tbn * normalFromMap);
+		normal = normalize(frag_in_tbn * normalFromMap);
 	}
 
 
@@ -58,13 +58,13 @@ void main(){
 
     //apply lights
 	for(int i = 0; i < numPointLights; i++){
-		result += calcPointLight(pointLights[i], norm, viewDir, diffuseColor, specularColor, shininess);
+		result += calcPointLight(pointLights[i], normal, frag_in_pos, viewDir, diffuseColor, specularColor, shininess);
 	}
 	for(int i = 0; i < numDirectionalLights; i++){
-		result += calcDirectionalLight(directionalLights[i], norm, viewDir, diffuseColor, specularColor, shininess);
+		result += calcDirectionalLight(directionalLights[i], normal, frag_in_pos, viewDir, diffuseColor, specularColor, shininess);
 	}
 	for(int i = 0; i < numSpotLights; i++){
-		result += calcSpotLight(spotLights[i], norm, viewDir, diffuseColor, specularColor, shininess);
+		result += calcSpotLight(spotLights[i], normal, frag_in_pos, viewDir, diffuseColor, specularColor, shininess);
 	}
 
     //ambient lighting

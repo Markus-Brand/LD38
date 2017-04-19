@@ -1,12 +1,13 @@
 vec3 calcPointLight(
 	const in PointLight light,
 	const in vec3 norm,
+	const in vec3 viewPos,
 	const in vec3 viewDir,
 	const in vec3 diffuseColor,
 	const in vec3 specularColor,
 	const in int shininess
 ) {
-	vec3 direction = light.position - pos;
+	vec3 direction = light.position - viewPos;
 
 	float distance = length(direction);
 	direction = normalize(direction);

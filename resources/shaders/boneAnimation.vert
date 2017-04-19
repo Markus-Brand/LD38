@@ -9,10 +9,10 @@ const int MAX_JOINTS = 50;//max joints allowed in a skeleton//todo remove this
 #define MAX_WEIGHTS 3
 //max number of joints that can affect a vertex
 
-out vec2 tex;
-out vec3 pos;
-out vec3 normal;
-out mat3 tbn; //tangent-bitangent-normal (needed for normal mapping)
+out vec2 frag_in_tex;
+out vec3 frag_in_pos;
+out vec3 frag_in_norm;
+out mat3 frag_in_tbn; //tangent-bitangent-normal (needed for normal mapping)
 
 #include modules/UBO_Matrices.glsl
 
@@ -20,6 +20,7 @@ uniform mat4 boneTransforms[MAX_JOINTS];
 
 uniform mat4 model;
 
+#include modules/tangentSpace.glsl
 
 void main() {
 	vec4 totalLocalPos = vec4(0.0);
@@ -52,11 +53,11 @@ void main() {
 
 	
 
-	pos = vec3(model * totalLocalPos);
-	gl_Position = projectionView * vec4(pos, 1.0);
-	normal = normalize(mat3(model) * normalize(totalNormal.xyz));
+	frag_in_pos = vec3(model * totalLocalPos);
+	gl_Position = projectionView * vec4(frag_in_pos, 1.0);
+	frag_in_norm = normalize(mat3(model) * normalize(totalNormal.xyz));
 	vec3 tangent = mat3(model) * tangentVec;
-	tex = texCoord;
+	frag_in_tex = texCoord;
 
-    #include modules/tangentSpace.glsl
+    frag_in_tbn = tangentSpace(tangent, frag_in_norm);
 }
