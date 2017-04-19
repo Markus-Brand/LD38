@@ -13,6 +13,10 @@ import java.nio.IntBuffer;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import static org.lwjgl.openal.ALC10.alcCreateContext;
+import static org.lwjgl.openal.ALC10.alcMakeContextCurrent;
+import static org.lwjgl.openal.ALC10.alcOpenDevice;
+
 public class Sound {
 	/** Buffers hold sound data. */
 	IntBuffer buffer = BufferUtils.createIntBuffer(1);
@@ -141,7 +145,11 @@ public class Sound {
 
 	public void execute() {
 		// Initialize OpenAL and clear the error bit.
-		//AL.createCapabilities(ALCCapabilities);
+		long device = alcOpenDevice((ByteBuffer)null);
+		ALCCapabilities deviceCapabilites = ALC.createCapabilities(device);
+		long context = alcCreateContext(device, (IntBuffer) null);
+		alcMakeContextCurrent(context);
+		AL.createCapabilities(deviceCapabilites);
 		//alcOpenD
 		AL10.alGetError();
 		// Load the wav data.
