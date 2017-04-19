@@ -5,11 +5,14 @@ import java.nio.*;
 import org.lwjgl.openal.*;
 
 import de.jarnbjo.vorbis.VorbisAudioFileReader;
+
 import org.lwjgl.BufferUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -59,7 +62,7 @@ public class Sound {
 		//Loads the wave file from your file system
 		java.io.FileInputStream fin = null;
 		try {
-			fin = new java.io.FileInputStream("soundtrackSmall.wav");
+			fin = new java.io.FileInputStream("resources/sounds/soundtrackSmall.ogg");
 		} catch(final java.io.FileNotFoundException ex) {
 			ex.printStackTrace();
 			return AL10.AL_FALSE;
@@ -79,7 +82,7 @@ public class Sound {
 		*/
 		VorbisAudioFileReader reader = new VorbisAudioFileReader();
 		try {
-			AudioInputStream stream = reader.getAudioInputStream(fin);
+			AudioInputStream stream = reader.getAudioInputStream(new File("resources/sounds/soundtrackSmall.ogg"));
 			int format;
 			if (stream.getFormat().getChannels() > 1) {
 				format = AL10.AL_FORMAT_STEREO16;
@@ -145,7 +148,7 @@ public class Sound {
 
 	public void execute() {
 		// Initialize OpenAL and clear the error bit.
-		long device = alcOpenDevice((ByteBuffer)null);
+		long device = alcOpenDevice((ByteBuffer) null);
 		ALCCapabilities deviceCapabilites = ALC.createCapabilities(device);
 		long context = alcCreateContext(device, (IntBuffer) null);
 		alcMakeContextCurrent(context);
