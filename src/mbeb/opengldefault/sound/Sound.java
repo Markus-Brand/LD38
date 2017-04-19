@@ -2,8 +2,16 @@ package mbeb.opengldefault.sound;
 
 import java.nio.*;
 
-import org.lwjgl.*;
 import org.lwjgl.openal.*;
+
+import de.jarnbjo.vorbis.VorbisAudioFileReader;
+import org.lwjgl.BufferUtils;
+
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class Sound {
 	/** Buffers hold sound data. */
@@ -19,48 +27,71 @@ public class Sound {
 	FloatBuffer sourceVel = (FloatBuffer) BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f}).rewind();
 
 	/** Position of the listener. */
-	FloatBuffer listenerPos = (FloatBuffer) BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f}).rewind();
+	FloatBuffer listenerPos = (FloatBuffer) BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f})
+			.rewind();
 
 	/** Velocity of the listener. */
-	FloatBuffer listenerVel = (FloatBuffer) BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f}).rewind();
+	FloatBuffer listenerVel = (FloatBuffer) BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f})
+			.rewind();
 
 	/** Orientation of the listener. (first 3 elements are "at", second 3 are "up") */
-	FloatBuffer listenerOri = (FloatBuffer) BufferUtils.createFloatBuffer(6).put(new float[] {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f}).rewind();
+	FloatBuffer listenerOri = (FloatBuffer) BufferUtils.createFloatBuffer(6)
+			.put(new float[] {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f}).rewind();
 
 	/**
 	 * boolean LoadALData()
-	 *
-	 *  This function will load our sample data from the disk using the Alut
-	 *  utility and send the data into OpenAL as a buffer. A source is then
-	 *  also created to play that buffer.
+	 * This function will load our sample data from the disk using the Alut
+	 * utility and send the data into OpenAL as a buffer. A source is then
+	 * also created to play that buffer.
 	 */
 	int loadALData() {
 		// Load wav data into a buffer.
 		AL10.alGenBuffers(buffer);
 
-		if(AL10.alGetError() != AL10.AL_NO_ERROR) {
+		if (AL10.alGetError() != AL10.AL_NO_ERROR) {
 			return AL10.AL_FALSE;
 		}
 
 		//Loads the wave file from your file system
 		java.io.FileInputStream fin = null;
-	    try {
-	      fin = new java.io.FileInputStream("soundtrackSmall.wav");
-	    } catch (final java.io.FileNotFoundException ex) {
-	      ex.printStackTrace();
-	      return AL10.AL_FALSE;
-	    }
-	    final WaveData waveFile = WaveData.create(fin);
-	    try {
-	      fin.close();
-	    } catch (final java.io.IOException ex) {
-	    }*/
+		try {
+			fin = new java.io.FileInputStream("soundtrackSmall.wav");
+		} catch(final java.io.FileNotFoundException ex) {
+			ex.printStackTrace();
+			return AL10.AL_FALSE;
+		}
 
-		//Loads the wave file from this class's package in your classpath
-		final WaveData waveFile = WaveData.create("FancyPants.wav");
+		/*	    final WaveData waveFile = WaveData.create(fin);
+			    try {
+			      fin.close();
+			    } catch (final java.io.IOException ex) {
+			    }
 
-		AL10.alBufferData(buffer.get(0), waveFile.format, waveFile.data, waveFile.samplerate);
-		waveFile.dispose();
+				//Loads the wave file from this class's package in your classpath
+				final WaveData waveFile = WaveData.create("FancyPants.wav");
+
+				AL10.alBufferData(buffer.get(0), waveFile.format, waveFile.data, waveFile.samplerate);
+				waveFile.dispose();
+		*/
+		VorbisAudioFileReader reader = new VorbisAudioFileReader();
+		try {
+			AudioInputStream stream = reader.getAudioInputStream(fin);
+			int format;
+			if (stream.getFormat().getChannels() > 1) {
+				format = AL10.AL_FORMAT_STEREO16;
+			} else {
+				format = AL10.AL_FORMAT_MONO16;
+			}
+
+			int fileLength = (int) (stream.getFrameLength() / stream.getFormat().getFrameSize());
+			ByteBuffer data = BufferUtils.createByteBuffer(fileLength);
+
+			stream.read(data.array());
+
+			AL10.alBufferData(buffer.get(0), format, data, (int) stream.getFormat().getSampleRate());
+		} catch(IOException | UnsupportedAudioFileException e) {
+			e.printStackTrace();
+		}
 
 		// Bind the buffer with the source.
 		AL10.alGenSources(source);
@@ -69,11 +100,11 @@ public class Sound {
 			return AL10.AL_FALSE;
 		}
 
-		AL10.alSourcei(source.get(0), AL10.AL_BUFFER,   buffer.get(0) );
-		AL10.alSourcef(source.get(0), AL10.AL_PITCH,    1.0f          );
-		AL10.alSourcef(source.get(0), AL10.AL_GAIN,     1.0f          );
-		AL10.alSource (source.get(0), AL10.AL_POSITION, sourcePos     );
-		AL10.alSource (source.get(0), AL10.AL_VELOCITY, sourceVel     );
+		AL10.alSourcei(source.get(0), AL10.AL_BUFFER, buffer.get(0));
+		AL10.alSourcef(source.get(0), AL10.AL_PITCH, 1.0f);
+		AL10.alSourcef(source.get(0), AL10.AL_GAIN, 1.0f);
+		AL10.alSourcefv(source.get(0), AL10.AL_POSITION, sourcePos);
+		AL10.alSourcefv(source.get(0), AL10.AL_VELOCITY, sourceVel);
 
 		// Do another error check and return.
 		if (AL10.alGetError() == AL10.AL_NO_ERROR) {
@@ -89,9 +120,9 @@ public class Sound {
 	 * to tell OpenAL to use that data. This function does just that.
 	 */
 	void setListenerValues() {
-		AL10.alListener(AL10.AL_POSITION, listenerPos);
-		AL10.alListener(AL10.AL_VELOCITY, listenerVel);
-		AL10.alListener(AL10.AL_ORIENTATION, listenerOri);
+		AL10.alListenerfv(AL10.AL_POSITION, listenerPos);
+		AL10.alListenerfv(AL10.AL_VELOCITY, listenerVel);
+		AL10.alListenerfv(AL10.AL_ORIENTATION, listenerOri);
 	}
 
 	/**
@@ -105,19 +136,14 @@ public class Sound {
 	}
 
 	public static void main(final String[] args) {
-		new Lesson1().execute();
+		new Sound().execute();
 	}
 
 	public void execute() {
 		// Initialize OpenAL and clear the error bit.
-		try {
-			AL.create();
-		} catch(final LWJGLException le) {
-			le.printStackTrace();
-			return;
-		}
+		//AL.createCapabilities(ALCCapabilities);
+		//alcOpenD
 		AL10.alGetError();
-
 		// Load the wav data.
 		if (loadALData() == AL10.AL_FALSE) {
 			System.out.println("Error loading data.");
@@ -126,41 +152,51 @@ public class Sound {
 
 		setListenerValues();
 
-		// Loop.
-		System.out.println("OpenAL Tutorial 1 - Single Static Source");
-		System.out.println("[Menu]");
-		System.out.println("p - Play the sample.");
-		System.out.println("s - Stop the sample.");
-		System.out.println("h - Pause the sample.");
-		System.out.println("q - Quit the program.");
-		char c = ' ';
-		final Scanner stdin = new Scanner(System.in);
-		while(c != 'q') {
-			try {
-				System.out.print("Input: ");
-				c = (char) stdin.nextLine().charAt(0);
-			} catch(final Exception ex) {
-				c = 'q';
-			}
+		AL10.alSourcePlay(source.get(0));
 
-			switch(c) {
-				// Pressing 'p' will begin playing the sample.
-				case 'p':
-					AL10.alSourcePlay(source.get(0));
-					break;
-
-				// Pressing 's' will stop the sample from playing.
-				case 's':
-					AL10.alSourceStop(source.get(0));
-					break;
-
-				// Pressing 'h' will pause the sample.
-				case 'h':
-					AL10.alSourcePause(source.get(0));
-					break;
-			};
+		try {
+			Thread.sleep(10000);
+		} catch(InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
+		AL10.alSourcePause(source.get(0));
+
+		try {
+			Thread.sleep(1000);
+		} catch(InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		AL10.alSourcePlay(source.get(0));
+
+		try {
+			Thread.sleep(10000);
+		} catch(InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		AL10.alSourceStop(source.get(0));
+
+		try {
+			Thread.sleep(1000);
+		} catch(InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		AL10.alSourcePlay(source.get(0));
+
+		try {
+			Thread.sleep(10000);
+		} catch(InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		killALData();
-		AL.destroy();
+		//TODO: FIND RIGHT CALL
 	}
 }
