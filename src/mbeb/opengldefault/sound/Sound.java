@@ -1,5 +1,6 @@
 package mbeb.opengldefault.sound;
 
+import java.io.InputStream;
 import java.nio.*;
 
 import org.lwjgl.openal.*;
@@ -8,7 +9,6 @@ import de.jarnbjo.vorbis.VorbisAudioFileReader;
 
 import org.lwjgl.BufferUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -60,10 +60,10 @@ public class Sound {
 		}
 
 		//Loads the wave file from your file system
-		java.io.FileInputStream fin = null;
+		InputStream fin;
 		try {
-			fin = new java.io.FileInputStream("resources/sounds/soundtrackSmall.ogg");
-		} catch(final java.io.FileNotFoundException ex) {
+			fin = Sound.class.getResourceAsStream("/sounds/soundtrackSmall.ogg");
+		} catch(final Exception ex) {
 			ex.printStackTrace();
 			return AL10.AL_FALSE;
 		}
@@ -82,7 +82,7 @@ public class Sound {
 		*/
 		VorbisAudioFileReader reader = new VorbisAudioFileReader();
 		try {
-			AudioInputStream stream = reader.getAudioInputStream(new File("resources/sounds/soundtrackSmall.ogg"));
+			AudioInputStream stream = reader.getAudioInputStream(fin);
 			int format;
 			if (stream.getFormat().getChannels() > 1) {
 				format = AL10.AL_FORMAT_STEREO16;
