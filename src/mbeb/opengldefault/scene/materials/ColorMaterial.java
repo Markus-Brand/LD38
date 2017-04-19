@@ -13,6 +13,7 @@ public class ColorMaterial extends Material {
 	/**
 	 * create a new Material with colors based on some Vectors (all components in range 0...1)
 	 * @param colors the color data
+	 * @see Material
 	 */
 	public ColorMaterial(Vector4f... colors) {
 		this(toColors(colors));
@@ -35,6 +36,7 @@ public class ColorMaterial extends Material {
 	/**
 	 * create a new Material with colors
 	 * @param colors the color data
+	 * @see Material
 	 */
 	public ColorMaterial(Color... colors) {
 		this(createTextures(colors));

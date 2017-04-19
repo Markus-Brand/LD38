@@ -7,7 +7,7 @@ import mbeb.opengldefault.scene.materials.Material;
 import org.joml.Matrix4f;
 
 /**
- * A decorated Renderable that also uses it's material before rendering
+ * A decorated Renderable that also uses it's material for rendering (by binding it to a specified Material-uniform)
  */
 public class MaterialRenderable implements IRenderable{
 

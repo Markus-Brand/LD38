@@ -2,7 +2,7 @@ vec3 calcDirectionalLight(
 	const in DirectionalLight light,
 	const in vec3 norm,
 	const in vec3 viewDir,
-	const in vec3 materialColor,
+	const in vec3 diffuseColor,
 	const in vec3 specularColor,
 	const in int shininess
 ) {
@@ -15,5 +15,5 @@ vec3 calcDirectionalLight(
 	float spec = pow(max(dot(norm, halfwayDir), 0.0f), shininess);
 	vec3 specular = specularStrength * spec * light.color;
 
-	return materialColor * diffuse + specularColor * specular;
+	return diffuseColor * diffuse + specularColor * specular;
 }

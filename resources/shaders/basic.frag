@@ -2,7 +2,7 @@
 in vec2 tex;
 in vec3 pos;
 in vec3 normal;
-in mat3 tbn;
+in mat3 tbn; //tangent-bitangent-normal (needed for normal mapping)
 
 out vec4 color;
 
@@ -37,9 +37,9 @@ uniform int water;
 void main(){
 	vec3 norm = normal;
 
-	vec4 materialColorAlpha = materialDiffuseAlpha(tex);
-	vec3 materialColor = materialColorAlpha.rgb;
-	float materialAlpha = materialColorAlpha.a;
+	vec4 diffuseColorAlpha = materialDiffuseAlpha(tex);
+	vec3 diffuseColor = diffuseColorAlpha.rgb;
+	float materialAlpha = diffuseColorAlpha.a;
 	vec3 specularColor = materialSpecular(tex);
 	vec3 emissionColor = materialEmit(tex);
 	vec3 normalFromMap = materialNormal(tex);
@@ -58,17 +58,17 @@ void main(){
 
     //apply lights
 	for(int i = 0; i < numPointLights; i++){
-		result += calcPointLight(pointLights[i], norm, viewDir, materialColor, specularColor, shininess);
+		result += calcPointLight(pointLights[i], norm, viewDir, diffuseColor, specularColor, shininess);
 	}
 	for(int i = 0; i < numDirectionalLights; i++){
-		result += calcDirectionalLight(directionalLights[i], norm, viewDir, materialColor, specularColor, shininess);
+		result += calcDirectionalLight(directionalLights[i], norm, viewDir, diffuseColor, specularColor, shininess);
 	}
 	for(int i = 0; i < numSpotLights; i++){
-		result += calcSpotLight(spotLights[i], norm, viewDir, materialColor, specularColor, shininess);
+		result += calcSpotLight(spotLights[i], norm, viewDir, diffuseColor, specularColor, shininess);
 	}
 
     //ambient lighting
-	vec3 ambient = ambientStrength * materialColor;
+	vec3 ambient = ambientStrength * diffuseColor;
 	result += ambient;
 
 	//emission

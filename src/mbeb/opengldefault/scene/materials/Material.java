@@ -17,7 +17,7 @@ import mbeb.opengldefault.gl.texture.Texture2DArray;
  */
 public class Material implements GLBufferWritable {
 
-	/** the exponent for specular lights: controls the hardness-feel of a material */
+	/** the exponent for specular lights: controls how hard a material feels */
 	private int shininess = 64;
 
 	/** the texture for this material: multiple layers defining different properties of a material */
@@ -84,8 +84,8 @@ public class Material implements GLBufferWritable {
 	/**
 	 * upload this Material-object to a specified uniform of a shader
 	 * 
-	 * @param program
-	 * @param name
+	 * @param program the ShaderProgram to update
+	 * @param name the name of the Material-uniform (see modules/Struct_Material.glsl)
 	 */
 	public void setUniform(ShaderProgram program, String name) {
 		program.setUniform(name + ".textureLayers", myTextures);

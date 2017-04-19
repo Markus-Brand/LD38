@@ -44,7 +44,7 @@ public interface IRenderable extends IRenderableHolder{
 	/**
 	 * create an IRenderable that uses a Material for rendering
 	 * @param material the material that `this` should use for rendering
-	 * @return a possibly new IRenderable
+	 * @return an IRenderable that renders itself with the given material
 	 */
 	default IRenderable withMaterial(Material material) {
 		return new MaterialRenderable(this, material);

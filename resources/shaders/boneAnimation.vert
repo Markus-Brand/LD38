@@ -12,7 +12,7 @@ const int MAX_JOINTS = 50;//max joints allowed in a skeleton//todo remove this
 out vec2 tex;
 out vec3 pos;
 out vec3 normal;
-out mat3 tbn;
+out mat3 tbn; //tangent-bitangent-normal (needed for normal mapping)
 
 #include modules/UBO_Matrices.glsl
 

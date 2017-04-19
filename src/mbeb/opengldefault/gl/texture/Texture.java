@@ -373,7 +373,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 	 *            how many images to load
 	 * @return
 	 */
-	public static BufferedImage[] loadBufferedImages(final String directory, final String extension, int amount) {
+	public static BufferedImage[] loadBufferedImages(final String directory, final String extension, final int amount) {
 		BufferedImage[] images = new BufferedImage[amount];
 		for (int imageNumber = 0; imageNumber < amount; imageNumber++) {
 			images[imageNumber] = loadBufferedImage(directory + "/" + imageNumber + "." + extension);
