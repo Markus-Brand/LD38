@@ -5,7 +5,8 @@ import java.util.*;
 import mbeb.opengldefault.gl.shader.*;
 
 /**
- * I am managing different lights (like directional, point or spot lights), e.g. adding, deleting and updating their data on the graphics card.
+ * I am managing different lights (like directional, point or spot lights), e.g. adding, deleting and updating their
+ * data on the graphics card.
  * I'm also storing shaders witch are using them.
  *
  * @author Merlin (and Erik and Markus but if something is wrong blame him and only him) :D
@@ -24,7 +25,8 @@ public class LightManager {
 	private final ArrayList<ShaderProgram> shaders;
 
 	/**
-	 * creates LightManager with 3 LightTypeManagers for each LightType (Directional, Point, Spot) and stores the light using shaders
+	 * creates LightManager with 3 LightTypeManagers for each LightType (Directional, Point, Spot) and stores the light
+	 * using shaders
 	 * shaders
 	 */
 	public LightManager() {
@@ -39,6 +41,12 @@ public class LightManager {
 	 */
 	private void updateShaders() {
 		shaders.forEach(this::updateShader);
+	}
+
+	public void rewriteUBO() {
+		directionalLightTypeManager.resizeBuffer();
+		pointLightTypeManager.resizeBuffer();
+		spotLightTypeManager.resizeBuffer();
 	}
 
 	/**
