@@ -9,10 +9,17 @@ public class Mouse {
 	/** Class Name Tag */
 	private static final String TAG = "Mouse";
 
+	/** Position of the Mouse cursor in pixels */
 	private static Vector2f cursorPos;
+
+	/** boolean array that saves the state of each Mouse button (Pressed or released) */
 	private static boolean[] mouseDown;
 
+	/** The Mouse focus */
 	private static IFocusable focus;
+
+	/** max numbers of buttons on the mouse */
+	private static final int NUM_MOUSE_BUTTONS = 32;
 
 	static {
 		cursorPos = new Vector2f();
@@ -78,10 +85,21 @@ public class Mouse {
 		return GLContext.getNDC(getPos());
 	}
 
+	/**
+	 * Release all pressed Mouse Buttons
+	 */
 	public static void releaseAll() {
-		mouseDown = new boolean[32];
+		mouseDown = new boolean[NUM_MOUSE_BUTTONS];
 	}
 
+	/**
+	 * Called by IFocusables that want to gain the current Focus.
+	 * It will be able to get this focus, if there is no current focus or if the current IFocusable does not want to
+	 * keep Focus
+	 *
+	 * @param focus
+	 * @return
+	 */
 	public static boolean requestFocus(IFocusable focus) {
 		if (getFocus() == null || !getFocus().keepFocus()) {
 			setFocus(focus);
@@ -92,6 +110,8 @@ public class Mouse {
 	}
 
 	/**
+	 * Getter for the current Mouse focus
+	 *
 	 * @return the focus
 	 */
 	public static IFocusable getFocus() {
@@ -99,10 +119,13 @@ public class Mouse {
 	}
 
 	/**
+	 * Setter for the current Mouse focus
+	 *
 	 * @param focus
+	 *            the new Focus
 	 *            the focus to set
 	 */
-	public static void setFocus(IFocusable focus) {
+	private static void setFocus(IFocusable focus) {
 		if (focus != Mouse.focus && focus != null) {
 			if (Mouse.focus != null) {
 				Mouse.focus.releasedFocus();
@@ -112,6 +135,12 @@ public class Mouse {
 		Mouse.focus = focus;
 	}
 
+	/**
+	 * Releases the focus, if the given IFocusable is the current focus
+	 *
+	 * @param focus
+	 *            the IFocusable to release
+	 */
 	public static void releaseFocus(IFocusable focus) {
 		if (focus.equals(getFocus())) {
 			focus.releasedFocus();
