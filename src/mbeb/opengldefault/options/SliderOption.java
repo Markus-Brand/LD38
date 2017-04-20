@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Used to annotate fields (currently ints or floats) that will then generate a @{link OptionSlider} in the Options
+ * Used to annotate fields (currently ints or floats) that will then generate an @{link OptionSlider} in the Options
  *
  * @author Markus
  */

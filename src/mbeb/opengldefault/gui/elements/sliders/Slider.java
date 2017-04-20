@@ -118,8 +118,11 @@ public abstract class Slider implements IFocusable {
 	 * @param currentValue
 	 */
 	public void setValue(float currentValue) {
+		boolean changed = currentValue != this.currentValue;
 		this.currentValue = currentValue;
-		onValueChange();
+		if (changed) {
+			onValueChange();
+		}
 	}
 
 	/**

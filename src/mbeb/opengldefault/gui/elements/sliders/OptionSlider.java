@@ -49,7 +49,7 @@ public class OptionSlider extends Slider {
 	}
 
 	/**
-	 * Adds the neccessary GUIElements to the GUIs for the Slider to be displayed
+	 * Adds the necessary GUIElements to the GUIs for the Slider to be displayed
 	 *
 	 * @param atlasGUI
 	 * @param textGUI
@@ -71,7 +71,7 @@ public class OptionSlider extends Slider {
 				15,
 				new Vector2f(0, (bounding.getHeight() - thickness) / 2.0f).add(bounding
 						.getPosition()),
-				new Vector2f(bounding.getWidth(), thickness)).setColor(Color.WHITE);;
+				new Vector2f(bounding.getWidth(), thickness)).setColor(Color.WHITE);
 	}
 
 	/**

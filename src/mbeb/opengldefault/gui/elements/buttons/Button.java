@@ -3,7 +3,7 @@ package mbeb.opengldefault.gui.elements.buttons;
 import mbeb.opengldefault.shapes.Rectangle;
 
 /**
- * A Button is a AbstractButton that only keeps pressed while the User keeps the Mouse pressed
+ * A Button is an {@link AbstractButton} that only keeps pressed while the User keeps the Mouse pressed
  *
  * @author Markus
  */

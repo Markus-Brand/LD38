@@ -79,7 +79,7 @@ public abstract class AbstractButton implements IFocusable {
 	public abstract void wasReleased();
 
 	/**
-	 * Action if ther Button was pressed
+	 * Action if the Button was pressed
 	 */
 	public abstract void wasPressed();
 

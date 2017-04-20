@@ -6,8 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Used to annotate any field that will then be saved in a Options File using the @{link Option}
- * 
+ * Used to annotate any field that will then be saved in an Options File using the @{link Option}
+ *
  * @author Markus
  */
 @Target(ElementType.FIELD)
