@@ -1,5 +1,6 @@
 package mbeb.opengldefault.scene;
 
+import mbeb.opengldefault.sound.SoundEnvironment;
 import org.joml.*;
 
 import mbeb.opengldefault.camera.*;
@@ -13,6 +14,7 @@ import mbeb.opengldefault.rendering.renderable.*;
 public class Scene {
 
 	private final LightManager lightManager;
+	private final SoundEnvironment soundEnvironment;
 	private final SceneGraphRenderer renderer;
 	private final SceneGraphRenderer boundingBoxRenderer;
 	private final SceneObject sceneGraphRoot;
@@ -25,8 +27,14 @@ public class Scene {
 	}
 
 	public Scene(final ICamera camera, final Skybox skybox) {
+		this(camera, skybox, null);
+	}
+
+	public Scene(final ICamera camera, final Skybox skybox, SoundEnvironment soundEnvironment) {
 		this.camera = camera;
 		this.skybox = skybox;
+		this.soundEnvironment = soundEnvironment != null ? soundEnvironment : new SoundEnvironment();
+
 		this.lightManager = new LightManager();
 		this.sceneGraphRoot = new SceneObject();
 		renderer = new SceneGraphRenderer(sceneGraphRoot, camera);
@@ -40,6 +48,10 @@ public class Scene {
 
 	public LightManager getLightManager() {
 		return lightManager;
+	}
+
+	public SoundEnvironment getSoundEnvironment() {
+		return soundEnvironment;
 	}
 
 	public void update(final double deltaTime) {
