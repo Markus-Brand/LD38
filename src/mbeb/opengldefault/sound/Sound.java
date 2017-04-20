@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import mbeb.opengldefault.logging.Log;
 import org.lwjgl.stb.STBVorbisInfo;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
@@ -24,23 +25,31 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
  * 1:1 Mapping of an ogg file
- *
  */
-public class SoundBuffer {
+public class Sound {
 
+	private static final String TAG = "Sound";
+
+	/** the openAL - handle for that sound object */
 	private final int bufferId;
 
+	/** the buffer that contains the sound data in pcm-format */
 	private ShortBuffer pcm = null;
 
-	private ByteBuffer vorbis = null;
-
-	public SoundBuffer(String file) throws Exception {
+	/**
+	 * load a sound file from resources
+	 * @param file the file path (sounds/*.ogg)
+	 * @throws Exception
+	 */
+	Sound(String file) {
 		this.bufferId = alGenBuffers();
 		try (STBVorbisInfo info = STBVorbisInfo.malloc()) {
 			ShortBuffer pcm = readVorbis(file, 32 * 1024, info);
 
 			// Copy to buffer
 			alBufferData(bufferId, info.channels() == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, pcm, info.sample_rate());
+		} catch (Exception e) {
+			Log.error(TAG, "failed to load sound file", e);
 		}
 	}
 
@@ -57,7 +66,7 @@ public class SoundBuffer {
 
 	private ShortBuffer readVorbis(String resource, int bufferSize, STBVorbisInfo info) throws Exception {
 		try (MemoryStack stack = MemoryStack.stackPush()) {
-			vorbis = ioResourceToByteBuffer(resource, bufferSize);
+			ByteBuffer vorbis = ioResourceToByteBuffer(resource, bufferSize);
 			IntBuffer error = stack.mallocInt(1);
 			long decoder = stb_vorbis_open_memory(vorbis, error, null);
 			if (decoder == NULL) {
@@ -98,11 +107,11 @@ public class SoundBuffer {
 			try(SeekableByteChannel fc = Files.newByteChannel(path)) {
 				buffer = createByteBuffer((int) fc.size() + 1);
 				while(fc.read(buffer) != -1) {
-					;
+					//no logic in the body
 				}
 			}
 		} else {
-			try(InputStream source = SoundBuffer.class.getClassLoader().getResourceAsStream(resource);
+			try(InputStream source = Sound.class.getClassLoader().getResourceAsStream(resource);
 				ReadableByteChannel rbc = Channels.newChannel(source)) {
 				buffer = createByteBuffer(bufferSize);
 

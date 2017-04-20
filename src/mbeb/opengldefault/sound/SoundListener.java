@@ -9,22 +9,28 @@ import static org.lwjgl.openal.AL10.*;
  */
 public class SoundListener {
 
+	private static final String TAG = "SoundListener";
+
 	public SoundListener() {
-		this(new Vector3f(0, 0, 0));
+		this(new Vector3f());
 	}
 
 	public SoundListener(Vector3f position) {
-		alListener3f(AL_POSITION, position.x, position.y, position.z);
-		alListener3f(AL_VELOCITY, 0, 0, 0);
-
+		setPosition(position);
+		setSpeed(new Vector3f());
 	}
 
 	public void setSpeed(Vector3f speed) {
-		alListener3f(AL_VELOCITY, speed.x, speed.y, speed.z);
+		setProperty(AL_VELOCITY, speed);
 	}
 
 	public void setPosition(Vector3f position) {
-		alListener3f(AL_POSITION, position.x, position.y, position.z);
+		setProperty(AL_POSITION, position);
+	}
+
+	private void setProperty(int name, Vector3f value) {
+		alListener3f(name, value.x, value.y, value.z);
+		ALErrors.checkForError(TAG, "alListener3f");
 	}
 
 	public void setOrientation(Vector3f at, Vector3f up) {
@@ -36,5 +42,6 @@ public class SoundListener {
 		data[4] = up.y;
 		data[5] = up.z;
 		alListenerfv(AL_ORIENTATION, data);
+		ALErrors.checkForError(TAG, "alListenerfv");
 	}
 }
