@@ -1,24 +1,23 @@
 package mbeb.opengldefault.sound;
 
-import java.io.InputStream;
 import java.nio.*;
 
 import org.lwjgl.openal.*;
 
-import de.jarnbjo.vorbis.VorbisAudioFileReader;
-
 import org.lwjgl.BufferUtils;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 import static org.lwjgl.openal.ALC10.alcCreateContext;
 import static org.lwjgl.openal.ALC10.alcMakeContextCurrent;
 import static org.lwjgl.openal.ALC10.alcOpenDevice;
+import static org.lwjgl.stb.STBVorbis.*;
+import java.nio.ShortBuffer;
+import static org.lwjgl.openal.AL10.*;
+import static org.lwjgl.system.MemoryStack.stackMallocInt;
+import static org.lwjgl.system.MemoryStack.stackPop;
+import static org.lwjgl.system.MemoryStack.stackPush;
 
 public class Sound {
 	/** Buffers hold sound data. */
@@ -60,7 +59,7 @@ public class Sound {
 		}
 
 		//Loads the wave file from your file system
-		InputStream fin;
+		/*InputStream fin;
 		try {
 			fin = Sound.class.getResourceAsStream("/sounds/soundtrackSmall.ogg");
 		} catch(final Exception ex) {
@@ -80,25 +79,40 @@ public class Sound {
 				AL10.alBufferData(buffer.get(0), waveFile.format, waveFile.data, waveFile.samplerate);
 				waveFile.dispose();
 		*/
-		VorbisAudioFileReader reader = new VorbisAudioFileReader();
-		try {
-			AudioInputStream stream = reader.getAudioInputStream(fin);
-			int format;
-			if (stream.getFormat().getChannels() > 1) {
-				format = AL10.AL_FORMAT_STEREO16;
-			} else {
-				format = AL10.AL_FORMAT_MONO16;
-			}
+		stackPush();
+		IntBuffer channelsBuffer = stackMallocInt(1);
+		stackPush();
+		IntBuffer sampleRateBuffer = stackMallocInt(1);
 
-			int fileLength = (int) (stream.getFrameLength() / stream.getFormat().getFrameSize());
-			ByteBuffer data = BufferUtils.createByteBuffer(fileLength);
+		ShortBuffer rawAudioBuffer =
+				stb_vorbis_decode_filename("resources/sounds/soudtrackSmall.ogg",
+						channelsBuffer, sampleRateBuffer);
 
-			stream.read(data.array());
+		//Retreive the extra information that was stored in the buffers by the function
+		int channels = channelsBuffer.get();
+		int sampleRate = sampleRateBuffer.get();
+		//Free the space we allocated earlier
+		stackPop();
+		stackPop();
 
-			AL10.alBufferData(buffer.get(0), format, data, (int) stream.getFormat().getSampleRate());
-		} catch(IOException | UnsupportedAudioFileException e) {
-			e.printStackTrace();
+		//Find the correct OpenAL format
+		int format = -1;
+		if (channels == 1) {
+			format = AL_FORMAT_MONO16;
+		} else if (channels == 2) {
+			format = AL_FORMAT_STEREO16;
 		}
+
+		//Request space for the buffer
+		int bufferPointer = alGenBuffers();
+
+		System.out.println(bufferPointer);
+		System.out.println(format);
+		System.out.println(rawAudioBuffer);
+		System.out.println(sampleRate);
+
+		//Send the data to OpenAL
+		alBufferData(bufferPointer, format, rawAudioBuffer, sampleRate);
 
 		// Bind the buffer with the source.
 		AL10.alGenSources(source);
