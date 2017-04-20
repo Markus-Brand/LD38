@@ -1,9 +1,10 @@
 package mbeb.opengldefault.game;
 
 import java.util.HashMap;
-
 import java.util.Map;
 
+import mbeb.opengldefault.controls.KeyBoard;
+import mbeb.opengldefault.controls.Mouse;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.gl.GLContext;
 
@@ -28,7 +29,8 @@ public abstract class Game {
 	private Map<GameStateIdentifier, GameState> gameStates;
 
 	/**
-	 * Adds a GameStateIdentifier -> GameState mapping entry. The first GameState to add will be the startup entry per default
+	 * Adds a GameStateIdentifier -> GameState mapping entry. The first GameState to add will be the startup entry per
+	 * default
 	 *
 	 * @param key
 	 * @param newGameState
@@ -46,7 +48,8 @@ public abstract class Game {
 	/**
 	 * Init the Game here. The OpenGL context is already created at this Point.
 	 */
-	public abstract void init();
+	public void init() {
+	}
 
 	/**
 	 * Entry Point for the update cycle
@@ -59,6 +62,8 @@ public abstract class Game {
 		currentState.update(deltaTime);
 		if (!currentState.isActive()) {
 			currentGameState = currentState.getNextState();
+			KeyBoard.releaseAll();
+			Mouse.releaseAll();
 			currentState.resetNextGameState();
 			if (currentGameState == GameStateIdentifier.EXIT) {
 				GLContext.close();

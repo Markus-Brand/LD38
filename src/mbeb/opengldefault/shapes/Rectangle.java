@@ -4,7 +4,7 @@ import org.joml.Vector2f;
 
 /**
  * A class that represents a Rectangle
- * 
+ *
  * @author Markus
  */
 public class Rectangle {
@@ -25,8 +25,18 @@ public class Rectangle {
 	}
 
 	/**
+	 * Copy constructor
+	 *
+	 * @param bounding
+	 */
+	public Rectangle(Rectangle reference) {
+		this.position = new Vector2f(reference.getPosition());
+		this.size = new Vector2f(reference.getSize());
+	}
+
+	/**
 	 * Getter for the Rectangles size
-	 * 
+	 *
 	 * @return the Rectangles size
 	 */
 	public Vector2f getSize() {
@@ -35,7 +45,7 @@ public class Rectangle {
 
 	/**
 	 * Getter for the Rectangles start position
-	 * 
+	 *
 	 * @return the Rectangles start position
 	 */
 	public Vector2f getPosition() {
@@ -44,7 +54,7 @@ public class Rectangle {
 
 	/**
 	 * Getter for the Rectangles end position
-	 * 
+	 *
 	 * @return the Rectangles end position
 	 */
 	public Vector2f getEnd() {
@@ -53,7 +63,7 @@ public class Rectangle {
 
 	/**
 	 * Setter for the Rectangles size
-	 * 
+	 *
 	 * @param size
 	 *            the new size
 	 */
@@ -63,7 +73,7 @@ public class Rectangle {
 
 	/**
 	 * Setter for the Rectangles position
-	 * 
+	 *
 	 * @param position
 	 *            the new position
 	 */
@@ -85,7 +95,7 @@ public class Rectangle {
 
 	/**
 	 * Calculates a Rectangle that contains both this and a reference Rectangle
-	 * 
+	 *
 	 * @param other
 	 *            the reference Rectangle
 	 * @return the combined Rectangle
@@ -97,5 +107,32 @@ public class Rectangle {
 		float endY = Math.max(getEnd().y, other.getEnd().y);
 
 		return new Rectangle(new Vector2f(startX, startY), new Vector2f(endX - startX, endY - startY));
+	}
+
+	public float getWidth() {
+		return getSize().x;
+	}
+
+	public float getHeight() {
+		return getSize().y;
+	}
+
+	/**
+	 * Sets the position of this Rectangle realtive to another Rectangle
+	 *
+	 * @param bounding
+	 *            the referenced Rectangle
+	 * @param relativeX
+	 *            normally range 0 - 1.
+	 *            0 -> Our left border is set to the referenced Rectangles left border
+	 *            1 -> Our right border is set to the referenced Rectangles right border
+	 * @param relativeY
+	 *            normally range 0 - 1.
+	 *            0 -> Our lower border is set to the referenced Rectangles lower border
+	 *            1 -> Our upper border is set to the referenced Rectangles upper border
+	 */
+	public void setPositionRelativeTo(Rectangle bounding, float relativeX, float relativeY) {
+		Vector2f maxPosition = bounding.position.add(bounding.size.sub(getSize(), new Vector2f()), new Vector2f());
+		setPosition(bounding.position.lerp(maxPosition, new Vector2f(relativeX, relativeY), new Vector2f()));
 	}
 }

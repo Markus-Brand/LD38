@@ -101,8 +101,7 @@ public abstract class GLObject {
 	}
 
 	/**
-	 * Tries to bind this object to the current context, updating
-	 * {@link ContextBindings} to match the new state.
+	 * Tries to bind this object to the current context, updating {@link ContextBindings} to match the new state.
 	 *
 	 * @return whether the binding succeeded
 	 */
@@ -139,8 +138,7 @@ public abstract class GLObject {
 	}
 
 	/**
-	 * Tries to unbind this object from the current context, updating
-	 * {@link ContextBindings} to match the new state.
+	 * Tries to unbind this object from the current context, updating {@link ContextBindings} to match the new state.
 	 *
 	 * @return whether the unbinding (of isaac) succeeded
 	 */
@@ -219,7 +217,7 @@ public abstract class GLObject {
 	 *            a function to execute while this GLObject is guaranteed to be bound
 	 * @return whether the operation succeeded
 	 */
-	@SuppressWarnings("unchecked") //Because <this.class> is not (yet) a thing
+	@SuppressWarnings("unchecked")
 	public final <T extends GLObject> boolean whileBound(Function<T, Boolean> actor) {
 		if (!this.beginTransaction()) {
 			return false;
@@ -230,6 +228,7 @@ public abstract class GLObject {
 		}
 		return success;
 	}
+
 	//</editor-fold>
 
 	/**

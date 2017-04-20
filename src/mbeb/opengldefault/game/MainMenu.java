@@ -13,7 +13,6 @@ import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 
-import mbeb.opengldefault.gui.GUI;
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 
@@ -24,6 +23,7 @@ import mbeb.opengldefault.gui.TextGUI;
 import mbeb.opengldefault.gui.elements.GUIElement;
 import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.logging.GLErrors;
+import mbeb.opengldefault.options.Option;
 import mbeb.opengldefault.gl.GLContext;
 import mbeb.opengldefault.gl.shader.ShaderProgram;
 
@@ -38,7 +38,7 @@ public class MainMenu implements GameState {
 
 	private TextGUIElement fps, buttonGame;
 
-	private GUIElement buttonExit;
+	private GUIElement buttonExit, buttonOptions;
 
 	private GameStateIdentifier nextGameState = null;
 
@@ -49,9 +49,12 @@ public class MainMenu implements GameState {
 		//Currently empty, because we can do everything in the init() method
 	}
 
+	@Option
+	public static String startText = "Hallo Welt";
+
 	@Override
 	public void init() {
-		menuGUI = new AtlasGUI(GUI.loadGUITexture("menu.png"), 4, 4);
+		menuGUI = new AtlasGUI("menu.png", 4, 4);
 		guiShader = new ShaderProgram("gui.vert", "gui.frag");
 		textGUI = new TextGUI(new Font("Comic Sans MS", Font.PLAIN, 128));
 
@@ -62,10 +65,14 @@ public class MainMenu implements GameState {
 		fps.setPositionRelativeToScreen(0, 0);
 		fps.setColor(Color.ORANGE);
 
-		buttonGame = textGUI.addText("Loading...", new Vector2f(), 0.2f);
-		buttonGame.setPositionRelativeToScreen(0.5f, 0.5f);
-		buttonExit = menuGUI.addAtlasGUIElement(0, new Vector2f(), new Vector2f(0.1f, GLContext.getAspectRatio() * 0.1f))
-				.setPositionRelativeToScreen(0.01f, 0.99f);
+		buttonGame =
+				(TextGUIElement) textGUI.addText(startText, new Vector2f(), 0.2f).setPositionRelativeToScreen(0.5f,
+						0.4f);
+		buttonOptions = textGUI.addText("Options", new Vector2f(), 0.2f).setPositionRelativeToScreen(0.5f, 0.6f);
+
+		buttonExit =
+				menuGUI.addAtlasGUIElement(0, new Vector2f(), new Vector2f(0.1f, GLContext.getAspectRatio() * 0.1f))
+						.setPositionRelativeToScreen(0.01f, 0.99f);
 
 		games.add(GameStateIdentifier.BUNNY_GAME);
 		games.add(GameStateIdentifier.BEZIER_FLIGHT);
@@ -92,6 +99,15 @@ public class MainMenu implements GameState {
 			buttonGame.setColor(Color.GREEN);
 		}
 
+		if (buttonOptions.selected()) {
+			buttonOptions.setColor(Color.RED);
+			if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
+				nextGameState = GameStateIdentifier.OPTIONS;
+			}
+		} else {
+			buttonOptions.setColor(Color.GREEN);
+		}
+
 		if (buttonExit.selected()) {
 			buttonExit.setColor(Color.RED);
 			if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
@@ -115,7 +131,7 @@ public class MainMenu implements GameState {
 			selectedGame = 0;
 		}
 		buttonGame.setText(games.get(selectedGame).toString());
-		buttonGame.setPositionRelativeToScreen(0.5f, 0.5f);;
+		buttonGame.setPositionRelativeToScreen(0.5f, 0.4f);
 	}
 
 	private void startGame() {

@@ -109,8 +109,8 @@ public class GUI implements IRenderable {
 	 *            the new element
 	 * @return the new element
 	 */
-	protected GUIElement addGUIElement(GUIElement newElement) {
-		newElement.setLut(getLut(), (elements.size() % 256) / 255f);
+	public GUIElement addGUIElement(GUIElement newElement) {
+		newElement.setLut(getLut(), elements.size() % 256 / 255f);
 		elements.add(newElement);
 		return newElement;
 	}
@@ -202,7 +202,7 @@ public class GUI implements IRenderable {
 
 	/**
 	 * Getter for the lut
-	 * 
+	 *
 	 * @return this GUIs lut
 	 */
 	public Texture2D getLut() {
@@ -211,7 +211,7 @@ public class GUI implements IRenderable {
 
 	/**
 	 * Getter for the Shader
-	 * 
+	 *
 	 * @return the GUIs Shader
 	 */
 	public ShaderProgram getShader() {

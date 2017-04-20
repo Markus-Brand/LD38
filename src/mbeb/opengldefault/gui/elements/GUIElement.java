@@ -69,6 +69,17 @@ public abstract class GUIElement implements GLBufferWritable {
 	/**
 	 * Sets the position of the GUI Element relative to the screen
 	 *
+	 * @param position
+	 *            float value tuple, normally in range [0, 1] for x and y position relative to screen
+	 * @return this
+	 */
+	public GUIElement setPositionRelativeToScreen(Vector2f position) {
+		return setPositionRelativeToScreen(position.x, position.y);
+	}
+
+	/**
+	 * Sets the position of the GUI Element relative to the screen
+	 *
 	 * @param relativeX
 	 *            float value normally in range [0, 1] for x position relative to screen.
 	 * @param relativeY
@@ -109,8 +120,23 @@ public abstract class GUIElement implements GLBufferWritable {
 	 */
 	public GUIElement setPositionRelativeTo(Vector2f boundingStart, Vector2f boundingSize, float relativeX,
 			float relativeY) {
-		Vector2f maxPosition = boundingStart.add(boundingSize.sub(bounding.getSize(), new Vector2f()), new Vector2f());
-		setPosition(boundingStart.lerp(maxPosition, new Vector2f(relativeX, relativeY), new Vector2f()));
+		return setPositionRelativeTo(new Rectangle(boundingStart, boundingSize), relativeX, relativeY);
+	}
+
+	/**
+	 * Sets the position of the GUIElement relative to a BoundingBox
+	 *
+	 * @param bounding
+	 *            bounding box to fit the GUIElement into
+	 * @param relativeX
+	 *            float value normally in range [0, 1] for x position relative to a BoundingBox.
+	 * @param relativeY
+	 *            float value normally in range [0, 1] for y position relative to a BoundingBox.
+	 * @return this
+	 */
+	public GUIElement setPositionRelativeTo(Rectangle bounding, float relativeX, float relativeY) {
+		this.bounding.setPositionRelativeTo(bounding, relativeX, relativeY);
+		setDirty();
 		return this;
 	}
 
@@ -131,6 +157,7 @@ public abstract class GUIElement implements GLBufferWritable {
 	 */
 	public void setPosition(Vector2f position) {
 		bounding.setPosition(position);
+		setDirty();
 	}
 
 	/**
@@ -150,6 +177,7 @@ public abstract class GUIElement implements GLBufferWritable {
 	 */
 	public void setSize(Vector2f size) {
 		bounding.setSize(size);
+		setDirty();
 	}
 
 	/**
@@ -238,6 +266,7 @@ public abstract class GUIElement implements GLBufferWritable {
 	 */
 	public void setBounding(Rectangle bounding) {
 		this.bounding = bounding;
+		setDirty();
 	}
 
 	/**
@@ -251,7 +280,7 @@ public abstract class GUIElement implements GLBufferWritable {
 
 	/**
 	 * Getter for the lut row
-	 * 
+	 *
 	 * @return the lutRow
 	 */
 	public float getLutRow() {
@@ -260,16 +289,17 @@ public abstract class GUIElement implements GLBufferWritable {
 
 	/**
 	 * Setter for the lut row
-	 * 
+	 *
 	 * @return the new lutRow
 	 */
 	public void setLutRow(float lutRow) {
 		this.lutRow = lutRow;
+		setDirty();
 	}
 
 	/**
 	 * Makes this GUIElement use a lut and sets the lut and the lutRow
-	 * 
+	 *
 	 * @param lut
 	 *            the lut texture that will be used for this GUIElement
 	 * @param lutRow
@@ -278,11 +308,12 @@ public abstract class GUIElement implements GLBufferWritable {
 	public void setLut(Texture2D lut, float lutRow) {
 		this.lut = lut;
 		this.lutRow = lutRow;
+		setDirty();
 	}
 
 	/**
 	 * Sets a pixel color in the lut
-	 * 
+	 *
 	 * @param color
 	 *            the Color to set the pixel to
 	 * @param xPosition
@@ -296,7 +327,7 @@ public abstract class GUIElement implements GLBufferWritable {
 	/**
 	 * Sets the last pixel in the GUIElements lutRow to a color. This is the color that will be used if the inputTexture
 	 * is completely white
-	 * 
+	 *
 	 * @param color
 	 *            the Color to set the pixel to
 	 */
