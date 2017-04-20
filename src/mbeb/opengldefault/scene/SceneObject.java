@@ -302,9 +302,6 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 	}
 
 	/**
-	 * <<<<<<< HEAD
-	 * <<<<<<< HEAD
-	 *
 	 * @param newPosition
 	 *            a new position for this sceneObject (in global space)
 	 *            =======

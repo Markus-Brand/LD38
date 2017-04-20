@@ -60,8 +60,8 @@ public class BunnyGameState implements GameState {
 	@Option(category = "Game")
 	public static boolean showFPS = true;
 
-	@ButtonOption
 	@Option(category = "Game")
+	@ButtonOption
 	public static boolean showBBs = true;
 
 	private static final String TAG = "BunnyGameState";
