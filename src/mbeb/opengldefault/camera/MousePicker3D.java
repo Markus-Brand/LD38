@@ -23,9 +23,9 @@ public class MousePicker3D {
 	/**
 	 * Current camera
 	 */
-	private final ICamera camera;
+	private final Camera camera;
 
-	public MousePicker3D(final ICamera camera) {
+	public MousePicker3D(final Camera camera) {
 		this.camera = camera;
 	}
 
@@ -84,11 +84,11 @@ public class MousePicker3D {
 	 * @param parentTransform parent transformation to convert from parentSpace to worldSpace
 	 */
 	public void searchBoundingBoxes(SceneObject currentObject, Matrix4f parentTransform) {
-		if (ray == null || camera.getPosition() == null || currentObject.getBoundingBox() == null) {
+		if (ray == null || camera.getEye() == null || currentObject.getBoundingBox() == null) {
 			return;
 		}
 
-		boolean selected = currentObject.getBoundingBox().intersectsRay(camera.getPosition(), ray, parentTransform);
+		boolean selected = currentObject.getBoundingBox().intersectsRay(camera.getEye(), ray, parentTransform);
 
 		currentObject.setSelected(selected);
 

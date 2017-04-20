@@ -25,6 +25,11 @@ public abstract class Camera implements IEntityConvertable {
 	public static final int UBO_INDEX = 0;
 
 	/**
+	 * The uniform buffer name for camera matrices.
+	 */
+	public static final String UBO_NAME = "Matrices";
+
+	/**
 	 * The position of this camera in world space.
 	 * Defaults to (0,0,0).
 	 */
@@ -51,6 +56,11 @@ public abstract class Camera implements IEntityConvertable {
 	 * Whether the parameters relevant to the projection matrix have been changed.
 	 */
 	private boolean projectionDirty;
+
+	/**
+	 * Whether the view-projection matrix requires an update.
+	 */
+	private boolean projectionViewDirty;
 
 	/**
 	 * Whether the parameters relevant to the view matrix have been changed.
@@ -91,8 +101,11 @@ public abstract class Camera implements IEntityConvertable {
 	 * Creates a new camera an initializes its UBO.
 	 */
 	protected Camera() {
-		this.ubo = new UniformBuffer(UBO_INDEX, "Matrices", MAT4_SIZE * 3);
-		ubo.bufferData(MAT4_SIZE * 3, GLBuffer.Usage.DYNAMIC_DRAW);
+		this.ubo = new UniformBuffer(UBO_INDEX, UBO_NAME, MAT4_SIZE * 3);
+		ubo.whileBound(glObject -> {
+			ubo.bufferData(MAT4_SIZE * 3, GLBuffer.Usage.DYNAMIC_DRAW);
+			return true;
+		});
 		this.setUBODirty();
 		this.setEye(new Vector3f());
 		this.setCenter(new Vector3f(1, 0, 0));
@@ -183,6 +196,7 @@ public abstract class Camera implements IEntityConvertable {
 		if (this.isViewDirty()) {
 			this.view = generateView();
 			this.setViewClean();
+			this.setProjectionViewDirty();
 			this.setUBODirty();
 		}
 		return this.view;
@@ -210,6 +224,27 @@ public abstract class Camera implements IEntityConvertable {
 	}
 
 	/**
+	 * @return whether the view-projection matrix requires an update
+	 */
+	protected boolean isProjectionViewDirty() {
+		return this.projectionViewDirty;
+	}
+
+	/**
+	 * Marks the view-projection data as dirty.
+	 */
+	protected void setProjectionViewDirty() {
+		this.projectionViewDirty = true;
+	}
+
+	/**
+	 * Marks the view-projection data as clean.
+	 */
+	protected void setProjectionViewClean() {
+		this.projectionViewDirty = false;
+	}
+
+	/**
 	 * Generates a new projection matrix for this camera.
 	 * 
 	 * @return the generated matrix
@@ -223,6 +258,7 @@ public abstract class Camera implements IEntityConvertable {
 		if (this.isProjectionDirty()) {
 			this.projection = this.generateProjection();
 			this.setProjectionClean();
+			this.setProjectionViewDirty();
 			this.setUBODirty();
 		}
 		return this.projection;
@@ -232,8 +268,9 @@ public abstract class Camera implements IEntityConvertable {
 	 * @return an up-to-date projection-view matrix for this camera
 	 */
 	public final Matrix4f getProjectionView() {
-		if (this.isViewDirty() || this.isProjectionDirty()) {
-			this.projectionView = this.getProjection().mul(this.getView());
+		if (this.isProjectionViewDirty()) {
+			this.projectionView = this.getProjection().mul(this.getView(), new Matrix4f());
+			this.setProjectionViewClean();
 			this.setUBODirty();
 		}
 		return this.projectionView;

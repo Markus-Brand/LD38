@@ -76,6 +76,20 @@ public class UniformBuffer extends GLBuffer {
 	}
 
 	/**
+	 * @return the base index of this uniform buffer
+	 */
+	public int getBaseIndex() {
+		return baseIndex;
+	}
+
+	/**
+	 * @return the base name of this uniform buffer
+	 */
+	public String getBaseName() {
+		return baseName;
+	}
+
+	/**
 	 * creates a writer based on the BufferSize of the UBO
 	 * 
 	 * @return a GLBufferWriter to write with

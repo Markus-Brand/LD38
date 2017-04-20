@@ -5,9 +5,6 @@ import mbeb.opengldefault.gl.buffer.UniformBuffer;
 
 public abstract class UBOManager {
 
-	//public static final UniformBuffer MATRICES = new UniformBuffer(
-	//		0, "Matrices", Constants.MAT4_SIZE * 4);
-	public static final int MATRICES_INDICES = 0;
 	public static final UniformBuffer DIRECTIONALLIGHT = new UniformBuffer(
 			1, "DirectionalLightBlock", Constants.BLOCK_SIZE);
 	public static final UniformBuffer POINTLIGHT = new UniformBuffer(
