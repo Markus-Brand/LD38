@@ -13,5 +13,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Option {
-	public String category() default "none";
+	String category() default "none";
 }
