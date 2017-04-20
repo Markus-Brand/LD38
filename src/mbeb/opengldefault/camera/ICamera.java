@@ -1,8 +1,11 @@
 package mbeb.opengldefault.camera;
 
+import mbeb.opengldefault.scene.entities.CameraEntity;
+import mbeb.opengldefault.scene.entities.IEntity;
+import mbeb.opengldefault.scene.entities.IEntityConvertable;
 import org.joml.*;
 
-public interface ICamera {
+public interface ICamera extends IEntityConvertable {
 
 	/**
 	 * updates the camera
@@ -106,4 +109,9 @@ public interface ICamera {
 	 * @return the Vectors position on Screen
 	 */
 	Vector3f getPosOnScreen(Vector4f pos);
+	
+	@Override
+	default IEntity asNewEntity() {
+		return new CameraEntity(this);
+	}
 }

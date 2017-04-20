@@ -4,7 +4,6 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import mbeb.opengldefault.controls.Mouse;
-import mbeb.opengldefault.scene.entities.Entity;
 import mbeb.opengldefault.scene.entities.IEntity;
 
 import java.lang.Math;
@@ -32,11 +31,6 @@ public class PitchYawMouseBehaviour implements IBehaviour {
 		this.yaw = yaw;
 		this.rotationSpeed = rotationSpeed;
 		lastMousePosition = new Vector2f(Mouse.getPos());
-	}
-
-	@Override
-	public boolean triggers(IEntity entity) {
-		return true;
 	}
 
 	@Override

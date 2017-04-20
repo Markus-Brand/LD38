@@ -71,7 +71,8 @@ public abstract class Entity implements IEntity {
 	 * @param behaviour
 	 *            the new Behaviour
 	 */
-	public void addBehaviour(int priority, IBehaviour behaviour) {
+	public IEntity addBehaviour(int priority, IBehaviour behaviour) {
 		behaviours.add(new PrioritizedBehaviour(behaviour, priority));
+		return this;
 	}
 }
