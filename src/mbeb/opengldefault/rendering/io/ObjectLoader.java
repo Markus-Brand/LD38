@@ -236,8 +236,8 @@ public class ObjectLoader {
 	 *            how many bones per vertex
 	 * @return
 	 */
-	private Map<Integer, List<Map.Entry<Integer, Float>>> loadVertexWeights(AIMesh mesh, Bone skeleton,
-			int weightsAmount) {
+	private Map<Integer, List<Map.Entry<Integer, Float>>>
+			loadVertexWeights(AIMesh mesh, Bone skeleton, int weightsAmount) {
 		//calculate weights here
 		Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights = new HashMap<>();
 		Map<Integer, Map<Integer, Float>> rawVertexBoneWeights = new HashMap<>(2 * mesh.mNumVertices());
@@ -373,9 +373,12 @@ public class ObjectLoader {
 
 					BoneTransformation transform =
 							new BoneTransformation(new Vector3f(pos.mValue().x(), pos.mValue().y(), pos.mValue().z()),
-									new Quaternionf(rot.mValue().x(), rot.mValue().y(), rot.mValue().z(), rot.mValue()
-											.w()), new Vector3f(scale.mValue().x(), scale.mValue().y(), scale.mValue()
-											.z()));
+									new Quaternionf(
+											rot.mValue().x(),
+											rot.mValue().y(),
+											rot.mValue().z(),
+											rot.mValue().w()),
+									new Vector3f(scale.mValue().x(), scale.mValue().y(), scale.mValue().z()));
 					KeyFrame keyFrame =
 							new KeyFrame(pos.mTime(), new Pose(animMesh.getSkeleton(), animMesh.getTransform()).put(
 									boneName, transform));

@@ -18,10 +18,24 @@ public abstract class AbstractButton implements IFocusable {
 	 */
 	protected boolean isPressed;
 
+	/**
+	 * The bounding of the Button in screen space coordinates (-1 - 1)
+	 */
 	protected Rectangle bounding;
 
+	/**
+	 * Was the Mouse released since the last button press
+	 */
 	private boolean releasedMouseSinceLastButtonPress;
 
+	/**
+	 * Constructor for a AbstreactButton
+	 * 
+	 * @param bounding
+	 *            The bounding of the Button in screen space coordinates (-1 - 1)
+	 * @param initialState
+	 *            initial value of the button
+	 */
 	public AbstractButton(Rectangle bounding, boolean initialState) {
 		this.isPressed = initialState;
 		this.bounding = bounding;
@@ -33,6 +47,12 @@ public abstract class AbstractButton implements IFocusable {
 		return !releasedMouseSinceLastButtonPress;
 	}
 
+	/**
+	 * Updates the AbstractButton
+	 * 
+	 * @param deltaTime
+	 *            time since the last update
+	 */
 	public void update(double deltaTime) {
 		if (releasedMouseSinceLastButtonPress) {
 			if (bounding.contains(Mouse.getNormalizedDeviceCoordinates())) {
@@ -54,16 +74,36 @@ public abstract class AbstractButton implements IFocusable {
 		}
 	}
 
+	/**
+	 * Action if the Button was released
+	 */
 	public abstract void wasReleased();
 
+	/**
+	 * Action if ther Button was pressed
+	 */
 	public abstract void wasPressed();
 
+	/**
+	 * Action if the buttonState changed
+	 */
 	public abstract void onButtonChanged();
 
+	/**
+	 * Getter for the button state
+	 * 
+	 * @return true if the button is pressed
+	 */
 	public boolean isPressed() {
 		return isPressed;
 	}
 
+	/**
+	 * Setter for the button state
+	 * 
+	 * @param isPressed
+	 *            the new button state. true -> pressed
+	 */
 	public void setPressed(boolean isPressed) {
 		boolean changed = this.isPressed != isPressed;
 		this.isPressed = isPressed;

@@ -25,7 +25,7 @@ public class YAMLParser {
 
 	/**
 	 * parse the yaml file if not happened already
-	 * 
+	 *
 	 * @return the YAML root-node
 	 */
 	public YAMLNode getRoot() {
@@ -42,12 +42,7 @@ public class YAMLParser {
 
 	/**
 	 * parse the content of a Node
-	 * <<<<<<< HEAD
 	 *
-	 =======
-	 * 
-	 >>>>>>> master
-	 * 
 	 * @param lines
 	 *            the Content iterator
 	 * @param depth

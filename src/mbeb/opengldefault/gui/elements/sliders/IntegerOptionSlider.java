@@ -6,12 +6,12 @@ import mbeb.opengldefault.shapes.Rectangle;
 
 /**
  * A class that can modify a Field of type int
- * 
+ *
  * @author Markus
  */
 public class IntegerOptionSlider extends OptionSlider {
 
-	public IntegerOptionSlider(Field option, float initialValue, float min, float max, float step, Rectangle bounding) {
+	public IntegerOptionSlider(Field option, int initialValue, int min, int max, int step, Rectangle bounding) {
 		super(option, initialValue, min, max, step, bounding);
 	}
 

@@ -554,7 +554,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 	 * @return whether the operation succeeded
 	 */
 	public final boolean setMinificationFilter(final MinificationFilter filter) {
-		if (filter != MinificationFilter.LINEAR) {
+		if (filter != MinificationFilter.LINEAR && filter != MinificationFilter.NEAREST) {
 			generateMipmaps();
 		}
 		return this.setParameter(GL_TEXTURE_MIN_FILTER, filter.getGLEnum(), "TEXTURE_MIN_FILTER");

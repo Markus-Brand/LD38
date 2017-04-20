@@ -218,9 +218,7 @@ public abstract class GLObject {
 	 * @return whether the operation succeeded
 	 */
 	@SuppressWarnings("unchecked")
-	//Because <this.class> is not (yet) a thing
-			public final
-			<T extends GLObject> boolean whileBound(Function<T, Boolean> actor) {
+	public final <T extends GLObject> boolean whileBound(Function<T, Boolean> actor) {
 		if (!this.beginTransaction()) {
 			return false;
 		}

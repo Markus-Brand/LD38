@@ -180,7 +180,7 @@ public class OptionsMenu implements GameState {
 		bounding.setPositionRelativeTo(new Rectangle(new Vector2f(-1), new Vector2f(2)), 0.5f, relativeY);
 		OptionSlider slider;
 		if (int.class.isAssignableFrom(option.getType())) {
-			slider = new IntegerOptionSlider(option, (int) value, (int) min, (int) max, step, bounding);
+			slider = new IntegerOptionSlider(option, (int) value, (int) min, (int) max, (int) step, bounding);
 		} else if (float.class.isAssignableFrom(option.getType())) {
 			slider = new FloatOptionSlider(option, (float) value, min, max, step, bounding);
 		} else {

@@ -67,7 +67,7 @@ public abstract class Slider implements IFocusable {
 
 	/**
 	 * Update the slider
-	 * 
+	 *
 	 * @param deltaTime
 	 */
 	public void update(double deltaTime) {
@@ -82,9 +82,8 @@ public abstract class Slider implements IFocusable {
 				float normalizedMouseXPos = Math.max(Math.min(realMouseXPos, 1), 0);
 				float newValue = getNearestValue(normalizedMouseXPos);
 				if (newValue != currentValue) {
-					cursorXPos =
-							(newValue - minValue) / (maxValue - minValue) * bounding.getWidth()
-									+ bounding.getPosition().x;
+					cursorXPos = (newValue - minValue) / (maxValue - minValue) *
+							bounding.getWidth() + bounding.getPosition().x;
 					setValue(newValue);
 				}
 			}
@@ -95,7 +94,7 @@ public abstract class Slider implements IFocusable {
 
 	/**
 	 * used for the finding the best value for a relative mouse pos
-	 * 
+	 *
 	 * @param relativeMousePos
 	 *            position on the slider between 0 and 1
 	 * @return
@@ -115,7 +114,7 @@ public abstract class Slider implements IFocusable {
 
 	/**
 	 * Setter for the value, that will also call onValueChange
-	 * 
+	 *
 	 * @param currentValue
 	 */
 	public void setValue(float currentValue) {
@@ -130,7 +129,7 @@ public abstract class Slider implements IFocusable {
 
 	/**
 	 * Get current value as String
-	 * 
+	 *
 	 * @return current value as String
 	 */
 	public String getValueString() {
@@ -139,7 +138,7 @@ public abstract class Slider implements IFocusable {
 
 	/**
 	 * Get min value as String
-	 * 
+	 *
 	 * @return min value as String
 	 */
 	public String getMinValueString() {
@@ -148,7 +147,7 @@ public abstract class Slider implements IFocusable {
 
 	/**
 	 * Get max value as String
-	 * 
+	 *
 	 * @return max value as String
 	 */
 	public String getMaxValueString() {
@@ -157,7 +156,7 @@ public abstract class Slider implements IFocusable {
 
 	/**
 	 * How to format the values to be displayed
-	 * 
+	 *
 	 * @param in
 	 *            the input that will be formatted
 	 * @return the value as a String

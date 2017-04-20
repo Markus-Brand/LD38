@@ -24,9 +24,14 @@ public class Rectangle {
 		this.size = size;
 	}
 
-	public Rectangle(Rectangle bounding) {
-		this.position = new Vector2f(bounding.getPosition());
-		this.size = new Vector2f(bounding.getSize());
+	/**
+	 * Copy constructor
+	 *
+	 * @param bounding
+	 */
+	public Rectangle(Rectangle reference) {
+		this.position = new Vector2f(reference.getPosition());
+		this.size = new Vector2f(reference.getSize());
 	}
 
 	/**
@@ -112,6 +117,20 @@ public class Rectangle {
 		return getSize().y;
 	}
 
+	/**
+	 * Sets the position of this Rectangle realtive to another Rectangle
+	 *
+	 * @param bounding
+	 *            the referenced Rectangle
+	 * @param relativeX
+	 *            normally range 0 - 1.
+	 *            0 -> Our left border is set to the referenced Rectangles left border
+	 *            1 -> Our right border is set to the referenced Rectangles right border
+	 * @param relativeY
+	 *            normally range 0 - 1.
+	 *            0 -> Our lower border is set to the referenced Rectangles lower border
+	 *            1 -> Our upper border is set to the referenced Rectangles upper border
+	 */
 	public void setPositionRelativeTo(Rectangle bounding, float relativeX, float relativeY) {
 		Vector2f maxPosition = bounding.position.add(bounding.size.sub(getSize(), new Vector2f()), new Vector2f());
 		setPosition(bounding.position.lerp(maxPosition, new Vector2f(relativeX, relativeY), new Vector2f()));
