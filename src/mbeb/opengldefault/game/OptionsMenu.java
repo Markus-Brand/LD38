@@ -56,7 +56,7 @@ public class OptionsMenu implements GameState {
 	@Override
 	public void init() {
 
-		optionsHirarchy = new TextGUI(new Font("Arial", 0, 128));
+		optionsHirarchy = new TextGUI(new Font("Comic Sans MS", 0, 128));
 		ShaderProgram guiShader = new ShaderProgram("gui.vert", "gui.frag");
 		optionsHirarchy.setShader(guiShader);
 

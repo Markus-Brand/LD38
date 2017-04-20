@@ -48,7 +48,7 @@ public class BooleanOptionButton extends Switch {
 		buttonAtlas.setColor(Color.LIGHT_GRAY, 220);
 		buttonAtlas.setColor(Color.GRAY, 255);
 
-		buttonText = textGUI.addText(option.getName(), new Vector2f(), bounding.getHeight() / 2);
+		buttonText = textGUI.addText(option.getName(), new Vector2f(), bounding.getHeight() / 2.2f);
 		buttonText.setColor(Color.BLACK);
 		onButtonChanged();
 	}
@@ -73,10 +73,10 @@ public class BooleanOptionButton extends Switch {
 		if (buttonAtlas != null && buttonText != null) {
 			if (isPressed) {
 				buttonAtlas.setAtlasIndex(3);
-				buttonText.setPositionRelativeTo(bounding, 0.5f, 0.35f);
+				buttonText.setPositionRelativeTo(bounding, 0.5f, 0.45f);
 			} else {
 				buttonAtlas.setAtlasIndex(2);
-				buttonText.setPositionRelativeTo(bounding, 0.5f, 0.65f);
+				buttonText.setPositionRelativeTo(bounding, 0.5f, 0.7f);
 			}
 		}
 

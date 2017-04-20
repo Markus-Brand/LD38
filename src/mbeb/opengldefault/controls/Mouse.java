@@ -126,13 +126,25 @@ public class Mouse {
 	 *            the focus to set
 	 */
 	private static void setFocus(IFocusable focus) {
-		if (focus != Mouse.focus && focus != null) {
+		if (focus == null) {
+			resetFocus();
+		} else if (focus != Mouse.focus) {
 			if (Mouse.focus != null) {
 				Mouse.focus.releasedFocus();
 			}
 			focus.gotFocus();
+			Mouse.focus = focus;
 		}
-		Mouse.focus = focus;
+	}
+
+	/**
+	 * Resets the current focus and notifies it of this
+	 */
+	private static void resetFocus() {
+		if (Mouse.focus != null) {
+			Mouse.focus.releasedFocus();
+			Mouse.focus = null;
+		}
 	}
 
 	/**
@@ -144,7 +156,7 @@ public class Mouse {
 	public static void releaseFocus(IFocusable focus) {
 		if (focus.equals(getFocus())) {
 			focus.releasedFocus();
-			setFocus(null);
+			resetFocus();
 		}
 	}
 }
