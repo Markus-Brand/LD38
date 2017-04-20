@@ -43,7 +43,7 @@ public class PhysicsSimulationState implements GameState {
 	
 	@Override
 	public void init() {
-		Camera camera = new PerspectiveCamera(GLContext.getAspectRatio());
+		Camera camera = new PerspectiveCamera();
 		camera.setEye(new Vector3f(1, 1, 1));
 		Skybox sky = new Skybox("spacebox/s", "png");
 		scene = new Scene(camera, sky);

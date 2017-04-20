@@ -2,6 +2,8 @@ package mbeb.opengldefault.camera;
 
 import org.joml.Matrix4f;
 
+import mbeb.opengldefault.gl.GLContext;
+
 /**
  * Represents a camera with a perspective projection matrix.
  */
@@ -16,9 +18,11 @@ public class PerspectiveCamera extends Camera {
 	private float fov;
 
 	/**
-	 * The aspect ratio of this camera (width / height).
+	 * Creates a new perspective camera with the contexts aspect ratio and the default field of view.
 	 */
-	private float aspectRatio;
+	public PerspectiveCamera() {
+		this(GLContext.getAspectRatio());
+	}
 
 	/**
 	 * Creates a new perspective camera with the given aspect ratio and default field of view, near and far.
@@ -82,24 +86,6 @@ public class PerspectiveCamera extends Camera {
 	 */
 	public void setFOV(final float fov) {
 		this.fov = fov;
-		this.setProjectionDirty();
-	}
-
-	/**
-	 * @return the aspect ratio of this camera (width / height)
-	 */
-	public float getAspectRatio() {
-		return aspectRatio;
-	}
-
-	/**
-	 * Sets the aspect ratio of this camera.
-	 * 
-	 * @param aspectRatio
-	 *            the aspect ratio (width / height)
-	 */
-	public void setAspectRatio(final float aspectRatio) {
-		this.aspectRatio = aspectRatio;
 		this.setProjectionDirty();
 	}
 }

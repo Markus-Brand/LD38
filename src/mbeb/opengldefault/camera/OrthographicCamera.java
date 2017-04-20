@@ -2,147 +2,72 @@ package mbeb.opengldefault.camera;
 
 import org.joml.Matrix4f;
 
+import mbeb.opengldefault.gl.GLContext;
+
 /**
  * Represents a camera with an orthographic projection matrix
  */
 public class OrthographicCamera extends Camera {
 
 	/**
-	 * The top clipping plane of this camera.
+	 * The orthographic scale of this camera.
 	 */
-	private float top;
+	private float scale;
 
 	/**
-	 * The bottom clipping plane of this camera.
-	 */
-	private float bottom;
-
-	/**
-	 * The left clipping plane of this camera.
-	 */
-	private float left;
-
-	/**
-	 * The right clipping plane of this camera.
-	 */
-	private float right;
-
-	/**
-	 * Creates a new orthographic camera with the given clipping planes and default near and far.
+	 * Creates a new orthographic camera with the given orthographic scale and the contexts aspect ratio.
 	 * 
-	 * @param top
-	 *            the top plane
-	 * @param bottom
-	 *            the bottom plane
-	 * @param left
-	 *            the left plane
-	 * @param right
-	 *            the right plane
+	 * @param scale
+	 *            the orthographic scale of this camera
 	 */
-	public OrthographicCamera(final float top, final float bottom, final float left, final float right) {
-		this(top, bottom, left, right, DEFAULT_NEAR, DEFAULT_FAR);
+	public OrthographicCamera(final float scale) {
+		this(scale, GLContext.getAspectRatio());
 	}
 
 	/**
-	 * Creates a new orthographic camera with the given clipping planes.
+	 * Creates a new orthographic camera with the given orthographic scale and aspect ratio.
 	 * 
-	 * @param top
-	 *            the top plane
-	 * @param bottom
-	 *            the bottom plane
-	 * @param left
-	 *            the left plane
-	 * @param right
-	 *            the right plane
-	 * @param near
-	 *            the near plane
-	 * @param far
-	 *            the far plane
+	 * @param scale
+	 *            the orthographic scale of this camera
+	 * @param aspectRatio
+	 *            the aspect ratio for this camera
 	 */
-	public OrthographicCamera(final float top, final float bottom, final float left, final float right, final float near, final float far) {
+	public OrthographicCamera(final float scale, final float aspectRatio) {
+		this(scale, aspectRatio, DEFAULT_NEAR, DEFAULT_FAR);
+	}
+
+	public OrthographicCamera(final float scale, final float aspectRatio, final float near, final float far) {
 		super();
-		this.setTop(top);
-		this.setBottom(bottom);
-		this.setLeft(left);
-		this.setRight(right);
+		this.setScale(scale);
+		this.setAspectRatio(aspectRatio);
 		this.setNear(near);
 		this.setFar(far);
 	}
 
 	@Override
 	protected Matrix4f generateProjection() {
-		return new Matrix4f().ortho(this.getLeft(), this.getRight(), this.getBottom(), this.getTop(), this.getNear(), this.getFar());
+		float top = this.getScale() / 2.0f;
+		float bottom = -top;
+		float right = (this.getScale() * this.getAspectRatio()) / 2.0f;
+		float left = -right;
+		return new Matrix4f().ortho(left, right, bottom, top, this.getNear(), this.getFar());
 	}
 
 	/**
 	 * @return the top clipping plane of this camera
 	 */
-	public float getTop() {
-		return top;
+	public float getScale() {
+		return scale;
 	}
 
 	/**
-	 * Sets the top clipping plane of this camera.
-	 * 
-	 * @param top
-	 *            the top plane
+	 * Sets the orthographic scale of this camera.
+	 *
+	 * @param scale
+	 *            the orthographic scale
 	 */
-	public void setTop(final float top) {
-		this.top = top;
-		this.setProjectionDirty();
-	}
-
-	/**
-	 * @return the bottom clipping plane of this camera
-	 */
-	public float getBottom() {
-		return bottom;
-	}
-
-	/**
-	 * Sets the bottom clipping plane of this camera.
-	 * 
-	 * @param bottom
-	 *            the bottom plane
-	 */
-	public void setBottom(final float bottom) {
-		this.bottom = bottom;
-		this.setProjectionDirty();
-	}
-
-	/**
-	 * @return the left clipping plane of this camera
-	 */
-	public float getLeft() {
-		return left;
-	}
-
-	/**
-	 * Sets the left clipping plane of this camera.
-	 * 
-	 * @param left
-	 *            the left plane
-	 */
-	public void setLeft(final float left) {
-		this.left = left;
-		this.setProjectionDirty();
-	}
-
-	/**
-	 * @return the right clipping plane of this camera
-	 */
-	public float getRight() {
-		return right;
-	}
-
-	/**
-	 * Sets the right clipping plane of this camera.
-	 * 
-	 * @param right
-	 *            the right plane
-	 */
-	public void setRight(final float right) {
-		this.right = right;
+	public void setScale(final float scale) {
+		this.scale = scale;
 		this.setProjectionDirty();
 	}
 }

@@ -99,7 +99,7 @@ public class BunnyGameState implements GameState {
 		}
 		curve = new BezierCurve(controlPoints, ControlPointInputMode.CAMERAPOINTSCIRCULAR, true);
 
-		camera = new PerspectiveCamera(GLContext.getAspectRatio());
+		camera = new PerspectiveCamera();
 		final Skybox skybox = new Skybox("skybox/mountain");
 		bunnyScene = new Scene(camera, skybox);
 

@@ -78,6 +78,11 @@ public abstract class Camera implements IEntityConvertable {
 	private float far;
 
 	/**
+	 * The aspect ratio of this camera (width / height).
+	 */
+	private float aspectRatio;
+
+	/**
 	 * The cached view matrix of this camera.
 	 */
 	private Matrix4f view;
@@ -363,6 +368,25 @@ public abstract class Camera implements IEntityConvertable {
 	 */
 	public void setFar(final float far) {
 		this.far = far;
+		this.setProjectionDirty();
+	}
+
+	/**
+	 * @return the aspect ratio of this camera (width / height)
+	 */
+	public float getAspectRatio() {
+		return aspectRatio;
+	}
+
+	/**
+	 * Sets the aspect ratio of this camera.
+	 *
+	 * @param aspectRatio
+	 *            the aspect ratio (width / height)
+	 */
+	public void setAspectRatio(final float aspectRatio) {
+		this.aspectRatio = aspectRatio;
+		this.setProjectionDirty();
 	}
 
 	/**
