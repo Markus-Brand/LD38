@@ -2,14 +2,10 @@ package mbeb.opengldefault.sound;
 
 import static java.lang.Math.*;
 import static org.lwjgl.BufferUtils.createByteBuffer;
-import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
-import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.openal.ALC10.*;
 import static org.lwjgl.openal.EXTThreadLocalContext.alcSetThreadContext;
 import static org.lwjgl.openal.SOFTDirectChannels.AL_DIRECT_CHANNELS_SOFT;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.stb.STBEasyFont.stb_easy_font_print;
 import static org.lwjgl.stb.STBVorbis.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -26,14 +22,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.glfw.*;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALCCapabilities;
-import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GLUtil;
 import org.lwjgl.stb.STBVorbisInfo;
-import org.lwjgl.system.Callback;
 
 /**
  * STB Vorbis demo.
@@ -50,20 +42,24 @@ public final class Vorbis {
 	public static void main(String[] args) {
 		String filePath;
 		if (args.length == 0) {
-			System.out.println("Use 'ant demo -Dclass=org.lwjgl.demo.stb.Vorbis -Dargs=<path>' to load a different Ogg Vorbis file.\n");
+			System.out
+					.println("Use 'ant demo -Dclass=org.lwjgl.demo.stb.Vorbis -Dargs=<path>' to load a different Ogg Vorbis file.\n");
 			filePath = "sounds/soundtrackSmall.ogg";
-		} else
+		} else {
 			filePath = args[0];
+		}
 
 		long device = alcOpenDevice((ByteBuffer) null);
-		if (device == NULL)
+		if (device == NULL) {
 			throw new IllegalStateException("Failed to open the default device.");
+		}
 
 		ALCCapabilities deviceCaps = ALC.createCapabilities(device);
 
 		long context = alcCreateContext(device, (IntBuffer) null);
-		if (context == NULL)
+		if (context == NULL) {
 			throw new IllegalStateException("Failed to create an OpenAL context.");
+		}
 
 		alcSetThreadContext(context);
 		AL.createCapabilities(deviceCaps);
@@ -75,33 +71,20 @@ public final class Vorbis {
 		alGenBuffers(buffers);
 
 		Decoder decoder = null;
-		Renderer renderer = null;
 		try {
 			decoder = new Decoder(filePath);
-			renderer = new Renderer(decoder, "STB Vorbis Demo");
-			long window = renderer.window;
 
 			if (!decoder.play(source, buffers)) {
 				System.err.println("Playback failed.");
-				glfwSetWindowShouldClose(window, true);
 			}
 
-			while(!glfwWindowShouldClose(window)) {
-				if (!renderer.paused && !decoder.update(source, true)) {
+			long startTime = System.currentTimeMillis();
+			while(System.currentTimeMillis() - startTime < 10000) {
+				if (!decoder.update(source, true)) {
 					System.err.println("Playback failed.");
-					glfwSetWindowShouldClose(window, true);
 				}
-
-				float progress = decoder.getProgress();
-				float time = decoder.getProgressTime(progress);
-
-				renderer.render(progress, time);
 			}
 		} finally {
-			if (renderer != null) {
-				renderer.destroy();
-			}
-
 			if (decoder != null && decoder.handle >= 0) {
 				stb_vorbis_close(decoder.handle);
 			}
@@ -142,8 +125,9 @@ public final class Vorbis {
 
 			IntBuffer error = BufferUtils.createIntBuffer(1);
 			handle = stb_vorbis_open_memory(vorbis, error, null);
-			if (handle == NULL)
+			if (handle == NULL) {
 				throw new RuntimeException("Failed to open Ogg Vorbis file. Error: " + error.get(0));
+			}
 
 			try(STBVorbisInfo info = STBVorbisInfo.malloc()) {
 				Decoder.getInfo(handle, info);
@@ -194,14 +178,16 @@ public final class Vorbis {
 			while(samples < BUFFER_SIZE) {
 				pcm.position(samples);
 				int samplesPerChannel = stb_vorbis_get_samples_short_interleaved(handle, channels, pcm);
-				if (samplesPerChannel == 0)
+				if (samplesPerChannel == 0) {
 					break;
+				}
 
 				samples += samplesPerChannel * channels;
 			}
 
-			if (samples == 0)
+			if (samples == 0) {
 				return false;
+			}
 
 			pcm.position(0);
 			alBufferData(buffer, format, pcm, sampleRate);
@@ -211,7 +197,7 @@ public final class Vorbis {
 		}
 
 		float getProgress() {
-			return 1.0f - samplesLeft / (float) (lengthSamples);
+			return 1.0f - samplesLeft / (float) lengthSamples;
 		}
 
 		float getProgressTime(float progress) {
@@ -238,8 +224,9 @@ public final class Vorbis {
 
 		boolean play(int source, IntBuffer buffers) {
 			for (int i = 0; i < buffers.limit(); i++) {
-				if (!stream(buffers.get(i)))
+				if (!stream(buffers.get(i))) {
 					return false;
+				}
 			}
 
 			alSourceQueueBuffers(source, buffers);
@@ -262,205 +249,18 @@ public final class Vorbis {
 						shouldExit = !stream(buffer);
 					}
 
-					if (shouldExit)
+					if (shouldExit) {
 						return false;
+					}
 				}
 				alSourceQueueBuffers(source, buffer);
 			}
 
-			if (processed == 2)
+			if (processed == 2) {
 				alSourcePlay(source);
+			}
 
 			return true;
-		}
-
-	}
-
-	private static class Renderer {
-
-		private static final int WIDTH = 640;
-		private static final int HEIGHT = 320;
-
-		private final GLFWErrorCallback errorCallback;
-		private final GLFWFramebufferSizeCallback framebufferSizeCallback;
-		private final GLFWKeyCallback keyCallback;
-		private final GLFWCursorPosCallback cursorPosCallback;
-		private final GLFWMouseButtonCallback mouseButtonCallback;
-
-		private final Callback debugProc;
-
-		private final long window;
-
-		private final ByteBuffer charBuffer;
-
-		private boolean paused;
-
-		private double cursorX, cursorY;
-
-		private boolean buttonPressed;
-
-		Renderer(Decoder decoder, String title) {
-			errorCallback = GLFWErrorCallback.createPrint().set();
-			if (!glfwInit())
-				throw new IllegalStateException("Unable to initialize GLFW");
-
-			glfwDefaultWindowHints();
-			glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-			glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-
-			window = glfwCreateWindow(WIDTH, HEIGHT, title, NULL, NULL);
-			if (window == NULL)
-				throw new RuntimeException("Failed to create the GLFW window");
-
-			framebufferSizeCallback = new GLFWFramebufferSizeCallback() {
-				@Override
-				public void invoke(long window, int width, int height) {
-					glViewport(0, 0, width, height);
-				}
-			}.set(window);
-
-			keyCallback = new GLFWKeyCallback() {
-				@Override
-				public void invoke(long window, int key, int scancode, int action, int mods) {
-					if (action == GLFW_RELEASE)
-						return;
-
-					switch(key) {
-						case GLFW_KEY_ESCAPE:
-							glfwSetWindowShouldClose(window, true);
-							break;
-						case GLFW_KEY_HOME:
-							decoder.rewind();
-							break;
-						case GLFW_KEY_LEFT:
-							decoder.skip(-1);
-							break;
-						case GLFW_KEY_RIGHT:
-							decoder.skip(1);
-							break;
-						case GLFW_KEY_SPACE:
-							paused = !paused;
-							break;
-					}
-				}
-			}.set(window);
-
-			mouseButtonCallback = new GLFWMouseButtonCallback() {
-				@Override
-				public void invoke(long window, int button, int action, int mods) {
-					if (button != GLFW_MOUSE_BUTTON_LEFT)
-						return;
-
-					buttonPressed = action == GLFW_PRESS;
-					if (!buttonPressed)
-						return;
-
-					seek(decoder);
-				}
-			}.set(window);
-
-			cursorPosCallback = new GLFWCursorPosCallback() {
-				@Override
-				public void invoke(long window, double xpos, double ypos) {
-					cursorX = xpos - WIDTH * 0.5f;
-					cursorY = ypos - HEIGHT * 0.5f;
-
-					if (buttonPressed)
-						seek(decoder);
-				}
-			}.set(window);
-
-			// Center window
-			GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-
-			glfwSetWindowPos(window, (vidmode.width() - WIDTH) / 2, (vidmode.height() - HEIGHT) / 2);
-
-			// Create context
-			glfwMakeContextCurrent(window);
-			GL.createCapabilities();
-			debugProc = GLUtil.setupDebugMessageCallback();
-
-			glfwSwapInterval(1);
-			glfwShowWindow(window);
-
-			glMatrixMode(GL_PROJECTION);
-			glLoadIdentity();
-			glOrtho(0.0, WIDTH, HEIGHT, 0.0, -1.0, 1.0);
-			glMatrixMode(GL_MODELVIEW);
-
-			charBuffer = createByteBuffer(256 * 270);
-
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glVertexPointer(2, GL_FLOAT, 16, charBuffer);
-
-			glClearColor(43f / 255f, 43f / 255f, 43f / 255f, 0f); // BG color
-		}
-
-		private void seek(Decoder decoder) {
-			if (cursorX < -254.0 || 254.0 < cursorX)
-				return;
-
-			if (cursorY < -30.0 || 30.0 < cursorY)
-				return;
-
-			decoder.skipTo((float) ((cursorX + 254.0) / 508.0));
-		}
-
-		void render(float progress, float time) {
-			glfwPollEvents();
-			glClear(GL_COLOR_BUFFER_BIT);
-
-			// Progress bar
-			glPushMatrix();
-			glTranslatef(WIDTH * 0.5f, HEIGHT * 0.5f, 0.0f);
-			glBegin(GL_QUADS);
-			{
-				glColor3f(0.5f * 43f / 255f, 0.5f * 43f / 255f, 0.5f * 43f / 255f);
-				glVertex2f(-256.0f, -32.0f);
-				glVertex2f(256.0f, -32.0f);
-				glVertex2f(256.0f, 32.0f);
-				glVertex2f(-256.0f, 32.0f);
-
-				glColor3f(0.5f, 0.5f, 0.0f);
-
-				glVertex2f(-254.0f, -30.0f);
-				glVertex2f(-254.0f + progress * 508.0f, -30.0f);
-				glVertex2f(-254.0f + progress * 508.0f, 30.0f);
-				glVertex2f(-254.0f, 30.0f);
-			}
-			glEnd();
-			glPopMatrix();
-
-			glColor3f(169f / 255f, 183f / 255f, 198f / 255f); // Text color
-
-			// Progress text
-			int minutes = (int) floor(time / 60.0f);
-			int seconds = (int) floor((time - minutes * 60.0f));
-			int quads = stb_easy_font_print(WIDTH * 0.5f - 13, HEIGHT * 0.5f - 4, String.format("%02d:%02d", minutes, seconds), null, charBuffer);
-			glDrawArrays(GL_QUADS, 0, quads * 4);
-
-			// HUD
-			quads = stb_easy_font_print(4, 4, "Press HOME to rewind", null, charBuffer);
-			glDrawArrays(GL_QUADS, 0, quads * 4);
-
-			quads = stb_easy_font_print(4, 20, "Press LEFT/RIGHT or LMB to seek", null, charBuffer);
-			glDrawArrays(GL_QUADS, 0, quads * 4);
-
-			quads = stb_easy_font_print(4, 36, "Press SPACE to pause/resume", null, charBuffer);
-			glDrawArrays(GL_QUADS, 0, quads * 4);
-
-			glfwSwapBuffers(window);
-		}
-
-		void destroy() {
-			if (debugProc != null)
-				debugProc.free();
-
-			glfwFreeCallbacks(window);
-			glfwDestroyWindow(window);
-
-			glfwTerminate();
-			glfwSetErrorCallback(null).free();
 		}
 
 	}
@@ -490,18 +290,23 @@ public final class Vorbis {
 		if (Files.isReadable(path)) {
 			try(SeekableByteChannel fc = Files.newByteChannel(path)) {
 				buffer = createByteBuffer((int) fc.size() + 1);
-				while(fc.read(buffer) != -1);
+				while(fc.read(buffer) != -1) {
+					;
+				}
 			}
 		} else {
-			try(InputStream source = Vorbis.class.getClassLoader().getResourceAsStream(resource); ReadableByteChannel rbc = Channels.newChannel(source)) {
+			try(InputStream source = Vorbis.class.getClassLoader().getResourceAsStream(resource);
+					ReadableByteChannel rbc = Channels.newChannel(source)) {
 				buffer = createByteBuffer(bufferSize);
 
 				while(true) {
 					int bytes = rbc.read(buffer);
-					if (bytes == -1)
+					if (bytes == -1) {
 						break;
-					if (buffer.remaining() == 0)
+					}
+					if (buffer.remaining() == 0) {
 						buffer = resizeBuffer(buffer, buffer.capacity() * 2);
+					}
 				}
 			}
 		}
@@ -509,5 +314,4 @@ public final class Vorbis {
 		buffer.flip();
 		return buffer;
 	}
-
 }
