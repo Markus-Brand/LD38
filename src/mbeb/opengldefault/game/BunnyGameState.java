@@ -56,8 +56,8 @@ import mbeb.opengldefault.scene.entities.IEntity;
 
 public class BunnyGameState implements GameState {
 
-	@ButtonOption
 	@Option(category = "Game")
+	@ButtonOption
 	public static boolean showFPS = true;
 
 	@Option(category = "Game")
