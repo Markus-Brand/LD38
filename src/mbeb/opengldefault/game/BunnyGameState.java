@@ -105,17 +105,21 @@ public class BunnyGameState implements GameState {
 		final Skybox skybox = new Skybox("skybox/mountain");
 		bunnyScene = new Scene(camera, skybox);
 
-		AnimatedMesh playerAnimMesh = new ObjectLoader().loadFromFileAnim("player.fbx");
-		playerAnimMesh.setTransform(MeshFlip);
 		Material playerMaterial = new Material("material/player", 2);
 		//Material lampMaterial = new Material("material/lamp", 3);
 		Material bunnyMaterial = new Material("material/bunny", 4);
+		Material metalbox = new Material("material/metalbox", 4);
+
+		AnimatedMesh playerAnimMesh = new ObjectLoader().loadFromFileAnim("player.fbx");
+		playerAnimMesh.setTransform(MeshFlip);
 		playerAnimMesh.getSkeleton().printRecursive("");
 
 		final AnimatedMesh bunnyAnimMesh = new ObjectLoader().loadFromFileAnim("ohrenFlackern.fbx");
 		bunnyAnimMesh.setTransform(MeshFlip);
 		System.out.println();
 		bunnyAnimMesh.getSkeleton().printRecursive("");
+
+		final IRenderable containerRenderable = new ObjectLoader().loadFromFile("cube.obj").withMaterial(metalbox);
 
 		final ShaderProgram curveShader = new ShaderProgram("bezier.vert", "bezier.frag", "bezier.geom");
 		curveShader.addUniformBlockIndex(UBOManager.MATRICES);
@@ -138,6 +142,10 @@ public class BunnyGameState implements GameState {
 		//SceneObject lamp = new SceneObject(lampRenderable);
 		//lamp.setShader(stillShader);
 
+		SceneObject myContainer = new SceneObject(containerRenderable, new BoneTransformation(new Vector3f(5, 0, 0)));
+		myContainer.setShader(stillShader);
+		bunnyScene.getSceneGraph().addSubObject(myContainer);
+
 		animPlayer = new AnimationStateFacade(playerAnimMesh, playerMaterial);
 
 		playerObj = new SceneObject(animPlayer);
@@ -159,10 +167,10 @@ public class BunnyGameState implements GameState {
 		bunnyScene.getSceneGraph().addSubObject(curveObj);
 		bunnyScene.getSceneGraph().setShader(animatedShader);
 
-		DirectionalLight dl = new DirectionalLight(new Vector3f(1, 0.9f, 0.5f), new Vector3f(-0.1f, -1f, 0));
+		DirectionalLight dl = new DirectionalLight(new Vector3f(1, 0.99f, 0.9f), new Vector3f(-0.1f, -1f, 0));
 		bunnyScene.getLightManager().addLight(dl);
 
-		sl = new SpotLight(Color.ORANGE, new Vector3f(0, -0.25f, 0), new Vector3f(0, 1, 0), 5, 10, 1000);
+		sl = new SpotLight(new Vector3f(1, 1, 0.9f), new Vector3f(0, -0.25f, 0), new Vector3f(0, 1, 0), 5, 10, 1000);
 		bunnyScene.getLightManager().addLight(sl);
 		spotLightEntity = new SpotLightEntity(sl);
 		spotLightEntity.addBehaviour(1, new FollowingBehaviour(lastBunnyEntity, 3f).limited(5));

@@ -37,12 +37,14 @@ uniform int water;
 void main(){
 	vec3 normal = frag_in_norm;
 
+	vec2 yflip = vec2(frag_in_tex.x, 1.0 - frag_in_tex.y);
+
 	vec4 diffuseColorAlpha = materialDiffuseAlpha(frag_in_tex);
 	vec3 diffuseColor = diffuseColorAlpha.rgb;
 	float materialAlpha = diffuseColorAlpha.a;
 	vec3 specularColor = materialSpecular(frag_in_tex);
 	vec3 emissionColor = materialEmit(frag_in_tex);
-	vec3 normalFromMap = materialNormal(frag_in_tex);
+	vec3 normalFromMap = materialNormal(yflip);
 	int shininess = materialShininess();
 
 	vec3 viewDir = normalize(viewPos - frag_in_pos);
