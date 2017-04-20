@@ -17,10 +17,10 @@ public class AtlasGUIElement extends GUIElement {
 	/**
 	 * Index in the atlas.
 	 * Example for a 3 * 3 atlas: <code><br>
-	 * 0|1|2 <br>
-	 * -----<br>
+	 * 0|1|2<br>
+	 * -+-+-<br>
 	 * 3|4|5<br>
-	 * -----<br>
+	 * -+-+-<br>
 	 * 6|7|8<br>
 	 * </code>
 	 */
@@ -100,7 +100,7 @@ public class AtlasGUIElement extends GUIElement {
 
 	/**
 	 * Setter for the {@link #atlasIndex}
-	 * 
+	 *
 	 * @param atlasIndex
 	 *            the new {@link #atlasIndex}
 	 */

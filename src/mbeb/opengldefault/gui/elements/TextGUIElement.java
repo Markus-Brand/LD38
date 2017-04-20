@@ -60,9 +60,7 @@ public class TextGUIElement extends CombinedGUIElement {
 
 	@Override
 	public GUIElement setPositionRelativeTo(Rectangle bounding, float relativeX, float relativeY) {
-		if (isDirty()) {
-			generateText();
-		}
+		checkDirty();
 		return super.setPositionRelativeTo(bounding, relativeX, relativeY);
 	}
 
@@ -110,18 +108,23 @@ public class TextGUIElement extends CombinedGUIElement {
 
 	@Override
 	public void writeTo(GLBufferWriter writer) {
-		if (isDirty()) {
-			generateText();
-		}
+		checkDirty();
 		super.writeTo(writer);
 	}
 
 	@Override
 	public int getNumElements() {
+		checkDirty();
+		return super.getNumElements();
+	}
+
+	/**
+	 * Checks if the element is dirty and newly generates the text, if that is the case
+	 */
+	private void checkDirty() {
 		if (isDirty()) {
 			generateText();
 		}
-		return super.getNumElements();
 	}
 
 	/**

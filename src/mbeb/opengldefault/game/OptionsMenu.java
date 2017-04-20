@@ -9,6 +9,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
 import java.awt.Color;
 import java.awt.Font;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -41,12 +42,12 @@ public class OptionsMenu implements GameState {
 	private HashMap<String, LinkedList<Field>> options;
 	private boolean dirty;
 
-	private TextGUI optionsHirarchy;
+	private TextGUI optionsHierarchy;
 
 	private AtlasGUI atlasGUI;
 
-	private LinkedList<AbstractButton> buttons;
-	private LinkedList<Slider> sliders;
+	private ArrayList<AbstractButton> buttons;
+	private ArrayList<Slider> sliders;
 
 	public OptionsMenu() {
 		options = new HashMap<>();
@@ -56,15 +57,15 @@ public class OptionsMenu implements GameState {
 	@Override
 	public void init() {
 
-		optionsHirarchy = new TextGUI(new Font("Comic Sans MS", 0, 128));
+		optionsHierarchy = new TextGUI(new Font("Comic Sans MS", 0, 128));
 		ShaderProgram guiShader = new ShaderProgram("gui.vert", "gui.frag");
-		optionsHirarchy.setShader(guiShader);
+		optionsHierarchy.setShader(guiShader);
 
 		atlasGUI = new AtlasGUI("menu.png", 4, 4);
 		atlasGUI.setShader(guiShader);
 
-		buttons = new LinkedList<>();
-		sliders = new LinkedList<>();
+		buttons = new ArrayList<>();
+		sliders = new ArrayList<>();
 
 		dirty = true;
 	}
@@ -85,7 +86,7 @@ public class OptionsMenu implements GameState {
 		for (Slider slider : sliders) {
 			slider.update(deltaTime);
 		}
-		optionsHirarchy.update(deltaTime);
+		optionsHierarchy.update(deltaTime);
 		atlasGUI.update(deltaTime);
 	}
 
@@ -101,7 +102,7 @@ public class OptionsMenu implements GameState {
 
 		setup();
 		atlasGUI.render();
-		optionsHirarchy.render();
+		optionsHierarchy.render();
 	}
 
 	@Override
@@ -123,6 +124,7 @@ public class OptionsMenu implements GameState {
 
 	@Override
 	public void open() {
+		//Currently nothing to do here
 	}
 
 	private void setup() {
@@ -131,7 +133,7 @@ public class OptionsMenu implements GameState {
 			float relativeY = 0.98f;
 			for (Map.Entry<String, LinkedList<Field>> category : options.entrySet()) {
 
-				optionsHirarchy.addText(category.getKey(), new Vector2f(), 0.12f)
+				optionsHierarchy.addText(category.getKey(), new Vector2f(), 0.12f)
 						.setPositionRelativeToScreen(0.5f, relativeY).setColor(Color.RED);
 
 				relativeY -= 0.1f;
@@ -169,7 +171,7 @@ public class OptionsMenu implements GameState {
 			addSlider(relativeY, option, min, max, step, value);
 			return 0.1f;
 		} else {
-			optionsHirarchy.addText(option.getName(), new Vector2f(), 0.08f)
+			optionsHierarchy.addText(option.getName(), new Vector2f(), 0.08f)
 					.setPositionRelativeToScreen(0.5f, relativeY).setColor(Color.DARK_GRAY);
 			return 0.065f;
 		}
@@ -188,7 +190,7 @@ public class OptionsMenu implements GameState {
 					+ " is not supported for sliders");
 			return;
 		}
-		slider.show(atlasGUI, optionsHirarchy);
+		slider.show(atlasGUI, optionsHierarchy);
 		sliders.add(slider);
 	}
 
@@ -197,7 +199,7 @@ public class OptionsMenu implements GameState {
 		bounding.setPositionRelativeTo(new Rectangle(new Vector2f(-1), new Vector2f(2)), 0.5f, relativeY);
 
 		BooleanOptionButton button = new BooleanOptionButton(bounding, option, intialValue);
-		button.show(atlasGUI, optionsHirarchy);
+		button.show(atlasGUI, optionsHierarchy);
 		buttons.add(button);
 	}
 }

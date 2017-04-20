@@ -105,7 +105,7 @@ public class Mouse {
 			setFocus(focus);
 			return true;
 		} else {
-			return false;
+			return focus.equals(getFocus());
 		}
 	}
 
@@ -123,7 +123,6 @@ public class Mouse {
 	 *
 	 * @param focus
 	 *            the new Focus
-	 *            the focus to set
 	 */
 	private static void setFocus(IFocusable focus) {
 		if (focus == null) {

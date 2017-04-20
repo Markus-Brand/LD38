@@ -131,7 +131,7 @@ public class MainMenu implements GameState {
 			selectedGame = 0;
 		}
 		buttonGame.setText(games.get(selectedGame).toString());
-		buttonGame.setPositionRelativeToScreen(0.5f, 0.4f);;
+		buttonGame.setPositionRelativeToScreen(0.5f, 0.4f);
 	}
 
 	private void startGame() {

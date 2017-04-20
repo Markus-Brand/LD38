@@ -19,7 +19,7 @@ public abstract class AbstractButton implements IFocusable {
 	protected boolean isPressed;
 
 	/**
-	 * The bounding of the Button in screen space coordinates (-1 - 1)
+	 * The bounding of the Button in screen space coordinates [-1;1]
 	 */
 	protected Rectangle bounding;
 
@@ -29,10 +29,10 @@ public abstract class AbstractButton implements IFocusable {
 	private boolean releasedMouseSinceLastButtonPress;
 
 	/**
-	 * Constructor for a AbstreactButton
-	 * 
+	 * Constructor for a AbstractButton
+	 *
 	 * @param bounding
-	 *            The bounding of the Button in screen space coordinates (-1 - 1)
+	 *            The bounding of the Button in screen space coordinates [-1;1]
 	 * @param initialState
 	 *            initial value of the button
 	 */
@@ -49,15 +49,14 @@ public abstract class AbstractButton implements IFocusable {
 
 	/**
 	 * Updates the AbstractButton
-	 * 
+	 *
 	 * @param deltaTime
 	 *            time since the last update
 	 */
 	public void update(double deltaTime) {
 		if (releasedMouseSinceLastButtonPress) {
 			if (bounding.contains(Mouse.getNormalizedDeviceCoordinates())) {
-				requestFocus();
-				if (hasFocus()) {
+				if (requestFocus()) {
 					if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
 						wasPressed();
 						releasedMouseSinceLastButtonPress = false;
@@ -91,7 +90,7 @@ public abstract class AbstractButton implements IFocusable {
 
 	/**
 	 * Getter for the button state
-	 * 
+	 *
 	 * @return true if the button is pressed
 	 */
 	public boolean isPressed() {
@@ -100,7 +99,7 @@ public abstract class AbstractButton implements IFocusable {
 
 	/**
 	 * Setter for the button state
-	 * 
+	 *
 	 * @param isPressed
 	 *            the new button state. true -> pressed
 	 */
