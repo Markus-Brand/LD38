@@ -1,5 +1,7 @@
 package mbeb.opengldefault.sound;
 
+import mbeb.opengldefault.scene.entities.IEntity;
+import mbeb.opengldefault.scene.entities.IEntityConvertable;
 import org.joml.Vector3f;
 
 import static org.lwjgl.openal.AL10.*;
@@ -7,7 +9,7 @@ import static org.lwjgl.openal.AL10.*;
 /**
  * A 3d-oriented microphone in the sound world
  */
-public class SoundListener {
+public class SoundListener implements IEntityConvertable {
 
 	private static final String TAG = "SoundListener";
 
@@ -60,5 +62,10 @@ public class SoundListener {
 		data[5] = up.z;
 		alListenerfv(AL_ORIENTATION, data);
 		ALErrors.checkForError(TAG, "alListenerfv");
+	}
+
+	@Override
+	public SoundListenerEntity asNewEntity() {
+		return new SoundListenerEntity(this);
 	}
 }

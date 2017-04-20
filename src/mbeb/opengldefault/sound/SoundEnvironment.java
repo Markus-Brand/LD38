@@ -111,7 +111,7 @@ public class SoundEnvironment {
 	 */
 	public void makeCurrent() {
 		alcMakeContextCurrent(context);
-		ALErrors.checkForError(TAG, "alcMakeContextCurrent");
+		//ALErrors.checkForError(TAG, "alcMakeContextCurrent");
 	}
 
 	/**

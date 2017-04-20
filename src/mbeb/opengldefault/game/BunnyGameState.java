@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import mbeb.opengldefault.sound.Sound;
+import mbeb.opengldefault.sound.SoundListenerEntity;
+import mbeb.opengldefault.sound.SoundSource;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
@@ -141,7 +144,8 @@ public class BunnyGameState implements GameState {
 
 		entityWorld = new EntityWorld();
 
-		entityWorld.add(camera).addBehaviour(1, new PlayerControlBehaviour());
+		IEntity camEntity = entityWorld.add(camera).addBehaviour(1, new PlayerControlBehaviour());
+		((SoundListenerEntity)(entityWorld.add(bunnyScene.getSoundEnvironment().getListener()))).attachTo(camEntity);
 
 		curveObj = new SceneObject(new BezierCurveRenderable(curve));
 		curveObj.setShader(curveShader);
@@ -184,6 +188,13 @@ public class BunnyGameState implements GameState {
 			facade.registerAnimation("ohr2", "OhrenFlackern2", 4);
 			facade.registerAnimation("party", "HeadBang", 4);
 		}
+
+
+		Sound sound = bunnyScene.getSoundEnvironment().createSound("sounds/soundtrackSmall.ogg");
+		SoundSource speaker = bunnyScene.getSoundEnvironment().createSoundSource(true, false);
+		speaker.setSound(sound);
+		speaker.play();
+		entityWorld.add(speaker);
 
 	}
 
@@ -288,7 +299,7 @@ public class BunnyGameState implements GameState {
 
 	@Override
 	public void clear() {
-
+		bunnyScene.getSoundEnvironment().cleanup();
 	}
 
 	@Override
@@ -306,5 +317,7 @@ public class BunnyGameState implements GameState {
 		GLContext.hideCursor();
 		bunnyScene.getLightManager().rewriteUBO();
 	}
+
+
 
 }
