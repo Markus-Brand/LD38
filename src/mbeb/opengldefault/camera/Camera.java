@@ -16,6 +16,9 @@ public abstract class Camera implements IEntityConvertable {
 
 	private static final String TAG = "Camera";
 
+	protected static final float DEFAULT_NEAR = 0.1f;
+	protected static final float DEFAULT_FAR = 1000f;
+
 	/**
 	 * The uniform buffer index for camera matrices.
 	 */
@@ -249,7 +252,7 @@ public abstract class Camera implements IEntityConvertable {
 	 * @param eye
 	 *            the new eye coordinates
 	 */
-	public void setEye(Vector3f eye) {
+	public void setEye(final Vector3f eye) {
 		this.eye = eye;
 		this.setViewDirty();
 	}
@@ -267,7 +270,7 @@ public abstract class Camera implements IEntityConvertable {
 	 * @param up
 	 *            the new up vector
 	 */
-	public void setUp(Vector3f up) {
+	public void setUp(final Vector3f up) {
 		this.up = up;
 		this.setViewDirty();
 	}
@@ -285,7 +288,7 @@ public abstract class Camera implements IEntityConvertable {
 	 * @param center
 	 *            the new center position
 	 */
-	public void setCenter(Vector3f center) {
+	public void setCenter(final Vector3f center) {
 		this.center = center;
 		this.setViewDirty();
 	}
@@ -303,7 +306,7 @@ public abstract class Camera implements IEntityConvertable {
 	 * @param near
 	 *            the near plane
 	 */
-	public void setNear(float near) {
+	public void setNear(final float near) {
 		this.near = near;
 		this.setProjectionDirty();
 	}
@@ -321,7 +324,7 @@ public abstract class Camera implements IEntityConvertable {
 	 * @param far
 	 *            the far plane
 	 */
-	public void setFar(float far) {
+	public void setFar(final float far) {
 		this.far = far;
 	}
 

@@ -8,8 +8,6 @@ import org.joml.Matrix4f;
 public class PerspectiveCamera extends Camera {
 
 	private static final float DEFAULT_FOV = (float) Math.toRadians(70.0);
-	private static final float DEFAULT_NEAR = 0.1f;
-	private static final float DEFAULT_FAR = 1000f;
 
 	/**
 	 * The vertical field of view of this camera.
@@ -82,7 +80,7 @@ public class PerspectiveCamera extends Camera {
 	 * @param fov
 	 *            the field of view, in radians
 	 */
-	public void setFOV(float fov) {
+	public void setFOV(final float fov) {
 		this.fov = fov;
 		this.setProjectionDirty();
 	}
@@ -100,7 +98,7 @@ public class PerspectiveCamera extends Camera {
 	 * @param aspectRatio
 	 *            the aspect ratio (width / height)
 	 */
-	public void setAspectRatio(float aspectRatio) {
+	public void setAspectRatio(final float aspectRatio) {
 		this.aspectRatio = aspectRatio;
 		this.setProjectionDirty();
 	}
