@@ -137,7 +137,7 @@ public class BunnyGameState implements GameState {
 
 		final IRenderable containerRenderable = new ObjectLoader().loadFromFile("cube.obj").withMaterial(metalbox);
 
-		final ShaderProgram curveShader = new ShaderProgram("bezier.vert", "bezier.frag", "bezier.geom");
+		curveShader = new ShaderProgram("bezier.vert", "bezier.frag", "bezier.geom");
 		curveShader.addUniformBlockIndex(UBOManager.MATRICES);
 		curveShader.setDrawMode(ShaderProgram.DrawMode.LINES);
 
