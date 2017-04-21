@@ -46,6 +46,9 @@ public abstract class SoundEntity extends Entity {
 			setSpeed(new Vector3f());
 			return;
 		}
+		if (Math.abs(deltaTime) < 0.0001) {
+			return; //no zero divide
+		}
 		delta.div((float) deltaTime);
 		delta.mul(dopplerStrength);
 		setSpeed(delta);
