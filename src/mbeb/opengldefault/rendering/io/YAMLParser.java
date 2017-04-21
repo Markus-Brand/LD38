@@ -25,13 +25,13 @@ public class YAMLParser {
 
 	/**
 	 * parse the yaml file if not happened already
-	 * 
+	 *
 	 * @return the YAML root-node
 	 */
 	public YAMLNode getRoot() {
 		if (root == null) {
 			try {
-				Iterator<String> lines = Files.lines(file.toPath()).filter((String s) -> !s.startsWith("#")).iterator();
+				Iterator<String> lines = Files.lines(file.toPath()).filter((s) -> !s.startsWith("#")).iterator();
 				root = parse(new PeekableIterator<>(lines), new YAMLNode("root", null), 0);
 			} catch(IOException e) {
 				Log.error(TAG, "Cannot find file " + file.getName(), e);
@@ -42,7 +42,7 @@ public class YAMLParser {
 
 	/**
 	 * parse the content of a Node
-	 * 
+	 *
 	 * @param lines
 	 *            the Content iterator
 	 * @param depth
@@ -56,7 +56,7 @@ public class YAMLParser {
 			if (indentation(nextLine) == depth) {
 				String[] childDataArray = lines.next().split(":");
 				String childName = childDataArray[0].trim();
-				String childData = (childDataArray.length < 2) ? null : childDataArray[1].trim();
+				String childData = childDataArray.length < 2 ? null : childDataArray[1].trim();
 				me.addChild(parse(lines, new YAMLNode(childName, childData), depth + 2));
 			} else {
 				return me;

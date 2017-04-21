@@ -73,7 +73,7 @@ public class ObjectLoader {
 
 	/**
 	 * load the priorities of movements per bone
-	 * 
+	 *
 	 * @param mesh
 	 *            the mesh to modify
 	 * @param metaPath
@@ -105,7 +105,7 @@ public class ObjectLoader {
 
 	/**
 	 * apply one directive (one line of YAML) to the corresponding Animation
-	 * 
+	 *
 	 * @param anim
 	 *            the Animation to alter
 	 * @param bone
@@ -238,7 +238,8 @@ public class ObjectLoader {
 	 *            how many bones per vertex
 	 * @return
 	 */
-	private Map<Integer, List<Map.Entry<Integer, Float>>> loadVertexWeights(AIMesh mesh, Bone skeleton, int weightsAmount) {
+	private Map<Integer, List<Map.Entry<Integer, Float>>>
+			loadVertexWeights(AIMesh mesh, Bone skeleton, int weightsAmount) {
 		//calculate weights here
 		Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights = new HashMap<>();
 		Map<Integer, Map<Integer, Float>> rawVertexBoneWeights = new HashMap<>(2 * mesh.mNumVertices());
@@ -266,7 +267,8 @@ public class ObjectLoader {
 			}
 			ArrayList<Map.Entry<Integer, Float>> list = new ArrayList<>(weights.entrySet());
 
-			list.sort((Map.Entry<Integer, Float> o1, Map.Entry<Integer, Float> o2) -> o2.getValue().compareTo(o1.getValue()));
+			list.sort((Map.Entry<Integer, Float> o1, Map.Entry<Integer, Float> o2) -> o2.getValue().compareTo(
+					o1.getValue()));
 
 			while(list.size() > weightsAmount) {
 				list.remove(list.size() - 1);
@@ -345,7 +347,7 @@ public class ObjectLoader {
 
 	/**
 	 * load all the animations in a scene for the given animatedMesh
-	 * 
+	 *
 	 * @param animMesh
 	 *            the mesh to load animations for
 	 * @param scene
@@ -360,8 +362,10 @@ public class ObjectLoader {
 				AINodeAnim node = AINodeAnim.create(aianim.mChannels().get(channel));
 				String boneName = node.mNodeName().dataString();
 
-				Log.assertEqual(TAG, node.mNumPositionKeys(), node.mNumRotationKeys(), "unequal position and rotation key amount");
-				Log.assertEqual(TAG, node.mNumScalingKeys(), node.mNumRotationKeys(), "unequal scaling and rotation key amount");
+				Log.assertEqual(TAG, node.mNumPositionKeys(), node.mNumRotationKeys(),
+						"unequal position and rotation key amount");
+				Log.assertEqual(TAG, node.mNumScalingKeys(), node.mNumRotationKeys(),
+						"unequal scaling and rotation key amount");
 
 				for (int key = 0; key < node.mNumPositionKeys(); key++) {
 
@@ -369,9 +373,18 @@ public class ObjectLoader {
 					AIQuatKey rot = node.mRotationKeys().get(key);
 					AIVectorKey scale = node.mScalingKeys().get(key);
 
-					BoneTransformation transform = new BoneTransformation(new Vector3f(pos.mValue().x(), pos.mValue().y(), pos.mValue().z()),
-							new Quaternionf(rot.mValue().x(), rot.mValue().y(), rot.mValue().z(), rot.mValue().w()), new Vector3f(scale.mValue().x(), scale.mValue().y(), scale.mValue().z()));
-					KeyFrame keyFrame = new KeyFrame(pos.mTime(), new Pose(animMesh.getSkeleton(), animMesh.getTransform()).put(boneName, transform));
+					BoneTransformation transform =
+							new BoneTransformation(new Vector3f(pos.mValue().x(), pos.mValue().y(), pos.mValue().z()),
+									new Quaternionf(
+											rot.mValue().x(),
+											rot.mValue().y(),
+											rot.mValue().z(),
+											rot.mValue().w()),
+									new Vector3f(scale.mValue().x(), scale.mValue().y(), scale.mValue().z()));
+					KeyFrame keyFrame =
+							new KeyFrame(pos.mTime(), new Pose(animMesh.getSkeleton(), animMesh.getTransform()).put(
+									boneName, transform));
+
 					anim.mergeKeyFrame(keyFrame);
 				}
 				node.close();

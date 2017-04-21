@@ -16,12 +16,13 @@ public class AtlasGUIElement extends GUIElement {
 
 	/**
 	 * Index in the atlas.
-	 * Example for a 3 * 3 atlas:
-	 * 0|1|2
-	 * -----
-	 * 3|4|5
-	 * -----
-	 * 6|7|8
+	 * Example for a 3 * 3 atlas: <code><br>
+	 * 0|1|2<br>
+	 * -+-+-<br>
+	 * 3|4|5<br>
+	 * -+-+-<br>
+	 * 6|7|8<br>
+	 * </code>
 	 */
 	private int atlasIndex;
 
@@ -86,5 +87,25 @@ public class AtlasGUIElement extends GUIElement {
 	@Override
 	public void update(double deltaTime) {
 
+	}
+
+	/**
+	 * Getter for the {@link #atlasIndex}
+	 *
+	 * @return current {@link #atlasIndex}
+	 */
+	public int getAtlasIndex() {
+		return atlasIndex;
+	}
+
+	/**
+	 * Setter for the {@link #atlasIndex}
+	 *
+	 * @param atlasIndex
+	 *            the new {@link #atlasIndex}
+	 */
+	public void setAtlasIndex(int atlasIndex) {
+		this.atlasIndex = atlasIndex;
+		setDirty();
 	}
 }
