@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import mbeb.opengldefault.camera.PerspectiveCamera;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
@@ -21,7 +22,6 @@ import mbeb.opengldefault.animation.AnimatedMesh;
 import mbeb.opengldefault.animation.AnimationStateFacade;
 import mbeb.opengldefault.animation.BoneTransformation;
 import mbeb.opengldefault.camera.Camera;
-import mbeb.opengldefault.camera.ICamera;
 import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.curves.BezierCurve;
 import mbeb.opengldefault.curves.BezierCurve.ControlPointInputMode;
@@ -72,7 +72,7 @@ public class BunnyGameState implements GameState {
 
 	private float timePassed;
 
-	protected ICamera camera;
+	protected Camera camera;
 	Scene bunnyScene;
 	//PointLight pl;
 	//DirectionalLight dl;
@@ -112,7 +112,7 @@ public class BunnyGameState implements GameState {
 		}
 		curve = new BezierCurve(controlPoints, ControlPointInputMode.CAMERAPOINTSCIRCULAR, true);
 
-		camera = new Camera(GLContext.getAspectRatio());
+		camera = new PerspectiveCamera();
 		final Skybox skybox = new Skybox("skybox/mountain");
 		bunnyScene = new Scene(camera, skybox);
 
@@ -127,16 +127,16 @@ public class BunnyGameState implements GameState {
 		bunnyAnimMesh.getSkeleton().printRecursive("");
 
 		curveShader = new ShaderProgram("bezier.vert", "bezier.frag", "bezier.geom");
-		curveShader.addUniformBlockIndex(UBOManager.MATRICES);
+		curveShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
 		curveShader.setDrawMode(ShaderProgram.DrawMode.LINES);
 
 		final ShaderProgram animatedShader = new ShaderProgram("boneAnimation.vert", "basic.frag");
 		bunnyScene.getLightManager().addShader(animatedShader);
-		animatedShader.addUniformBlockIndex(UBOManager.MATRICES);
+		animatedShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
 
 		final ShaderProgram stillShader = new ShaderProgram("basic.vert", "basic.frag");
 		bunnyScene.getLightManager().addShader(stillShader);
-		stillShader.addUniformBlockIndex(UBOManager.MATRICES);
+		stillShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
 
 		//final IRenderable boxRenderable = new ObjectLoader().loadFromFile("box.obj");
 		//SceneObject box = new SceneObject(new TexturedRenderable(boxRenderable, bunnyTexture));

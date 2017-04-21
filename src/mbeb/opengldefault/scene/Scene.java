@@ -16,15 +16,15 @@ public class Scene {
 	private final SceneGraphRenderer renderer;
 	private final SceneGraphRenderer boundingBoxRenderer;
 	private final SceneObject sceneGraphRoot;
-	private final ICamera camera;
+	private final Camera camera;
 	private Skybox skybox;
 	private final MousePicker3D picker;
 
-	public Scene(final ICamera camera) {
+	public Scene(final Camera camera) {
 		this(camera, null);
 	}
 
-	public Scene(final ICamera camera, final Skybox skybox) {
+	public Scene(final Camera camera, final Skybox skybox) {
 		this.camera = camera;
 		this.skybox = skybox;
 		this.lightManager = new LightManager();
@@ -62,13 +62,14 @@ public class Scene {
 	 * @param renderBoundingBoxes true to also display bounding boxes
 	 */
 	public void render(final boolean renderBoundingBoxes) {
+		camera.use();
 		renderer.render();
 		picker.searchBoundingBoxes(sceneGraphRoot, new Matrix4f());
 		if (renderBoundingBoxes) {
 			boundingBoxRenderer.render();
 		}
 		if (skybox != null) {
-			skybox.render();
+			skybox.render(camera);
 		}
 	}
 }
