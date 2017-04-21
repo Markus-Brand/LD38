@@ -103,7 +103,7 @@ public abstract class Camera implements IEntityConvertable {
 	private UniformBuffer ubo;
 
 	/**
-	 * Creates a new camera an initializes its UBO.
+	 * Creates a new camera and initializes its UBO.
 	 */
 	protected Camera() {
 		this.ubo = new UniformBuffer(UBO_INDEX, UBO_NAME, MAT4_SIZE * 3);
