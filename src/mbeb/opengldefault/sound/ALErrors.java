@@ -1,9 +1,9 @@
 package mbeb.opengldefault.sound;
 
-import mbeb.opengldefault.logging.Log;
-
 import static org.lwjgl.openal.AL10.AL_NO_ERROR;
 import static org.lwjgl.openal.AL10.alGetError;
+
+import mbeb.opengldefault.logging.Log;
 
 public class ALErrors {
 
@@ -46,14 +46,21 @@ public class ALErrors {
 		int error = alGetError();
 		if (error == AL_NO_ERROR) {
 			return false;
-		} else {
-			String errorMessage = classTag + ">>" + message + ": caused error code " + error;
-			RuntimeException ex = new RuntimeException(errorMessage);
-			if (abortProgram) {
-				throw ex;
-			}
-			Log.error(classTag, message, ex);
-			return true;
+		}
+		RuntimeException ex = new ALException(classTag, message, error);
+		if (abortProgram) {
+			throw ex;
+		}
+		Log.error(classTag, message, ex);
+		return true;
+	}
+
+	/**
+	 * an exception within the OpenAL sound system and its usage
+	 */
+	private static class ALException extends RuntimeException {
+		public ALException(String classTag, String message, int error) {
+			super(classTag + ">>" + message + ": caused error code " + error);
 		}
 	}
 }

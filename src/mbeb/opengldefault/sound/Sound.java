@@ -37,7 +37,7 @@ public class Sound {
 	private int bufferId;
 
 	/** the buffer that contains the sound data in pcm-format */
-	private ShortBuffer pcm = null;
+	private ShortBuffer pcm;
 
 	/**
 	 * load a sound file from resources
@@ -49,6 +49,7 @@ public class Sound {
 	Sound(String fileName) {
 		this.fileName = fileName;
 		this.bufferId = -1;
+		pcm = null;
 	}
 
 	/**
@@ -75,7 +76,7 @@ public class Sound {
 
 	/**
 	 * Get the OpenAL SoundBuffer-handle for this object.
-	 * Create it if unexisting
+	 * Create it if not existing yet
 	 * 
 	 * @return a soundBuffer handle
 	 */

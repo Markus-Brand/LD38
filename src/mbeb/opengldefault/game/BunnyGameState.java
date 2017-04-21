@@ -196,7 +196,7 @@ public class BunnyGameState implements GameState {
 		generateBezierCurve();
 
 		Sound sound = bunnyScene.getSoundEnvironment().createSound("sounds/soundtrackSmall.ogg");
-		speaker = bunnyScene.getSoundEnvironment().createSoundSource(true, false);
+		speaker = bunnyScene.getSoundEnvironment().createSoundSource(false, false);
 		speaker.setSound(sound);
 		speaker.play();
 		speaker.setPosition(new Vector3f(0, 0, 0));
