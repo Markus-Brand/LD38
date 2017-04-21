@@ -15,11 +15,11 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 
 	static {
 		shader = new ShaderProgram("boundingbox.vert", "boundingbox.frag");
-		shader.addUniformBlockIndex(UBOManager.MATRICES);
+		shader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
 		shader.setDrawMode(ShaderProgram.DrawMode.LINES);
 	}
 
-	public BoundingBoxRenderer(final SceneObject root, final ICamera cam) {
+	public BoundingBoxRenderer(final SceneObject root, final Camera cam) {
 		super(root, cam);
 	}
 

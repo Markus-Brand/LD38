@@ -2,6 +2,7 @@ package mbeb.opengldefault.game;
 
 import mbeb.opengldefault.animation.BoneTransformation;
 import mbeb.opengldefault.camera.Camera;
+import mbeb.opengldefault.camera.PerspectiveCamera;
 import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.curves.BezierCurve;
 import mbeb.opengldefault.light.DirectionalLight;
@@ -41,20 +42,20 @@ public class FlightGame implements GameState {
 
 	@Override
 	public void init() {
-		Camera camera = new Camera(GLContext.getAspectRatio());
+		Camera camera = new PerspectiveCamera(GLContext.getAspectRatio());
 		Skybox skybox = new Skybox("skybox/mountain");
 
 		scene = new Scene(camera, skybox);
 
 		//shaders
 		ShaderProgram defaultShader = new ShaderProgram("basic.vert", "basic.frag");
-		defaultShader.addUniformBlockIndex(UBOManager.MATRICES);
+		defaultShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
 		scene.getLightManager().addShader(defaultShader);
 		scene.getSceneGraph().setShader(defaultShader);
 
 		ShaderProgram bezierShader = new ShaderProgram("bezier.vert", "bezier.frag", "bezier.geom");
 		bezierShader.setDrawMode(ShaderProgram.DrawMode.LINES);
-		bezierShader.addUniformBlockIndex(UBOManager.MATRICES);
+		bezierShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
 
 		//textures
 		Material boxMaterial = new Material("material/bunny", 2);

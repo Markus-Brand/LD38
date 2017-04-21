@@ -19,7 +19,7 @@ public class SceneGraphRenderer {
 	private static final String TAG = "SceneGraphRenderer";
 
 	protected final SceneObject root;
-	protected final ICamera camera;
+	protected final Camera camera;
 
 	/**
 	 * create a new renderer for the given SceneGraph and Camera
@@ -27,7 +27,7 @@ public class SceneGraphRenderer {
 	 * @param root
 	 * @param camera
 	 */
-	public SceneGraphRenderer(final SceneObject root, final ICamera camera) {
+	public SceneGraphRenderer(final SceneObject root, final Camera camera) {
 		this.root = root;
 		this.camera = camera;
 	}
@@ -73,7 +73,7 @@ public class SceneGraphRenderer {
 		}
 		shader.use();
 		if (object.hasOwnShader()) {
-			final Vector3f position = camera.getPosition();
+			final Vector3f position = camera.getEye();
 			shader.setUniform(ViewPosUniformName, position, true);
 		}
 		final IRenderable renderable = object.getRenderable();

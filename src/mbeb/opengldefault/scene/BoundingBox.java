@@ -236,8 +236,8 @@ public class BoundingBox {
 	 *            the camera to look from
 	 * @return screen-space positions
 	 */
-	public Iterator<Vector3f> getCornersOnScreen(final Matrix4f parentTransform, final ICamera camera) {
-		return Streamerator.map(getGlobalCorners(parentTransform), camera::getPosOnScreen);
+	public Iterator<Vector3f> getCornersOnScreen(final Matrix4f parentTransform, final Camera camera) {
+		return Streamerator.map(getGlobalCorners(parentTransform), camera::getPositionOnScreen);
 	}
 
 	private BoundingBox getGlobalBoundingBox(final Matrix4f parentTransform) {
