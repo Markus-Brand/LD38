@@ -128,7 +128,6 @@ public class BunnyGameState implements GameState {
 
 		AnimatedMesh playerAnimMesh = new ObjectLoader().loadFromFileAnim("player.fbx");
 		playerAnimMesh.setTransform(MeshFlip);
-		Texture2D bunnyTexture = TexturedRenderable.loadModelTexture("player.png");
 		playerAnimMesh.getSkeleton().printRecursive("");
 
 		final AnimatedMesh bunnyAnimMesh = new ObjectLoader().loadFromFileAnim("ohrenFlackern.fbx");
@@ -176,13 +175,6 @@ public class BunnyGameState implements GameState {
 		curveObj.setShader(curveShader);
 
 		IEntity lastBunnyEntity = createBunnyChain(bunnyScene.getSceneGraph(), entityWorld, bunnyMaterial, bunnyAnimMesh, curveObj);
-
-		//entityWorld.add(lamp).addBehaviour(1,
-		//		new BoneTrackingBehaviour(playerObj, animPlayer.getAnimatedRenderable(), "Hand.L", new Vector3f(0, 0.5f, 0))
-		//				.fixedDirection());
-
-		createBunnyChain(bunnyScene.getSceneGraph(), entityWorld, bunnyTexture, bunnyAnimMesh,
-				curveObj);
 
 		bunnyScene.getSceneGraph().addSubObject(curveObj);
 		bunnyScene.getSceneGraph().setShader(animatedShader);
