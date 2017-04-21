@@ -1,6 +1,6 @@
 package mbeb.opengldefault.sound;
 
-import mbeb.opengldefault.scene.entities.IEntity;
+import mbeb.opengldefault.logging.Log;
 import mbeb.opengldefault.scene.entities.IEntityConvertable;
 import org.joml.Vector3f;
 
@@ -34,6 +34,7 @@ public class SoundListener implements IEntityConvertable {
 	 * @param position a new position
 	 */
 	public void setPosition(Vector3f position) {
+		Log.log(TAG, "listener position: " + position);
 		setProperty(AL_POSITION, position);
 	}
 
@@ -53,6 +54,7 @@ public class SoundListener implements IEntityConvertable {
 	 * @param up the current up vector
 	 */
 	public void setOrientation(Vector3f at, Vector3f up) {
+		Log.log(TAG, "Listener lookAt: " + at);
 		float[] data = new float[6];
 		data[0] = at.x;
 		data[1] = at.y;

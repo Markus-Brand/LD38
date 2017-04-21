@@ -1,7 +1,7 @@
 package mbeb.opengldefault.sound;
 
-import org.joml.Vector3f;
 import org.lwjgl.openal.AL;
+import org.lwjgl.openal.AL11;
 import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALCCapabilities;
 
@@ -48,8 +48,6 @@ public class SoundEnvironment {
 
 		source.play();
 
-		source.setGain(0.5f);
-
 		env.cleanup();
 	}
 
@@ -60,6 +58,7 @@ public class SoundEnvironment {
 		soundList = new ArrayList<>();
 		soundSourceList = new ArrayList<>();
 		init();
+		setAttenuationModel(AL11.AL_EXPONENT_DISTANCE_CLAMPED);
 	}
 
 	/**
@@ -137,6 +136,7 @@ public class SoundEnvironment {
 	 * delete everything that has to do with OpenAL (clean up all the buffers and such)
 	 */
 	public void cleanup() {
+		makeCurrent();
 		soundSourceList.forEach(SoundSource::cleanup);
 		soundSourceList.clear();
 		soundList.forEach(Sound::cleanup);
@@ -145,7 +145,7 @@ public class SoundEnvironment {
 			alcDestroyContext(context);
 		}
 		if (device != NULL) {
-			alcCloseDevice(device);
+			//alcCloseDevice(device);
 		}
 		ALErrors.checkForError(TAG, "cleanup");
 	}

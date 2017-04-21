@@ -33,7 +33,11 @@ public class Scene {
 	public Scene(final ICamera camera, final Skybox skybox, SoundEnvironment soundEnvironment) {
 		this.camera = camera;
 		this.skybox = skybox;
-		this.soundEnvironment = soundEnvironment != null ? soundEnvironment : new SoundEnvironment();
+		if (soundEnvironment == null) {
+			this.soundEnvironment = new SoundEnvironment();
+		} else {
+			this.soundEnvironment = soundEnvironment;
+		}
 
 		this.lightManager = new LightManager();
 		this.sceneGraphRoot = new SceneObject();

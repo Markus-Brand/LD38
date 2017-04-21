@@ -92,6 +92,8 @@ public class BunnyGameState implements GameState {
 
 	TextGUIElement fps;
 
+	SoundSource speaker;
+
 	@Override
 	public void init() {
 		timePassed = 0;
@@ -191,18 +193,19 @@ public class BunnyGameState implements GameState {
 
 
 		Sound sound = bunnyScene.getSoundEnvironment().createSound("sounds/soundtrackSmall.ogg");
-		SoundSource speaker = bunnyScene.getSoundEnvironment().createSoundSource(true, false);
+		speaker = bunnyScene.getSoundEnvironment().createSoundSource(true, false);
 		speaker.setSound(sound);
 		speaker.play();
+		speaker.setPosition(new Vector3f(0, 0, 0));
 		entityWorld.add(speaker);
 
 	}
 
 	/**
-	 * creates a list of following bunnys
+	 * creates a list of following bunnies
 	 *
 	 * @param bunnyParent
-	 *            the SceneOIbject to add the list to
+	 *            the SceneObject to add the list to
 	 * @param world
 	 *            the entityWorld to animate the bunnies in
 	 * @param bunnyTexture
@@ -314,8 +317,9 @@ public class BunnyGameState implements GameState {
 
 	@Override
 	public void open() {
-		GLContext.hideCursor();
+		//GLContext.hideCursor();
 		bunnyScene.getLightManager().rewriteUBO();
+		bunnyScene.getSoundEnvironment().makeCurrent();
 	}
 
 

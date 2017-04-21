@@ -2,6 +2,7 @@ package mbeb.opengldefault.sound;
 
 import static org.lwjgl.openal.AL10.*;
 
+import mbeb.opengldefault.logging.Log;
 import mbeb.opengldefault.scene.entities.IEntity;
 import mbeb.opengldefault.scene.entities.IEntityConvertable;
 import org.joml.Vector3f;
@@ -31,6 +32,8 @@ public class SoundSource implements IEntityConvertable {
 		}
 		if (relative) {
 			setProperty(AL_SOURCE_RELATIVE, AL_TRUE);
+		} else {
+			setProperty(AL_SOURCE_RELATIVE, AL_FALSE);
 		}
 	}
 
@@ -49,6 +52,7 @@ public class SoundSource implements IEntityConvertable {
 	 * @param position a new position
 	 */
 	public void setPosition(Vector3f position) {
+		Log.log(TAG, "Source Position: " + position);
 		setProperty(AL_POSITION, position);
 	}
 
