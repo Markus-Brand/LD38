@@ -14,7 +14,7 @@ import mbeb.opengldefault.rendering.renderable.*;
 public class Scene {
 
 	private final LightManager lightManager;
-	private final SoundEnvironment soundEnvironment;
+	private SoundEnvironment soundEnvironment;
 	private final SceneGraphRenderer renderer;
 	private final SceneGraphRenderer boundingBoxRenderer;
 	private final SceneObject sceneGraphRoot;
@@ -33,11 +33,7 @@ public class Scene {
 	public Scene(final ICamera camera, final Skybox skybox, SoundEnvironment soundEnvironment) {
 		this.camera = camera;
 		this.skybox = skybox;
-		if (soundEnvironment == null) {
-			this.soundEnvironment = new SoundEnvironment();
-		} else {
-			this.soundEnvironment = soundEnvironment;
-		}
+		this.soundEnvironment = soundEnvironment;
 
 		this.lightManager = new LightManager();
 		this.sceneGraphRoot = new SceneObject();
@@ -55,6 +51,9 @@ public class Scene {
 	}
 
 	public SoundEnvironment getSoundEnvironment() {
+		if (soundEnvironment == null) {
+			soundEnvironment = new SoundEnvironment();
+		}
 		return soundEnvironment;
 	}
 

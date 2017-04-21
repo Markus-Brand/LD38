@@ -4,13 +4,11 @@ import mbeb.opengldefault.logging.Log;
 
 import static org.lwjgl.openal.AL10.AL_NO_ERROR;
 import static org.lwjgl.openal.AL10.alGetError;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL30.*;
 
 public class ALErrors {
 
 	/** Class Name Tag */
-	private static final String TAG = "GLErrors";
+	private static final String TAG = "ALErrors";
 
 	private ALErrors() {
 		//should never be instantiated
@@ -18,12 +16,12 @@ public class ALErrors {
 
 	/**
 	 * Checks if an error occurred between this moment and the last error check.
-	 * This method should be called every time an OpenGL method is called.
+	 * This method should be called every time an OpenAL method is called.
 	 *
 	 * @param classTag
 	 *            Name of the class the method was called from
 	 * @param message
-	 *            additional information. Should be the name of the OpenGL that was called and could have caused the
+	 *            additional information. Should be the name of the OpenAL that was called and could have caused the
 	 *            error
 	 * @return whether an error occurred
 	 */
@@ -33,12 +31,12 @@ public class ALErrors {
 
 	/**
 	 * Checks if an error occurred between this moment and the last error check.
-	 * This method should be called every time an OpenGL method is called.
+	 * This method should be called every time an OpenAL method is called.
 	 *
 	 * @param classTag
 	 *            Name of the class the method was called from
 	 * @param message
-	 *            additional information. Should be the name of the OpenGL that was called and could have caused the
+	 *            additional information. Should be the name of the OpenAL that was called and could have caused the
 	 *            error
 	 * @param abortProgram
 	 *            abort the current thread by throwing an exception

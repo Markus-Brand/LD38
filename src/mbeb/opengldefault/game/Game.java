@@ -6,6 +6,7 @@ import java.util.Map;
 
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.gl.GLContext;
+import mbeb.opengldefault.sound.SoundDevice;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
@@ -108,5 +109,6 @@ public abstract class Game {
 		for (GameState state : gameStates.values()) {
 			state.clear();
 		}
+		SoundDevice.getInstance().close();
 	}
 }

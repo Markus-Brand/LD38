@@ -21,9 +21,6 @@ public class SoundEnvironment {
 
 	private static final String TAG = "SoundEnvironment";
 
-	/** the device to play on */
-	private long device;
-
 	/** the context handle (unique id of this SoundEnvironment) */
 	private long context;
 
@@ -65,17 +62,9 @@ public class SoundEnvironment {
 	 * create the OpenAL - context
 	 */
 	private void init() {
-		this.device = alcOpenDevice((ByteBuffer) null);
-		if (device == NULL) {
-			throw new IllegalStateException("Failed to open the default OpenAL device.");
-		}
-		ALCCapabilities deviceCaps = ALC.createCapabilities(device);
-		this.context = alcCreateContext(device, (IntBuffer) null);
-		if (context == NULL) {
-			throw new IllegalStateException("Failed to create OpenAL context.");
-		}
+		this.context = SoundDevice.getInstance().createNewContext();
 		makeCurrent();
-		AL.createCapabilities(deviceCaps);
+		AL.createCapabilities(SoundDevice.getInstance().getCapabilities());
 		ALErrors.checkForError(TAG, "init");
 	}
 
@@ -142,11 +131,8 @@ public class SoundEnvironment {
 		soundList.forEach(Sound::cleanup);
 		soundList.clear();
 		if (context != NULL) {
+			ALErrors.checkForError(TAG, "cleanup");
 			alcDestroyContext(context);
 		}
-		if (device != NULL) {
-			//alcCloseDevice(device);
-		}
-		ALErrors.checkForError(TAG, "cleanup");
 	}
 }
