@@ -19,6 +19,7 @@ import mbeb.opengldefault.scene.behaviour.*;
 import mbeb.opengldefault.scene.entities.CameraEntity;
 import mbeb.opengldefault.scene.entities.IEntity;
 import mbeb.opengldefault.scene.entities.SceneEntity;
+import mbeb.opengldefault.scene.materials.Material;
 import org.joml.Vector3f;
 
 import java.awt.*;
@@ -57,14 +58,12 @@ public class FlightGame implements GameState {
 		bezierShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
 
 		//textures
-		Texture2D tex = TexturedRenderable.loadModelTexture("player.png");
+		Material boxMaterial = new Material("material/bunny", 2);
 
 		//meshes
 		final ObjectLoader loader = new ObjectLoader();
-		IRenderable boxRenderable = loader.loadFromFile("longBox.obj");
-		TexturedRenderable boxTextured = new TexturedRenderable(boxRenderable, tex);
-		IRenderable bunnyRenderable = loader.loadFromFile("bunny.obj");
-		TexturedRenderable bunnyTextured = new TexturedRenderable(bunnyRenderable, tex);
+		IRenderable boxRenderable = loader.loadFromFile("longBox.obj").withMaterial(boxMaterial);
+		IRenderable bunnyRenderable = loader.loadFromFile("bunny.obj").withMaterial(boxMaterial);
 
 		//bezier
 		List<Vector3f> controlPoints = new ArrayList<>();
@@ -79,7 +78,7 @@ public class FlightGame implements GameState {
 				new BezierCurve(controlPoints, BezierCurve.ControlPointInputMode.CAMERAPOINTSCIRCULAR, true);
 
 		//scene Objects
-		SceneObject flightObject = new SceneObject(boxTextured);
+		SceneObject flightObject = new SceneObject(boxRenderable);
 		scene.getSceneGraph().addSubObject(flightObject);
 
 		SceneObject bezierObject = new SceneObject(new BezierCurveRenderable(curve));
@@ -87,7 +86,7 @@ public class FlightGame implements GameState {
 		flightObject.addSubObject(bezierObject);
 
 		SceneObject bunnyObject =
-				new SceneObject(bunnyTextured, new BoneTransformation(null, null, new Vector3f(0.5f)));
+				new SceneObject(bunnyRenderable, new BoneTransformation(null, null, new Vector3f(0.5f)));
 		flightObject.addSubObject(bunnyObject);
 
 		//entity system

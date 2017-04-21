@@ -3,7 +3,9 @@ package mbeb.opengldefault.animation;
 import java.util.HashMap;
 import java.util.Map;
 import mbeb.opengldefault.logging.Log;
+import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.IRenderableHolder;
+import mbeb.opengldefault.scene.materials.Material;
 
 /**
  * A manager wrapping an AnimatedRenderable having convenience functions to control Animations
@@ -14,6 +16,8 @@ public class AnimationStateFacade implements IRenderableHolder {
 	
 	/** the animatedRenderable, whose state should be controlled */
 	private final AnimatedRenderable renderable;
+	/** the material that this thing want to be rendered with */
+	private final Material material;
 	
 	/** all the registered presets */
 	private Map<String, AnimatorPreset> presets;
@@ -24,25 +28,33 @@ public class AnimationStateFacade implements IRenderableHolder {
 	 * create a new AnimationStateFacade around an AnimatedRenderable-instance.
 	 * @param renderable the AnimatedRenderable, who's state to control
 	 */
-	public AnimationStateFacade(AnimatedRenderable renderable) {
+	public AnimationStateFacade(AnimatedRenderable renderable, Material material) {
 		this.renderable = renderable;
 		presets = new HashMap<>();
 		runningAnimations = new HashMap<>();
+		this.material = material;
 	}
 
 	/**
 	 * create a new AnimationStateFacade around a new renderable instance from the given mesh
 	 * @param mesh the AnimatedMesh to create a new AnimatedRenderable-instance from
 	 */
-	public AnimationStateFacade(AnimatedMesh mesh) {
-		this(new AnimatedRenderable(mesh));
+	public AnimationStateFacade(AnimatedMesh mesh, Material material) {
+		this(new AnimatedRenderable(mesh), material);
 	}
 
 	/**
 	 * @return the renderable to add into the SceneGraph
 	 */
 	@Override
-	public AnimatedRenderable getRenderable() {
+	public IRenderable getRenderable() {
+		return material == null ? getAnimatedRenderable() : getAnimatedRenderable().withMaterial(material);
+	}
+	
+	/**
+	 * @return the AnimatedRenderable usedfor animations (without any material)
+	 */
+	public AnimatedRenderable getAnimatedRenderable() {
 		return renderable;
 	}
 

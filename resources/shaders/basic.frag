@@ -1,19 +1,19 @@
-#define SHININESS 256
 
-in vec2 tex;
-in vec3 pos;
-in vec3 normal;
+in vec2 frag_in_tex;
+in vec3 frag_in_pos;
+in vec3 frag_in_norm;
+in mat3 frag_in_tbn; //tangent-bitangent-normal (needed for normal mapping)
 
 out vec4 color;
 
-uniform sampler2D u_texture;
+#include modules/MaterialUniform.glsl
 
 #include modules/Struct_DirLight.glsl
 #include modules/Struct_PointLight.glsl
 #include modules/Struct_SpotLight.glsl
 
-float ambientStrength = 0.1f;
-float specularStrength = 2.5f;
+float ambientStrength = 0.1;
+float specularStrength = 1.0;
 
 #include modules/DirectionalLightBlock.glsl
 #include modules/PointLightBlock.glsl
@@ -34,50 +34,61 @@ uniform int water;
 #include modules/SpotLightLogic.glsl
 
 
-
-
 void main(){
-	vec3 norm = normalize(normal);
+	vec3 normal = frag_in_norm;
 
-    vec4 textureColor = texture(u_texture, tex);
-    vec3 materialColor = textureColor.rgb;
+	vec2 yflip = vec2(frag_in_tex.x, 1.0 - frag_in_tex.y);
 
-	vec3 viewDir = normalize(viewPos - pos);
+	vec4 diffuseColorAlpha = materialDiffuseAlpha(frag_in_tex);
+	vec3 diffuseColor = diffuseColorAlpha.rgb;
+	float materialAlpha = diffuseColorAlpha.a;
+	vec3 specularColor = materialSpecular(frag_in_tex);
+	vec3 emissionColor = materialEmit(frag_in_tex);
+	vec3 normalFromMap = materialNormal(yflip);
+	int shininess = materialShininess();
+
+	vec3 viewDir = normalize(viewPos - frag_in_pos);
+
+	//normal mapping
+	if (length(normalFromMap) > 0.01) {
+		normalFromMap = normalize(normalFromMap * 2.0 - 1.0);
+		normal = normalize(frag_in_tbn * normalFromMap);
+	}
+
 
 	vec3 result = vec3(0);
 
+    //apply lights
 	for(int i = 0; i < numPointLights; i++){
-		result += calcPointLight(pointLights[i], norm, viewDir, materialColor);
+		result += calcPointLight(pointLights[i], normal, frag_in_pos, viewDir, diffuseColor, specularColor, shininess);
 	}
-
 	for(int i = 0; i < numDirectionalLights; i++){
-		result += calcDirectionalLight(directionalLights[i], norm, viewDir, materialColor);
+		result += calcDirectionalLight(directionalLights[i], normal, frag_in_pos, viewDir, diffuseColor, specularColor, shininess);
 	}
-
 	for(int i = 0; i < numSpotLights; i++){
-		result += calcSpotLight(spotLights[i], norm, viewDir, materialColor);
+		result += calcSpotLight(spotLights[i], normal, frag_in_pos, viewDir, diffuseColor, specularColor, shininess);
 	}
 
-	vec3 ambient = ambientStrength * materialColor;
-
+    //ambient lighting
+	vec3 ambient = ambientStrength * diffuseColor;
 	result += ambient;
+
+	//emission
+	result += emissionColor;
+
 
 #ifdef GAMMA_CORRECTION
 	float gamma = 2.2;
-	float gi = 1.0 / gamma;
-	result.x = pow(result.x, gi);
-	result.y = pow(result.y, gi);
-	result.z = pow(result.z, gi);
+	float gammaInverse = 1.0 / gamma;
+	result.x = pow(result.x, gammaInverse);
+	result.y = pow(result.y, gammaInverse);
+	result.z = pow(result.z, gammaInverse);
 #endif
 
-	if(alpha == 0){
-		color = vec4(result, 1.0f);
-	}else if(alpha == 1){
-		vec4 texColor = vec4(result, textureColor.a);
-		if(texColor.a > 0.01){
-			color = texColor;
-		}else{
-			discard;
-		}
+	vec4 texColor = vec4(result, materialAlpha);
+	if(texColor.a > 0.01){
+		color = texColor;
+	}else{
+		discard;
 	}
 }

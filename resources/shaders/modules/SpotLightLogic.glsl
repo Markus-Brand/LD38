@@ -1,6 +1,13 @@
-vec3 calcSpotLight(SpotLight light, vec3 norm, vec3 viewDir, vec3 materialColor){
-
-	vec3 direction = light.position - pos;
+vec3 calcSpotLight(
+	const in SpotLight light,
+	const in vec3 norm,
+	const in vec3 viewPos,
+	const in vec3 viewDir,
+	const in vec3 diffuseColor,
+	const in vec3 specularColor,
+	const in int shininess
+) {
+	vec3 direction = light.position - viewPos;
 
 	float distance = length(direction);
 	direction = normalize(direction);
@@ -9,18 +16,18 @@ vec3 calcSpotLight(SpotLight light, vec3 norm, vec3 viewDir, vec3 materialColor)
 	vec3 diffuse = diff * light.color;
 
 	vec3 halfwayDir = normalize(direction + viewDir);
-	float spec = pow(max(dot(norm, halfwayDir), 0.0f), SHININESS);
+	float spec = pow(max(dot(norm, halfwayDir), 0.0), shininess);
 	vec3 specular = specularStrength * spec * light.color;
 
-	float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic * distance * distance);
+	float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * distance * distance);
 
-	float intensity = clamp((dot(direction, normalize(-light.direction)) - light.outerCutoff) / (light.cutoff - light.outerCutoff), 0.0f, 1.0f);
+	float intensity = clamp((dot(direction, normalize(-light.direction)) - light.outerCutoff) / (light.cutoff - light.outerCutoff), 0.0, 1.0);
 
 	diffuse *= intensity;
 	specular *= intensity * 2;
 
 	diffuse  *= attenuation;
-	specular *= attenuation;  
+	specular *= attenuation;
 
-	return materialColor * (diffuse) + materialColor * specular;
+	return diffuseColor * diffuse + specularColor * specular;
 }
