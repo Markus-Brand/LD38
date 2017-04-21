@@ -55,7 +55,7 @@ public class SoundEnvironment {
 		soundList = new ArrayList<>();
 		soundSourceList = new ArrayList<>();
 		init();
-		setAttenuationModel(AL11.AL_EXPONENT_DISTANCE_CLAMPED);
+		setAttenuationModel(AttenuationModel.EXPONENT_CLAMPED);
 	}
 
 	/**
@@ -116,8 +116,8 @@ public class SoundEnvironment {
 	 * set the calculation model for attenuation inside this Environment
 	 * @param model
 	 */
-	public void setAttenuationModel(int model) {
-		alDistanceModel(model);
+	public void setAttenuationModel(AttenuationModel model) {
+		alDistanceModel(model.getALEnum());
 		ALErrors.checkForError(TAG, "alDistanceModel");
 	}
 
