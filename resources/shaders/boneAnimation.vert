@@ -5,9 +5,10 @@ layout (location = 3) in vec2 texCoord;
 layout (location = 4) in vec3 boneIDs;
 layout (location = 5) in vec3 boneWeights;
 
-const int MAX_JOINTS = 50;//max joints allowed in a skeleton//todo remove this
-#define MAX_WEIGHTS 3
-//max number of joints that can affect a vertex
+#define MAX_JOINTS 50
+//max joints allowed in a skeleton //todo make this dynamic
+//#define MAX_WEIGHTS 3
+//max number of joints that can affect a vertex, currently unused
 
 out vec2 frag_in_tex;
 out vec3 frag_in_pos;
@@ -26,8 +27,6 @@ void main() {
 	vec4 totalLocalPos = vec4(0.0);
 	vec4 totalNormal = vec4(0.0);
 	float weightSum = 0.f;
-	
-
 
     mat4 BoneTransform = boneTransforms[max(int(boneIDs[0]), 0)] * boneWeights[0];
     BoneTransform += boneTransforms[max(int(boneIDs[1]), 0)] * boneWeights[1];
@@ -36,22 +35,6 @@ void main() {
 	totalLocalPos = BoneTransform * vec4(position, 1.0);
 	totalLocalPos.w = 1;
 	totalNormal = BoneTransform * vec4(normalVec, 0.0);
-
-	/*/for(int i = 0; i < MAX_WEIGHTS; i++) {
-		int id = max(int(boneIDs[i]), 0);
-		mat4 boneTransform = boneTransforms[id];
-		vec4 posePosition = boneTransform * vec4(position, 1.0);
-		totalLocalPos += posePosition * boneWeights[i];
-		weightSum += boneWeights[i];
-		
-		vec4 worldNormal = boneTransform * vec4(normalVec, 0.0);
-		totalNormal += worldNormal * boneWeights[i];
-
-
-	}/**/
-	//totalLocalPos /= weightSum;
-
-	
 
 	frag_in_pos = vec3(model * totalLocalPos);
 	gl_Position = projectionView * vec4(frag_in_pos, 1.0);

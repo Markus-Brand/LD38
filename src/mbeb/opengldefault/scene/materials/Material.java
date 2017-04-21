@@ -8,6 +8,7 @@ import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import mbeb.opengldefault.gl.shader.ShaderProgram;
 import mbeb.opengldefault.gl.texture.Texture;
 import mbeb.opengldefault.gl.texture.Texture2DArray;
+import mbeb.opengldefault.gl.texture.ThreeDimensionalTexture;
 
 /**
  * the look of geometry inside a scene
@@ -48,7 +49,7 @@ public class Material implements GLBufferWritable {
 	 * @param amount how many layers this material should use
 	 */
 	public Material(String path, String extension, int amount) {
-		this(Texture.loadBufferedImages(path, extension, amount));
+		this(ThreeDimensionalTexture.loadBufferedImages(path, extension, amount));
 	}
 
 	/**

@@ -16,12 +16,12 @@ vec3 calcSpotLight(
 	vec3 diffuse = diff * light.color;
 
 	vec3 halfwayDir = normalize(direction + viewDir);
-	float spec = pow(max(dot(norm, halfwayDir), 0.0f), shininess);
+	float spec = pow(max(dot(norm, halfwayDir), 0.0), shininess);
 	vec3 specular = specularStrength * spec * light.color;
 
-	float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic * distance * distance);
+	float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * distance * distance);
 
-	float intensity = clamp((dot(direction, normalize(-light.direction)) - light.outerCutoff) / (light.cutoff - light.outerCutoff), 0.0f, 1.0f);
+	float intensity = clamp((dot(direction, normalize(-light.direction)) - light.outerCutoff) / (light.cutoff - light.outerCutoff), 0.0, 1.0);
 
 	diffuse *= intensity;
 	specular *= intensity * 2;
