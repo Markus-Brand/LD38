@@ -34,17 +34,18 @@ public class Skybox {
 		this(texturePath, "jpg");
 	}
 
-		/**
-		 * Constructor for a Skybox
-		 *
-		 * @param texturePath
-		 *            path for the skybox textures relative to the textures folder
-		 * @param extension
-		 *            the file extension for the images
-		 */
+	/**
+	 * Constructor for a Skybox
+	 *
+	 * @param texturePath
+	 *            path for the skybox textures relative to the textures folder
+	 * @param extension
+	 *            the file extension for the images
+	 */
 	public Skybox(final String texturePath, String extension) {
 		cubeMap = new CubeMap(texturePath, extension);
-		cubeMap.whileBound(texture -> cubeMap.setWrapMode(Texture.WrapMode.CLAMP_TO_EDGE) && cubeMap.setInterpolates(false) && cubeMap.setBaseLevel(0) && cubeMap.setMaxLevel(0));
+		cubeMap.whileBound(texture -> cubeMap.setWrapMode(Texture.WrapMode.CLAMP_TO_EDGE)
+				&& cubeMap.setInterpolates(true) && cubeMap.setBaseLevel(0) && cubeMap.setMaxLevel(0));
 		shader = new ShaderProgram("skybox.vert", "skybox.frag");
 		shader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
 		skyboxRenderable = StaticMeshes.getCube();
