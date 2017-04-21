@@ -204,7 +204,7 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 		if (getRenderable() != null) {
 			getRenderable().update(deltaTime);
 		}
-		getSubObjects().forEach((SceneObject obj) -> obj.update(deltaTime));
+		getSubObjects().forEach((obj) -> obj.update(deltaTime));
 
 	}
 
@@ -317,6 +317,10 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 
 	public void setSelected(boolean selected) {
 		this.selected = selected;
+	}
+
+	public void removeSubObject(SceneObject curveObj) {
+		subObjects.remove(curveObj);
 	}
 
 	@Override

@@ -2,6 +2,8 @@ package mbeb.opengldefault.gl.shader;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL31.glGetUniformBlockIndex;
+import static org.lwjgl.opengl.GL31.glUniformBlockBinding;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -61,10 +63,9 @@ public class ShaderProgram extends GLObject {
 	private final ShaderPreprocessor preprocessor;
 
 	/**
-	 * Uniform Blocks used in the shader. Will hold data like projection and
-	 * view matrices that are available to multiple shaders
+	 * Uniform Blocks used in the shader. Maps from the name of the uniform block to the index of the uniform block.
 	 */
-	private final Collection<UniformBuffer> uniformBlocks;
+	private final Map<String, Integer> uniformBlocks;
 
 	/**
 	 * constructor of a shader object.
@@ -86,7 +87,7 @@ public class ShaderProgram extends GLObject {
 	 */
 	public ShaderProgram(final Map<String, String> parameters, final String ... shaders) {
 		this.preprocessor = new ShaderPreprocessor(parameters);
-		uniformBlocks = new HashSet<>();
+		uniformBlocks = new HashMap<>();
 
 		shaderObjects = new EnumMap<>(ShaderObjectType.class);
 		for (String path : shaders) {
@@ -144,18 +145,31 @@ public class ShaderProgram extends GLObject {
 	 *            the UBO to add
 	 */
 	public void addUniformBlockIndex(final UniformBuffer UBO) {
-		uniformBlocks.add(UBO);
-		setUniformBlockIndex(UBO);
+		this.addUniformBlockIndex(UBO.getBaseName(), UBO.getBaseIndex());
 	}
 
 	/**
-	 * binds the uniform Block to the shader program
-	 *
-	 * @param UBO
+	 * Adds a name index combination of a uniform buffer to the shader.
+	 * @param name the name of the ubo to add
+	 * @param index the index of the ubo to add
 	 */
-	private void setUniformBlockIndex(final UniformBuffer UBO) {
-		ensureCompiled();
-		UBO.attachToShader(this.getHandle());
+	public void addUniformBlockIndex(final String name, final int index) {
+		uniformBlocks.put(name, index);
+		this.setUniformBlockIndex(name, index);
+	}
+
+	/**
+	 * Registers the given UBO index with the shader under the given name.
+	 * @param name the name of the ubo
+	 * @param index the index of the ubo
+	 */
+	private void setUniformBlockIndex(final String name, final int index) {
+		this.ensureCompiled();
+		final int uniformBlockIndex = glGetUniformBlockIndex(this.getHandle(), name);
+		GLErrors.checkForError(TAG, "glGetUniformBlockIndex");
+
+		glUniformBlockBinding(this.getHandle(), uniformBlockIndex, index);
+		GLErrors.checkForError(TAG, "glUniformBlockBinding");
 	}
 
 	/**
@@ -528,8 +542,8 @@ public class ShaderProgram extends GLObject {
 			Log.error(TAG, "Linking log:\n" + glGetProgramInfoLog(this.getHandle()));
 		}
 
-		for (final UniformBuffer uniformBlock : uniformBlocks) {
-			setUniformBlockIndex(uniformBlock);
+		for (final Map.Entry<String, Integer> entry : uniformBlocks.entrySet()) {
+			this.setUniformBlockIndex(entry.getKey(), entry.getValue());
 		}
 
 		shaderObjects.values().forEach(ShaderObject::delete);

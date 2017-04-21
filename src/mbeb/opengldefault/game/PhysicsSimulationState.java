@@ -2,7 +2,7 @@ package mbeb.opengldefault.game;
 
 import mbeb.opengldefault.animation.BoneTransformation;
 import mbeb.opengldefault.camera.Camera;
-import mbeb.opengldefault.camera.ICamera;
+import mbeb.opengldefault.camera.PerspectiveCamera;
 import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.light.DirectionalLight;
 import mbeb.opengldefault.light.PointLight;
@@ -43,8 +43,8 @@ public class PhysicsSimulationState implements GameState {
 	
 	@Override
 	public void init() {
-		ICamera camera = new Camera(GLContext.getAspectRatio());
-		camera.setPosition(new Vector3f(1, 1, 1));
+		Camera camera = new PerspectiveCamera();
+		camera.setEye(new Vector3f(1, 1, 1));
 		Skybox sky = new Skybox("spacebox/s", "png");
 		scene = new Scene(camera, sky);
 		
@@ -65,7 +65,7 @@ public class PhysicsSimulationState implements GameState {
 		others.add(camera).addBehaviour(1, new PlayerControlBehaviour());
 		
 		ShaderProgram defaultShader = new ShaderProgram("basic.vert", "basic.frag");
-		defaultShader.addUniformBlockIndex(UBOManager.MATRICES);
+		defaultShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
 		scene.getSceneGraph().setShader(defaultShader);
 		scene.getLightManager().addShader(defaultShader);
 

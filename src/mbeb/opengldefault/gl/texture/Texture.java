@@ -25,7 +25,7 @@ import mbeb.opengldefault.logging.Log;
 
 /**
  * Represents any texture created with OpenGL.
- * 
+ *
  * @author Potti
  * @version 1.0
  */
@@ -216,7 +216,8 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 	 * This determines when a comparison with this texture passes.
 	 */
 	public enum CompareFunction {
-		ALWAYS(GL_ALWAYS), NEVER(GL_NEVER), GREATER(GL_GREATER), GREATER_EQUAL(GL_GEQUAL), LESS(GL_LESS), LESS_EQUAL(GL_LEQUAL), EQUAL(GL_EQUAL), NOT_EQUAL(GL_NOTEQUAL);
+		ALWAYS(GL_ALWAYS), NEVER(GL_NEVER), GREATER(GL_GREATER), GREATER_EQUAL(GL_GEQUAL), LESS(GL_LESS), LESS_EQUAL(
+				GL_LEQUAL), EQUAL(GL_EQUAL), NOT_EQUAL(GL_NOTEQUAL);
 
 		private int glEnum;
 
@@ -237,7 +238,8 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 	 * This determines the number of components for this texture.
 	 */
 	public enum InternalFormat {
-		RED(GL_RED, Format.RED), RG(GL_RG, Format.RED), RGB(GL_RGB, Format.RED), RGBA(GL_RGBA, Format.RED), RGBA8(GL_RGBA8, Format.RED), DEPTH(GL_DEPTH_COMPONENT, Format.DEPTH),
+		RED(GL_RED, Format.RED), RG(GL_RG, Format.RED), RGB(GL_RGB, Format.RED), RGBA(GL_RGBA, Format.RED), RGBA8(
+				GL_RGBA8, Format.RED), DEPTH(GL_DEPTH_COMPONENT, Format.DEPTH),
 		STENCIL(GL_STENCIL_INDEX, Format.STENCIL);
 
 		private int glEnum;
@@ -305,6 +307,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 			return glEnum;
 		}
 	}
+
 	//</editor-fold>
 
 	/**
@@ -332,7 +335,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 		// copy data to the buffer
 		for (int y = 0; y < image.getHeight(); y++) {
 			for (int x = 0; x < image.getWidth(); x++) {
-				int sampleY = flipped ? (image.getHeight() - y - 1) : y;
+				int sampleY = flipped ? image.getHeight() - y - 1 : y;
 				int pixel = pixels[sampleY * image.getWidth() + x];
 				buffer.put((byte) (pixel >> 16 & 0xFF)); // Red component
 				buffer.put((byte) (pixel >> 8 & 0xFF)); // Green component
@@ -361,12 +364,13 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 		}
 		return image;
 	}
+
 	//</editor-fold>
 
 	//<editor-fold desc="Texture unit control">
 	/**
 	 * Makes the given texture unit the active texture unit.
-	 * 
+	 *
 	 * @param unit
 	 *            the texture unit
 	 * @return whether the operation succeeded
@@ -385,7 +389,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 
 	/**
 	 * Makes the texture unit this texture is bound to the active texture unit.
-	 * 
+	 *
 	 * @return whether the operation succeeded
 	 */
 	protected final boolean setActiveTexture() {
@@ -394,12 +398,13 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 		}
 		return Texture.setActiveTexture(this.getTextureUnit());
 	}
+
 	//</editor-fold>
 
 	/**
 	 * Creates a new texture.
 	 * The created texture is not generated yet.
-	 * 
+	 *
 	 * @param type
 	 *            the type of the texture to create
 	 */
@@ -421,6 +426,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 	public final Type getType() {
 		return type;
 	}
+
 	//</editor-fold>
 
 	//<editor-fold desc="GLObject implementation">
@@ -474,12 +480,13 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 		}
 		return success;
 	}
+
 	//</editor-fold>
 
 	//<editor-fold desc="Parameter access">
 	/**
 	 * Invokes glTexParameteri with the given parameter and value, while ensuring this texture is the active texture.
-	 * 
+	 *
 	 * @param parameter
 	 *            the parameter to set
 	 * @param value
@@ -495,7 +502,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 
 	/**
 	 * Tries to set the given parameter and complains if an error occurred.
-	 * 
+	 *
 	 * @param parameter
 	 * @param value
 	 * @param parameterName
@@ -512,7 +519,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 
 	/**
 	 * Sets the wrap mode of the r texture coordinate.
-	 * 
+	 *
 	 * @param mode
 	 *            the mode to set
 	 * @return whether the operation succeeded
@@ -523,7 +530,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 
 	/**
 	 * Sets the wrap mode of the s texture coordinate.
-	 * 
+	 *
 	 * @param mode
 	 *            the mode to set
 	 * @return whether the operation succeeded
@@ -534,7 +541,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 
 	/**
 	 * Sets the wrap mode of the t texture coordinate.
-	 * 
+	 *
 	 * @param mode
 	 *            the mode to set
 	 * @return whether the operation succeeded
@@ -545,18 +552,21 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 
 	/**
 	 * Sets the minification filter of this texture.
-	 * 
+	 *
 	 * @param filter
 	 *            the filter to set
 	 * @return whether the operation succeeded
 	 */
 	public final boolean setMinificationFilter(final MinificationFilter filter) {
+		if (filter != MinificationFilter.LINEAR && filter != MinificationFilter.NEAREST) {
+			generateMipmaps();
+		}
 		return this.setParameter(GL_TEXTURE_MIN_FILTER, filter.getGLEnum(), "TEXTURE_MIN_FILTER");
 	}
 
 	/**
 	 * Sets the magnification filter of this texture.
-	 * 
+	 *
 	 * @param filter
 	 *            the filter to set
 	 * @return whether the operation succeeded
@@ -589,7 +599,7 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 
 	/**
 	 * Sets the border color of this texture.
-	 * 
+	 *
 	 * @param color
 	 *            the color to set
 	 * @return whether the operation succeeded
@@ -597,7 +607,9 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 	public final boolean setBorderColor(final Color color) {
 		return this.whileBound(texture -> {
 			final float maxValue = 255.0f;
-			final float[] colorData = new float[] {color.getRed() / maxValue, color.getGreen() / maxValue, color.getBlue() / maxValue, color.getAlpha() / maxValue};
+			final float[] colorData =
+					new float[] {color.getRed() / maxValue, color.getGreen() / maxValue, color.getBlue() / maxValue,
+							color.getAlpha() / maxValue};
 			glTexParameterfv(this.getType().getGLEnum(), GL_TEXTURE_BORDER_COLOR, colorData);
 			return !GLErrors.checkForError(TAG, "glTexParameterfv");
 		});
@@ -633,23 +645,26 @@ public abstract class Texture extends GLObject implements GLBufferWritable {
 	 * @return whether the operation succeeded
 	 */
 	public final boolean setInterpolates(final boolean interpolate) {
-		return this.whileBound(texture -> this.setMagnificationFilter(interpolate ? MagnificationFilter.LINEAR : MagnificationFilter.NEAREST)
-				&& this.setMinificationFilter(interpolate ? MinificationFilter.LINEAR_MIPMAP_LINEAR : MinificationFilter.NEAREST));
+		return this.whileBound(texture -> this.setMagnificationFilter(interpolate ? MagnificationFilter.LINEAR
+				: MagnificationFilter.NEAREST)
+				&& this.setMinificationFilter(interpolate ? MinificationFilter.LINEAR_MIPMAP_LINEAR
+						: MinificationFilter.NEAREST));
 	}
 
 	/**
 	 * Sets all appropriate wrap modes to the given mode.
-	 * 
+	 *
 	 * @param mode
 	 *            the mode to set
 	 * @return whether the operation succeeded
 	 */
 	public abstract boolean setWrapMode(final WrapMode mode);
+
 	//</editor-fold>
 
 	/**
 	 * Generates mipmap levels for this texture.
-	 * 
+	 *
 	 * @return whether the operation succeeded
 	 */
 	public final boolean generateMipmaps() {

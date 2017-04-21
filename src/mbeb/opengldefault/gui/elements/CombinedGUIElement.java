@@ -3,6 +3,8 @@ package mbeb.opengldefault.gui.elements;
 import java.util.ArrayList;
 import java.util.List;
 
+import mbeb.opengldefault.shapes.Rectangle;
+
 import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import org.joml.Vector2f;
 
@@ -31,7 +33,7 @@ public class CombinedGUIElement extends GUIElement {
 	public void addGUIElement(GUIElement element) {
 		elements.add(element);
 		if (getBounding() == null) {
-			setBounding(element.getBounding());
+			setBounding(new Rectangle(element.getBounding()));
 		} else {
 			setBounding(getBounding().extend(element.getBounding()));
 		}
@@ -48,6 +50,17 @@ public class CombinedGUIElement extends GUIElement {
 			element.setPosition(element.getPosition().add(delta, new Vector2f()));
 		}
 		super.setPosition(position);
+	}
+
+	@Override
+	public GUIElement setPositionRelativeTo(Rectangle bounding, float relativeX, float relativeY) {
+		Vector2f pre = getPosition();
+		super.setPositionRelativeTo(bounding, relativeX, relativeY);
+		Vector2f delta = getPosition().sub(pre, new Vector2f());
+		for (GUIElement element : elements) {
+			element.setPosition(element.getPosition().add(delta, new Vector2f()));
+		}
+		return this;
 	}
 
 	@Override
@@ -110,5 +123,4 @@ public class CombinedGUIElement extends GUIElement {
 	public int getNumElements() {
 		return elements.size();
 	}
-
 }

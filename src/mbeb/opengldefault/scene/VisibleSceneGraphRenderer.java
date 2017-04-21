@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class VisibleSceneGraphRenderer extends SceneGraphRenderer {
 
-	public VisibleSceneGraphRenderer(final SceneObject root, final ICamera cam) {
+	public VisibleSceneGraphRenderer(final SceneObject root, final Camera cam) {
 		super(root, cam);
 	}
 
