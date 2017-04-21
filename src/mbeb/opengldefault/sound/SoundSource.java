@@ -32,7 +32,6 @@ public class SoundSource implements IEntityConvertable {
 		setRolloffFactor(10f);
 		setLooping(loop);
 		setRelativeToListener(relativeToListener);
-
 	}
 
 	/**
