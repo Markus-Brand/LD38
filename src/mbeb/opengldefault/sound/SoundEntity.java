@@ -1,9 +1,10 @@
 package mbeb.opengldefault.sound;
 
+import org.joml.Vector3f;
+
 import mbeb.opengldefault.scene.behaviour.EntityParentBehaviour;
 import mbeb.opengldefault.scene.entities.Entity;
 import mbeb.opengldefault.scene.entities.IEntity;
-import org.joml.Vector3f;
 
 /**
  * The abstract base for a sound listener and a sound source
@@ -45,16 +46,23 @@ public abstract class SoundEntity extends Entity {
 			setSpeed(new Vector3f());
 			return;
 		}
-		delta.div((float)deltaTime);
+		delta.div((float) deltaTime);
 		delta.mul(dopplerStrength);
 		setSpeed(delta);
 	}
 
+	/**
+	 * set the "speed" of this SoundEntity to a new value.
+	 * The speed ist just used to calculate audio-effects, and does not actually move the object.
+	 * 
+	 * @param speed
+	 */
 	protected abstract void setSpeed(Vector3f speed);
 
 	/**
 	 * set a multiplier for the simulated speed of this SoundEntity
 	 * (effectively scales the doppler effect for this SoundEntity)
+	 * 
 	 * @param dopplerStrength
 	 */
 	public void setDopplerStrength(float dopplerStrength) {
@@ -62,8 +70,8 @@ public abstract class SoundEntity extends Entity {
 	}
 
 	/**
-	 * make this IEntity the child of a
-	 *
+	 * make this IEntity the child of another entity
+	 * 
 	 * @param parent
 	 */
 	public void attachTo(IEntity parent) {

@@ -192,7 +192,7 @@ public class SoundSource implements IEntityConvertable {
 	}
 
 	/**
-	 * stop playing the sound, if it is playing right now. The next {@link #play()} call will continue at the same
+	 * pause playing the sound, if it is playing right now. The next {@link #play()} call will continue at the same
 	 * position.
 	 */
 	public void pause() {
