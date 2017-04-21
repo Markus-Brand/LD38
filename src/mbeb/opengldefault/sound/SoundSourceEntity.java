@@ -41,6 +41,5 @@ public class SoundSourceEntity extends Entity {
 	@Override
 	public void setDirection(Vector3f direction) {
 		this.direction = direction;
-		//nothing to do here
 	}
 }

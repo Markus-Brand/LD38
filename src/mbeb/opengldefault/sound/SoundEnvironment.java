@@ -21,6 +21,9 @@ public class SoundEnvironment {
 
 	private static final String TAG = "SoundEnvironment";
 
+	/** the device to play on */
+	private long device;
+
 	/** the context handle (unique id of this SoundEnvironment) */
 	private long context;
 
@@ -35,6 +38,7 @@ public class SoundEnvironment {
 
 	/**
 	 * Sound testing method. Set a breakpoint on the cleanup and listen :)
+	 *
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -55,22 +59,32 @@ public class SoundEnvironment {
 		soundList = new ArrayList<>();
 		soundSourceList = new ArrayList<>();
 		init();
-		setAttenuationModel(AttenuationModel.EXPONENT_CLAMPED);
+		setAttenuationModel(AL11.AL_EXPONENT_DISTANCE_CLAMPED);
 	}
 
 	/**
 	 * create the OpenAL - context
 	 */
 	private void init() {
-		this.context = SoundDevice.getInstance().createNewContext();
+		this.device = alcOpenDevice((ByteBuffer) null);
+		if (device == NULL) {
+			throw new IllegalStateException("Failed to open the default OpenAL device.");
+		}
+		ALCCapabilities deviceCaps = ALC.createCapabilities(device);
+		this.context = alcCreateContext(device, (IntBuffer) null);
+		if (context == NULL) {
+			throw new IllegalStateException("Failed to create OpenAL context.");
+		}
 		makeCurrent();
-		AL.createCapabilities(SoundDevice.getInstance().getCapabilities());
+		AL.createCapabilities(deviceCaps);
 		ALErrors.checkForError(TAG, "init");
 	}
 
 	/**
 	 * load a new Sound file into this context
-	 * @param filename the name of the sound file to load
+	 *
+	 * @param filename
+	 *            the name of the sound file to load
 	 * @return an object representing that sound
 	 */
 	public Sound createSound(String filename) {
@@ -82,9 +96,12 @@ public class SoundEnvironment {
 
 	/**
 	 * create a new SoundSource that can play sounds inside this Environment
-	 * @param loop whether the sound should loop automatically when it ended
-	 * @param relative true to see the position values of this SoundSource as always relative to the listener
-	 *                    (could be useful for "screen-space-sounds like background music or HUD/GUI-sounds)
+	 *
+	 * @param loop
+	 *            whether the sound should loop automatically when it ended
+	 * @param relative
+	 *            true to see the position values of this SoundSource as always relative to the listener
+	 *            (could be useful for "screen-space-sounds like background music or HUD/GUI-sounds)
 	 * @return an Object that can play sounds
 	 */
 	public SoundSource createSoundSource(boolean loop, boolean relative) {
@@ -114,10 +131,11 @@ public class SoundEnvironment {
 
 	/**
 	 * set the calculation model for attenuation inside this Environment
+	 *
 	 * @param model
 	 */
-	public void setAttenuationModel(AttenuationModel model) {
-		alDistanceModel(model.getALEnum());
+	public void setAttenuationModel(int model) {
+		alDistanceModel(model);
 		ALErrors.checkForError(TAG, "alDistanceModel");
 	}
 
@@ -131,8 +149,10 @@ public class SoundEnvironment {
 		soundList.forEach(Sound::cleanup);
 		soundList.clear();
 		if (context != NULL) {
-			ALErrors.checkForError(TAG, "cleanup");
 			alcDestroyContext(context);
+		}
+		if (device != NULL) {
+			alcCloseDevice(device);
 		}
 	}
 }
