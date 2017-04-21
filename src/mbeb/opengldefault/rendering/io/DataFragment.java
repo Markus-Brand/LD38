@@ -60,15 +60,31 @@ public enum DataFragment {
 	 * the normal of a vertex
 	 */
 	NORMAL {
-
+		
 		@Override
 		public int size() {
 			return 3;
 		}
-
+		
 		@Override
 		protected void addTo(AIMesh mesh, int vertexID, GLBufferWriter writer) {
 			AIVector3D vec = mesh.mNormals().get(vertexID);
+			writer.write(new Vector3f(vec.x(), vec.y(), vec.z()));
+		}
+	},
+	/**
+	 * the tangent of a vertex (useful for normal mapping)
+	 */
+	TANGENT {
+		
+		@Override
+		public int size() {
+			return 3;
+		}
+		
+		@Override
+		protected void addTo(AIMesh mesh, int vertexID, GLBufferWriter writer) {
+			AIVector3D vec = mesh.mTangents().get(vertexID);
 			writer.write(new Vector3f(vec.x(), vec.y(), vec.z()));
 		}
 	},
