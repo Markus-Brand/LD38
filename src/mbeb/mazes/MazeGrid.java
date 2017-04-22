@@ -39,7 +39,7 @@ public class MazeGrid {
 		totalNumTiles.decrementAndGet();
 		while(!queue.isEmpty()) {
 			final MazeTile currentTile = queue.removeFirst();
-			currentTile.connectedDirections.forEach(tile -> {
+			currentTile.connectedTiles.forEach(tile -> {
 				if (!visited[tile.index]) {
 					visited[tile.index] = true;
 					totalNumTiles.decrementAndGet();
@@ -150,7 +150,7 @@ public class MazeGrid {
 		} else if (exit == currentTile) {
 			result += "x";
 		} else {
-			result += tiles[column][row].connectedDirections.size();
+			result += tiles[column][row].connectedTiles.size();
 		}
 		//final String result = tiles[column][row].index + "";
 		if (tiles[column][row].isConnectedTo(column + 1, row)) {
