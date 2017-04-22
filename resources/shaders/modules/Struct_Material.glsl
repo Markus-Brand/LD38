@@ -11,7 +11,7 @@ vec4 materialFetch(
 	//manual clampToBlack if the material has fewer layers than requested
 	ivec3 size = textureSize(material.textureLayers, 0);
 	vec4 texColor = texture(material.textureLayers, vec3(uv, component));
-	return mix(vec4(0), texColor, step(component + 1, size.z));
+	return mix(vec4(0), texColor, step(float(component) + 1.0, float(size.z)));
 }
 
 int materialShininess(const in Material material) {
