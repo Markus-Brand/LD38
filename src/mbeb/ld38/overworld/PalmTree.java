@@ -34,20 +34,14 @@ public class PalmTree {
 	}
 	//</editor-fold>
 
-	private final Vector3f position;
 	private final SceneObject trunkObject;
 	private final SceneObject leavesObject;
 
-	public PalmTree(Vector3f position) {
-		this(position, null);
-	}
-	public PalmTree(Vector3f position, Quaternionf rotation) {
+	public PalmTree(BoneTransformation transform) {
 		initIfNeeded();
-		this.position = position;
 
-		BoneTransformation pos = new BoneTransformation(position, rotation);
-		trunkObject = new SceneObject(trunkRenderable, pos);
-		leavesObject = new SceneObject(leavesRenderable, pos);
+		trunkObject = new SceneObject(trunkRenderable, transform);
+		leavesObject = new SceneObject(leavesRenderable, transform);
 	}
 
 	public void addTo(SceneObject parent) {
