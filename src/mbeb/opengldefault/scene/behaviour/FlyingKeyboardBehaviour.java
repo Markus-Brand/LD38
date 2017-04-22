@@ -29,7 +29,6 @@ public class FlyingKeyboardBehaviour implements IBehaviour {
 	@Override
 	public void update(double deltaTime, IEntity entity) {
 		Vector3f direction = entity.getDirection();
-
 		final Vector3f delta = new Vector3f();
 
 		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_A)) {
