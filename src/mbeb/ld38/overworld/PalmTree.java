@@ -1,6 +1,7 @@
 package mbeb.ld38.overworld;
 
 import mbeb.opengldefault.animation.BoneTransformation;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import mbeb.opengldefault.rendering.io.ObjectLoader;
@@ -38,10 +39,13 @@ public class PalmTree {
 	private final SceneObject leavesObject;
 
 	public PalmTree(Vector3f position) {
+		this(position, null);
+	}
+	public PalmTree(Vector3f position, Quaternionf rotation) {
 		initIfNeeded();
 		this.position = position;
 
-		BoneTransformation pos = new BoneTransformation(position);
+		BoneTransformation pos = new BoneTransformation(position, rotation);
 		trunkObject = new SceneObject(trunkRenderable, pos);
 		leavesObject = new SceneObject(leavesRenderable, pos);
 	}

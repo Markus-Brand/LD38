@@ -91,7 +91,7 @@ void main(){
 #endif
 
 	vec4 texColor = vec4(result, materialAlpha);
-	if(texColor.a > 0.2){
+	if(texColor.a > 0.5){
 		color = texColor;
 	}else{
 		discard;

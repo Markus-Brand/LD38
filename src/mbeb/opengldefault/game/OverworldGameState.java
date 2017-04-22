@@ -1,22 +1,20 @@
 package mbeb.opengldefault.game;
 
+import java.awt.*;
+
+import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFW;
+
 import mbeb.ld38.overworld.OverWorld;
 import mbeb.opengldefault.camera.Camera;
 import mbeb.opengldefault.camera.PerspectiveCamera;
+import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.gl.shader.ShaderProgram;
 import mbeb.opengldefault.light.DirectionalLight;
 import mbeb.opengldefault.rendering.renderable.Skybox;
 import mbeb.opengldefault.scene.Scene;
 import mbeb.opengldefault.scene.behaviour.PlayerControlBehaviour;
 import mbeb.opengldefault.scene.entities.EntityWorld;
-import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
-
-import mbeb.opengldefault.controls.KeyBoard;
-
-import java.awt.*;
-
-import static org.lwjgl.opengl.GL11.*;
 
 public class OverworldGameState implements GameState {
 
@@ -28,7 +26,7 @@ public class OverworldGameState implements GameState {
 	public void init() {
 		Camera camera = new PerspectiveCamera();
 
-		Skybox sky = new Skybox("skybox/mountain");
+		Skybox sky = new Skybox("beachbox/beach", "png");
 		overworldScene = new Scene(camera, sky);
 
 		world.add(camera).addBehaviour(0, new PlayerControlBehaviour());
