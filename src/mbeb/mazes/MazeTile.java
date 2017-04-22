@@ -56,7 +56,7 @@ public class MazeTile {
 		bidirectionalConnectTo(possibleConnection.get(connectionID));
 	}
 
-	boolean hasNeighbour(final Type direction) {
+	public boolean hasNeighbour(final Type direction) {
 		switch(direction) {
 			case LEFT_NEIGHBOUR:
 				return isConnectedTo(column - 1, row);

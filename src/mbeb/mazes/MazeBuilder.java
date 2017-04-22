@@ -4,7 +4,12 @@ import java.util.*;
 
 public class MazeBuilder {
 
-	static MazeGrid makeMaze(final int mazetype, final int width, final int height, final int entranceX, final int entranceY, final float resolveDeadendProbability) {
+	public static MazeGrid make4Maze(final int width, final int height, final float resolveProbability) {
+		Random r = new Random();
+		return makeMaze(4, width, height, r.nextInt(width), r.nextInt(height), resolveProbability);
+	}
+
+	public static MazeGrid makeMaze(final int mazetype, final int width, final int height, final int entranceX, final int entranceY, final float resolveDeadendProbability) {
 		final MazeGrid maze = new MazeGrid(mazetype, width, height, entranceX, entranceY);
 		final ArrayList<MazeTile> unvisited = maze.getTilesList();
 

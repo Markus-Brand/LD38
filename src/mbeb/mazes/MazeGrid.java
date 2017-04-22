@@ -190,4 +190,12 @@ public class MazeGrid {
 	public MazeTile[][] getTiles() {
 		return tiles;
 	}
+
+	public MazeTile getEntrance() {
+		return entrance;
+	}
+
+	public MazeTile getExit() {
+		return exit;
+	}
 }

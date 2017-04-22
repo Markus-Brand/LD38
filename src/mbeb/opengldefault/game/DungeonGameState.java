@@ -8,6 +8,12 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import mbeb.dungeon.DungeonLevel;
+import mbeb.dungeon.room.Room;
+import mbeb.dungeon.room.RoomParameter;
+import mbeb.dungeon.room.RoomType;
+import org.joml.AxisAngle4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import mbeb.opengldefault.animation.BoneTransformation;
@@ -31,19 +37,18 @@ import mbeb.opengldefault.scene.entities.IEntity;
 import mbeb.opengldefault.scene.entities.SceneEntity;
 import mbeb.opengldefault.scene.materials.Material;
 
-/**
- * In the guild of dungeoneering...
- */
 public class DungeonGameState implements GameState {
 
 	private static final String TAG = "DungeonGameState";
 
 	private Scene scene;
+	private RoomType roomType;
+	private Room room;
 	private List<IEntity> entities = new ArrayList<>();
 
 	@Override
 	public void init() {
-		Camera camera = new PerspectiveCamera(GLContext.getAspectRatio());
+		Camera camera = new PerspectiveCamera();
 		Skybox skybox = new Skybox("skybox/mountain");
 
 		scene = new Scene(camera, skybox);
@@ -54,57 +59,18 @@ public class DungeonGameState implements GameState {
 		scene.getLightManager().addShader(defaultShader);
 		scene.getSceneGraph().setShader(defaultShader);
 
-		ShaderProgram bezierShader = new ShaderProgram("bezier.vert", "bezier.frag", "bezier.geom");
-		bezierShader.setDrawMode(ShaderProgram.DrawMode.LINES);
-		bezierShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
-
 		//textures
-		Material boxMaterial = new Material("material/bunny", 2);
 
-		//meshes
-		final ObjectLoader loader = new ObjectLoader();
-		IRenderable boxRenderable = loader.loadFromFile("longBox.obj").withMaterial(boxMaterial);
-		IRenderable bunnyRenderable = loader.loadFromFile("bunny.obj").withMaterial(boxMaterial);
+		RoomType.initializeRoomTypes();
 
-		//bezier
-		List<Vector3f> controlPoints = new ArrayList<>();
-		float curveHeight = 1.05f;
-		controlPoints.add(new Vector3f(0, curveHeight, 0));
-		controlPoints.add(new Vector3f(2.5f, curveHeight, 1.4f));
-		controlPoints.add(new Vector3f(2.5f, curveHeight, -1.4f));
-		controlPoints.add(new Vector3f(0, curveHeight, 0));
-		controlPoints.add(new Vector3f(-2.5f, curveHeight, 1.4f));
-		controlPoints.add(new Vector3f(-2.5f, curveHeight, -1.4f));
-		BezierCurve curve =
-				new BezierCurve(controlPoints, BezierCurve.ControlPointInputMode.CAMERAPOINTSCIRCULAR, true);
 
-		//scene Objects
-		SceneObject flightObject = new SceneObject(boxRenderable);
-		scene.getSceneGraph().addSubObject(flightObject);
 
-		SceneObject bezierObject = new SceneObject(new BezierCurveRenderable(curve));
-		bezierObject.setShader(bezierShader);
-		flightObject.addSubObject(bezierObject);
-
-		SceneObject bunnyObject =
-				new SceneObject(bunnyRenderable, new BoneTransformation(null, null, new Vector3f(0.5f)));
-		flightObject.addSubObject(bunnyObject);
-
-		//entity system
-		IEntity bunnyEntity = new SceneEntity(bunnyObject);
-		bunnyEntity.addBehaviour(1, new BezierBehaviour(bezierObject, 3));
-		entities.add(bunnyEntity);
-
-		IEntity flightEntity = new SceneEntity(flightObject);
-		flightEntity.addBehaviour(1, new PlayerControlBehaviour());
-		entities.add(flightEntity);
+		scene.getSceneGraph().addSubObject(new DungeonLevel(10, 10));
 
 		IEntity cameraEntity = new CameraEntity(camera);
-		ReferenceEntityBehaviour lookAt = new FollowingBehaviour(flightEntity, 0.01f);
-		cameraEntity.addBehaviour(1, new CombinedBehaviour(
-				lookAt.limited(6).fixedLocation(), new EscapingBehaviour(flightEntity, 1).limited(6).fixedDirection()));
-		cameraEntity.addBehaviour(2, lookAt.limited(8));
-		cameraEntity.addBehaviour(3, new FollowingBehaviour(flightEntity, 2));
+		camera.setEye(new Vector3f(0, 20, 0));
+		cameraEntity.setDirection(new Vector3f(0, -1, 0));
+		cameraEntity.addBehaviour(2, new PlayerControlBehaviour(0.0f, 0.0f, 0.01f, 10.0f));
 		entities.add(cameraEntity);
 
 		//light
@@ -126,14 +92,6 @@ public class DungeonGameState implements GameState {
 
 	@Override
 	public void render() {
-		glClearColor(0.05f, 0.075f, 0.075f, 1);
-		GLErrors.checkForError(TAG, "glClearColor");
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		GLErrors.checkForError(TAG, "glClear");
-
-		glViewport(0, 0, GLContext.getFramebufferWidth(), GLContext.getFramebufferHeight());
-		GLErrors.checkForError(TAG, "glViewport");
-
 		scene.render(KeyBoard.isKeyDown(GLFW_KEY_TAB));
 	}
 

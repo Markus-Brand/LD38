@@ -7,10 +7,11 @@ public class BunnyGame extends Game {
 	@Override
 	public void init() {
 		OptionsMenu options = new OptionsMenu();
-		addGameState(GameStateIdentifier.MAIN_MENU, new MainMenu());
-		addGameState(GameStateIdentifier.INTRO, new IntroGameState());
-		addGameState(GameStateIdentifier.OVERWORLD, new OverworldGameState());
-		addGameState(GameStateIdentifier.OPTIONS, options);
+		addGameState(GameStateIdentifier.DUNGEON, new DungeonGameState());
+//		addGameState(GameStateIdentifier.MAIN_MENU, new MainMenu());
+//		addGameState(GameStateIdentifier.INTRO, new IntroGameState());
+//		addGameState(GameStateIdentifier.OVERWORLD, new OverworldGameState());
+//		addGameState(GameStateIdentifier.OPTIONS, options);
 		super.init();
 	}
 
