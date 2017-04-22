@@ -1,4 +1,4 @@
-package mbeb.opengldefault.dungeon.room;
+package mbeb.dungeon.room;
 
 import mbeb.opengldefault.animation.BoneTransformation;
 
@@ -7,5 +7,5 @@ import mbeb.opengldefault.animation.BoneTransformation;
  */
 public class Slot {
     BoneTransformation transformation;
-    
+
 }

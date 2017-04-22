@@ -1,4 +1,4 @@
-package mbeb.opengldefault.dungeon;
+package mbeb.dungeon;
 
 /**
  * Level up

@@ -1,4 +1,4 @@
-package mbeb.opengldefault.dungeon.room;
+package mbeb.dungeon.room;
 
 import mbeb.opengldefault.camera.Camera;
 import mbeb.opengldefault.rendering.renderable.Skybox;
