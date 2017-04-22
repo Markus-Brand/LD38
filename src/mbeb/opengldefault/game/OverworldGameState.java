@@ -26,7 +26,7 @@ public class OverworldGameState implements GameState {
 
 	@Override
 	public GameStateIdentifier getNextState() {
-		return KeyBoard.isKeyDown(GLFW.GLFW_KEY_ESCAPE) ? GameStateIdentifier.MAIN_MENU : null;
+		return KeyBoard.isKeyDown(GLFW.GLFW_KEY_ESCAPE) ? GameStateIdentifier.INTRO : null;
 	}
 
 	@Override

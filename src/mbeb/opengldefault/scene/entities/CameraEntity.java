@@ -16,6 +16,7 @@ public class CameraEntity extends Entity {
 
 	public CameraEntity(final Camera camera) {
 		this.camera = camera;
+		viewDirection = camera.getCenter().sub(camera.getEye(), new Vector3f());
 	}
 
 	@Override

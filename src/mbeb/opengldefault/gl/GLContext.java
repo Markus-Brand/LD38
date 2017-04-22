@@ -138,8 +138,12 @@ public class GLContext {
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();
 		Log.closeLogFile();
+		File resFile = new File("res");
+		if (!resFile.exists()) {
+			return;
+		}
 		try {
-			Files.walk(new File("res").toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile)
+			Files.walk(resFile.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile)
 					.forEach(File::delete);
 		} catch(IOException ex) {
 			Log.error(TAG, "Unable to delete old res-directory", ex);
@@ -205,7 +209,7 @@ public class GLContext {
 
 		// Make the OpenGL context current
 		glfwMakeContextCurrent(window);
-		
+
 		GLFWWindowSizeCallbackI resizeHandler = (long l, int i, int i1) -> {
 			int[] widthBuffer = new int[1];
 			int[] heightBuffer = new int[1];
