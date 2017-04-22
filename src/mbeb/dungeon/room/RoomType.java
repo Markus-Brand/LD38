@@ -9,6 +9,7 @@ import mbeb.opengldefault.scene.materials.Material;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.lwjgl.system.CallbackI;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -61,9 +62,7 @@ public class RoomType {
 		IRenderable entrance = loader.loadFromFile("bunny.obj").withMaterial(entranceMaterial);
 		IRenderable exit = loader.loadFromFile("player.fbx").withMaterial(exitMaterial);
 
-		SceneObject door = new SceneObject();
-		door.addSubObject(doorFrame);
-		//door.addSubObject(doorDoor);
+		Door door = new Door(new SceneObject(doorFrame), new SceneObject(doorDoor));
 
 		//<editor-fold desc="normal_room">
 		NORMAL_ROOM = new RoomType();
@@ -81,7 +80,7 @@ public class RoomType {
 		NORMAL_ROOM.addSlot("right",
 				new BoneTransformation(new Vector3f(4, 0, 0), new Quaternionf(new AxisAngle4f(2 * rect, 0, 1, 0)))
 		)
-				.addIf(new SceneObject(door),
+				.addIf(door,
 						roomParameter -> roomParameter.get(RoomParameter.Type.RIGHT_NEIGHBOUR)
 				)
 				.addIf(new SceneObject(wall_segment),
@@ -90,7 +89,7 @@ public class RoomType {
 		NORMAL_ROOM.addSlot("left",
 				new BoneTransformation(new Vector3f(-4, 0, 0), new Quaternionf(new AxisAngle4f(0 * rect, 0, 1, 0)))
 		)
-				.addIf(new SceneObject(door),
+				.addIf(door,
 						roomParameter -> roomParameter.get(RoomParameter.Type.LEFT_NEIGHBOUR)
 				)
 				.addIf(new SceneObject(wall_segment),
@@ -100,7 +99,7 @@ public class RoomType {
 		NORMAL_ROOM.addSlot("bottom",
 				new BoneTransformation(new Vector3f(0, 0, 4), new Quaternionf(new AxisAngle4f(1 * rect, 0, 1, 0)))
 		)
-				.addIf(new SceneObject(door),
+				.addIf(door,
 						roomParameter -> roomParameter.get(RoomParameter.Type.BOTTOM_NEIGHBOUR)
 				)
 				.addIf(new SceneObject(wall_segment),
@@ -109,7 +108,7 @@ public class RoomType {
 		NORMAL_ROOM.addSlot("top",
 				new BoneTransformation(new Vector3f(0, 0, -4), new Quaternionf(new AxisAngle4f(3 * rect, 0, 1, 0)))
 		)
-				.addIf(new SceneObject(door),
+				.addIf(door,
 						roomParameter -> roomParameter.get(RoomParameter.Type.TOP_NEIGHBOUR)
 				)
 				.addIf(new SceneObject(wall_segment),
@@ -133,7 +132,7 @@ public class RoomType {
 		ENTRANCE_ROOM.addSlot("right",
 				new BoneTransformation(new Vector3f(4, 0, 0), new Quaternionf(new AxisAngle4f(2 * rect, 0, 1, 0)))
 		)
-				.addIf(new SceneObject(door),
+				.addIf(door,
 						roomParameter -> roomParameter.get(RoomParameter.Type.RIGHT_NEIGHBOUR)
 				)
 				.addIf(new SceneObject(wall_segment),
@@ -142,7 +141,7 @@ public class RoomType {
 		ENTRANCE_ROOM.addSlot("left",
 				new BoneTransformation(new Vector3f(-4, 0, 0), new Quaternionf(new AxisAngle4f(0 * rect, 0, 1, 0)))
 		)
-				.addIf(new SceneObject(door),
+				.addIf(door,
 						roomParameter -> roomParameter.get(RoomParameter.Type.LEFT_NEIGHBOUR)
 				)
 				.addIf(new SceneObject(wall_segment),
@@ -152,7 +151,7 @@ public class RoomType {
 		ENTRANCE_ROOM.addSlot("bottom",
 				new BoneTransformation(new Vector3f(0, 0, 4), new Quaternionf(new AxisAngle4f(1 * rect, 0, 1, 0)))
 		)
-				.addIf(new SceneObject(door),
+				.addIf(door,
 						roomParameter -> roomParameter.get(RoomParameter.Type.BOTTOM_NEIGHBOUR)
 				)
 				.addIf(new SceneObject(wall_segment),
@@ -161,7 +160,7 @@ public class RoomType {
 		ENTRANCE_ROOM.addSlot("top",
 				new BoneTransformation(new Vector3f(0, 0, -4), new Quaternionf(new AxisAngle4f(3 * rect, 0, 1, 0)))
 		)
-				.addIf(new SceneObject(door),
+				.addIf(door,
 						roomParameter -> roomParameter.get(RoomParameter.Type.TOP_NEIGHBOUR)
 				)
 				.addIf(new SceneObject(wall_segment),
@@ -185,7 +184,7 @@ public class RoomType {
 		EXIT_ROOM.addSlot("right",
 				new BoneTransformation(new Vector3f(4, 0, 0), new Quaternionf(new AxisAngle4f(2 * rect, 0, 1, 0)))
 		)
-				.addIf(new SceneObject(door),
+				.addIf(door,
 						roomParameter -> roomParameter.get(RoomParameter.Type.RIGHT_NEIGHBOUR)
 				)
 				.addIf(new SceneObject(wall_segment),
@@ -194,7 +193,7 @@ public class RoomType {
 		EXIT_ROOM.addSlot("left",
 				new BoneTransformation(new Vector3f(-4, 0, 0), new Quaternionf(new AxisAngle4f(0 * rect, 0, 1, 0)))
 		)
-				.addIf(new SceneObject(door),
+				.addIf(door,
 						roomParameter -> roomParameter.get(RoomParameter.Type.LEFT_NEIGHBOUR)
 				)
 				.addIf(new SceneObject(wall_segment),
@@ -204,7 +203,7 @@ public class RoomType {
 		EXIT_ROOM.addSlot("bottom",
 				new BoneTransformation(new Vector3f(0, 0, 4), new Quaternionf(new AxisAngle4f(1 * rect, 0, 1, 0)))
 		)
-				.addIf(new SceneObject(door),
+				.addIf(door,
 						roomParameter -> roomParameter.get(RoomParameter.Type.BOTTOM_NEIGHBOUR)
 				)
 				.addIf(new SceneObject(wall_segment),
@@ -213,7 +212,7 @@ public class RoomType {
 		EXIT_ROOM.addSlot("top",
 				new BoneTransformation(new Vector3f(0, 0, -4), new Quaternionf(new AxisAngle4f(3 * rect, 0, 1, 0)))
 		)
-				.addIf(new SceneObject(door),
+				.addIf(door,
 						roomParameter -> roomParameter.get(RoomParameter.Type.TOP_NEIGHBOUR)
 				)
 				.addIf(new SceneObject(wall_segment),
@@ -237,7 +236,11 @@ public class RoomType {
 		for (Slot slot : slots.values()) {
 			SceneObject add = slot.getApplicable(parameters);
 			if(add != null) {
-				add = new SceneObject(add);
+				if (add instanceof Door) {
+					add = new Door((Door) add);
+				}else {
+					add = new SceneObject(add);
+				}
 				add.setTransformation(slot.getTransformation());
 				result.addSlotObject(add);
 			}

@@ -16,6 +16,10 @@ import java.util.Random;
 
 public class DungeonLevel extends SceneObject {
 
+	public Room getActiveRoom() {
+		return activeRoom;
+	}
+
 	private class Point {
 		int x, y;
 
@@ -52,6 +56,7 @@ public class DungeonLevel extends SceneObject {
 	}
 
 	private Map<Point, Room> rooms;
+	private Room activeRoom;
 
 	public DungeonLevel (int width, int height) {
 		super();
@@ -69,11 +74,17 @@ public class DungeonLevel extends SceneObject {
 					p.set(type, grid.getTile(x, y).hasNeighbour(type));
 				}
 				Room r = determineRoomType(null, grid, grid.getTile(x, y)).construct(p);
-				r.setTransformation(new BoneTransformation(new Vector3f(9 * x, 0, 9 * y)));
+				float o = determineOffset(x, y);
+				r.setTransformation(new BoneTransformation(new Vector3f(9 * x + o, o, 9 * y + o)));
 				this.addSubObject(r);
 				this.rooms.put(new Point(x, y), r);
+				this.activeRoom = r;
 			}
 		}
+	}
+
+	private float determineOffset(int x, int y) {
+		return -0.0025f + (0.00125f * ((x % 2) + ((y % 2) * 2)));
 	}
 
 	private RoomType determineRoomType(Random r, MazeGrid grid, MazeTile tile) {

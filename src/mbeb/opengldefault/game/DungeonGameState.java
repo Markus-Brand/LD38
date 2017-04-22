@@ -1,6 +1,7 @@
 package mbeb.opengldefault.game;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_T;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_TAB;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -42,8 +43,7 @@ public class DungeonGameState implements GameState {
 	private static final String TAG = "DungeonGameState";
 
 	private Scene scene;
-	private RoomType roomType;
-	private Room room;
+	private DungeonLevel level;
 	private List<IEntity> entities = new ArrayList<>();
 
 	@Override
@@ -64,8 +64,8 @@ public class DungeonGameState implements GameState {
 		RoomType.initializeRoomTypes();
 
 
-
-		scene.getSceneGraph().addSubObject(new DungeonLevel(10, 10));
+		level = new DungeonLevel(3, 3);
+		scene.getSceneGraph().addSubObject(level);
 
 		IEntity cameraEntity = new CameraEntity(camera);
 		camera.setEye(new Vector3f(0, 20, 0));
@@ -84,6 +84,13 @@ public class DungeonGameState implements GameState {
 
 	@Override
 	public void update(double deltaTime) {
+		if(KeyBoard.pullKeyDown(GLFW_KEY_T)) {
+			if(this.level.getActiveRoom().isOpen()){
+				this.level.getActiveRoom().close();
+			}else{
+				this.level.getActiveRoom().open();
+			}
+		}
 		scene.update(deltaTime);
 		for (IEntity entity : entities) {
 			entity.update(deltaTime);
