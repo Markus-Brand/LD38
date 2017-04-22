@@ -1,6 +1,7 @@
 package mbeb.opengldefault.game;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
@@ -120,7 +121,7 @@ public class IntroGameState implements GameState {
 		final IRenderable worldRenderable = new ObjectLoader().loadFromFile("planet.obj");
 
 		final IRenderable islandRenderable =
-				new ObjectLoader().loadFromFile("island.obj").withMaterial(new Material("material/metalbox", 4));
+				new ObjectLoader().loadFromFile("island.obj").withMaterial(new Material("material/beach", 1));
 
 		world = new SceneObject(worldRenderable);
 		world.setShader(worldShader);
@@ -242,6 +243,7 @@ public class IntroGameState implements GameState {
 
 	@Override
 	public void open() {
+		System.out.println(true);
 		starting = false;
 		GLContext.showCursor();
 		introScene.getLightManager().rewriteUBO();
