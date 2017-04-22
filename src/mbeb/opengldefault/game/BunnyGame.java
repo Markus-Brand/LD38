@@ -8,8 +8,8 @@ public class BunnyGame extends Game {
 	public void init() {
 		OptionsMenu options = new OptionsMenu();
 		addGameState(GameStateIdentifier.MAIN_MENU, new MainMenu());
-		addGameState(GameStateIdentifier.BUNNY_GAME, new BunnyGameState());
-		addGameState(GameStateIdentifier.BEZIER_FLIGHT, new FlightGame());
+		addGameState(GameStateIdentifier.INTRO, new IntroGameState());
+		addGameState(GameStateIdentifier.OVERWORLD, new OverworldGameState());
 		addGameState(GameStateIdentifier.OPTIONS, options);
 		super.init();
 	}

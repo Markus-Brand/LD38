@@ -10,5 +10,7 @@ public enum GameStateIdentifier {
 	OPTIONS,
 	BUNNY_GAME,
 	BEZIER_FLIGHT,
-	EXIT
+	EXIT,
+	OVERWORLD,
+	INTRO
 }
