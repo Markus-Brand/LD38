@@ -55,6 +55,11 @@ void main(){
 		normal = normalize(frag_in_tbn * normalFromMap);
 	}
 
+	//normal flipping
+	if (dot(viewDir,normal) < 0) {
+	    normal = -normal;
+	}
+
 
 	vec3 result = vec3(0);
 
@@ -86,7 +91,7 @@ void main(){
 #endif
 
 	vec4 texColor = vec4(result, materialAlpha);
-	if(texColor.a > 0.01){
+	if(texColor.a > 0.2){
 		color = texColor;
 	}else{
 		discard;

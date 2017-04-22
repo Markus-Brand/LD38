@@ -1,27 +1,60 @@
 package mbeb.opengldefault.game;
 
+import mbeb.ld38.overworld.OverWorld;
+import mbeb.opengldefault.camera.Camera;
+import mbeb.opengldefault.camera.PerspectiveCamera;
+import mbeb.opengldefault.gl.shader.ShaderProgram;
+import mbeb.opengldefault.light.DirectionalLight;
+import mbeb.opengldefault.rendering.renderable.Skybox;
+import mbeb.opengldefault.scene.Scene;
+import mbeb.opengldefault.scene.behaviour.PlayerControlBehaviour;
+import mbeb.opengldefault.scene.entities.EntityWorld;
+import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import mbeb.opengldefault.controls.KeyBoard;
 
+import java.awt.*;
+
+import static org.lwjgl.opengl.GL11.*;
+
 public class OverworldGameState implements GameState {
+
+	private Scene overworldScene;
+	private EntityWorld world = new EntityWorld();
+	private OverWorld overworld;
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
+		Camera camera = new PerspectiveCamera();
+
+		Skybox sky = new Skybox("skybox/mountain");
+		overworldScene = new Scene(camera, sky);
+
+		world.add(camera).addBehaviour(0, new PlayerControlBehaviour());
+
+		overworld = new OverWorld();
+		overworldScene.getSceneGraph().addSubObject(overworld.getSceneObject());
+
+		ShaderProgram defaultShader = new ShaderProgram("basic.frag", "basic.vert");
+		defaultShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
+		overworldScene.getLightManager().addShader(defaultShader);
+		overworldScene.getSceneGraph().setShader(defaultShader);
+
+		DirectionalLight sun = new DirectionalLight(Color.WHITE, new Vector3f(0.2f, -1, 0).normalize());
+		overworldScene.getLightManager().addLight(sun);
 
 	}
 
 	@Override
 	public void update(double deltaTime) {
-		// TODO Auto-generated method stub
-
+		overworldScene.update(deltaTime);
+		world.update(deltaTime);
 	}
 
 	@Override
 	public void render() {
-		// TODO Auto-generated method stub
-
+		overworldScene.render();
 	}
 
 	@Override
@@ -31,14 +64,12 @@ public class OverworldGameState implements GameState {
 
 	@Override
 	public void resetNextGameState() {
-		// TODO Auto-generated method stub
-
+		//not needed
 	}
 
 	@Override
 	public void open() {
-		// TODO Auto-generated method stub
-
+		overworldScene.getLightManager().rewriteUBO();
 	}
 
 }
