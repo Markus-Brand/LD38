@@ -1,20 +1,29 @@
 package mbeb.opengldefault.gl;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.system.MemoryUtil.*;
+import static org.lwjgl.system.MemoryUtil.NULL;
 
-import java.io.*;
-import java.nio.file.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
 
 import org.joml.Vector2f;
-import org.lwjgl.*;
-import org.lwjgl.glfw.*;
-import org.lwjgl.opengl.*;
+import org.lwjgl.Version;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.GLFWWindowSizeCallbackI;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
 
-import mbeb.opengldefault.controls.*;
-import mbeb.opengldefault.game.*;
-import mbeb.opengldefault.logging.*;
+import mbeb.opengldefault.controls.KeyBoard;
+import mbeb.opengldefault.controls.Mouse;
+import mbeb.opengldefault.game.Game;
+import mbeb.opengldefault.logging.GLErrors;
+import mbeb.opengldefault.logging.Log;
+import mbeb.opengldefault.logging.LogMode;
 
 public class GLContext {
 
@@ -138,12 +147,12 @@ public class GLContext {
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();
 		Log.closeLogFile();
+		File resFile = new File("res");
+		if (!resFile.exists()) {
+			return;
+		}
 		try {
-			File resFile = new File("res");
-			if (resFile.exists()) {
-				Files.walk(resFile.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile)
-						.forEach(File::delete);
-			}
+			Files.walk(resFile.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
 		} catch(IOException ex) {
 			Log.error(TAG, "Unable to delete old res-directory", ex);
 		}
@@ -208,7 +217,7 @@ public class GLContext {
 
 		// Make the OpenGL context current
 		glfwMakeContextCurrent(window);
-		
+
 		GLFWWindowSizeCallbackI resizeHandler = (long l, int i, int i1) -> {
 			int[] widthBuffer = new int[1];
 			int[] heightBuffer = new int[1];

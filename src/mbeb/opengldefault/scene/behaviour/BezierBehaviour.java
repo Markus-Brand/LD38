@@ -22,10 +22,13 @@ public class BezierBehaviour implements IBehaviour {
 	/** current progress in the curve */
 	private float progress;
 
+	private int numRounds;
+
 	public BezierBehaviour(SceneObject curveObj, float speed) {
 		this.curveObj = curveObj;
 		this.speed = speed;
 		this.progress = 0;
+		numRounds = 0;
 
 		this.curveData = ((BezierCurveRenderable) curveObj.getRenderable()).getCurve();
 	}
@@ -33,12 +36,28 @@ public class BezierBehaviour implements IBehaviour {
 	@Override
 	public void update(double deltaTime, IEntity entity) {
 		progress += deltaTime * speed;
-		progress %= curveData.getTotalLength();
+		while(progress > curveData.getTotalLength()) {
+			numRounds++;
+			progress -= curveData.getTotalLength();
+		}
 		Vector3f curvePosition = curveData.getPosition(progress, curveObj.getGlobalTransformation().asMatrix());
 		Vector3f direction = curvePosition.sub(entity.getPosition(), new Vector3f());
 
 		entity.setDirection(direction.normalize(new Vector3f()));
 
 		entity.setPosition(entity.getPosition().add(direction, new Vector3f()));
+	}
+
+	public float getProgress() {
+		return progress;
+	}
+
+	public float getTotalProgress() {
+		return progress / curveData.getTotalLength() + numRounds;
+	}
+
+	public void resetProgress() {
+		progress = 0;
+		numRounds = 0;
 	}
 }
