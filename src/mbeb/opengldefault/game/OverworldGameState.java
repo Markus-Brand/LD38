@@ -2,11 +2,15 @@ package mbeb.opengldefault.game;
 
 import java.awt.*;
 
+import org.joml.AxisAngle4f;
+import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import mbeb.ld38.overworld.OverWorld;
+import mbeb.opengldefault.animation.AnimatedMesh;
+import mbeb.opengldefault.animation.AnimationStateFacade;
 import mbeb.opengldefault.animation.BoneTransformation;
 import mbeb.opengldefault.camera.Camera;
 import mbeb.opengldefault.camera.PerspectiveCamera;
@@ -26,9 +30,13 @@ import mbeb.opengldefault.scene.materials.Material;
 
 public class OverworldGameState implements GameState {
 
+	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1)
+			.rotate(new AxisAngle4f((float)Math.PI / 2, 0, 0, 1));
+
 	private Scene overworldScene;
 	private EntityWorld world;
 	private OverWorld overworld;
+	AnimationStateFacade playerAnimatedRenderable;
 
 	private SceneObject player;
 
@@ -46,8 +54,12 @@ public class OverworldGameState implements GameState {
 		skybox = new Skybox("beachbox/beach", "png");
 		overworldScene = new Scene(camera, skybox);
 
-		final IRenderable playerRenderable =
-				new ObjectLoader().loadFromFile("bunny.obj").withMaterial(new Material("material/beach", 1));
+		Material samuraiMaterial = new Material("material/samurai", 1);
+		AnimatedMesh samuraiMesh = new ObjectLoader().loadFromFileAnim("samurai.fbx");
+		samuraiMesh.setTransform(MeshFlip);
+		samuraiMesh.getSkeleton().printRecursive("");
+		playerAnimatedRenderable = new AnimationStateFacade(samuraiMesh, samuraiMaterial);
+
 		IRenderable water = new ObjectLoader().loadFromFile("overworld/water.obj");
 
 		waterShader = new ShaderProgram("water.frag", "planet.vert");
@@ -55,11 +67,20 @@ public class OverworldGameState implements GameState {
 		overworldScene.getLightManager().addShader(waterShader);
 		overworldScene.getSceneGraph().setShader(waterShader);
 
-		SceneObject waterObject =
-				new SceneObject(water, new BoneTransformation(new Vector3f(), new Quaternionf(), new Vector3f(100)));
+		ShaderProgram defaultShader = new ShaderProgram("basic.frag", "basic.vert");
+		defaultShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
+		overworldScene.getLightManager().addShader(defaultShader);
+		overworldScene.getSceneGraph().setShader(defaultShader);
+
+		ShaderProgram animationShader = new ShaderProgram("boneAnimation.vert", "basic.frag");
+		animationShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
+		overworldScene.getLightManager().addShader(animationShader);
+
+		SceneObject waterObject = new SceneObject(water, new BoneTransformation(new Vector3f(), new Quaternionf(), new Vector3f(100)));
 		waterObject.setShader(waterShader);
 
-		player = new SceneObject(playerRenderable, new BoneTransformation(new Vector3f(0, 10, 0)));
+		player = new SceneObject(playerAnimatedRenderable, new BoneTransformation(new Vector3f(0, 10, 0)));
+		player.setShader(animationShader);
 
 		IEntity playerEntity = world.add(player).addBehaviour(0, new PlayerControlBehaviour());
 		world.add(camera).addBehaviour(0, new TopDownViewBehaviour(playerEntity));
@@ -69,19 +90,16 @@ public class OverworldGameState implements GameState {
 		overworld.getSceneObject().addSubObject(player);
 		overworld.getSceneObject().addSubObject(waterObject);
 
-		ShaderProgram defaultShader = new ShaderProgram("basic.frag", "basic.vert");
-		defaultShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
-		overworldScene.getLightManager().addShader(defaultShader);
-		overworldScene.getSceneGraph().setShader(defaultShader);
-
 		DirectionalLight sun = new DirectionalLight(Color.WHITE, new Vector3f(0.2f, -1, 0).normalize());
 		overworldScene.getLightManager().addLight(sun);
 
+		playerAnimatedRenderable.registerAnimation("Jogging", "Jogging", 32);
 	}
 
 	@Override
 	public void update(double deltaTime) {
 		totalTimePassed += deltaTime;
+		playerAnimatedRenderable.ensureRunning("Jogging");
 		overworldScene.update(deltaTime);
 		world.update(deltaTime);
 	}
