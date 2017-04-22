@@ -81,7 +81,7 @@ public class MainMenu implements GameState {
 		if (buttonGame.selected()) {
 			buttonGame.setColor(Color.RED);
 			if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
-				nextGameState = GameStateIdentifier.OVERWORLD;
+				nextGameState = GameStateIdentifier.INTRO;
 			}
 		} else {
 			buttonGame.setColor(Color.GREEN);

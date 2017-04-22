@@ -8,7 +8,6 @@ public class BunnyGame extends Game {
 	public void init() {
 		OptionsMenu options = new OptionsMenu();
 		addGameState(GameStateIdentifier.DUNGEON, new DungeonGameState());
-		addGameState(GameStateIdentifier.MAIN_MENU, new MainMenu());
 		addGameState(GameStateIdentifier.INTRO, new IntroGameState());
 		addGameState(GameStateIdentifier.OVERWORLD, new OverworldGameState());
 		addGameState(GameStateIdentifier.OPTIONS, options);

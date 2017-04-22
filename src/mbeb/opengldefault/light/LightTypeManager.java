@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.*;
 import mbeb.opengldefault.constants.Constants;
 import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import mbeb.opengldefault.gl.buffer.UniformBuffer;
-
 import mbeb.opengldefault.gl.shader.*;
 
 /**
@@ -51,6 +50,12 @@ public abstract class LightTypeManager {
 	 * adjusts capacity of UBO and keeps it's data up to date
 	 */
 	void resizeBuffer() {
+
+		for (Light l : lights) {
+			l.setDirty();
+		}
+		updateDirtyLights();
+
 		UBO.bind();
 		UBO.setBufferSize(Constants.BLOCK_SIZE + getBufferSize());
 		UBO.bindBufferBase();

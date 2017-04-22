@@ -47,6 +47,7 @@ public class LightManager {
 		directionalLightTypeManager.resizeBuffer();
 		pointLightTypeManager.resizeBuffer();
 		spotLightTypeManager.resizeBuffer();
+		updateShaders();
 	}
 
 	/**
