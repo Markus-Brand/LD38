@@ -1,11 +1,6 @@
 package mbeb.opengldefault.game;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
@@ -33,7 +28,6 @@ import mbeb.opengldefault.gui.TextGUI;
 import mbeb.opengldefault.gui.elements.GUIElement;
 import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.light.DirectionalLight;
-import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.rendering.io.ObjectLoader;
 import mbeb.opengldefault.rendering.renderable.BezierCurveRenderable;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
@@ -142,7 +136,7 @@ public class IntroGameState implements GameState {
 
 		SceneObject curveObj = new SceneObject(new BezierCurveRenderable(curve));
 		curveObj.setShader(curveShader);
-		introScene.getSceneGraph().addSubObject(curveObj);
+		//introScene.getSceneGraph().addSubObject(curveObj);
 
 		entities = new EntityWorld();
 		bezierBehaviour = new BezierBehaviour(curveObj, 1.9f);
@@ -228,11 +222,6 @@ public class IntroGameState implements GameState {
 
 	@Override
 	public void render() {
-		glClearColor(0, 0, 0, 1);
-		GLErrors.checkForError(TAG, "glClearColor");
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		GLErrors.checkForError(TAG, "glClear");
-
 		introScene.render();
 		if (!starting) {
 			menuGUI.render();
