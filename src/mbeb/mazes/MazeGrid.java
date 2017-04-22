@@ -1,8 +1,7 @@
 package mbeb.mazes;
 
 import java.util.*;
-
-import org.joml.*;
+import java.util.concurrent.atomic.*;
 
 /**
  * Datastructure for Mazes
@@ -11,28 +10,82 @@ import org.joml.*;
  */
 public class MazeGrid {
 	private final MazeTile[][] tiles;
-	private final int height;
 	private final int width;
+	private final int height;
 	private final int mazetype;
 
-	public MazeGrid(final int mazetype, final int height, final int width) {
+	private final MazeTile entrance;
+	private MazeTile exit;
+
+	public MazeGrid(final int mazetype, final int width, final int height, final int entranceX, final int entranceY) {
 		this.mazetype = mazetype;
-		this.height = height;
 		this.width = width;
-		this.tiles = new MazeTile[height][width];
-		for (int i = 0; i < height; i++) {
-			for (int j = 0; j < width; j++) {
-				this.tiles[i][j] = new MazeTile(this, new Vector2i(i, j));
+		this.height = height;
+		this.tiles = new MazeTile[width][height];
+		for (int column = 0; column < width; column++) {
+			for (int row = 0; row < height; row++) {
+				this.tiles[column][row] = new MazeTile(this, column, row);
 			}
+		}
+		entrance = tiles[entranceX][entranceY];
+	}
+
+	public void determineExit(final int xFurthestAwayTile) {
+		final AtomicInteger totalNumTiles = new AtomicInteger(width * height);
+		final LinkedList<MazeTile> queue = new LinkedList<>();
+		queue.add(entrance);
+		final boolean[] visited = new boolean[totalNumTiles.get()];
+		visited[entrance.index] = true;
+		totalNumTiles.decrementAndGet();
+		while(!queue.isEmpty()) {
+			final MazeTile currentTile = queue.removeFirst();
+			currentTile.connectedDirections.forEach(tile -> {
+				if (!visited[tile.index]) {
+					visited[tile.index] = true;
+					totalNumTiles.decrementAndGet();
+					if (totalNumTiles.get() <= xFurthestAwayTile) {
+						exit = tile;
+						return;
+					}
+					queue.add(tile);
+
+				}
+			});
+			if (totalNumTiles.get() < xFurthestAwayTile) {
+				//return;
+			}
+		}
+		System.out.println(totalNumTiles.get() + " fasgawgasfg");
+	}
+
+	ArrayList<MazeTile> getNeighbours(final int column, final int row) {
+		//neighbour logic according to type
+		switch(mazetype) {
+			case 3:
+				return null;
+			case 6:
+				return null;
+			case 4:
+			default:
+				return getQuadraticNeighbours(column, row);
 		}
 	}
 
-	ArrayList<MazeTile> getNeighbours(final Vector2i coordinates) {
-		//neighbour logic according to type
+	private ArrayList<MazeTile> getQuadraticNeighbours(final int column, final int row) {
 		final ArrayList<MazeTile> result = new ArrayList<>();
-		for(final int)
-		final int neighbourcount = 0;
-		final MazeTile[] result = new MazeTile[neighbourcount];
+
+		for (int i = -1; i <= 1; i++) {
+			for (int j = -1; j <= 1; j++) {
+				if (i * j == 0) {
+					if (i + j != 0) {
+						final MazeTile temp = getTile(column + i, row + j);
+						if (temp != null) {
+							result.add(temp);
+						}
+					}
+				}
+			}
+		}
 		return result;
 	}
 
@@ -48,11 +101,93 @@ public class MazeGrid {
 		return result;
 	}
 
-	public MazeTile getTile(final Vector2i entrancePos) {
-		if (entrancePos.x < 0 || entrancePos.x >= height || entrancePos.y < 0 || entrancePos.y >= width) {
+	public MazeTile getTile(final int column, final int row) {
+		if (column < 0 || column >= width || row < 0 || row >= height) {
 			return null;
 		}
 
-		return tiles[entrancePos.x][entrancePos.y];
+		return tiles[column][row];
+	}
+
+	@Override
+	public String toString() {
+		String result = "";
+		result += makeHorizontalLine();
+
+		for (int row = 0; row < height; row++) {
+			result += makeHorizontalRoomLines(row);
+			result += makeVerticalRoomLines(row);
+		}
+		result += "\n";
+		/*for (final MazeTile[] mazeLines : tiles) {
+			for (final MazeTile tile : mazeLines) {
+				result += tile.column + " " + tile.row + " is connected to: ";
+				for (final MazeTile connection : tile.connectedDirections) {
+					result += "(" + connection.column + " " + connection.row + "),";
+				}
+				result += "\n";
+			}
+		}*/
+		return result;
+	}
+
+	private String makeHorizontalRoomLines(final int row) {
+		String result = "|";
+
+		for (int column = 0; column < width; column++) {
+			result += makeHorizontalRoomLine(row, column);
+		}
+
+		return result + "\n";
+	}
+
+	private String makeHorizontalRoomLine(final int row, final int column) {
+		final MazeTile currentTile = tiles[column][row];
+		String result = "";
+
+		if (entrance == currentTile) {
+			result += "e";
+		} else if (exit == currentTile) {
+			result += "x";
+		} else {
+			result += tiles[column][row].connectedDirections.size();
+		}
+		//final String result = tiles[column][row].index + "";
+		if (tiles[column][row].isConnectedTo(column + 1, row)) {
+			return result + " ";
+		} else {
+			return result + "|";
+		}
+	}
+
+	private String makeVerticalRoomLines(final int row) {
+		String result = "+";
+
+		for (int column = 0; column < width; column++) {
+			result += makeVerticalRoomLine(row, column);
+		}
+
+		return result + "\n";
+	}
+
+	private String makeVerticalRoomLine(final int row, final int column) {
+		final String result = "";
+		if (tiles[column][row].isConnectedTo(column, row + 1)) {
+			return result + " +";
+		} else {
+			return result + "-+";
+		}
+	}
+
+	private String makeHorizontalLine() {
+		String result = "+";
+		for (int i = 0; i < width; i++) {
+			result += "-+";
+		}
+		return result + "\n";
+	}
+
+	public MazeTile[][] getTiles() {
+		return tiles;
 	}
 }

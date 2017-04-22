@@ -2,20 +2,27 @@ package mbeb.mazes;
 
 import java.util.*;
 
-import org.joml.*;
-
 public class MazeTile {
-	Vector2i coordinates;
+	int column;
+	int row;
+	int index;
+
 	ArrayList<MazeTile> connectedDirections;
 	MazeGrid maze;
 
-	public MazeTile(final MazeGrid maze, final Vector2i coordinates) {
+	final Random random;
+
+	public MazeTile(final MazeGrid maze, final int column, final int row) {
 		this.maze = maze;
-		this.coordinates = coordinates;
+		this.column = column;
+		this.row = row;
+		this.connectedDirections = new ArrayList<>();
+		this.index = 0;
+		random = new Random();
 	}
 
-	MazeTile[] getPossibleNeighbours() {
-		return maze.getNeighbours(coordinates);
+	ArrayList<MazeTile> getPossibleNeighbours() {
+		return maze.getNeighbours(column, row);
 	}
 
 	public void bidirectionalConnectTo(final MazeTile mazeTile) {
@@ -25,5 +32,25 @@ public class MazeTile {
 
 	private void connectTo(final MazeTile mazeTile) {
 		connectedDirections.add(mazeTile);
+	}
+
+	public boolean isConnectedTo(final int column, final int row) {
+		for (final MazeTile cell : connectedDirections) {
+			if (cell.row == row && cell.column == column) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean isDeadEnd() {
+		return connectedDirections.size() == 1;
+	}
+
+	public void addRandomConnection() {
+		final ArrayList<MazeTile> possibleConnection = getPossibleNeighbours();
+		possibleConnection.removeAll(connectedDirections);
+		final int connectionID = random.nextInt(possibleConnection.size());
+		bidirectionalConnectTo(possibleConnection.get(connectionID));
 	}
 }
