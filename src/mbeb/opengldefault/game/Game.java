@@ -41,7 +41,6 @@ public abstract class Game {
 		if (gameStates == null) {
 			gameStates = new HashMap<>();
 			currentGameState = key;
-			newGameState.open();
 		}
 		gameStates.put(key, newGameState);
 	}
@@ -50,6 +49,7 @@ public abstract class Game {
 	 * Init the Game here. The OpenGL context is already created at this Point.
 	 */
 	public void init() {
+		getCurrentGameState().open();
 	}
 
 	/**
