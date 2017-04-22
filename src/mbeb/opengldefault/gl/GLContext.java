@@ -139,8 +139,11 @@ public class GLContext {
 		glfwSetErrorCallback(null).free();
 		Log.closeLogFile();
 		try {
-			Files.walk(new File("res").toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile)
-					.forEach(File::delete);
+			File resFile = new File("res");
+			if (resFile.exists()) {
+				Files.walk(resFile.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile)
+						.forEach(File::delete);
+			}
 		} catch(IOException ex) {
 			Log.error(TAG, "Unable to delete old res-directory", ex);
 		}

@@ -3,7 +3,9 @@ package mbeb.opengldefault.rendering.io;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -160,12 +162,13 @@ public class ObjectLoader {
 		}
 		File export = new File(res, rawPath);
 		if (!export.exists()) {
+			export.getParentFile().mkdirs();
 			try {
 				InputStream inStream = GLContext.class.getResourceAsStream("/models/" + rawPath);
 				if (inStream == null) {
 					return null;
 				}
-				Files.copy(inStream, export.toPath());
+				Files.copy(inStream, export.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			} catch(IOException ex) {
 				Log.error(TAG, "Cannot extract resource " + rawPath, ex);
 			}
