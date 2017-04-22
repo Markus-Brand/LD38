@@ -33,10 +33,10 @@ uniform int water;
 #include modules/SpotLightLogic.glsl
 
 vec3 calcNormal(const in vec3 normalIn, const in vec3 fragPos){
+	float distance = length(fragPos);
 	return normalize(normalIn + 
-		vec3(0.01 * cos(fragPos.x * 1000.0 +  0.3 * time), 0.01 *  sin(fragPos.y * fragPos.z * 1500.0 + 0.7 * time), 0.01 *  sin(fragPos.z * 1300.0 + 0.5 * time)) +
-		vec3(0.04 * cos(fragPos.x * 100.0 +  0.3 * time), 0.05 *  sin(fragPos.y * fragPos.z * 150.0 + 0.7 * time), 0.06 *  sin(fragPos.z * 130.0 + 0.5 * time)) +
-		vec3(0.03 * cos(fragPos.x * 12.0 +  0.6 * time), 0.03 *  sin(fragPos.y * fragPos.z * 13.0 + 0.9 * time), 0.03 *  sin(fragPos.z * 14.0 + 1.1 * time)));
+		vec3(0.02 * cos(fragPos.x * 1000.0 +  0.3 * time), 0.02 *  sin(fragPos.y * fragPos.z * 1500.0 + 0.7 * time), 0.02 *  sin(fragPos.z * 1300.0 + 0.5 * time)) +
+		vec3(0.08 * cos(distance * 400.0 + 3 * time), 0, 0.08 *  sin(distance * 400.0 + 3 * time)));
 }
 
 void main(){
@@ -54,7 +54,7 @@ void main(){
 	vec3 viewDir = normalize(viewPos - frag_in_world_pos);
 
 	float reflectivity =  pow(dot(viewDir, normal), 1);
-	reflectivity = clamp(reflectivity, 0.1, 0.9);
+	reflectivity = clamp(reflectivity, 0.2, 0.9);
 	
 	vec3 I = -viewDir;
 	vec3 R = reflect(I, normalize(normal));

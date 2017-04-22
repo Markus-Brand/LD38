@@ -249,6 +249,7 @@ public class IntroGameState implements GameState {
 		introScene.getLightManager().rewriteUBO();
 		bezierBehaviour.resetProgress();
 		progress = 0;
+		entities.update(0.0000001f);
 	}
 
 }
