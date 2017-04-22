@@ -1,7 +1,6 @@
 package mbeb.opengldefault.game;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_TAB;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
@@ -10,9 +9,6 @@ import static org.lwjgl.opengl.GL11.glViewport;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 
@@ -42,9 +38,6 @@ public class MainMenu implements GameState {
 
 	private GameStateIdentifier nextGameState = null;
 
-	private List<GameStateIdentifier> games = new ArrayList<>();
-	private int selectedGame = 0;
-
 	public MainMenu() {
 		//Currently empty, because we can do everything in the init() method
 	}
@@ -73,11 +66,6 @@ public class MainMenu implements GameState {
 		buttonExit =
 				menuGUI.addAtlasGUIElement(0, new Vector2f(), new Vector2f(0.1f, GLContext.getAspectRatio() * 0.1f))
 						.setPositionRelativeToScreen(0.01f, 0.99f);
-
-		games.add(GameStateIdentifier.BUNNY_GAME);
-		games.add(GameStateIdentifier.BEZIER_FLIGHT);
-		selectedGame = games.size();
-		selectNextGame();
 	}
 
 	@Override
@@ -93,7 +81,7 @@ public class MainMenu implements GameState {
 		if (buttonGame.selected()) {
 			buttonGame.setColor(Color.RED);
 			if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
-				startGame();
+				nextGameState = GameStateIdentifier.OVERWORLD;
 			}
 		} else {
 			buttonGame.setColor(Color.GREEN);
@@ -116,26 +104,6 @@ public class MainMenu implements GameState {
 		} else {
 			buttonExit.setColor(Color.GREEN);
 		}
-
-		if (KeyBoard.pullKeyDown(GLFW_KEY_TAB)) {
-			selectNextGame();
-		}
-	}
-
-	/**
-	 * circulate, which gameState to start
-	 */
-	private void selectNextGame() {
-		selectedGame++;
-		if (selectedGame >= games.size()) {
-			selectedGame = 0;
-		}
-		buttonGame.setText(games.get(selectedGame).toString());
-		buttonGame.setPositionRelativeToScreen(0.5f, 0.4f);
-	}
-
-	private void startGame() {
-		nextGameState = games.get(selectedGame);
 	}
 
 	@Override

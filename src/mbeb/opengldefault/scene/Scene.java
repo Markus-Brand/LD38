@@ -7,6 +7,9 @@ import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.light.*;
 import mbeb.opengldefault.rendering.renderable.*;
 
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+
 /**
  * A scene is an object in which objects live and the camera moves. There should
  * be always one active scene that gets rendered.
