@@ -4,13 +4,16 @@ import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glViewport;
-
 import org.lwjgl.glfw.GLFW;
 
+import mbeb.opengldefault.camera.Camera;
+import mbeb.opengldefault.camera.PerspectiveCamera;
 import mbeb.opengldefault.controls.KeyBoard;
-import mbeb.opengldefault.gl.GLContext;
 import mbeb.opengldefault.logging.GLErrors;
+import mbeb.opengldefault.rendering.renderable.Skybox;
+import mbeb.opengldefault.scene.Scene;
+import mbeb.opengldefault.scene.behaviour.FlyingKeyboardBehaviour;
+import mbeb.opengldefault.scene.entities.EntityWorld;
 
 public class IntroGameState implements GameState {
 
@@ -18,9 +21,19 @@ public class IntroGameState implements GameState {
 
 	private float progress;
 
+	private Scene introScene;
+
+	private EntityWorld entities;
+
+	private Camera camera;
+
 	@Override
 	public void init() {
 		progress = 0;
+		camera = new PerspectiveCamera();
+		introScene = new Scene(camera, new Skybox("skybox/mountain"));
+		entities = new EntityWorld();
+		entities.add(camera).addBehaviour(1, new FlyingKeyboardBehaviour());
 	}
 
 	@Override
@@ -28,18 +41,20 @@ public class IntroGameState implements GameState {
 		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_ESCAPE)) {
 			progress = 1;
 		}
-		progress += deltaTime;
+		introScene.update(deltaTime);
+		entities.update(deltaTime);
+		camera.update(deltaTime);
+		//progress += deltaTime;
 	}
 
 	@Override
 	public void render() {
-		glClearColor(progress, progress, progress, 1);
+		glClearColor(0, 0, 0, 1);
 		GLErrors.checkForError(TAG, "glClearColor");
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		GLErrors.checkForError(TAG, "glClear");
 
-		glViewport(0, 0, GLContext.getFramebufferWidth(), GLContext.getFramebufferHeight());
-		GLErrors.checkForError(TAG, "glViewport");
+		introScene.render();
 	}
 
 	@Override
@@ -55,6 +70,7 @@ public class IntroGameState implements GameState {
 
 	@Override
 	public void open() {
+		introScene.getLightManager().rewriteUBO();
 		progress = 0;
 	}
 
