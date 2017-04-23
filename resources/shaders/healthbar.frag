@@ -1,0 +1,40 @@
+
+in vec2 tex;
+in vec3 pos;
+flat in vec4 colorInfo;
+
+uniform sampler2D u_texture;
+uniform sampler2D u_lut;
+
+
+//2 borders for nice effects
+
+const vec3 borderColor = vec3(0.7);
+
+uniform vec3 color1;
+uniform float progress1;
+uniform vec3 color2;
+uniform float progress2;
+uniform vec3 color3;
+
+out vec4 color;
+
+void main(){
+
+	vec4 sampledColor = texture(u_texture, tex);
+	float currentProgressLevel = tex.x;
+	float borderLevel = sampledColor.g;
+
+	vec3 outputColor;
+	if (currentProgressLevel < progress1) {
+	    outputColor = color1;
+	} else if (currentProgressLevel < progress2) {
+	    outputColor = color2;
+	} else {
+	    outputColor = color3;
+	}
+
+	outputColor = mix(outputColor, borderColor, borderLevel);
+
+	color = vec4(outputColor, sampledColor.a);
+}

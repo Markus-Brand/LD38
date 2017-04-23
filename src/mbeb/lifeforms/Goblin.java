@@ -12,7 +12,7 @@ import mbeb.opengldefault.scene.materials.*;
 public class Goblin extends Monster {
 
 	public Goblin(final PlayerEntity playerEntity, final ShaderProgram animationShader) {
-		super(123, 123456, 123456, 0.5f, 1234, 2, 0.5f, new ObjectLoader().loadFromFile("bunny.obj").withMaterial(new Material("material/beach", 1)), playerEntity, animationShader);
+		super(123, 200, 123456, 0.5f, 1234, 2, 0.5f, new ObjectLoader().loadFromFile("bunny.obj").withMaterial(new Material("material/beach", 1)), playerEntity, animationShader);
 	}
 
 	@Override
@@ -35,6 +35,7 @@ public class Goblin extends Monster {
 				goblin.getAnimator().ensureRunning("Run");
 			}
 		}.limited(monster.getVisionRange())).addBehaviour(0, new JumpingBehaviour(playerEntity).limited(monster.getAttackRange()));
+		monster.setHealthBarOffset(new Vector3f(0, 2.5f, 0));
 		return monster;
 	}
 

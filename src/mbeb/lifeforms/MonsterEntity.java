@@ -2,6 +2,7 @@ package mbeb.lifeforms;
 
 import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.scene.*;
+import org.joml.Vector3f;
 
 public class MonsterEntity extends LifeformEntity {
 
@@ -11,6 +12,8 @@ public class MonsterEntity extends LifeformEntity {
 	float attackDamage;
 	float attackDuration;
 	float movingSpeed;
+
+	Vector3f healthBarOffset = new Vector3f();
 
 	private final AnimationStateFacade animator;
 
@@ -60,5 +63,13 @@ public class MonsterEntity extends LifeformEntity {
 
 	public AnimationStateFacade getAnimator() {
 		return animator;
+	}
+
+	public void setHealthBarOffset(Vector3f healthBarOffset) {
+		this.healthBarOffset = healthBarOffset;
+	}
+
+	public Vector3f getHealthBarPosition() {
+		return getPosition().add(healthBarOffset, new Vector3f());
 	}
 }

@@ -4,6 +4,8 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.awt.*;
 
+import mbeb.ld38.HealthBar;
+import mbeb.ld38.MonsterHealthBar;
 import org.joml.*;
 import org.lwjgl.glfw.*;
 
@@ -103,8 +105,13 @@ public class OverworldGameState implements GameState {
 		goblinEntity = goblin.spawnNew(new Vector3f(1, 3, 0), 0, overworld.getSceneObject());
 		//world.add(goblinEntity);
 
-		//playerEntity.addTarsched(goblinEntity);
+		playerEntity.addTarsched(goblinEntity);
+
+
+		bar = new MonsterHealthBar(goblinEntity);
 	}
+
+	private MonsterHealthBar bar;
 
 	@Override
 	public void update(final double deltaTime) {
@@ -116,6 +123,8 @@ public class OverworldGameState implements GameState {
 			overworldScene.getSceneGraph().removeSubObject(goblinEntity.getSceneObject());
 			world.remove(goblinEntity);
 		}*/
+		bar.setPosition(overworldScene.getCamera().getPositionOnScreen(goblinEntity.getHealthBarPosition()));
+		bar.update(deltaTime);
 	}
 
 	@Override
@@ -127,6 +136,7 @@ public class OverworldGameState implements GameState {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		overworldScene.render(showBBs);
+		bar.render();
 	}
 
 	@Override
