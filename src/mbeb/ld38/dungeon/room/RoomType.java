@@ -1,6 +1,8 @@
 package mbeb.ld38.dungeon.room;
 
 import mbeb.opengldefault.animation.BoneTransformation;
+import mbeb.opengldefault.light.LightManager;
+import mbeb.opengldefault.light.PointLight;
 import mbeb.opengldefault.rendering.io.ObjectLoader;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.scene.Scene;
@@ -11,6 +13,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.lwjgl.system.CallbackI;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -109,6 +112,9 @@ public class RoomType {
 
 	private static void addDoor(RoomType type, Door door, IRenderable wall_segment) {
 		float rect = (float)Math.PI / 2;
+
+		type.addLight(new Vector3f(0, 1.9f, 0),new Color(12, 255, 0), 20f);
+
 		type.addSlot("right",
 				new BoneTransformation(new Vector3f(4, 0, 0), new Quaternionf(new AxisAngle4f(2 * rect, 0, 1, 0)))
 		)
@@ -148,16 +154,43 @@ public class RoomType {
 				);
 	}
 
+	public class LightPlacement {
+		private Vector3f position;
+		private Color color;
+		private float reach;
+
+		public LightPlacement(Vector3f position, Color color, float reach) {
+			this.position = position;
+			this.color = color;
+			this.reach = reach;
+		}
+
+		public Vector3f getPosition() {
+			return position;
+		}
+
+		public Color getColor() {
+			return color;
+		}
+
+		public float getReach() {
+			return reach;
+		}
+	}
+
 	private Map<String, Slot> slots;
 
     private List<SceneObject> baseObjects;
 
+    private List<LightPlacement> lights;
+
 	public RoomType() {
 		baseObjects = new LinkedList<>();
 		slots = new HashMap<>();
+		lights = new LinkedList<>();
 	}
 
-	public Room construct(RoomParameter parameters) {
+	public Room construct(RoomParameter parameters, LightManager manager, Vector3f position) {
 		Room result = new Room();
 		result.addBaseObjects(this.baseObjects);
 		for (Slot slot : slots.values()) {
@@ -171,6 +204,10 @@ public class RoomType {
 				add.setTransformation(slot.getTransformation());
 				result.addSlotObject(add);
 			}
+		}
+
+		for (LightPlacement light : lights) {
+			manager.addLight(new PointLight(light.getColor(), position.add(light.getPosition(), new Vector3f()), light.getReach()));
 		}
 		return result;
 	}
@@ -191,5 +228,9 @@ public class RoomType {
 
 	public boolean addBaseObject(SceneObject sceneObject) {
 		return baseObjects.add(sceneObject);
+	}
+
+	public void addLight(Vector3f position, Color color, float reach) {
+		this.lights.add(new LightPlacement(position, color, reach));
 	}
 }

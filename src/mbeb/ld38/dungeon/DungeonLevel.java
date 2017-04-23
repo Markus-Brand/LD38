@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import mbeb.opengldefault.light.LightManager;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
@@ -71,13 +72,13 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 	private Room exit;
 	private IEntity player;
 
-	public DungeonLevel(int width, int height) {
+	public DungeonLevel(int width, int height, LightManager manager) {
 		super();
 		rooms = new HashMap<>();
-		this.generate(width, height);
+		this.generate(width, height, manager);
 	}
 
-	private void generate(int width, int height) {
+	private void generate(int width, int height, LightManager manager) {
 		MazeGrid grid = MazeBuilder.make4Maze(width, height, 0.11f);
 		this.addSubObject(new SceneObject(RoomType.getCORNER(), new BoneTransformation(null, new Quaternionf(new AxisAngle4f((float) Math.PI / -2, 0, 1, 0)))));
 		for (int x = 0; x < width; x++) {
@@ -97,9 +98,10 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 				p.set(RoomParameter.Type.LEFT_NEIGHBOUR, grid.getTile(x, y).hasNeighbour(Door.Direction.LEFT));
 				p.set(RoomParameter.Type.TOP_NEIGHBOUR, grid.getTile(x, y).hasNeighbour(Door.Direction.TOP));
 				p.set(RoomParameter.Type.BOTTOM_NEIGHBOUR, grid.getTile(x, y).hasNeighbour(Door.Direction.BOTTOM));
-				Room r = determineRoomType(null, grid, grid.getTile(x, y)).construct(p);
-				r.setEntryListener(Room::close);
 				float o = determineOffset(x, y);
+				Vector3f pos = new Vector3f(9 * x + o, o, 9 * y + o);
+				Room r = determineRoomType(null, grid, grid.getTile(x, y)).construct(p, manager, pos);
+				r.setEntryListener(Room::close);
 				if (x > 0) {
 					r.registerNeighbour(Door.Direction.LEFT, getRoom(x - 1, y));
 				}
@@ -107,7 +109,7 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 					r.registerNeighbour(Door.Direction.TOP, getRoom(x, y - 1));
 
 				}
-				r.setTransformation(new BoneTransformation(new Vector3f(9 * x + o, o, 9 * y + o)));
+				r.setTransformation(new BoneTransformation(pos));
 				Point pt = new Point(x, y);
 				r.setPosition(pt);
 				this.addSubObject(r);

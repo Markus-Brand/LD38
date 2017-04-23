@@ -41,7 +41,7 @@ public class DungeonGameState implements GameState {
 	@Override
 	public void init() {
 		Camera camera = new PerspectiveCamera();
-		Skybox skybox = new Skybox("skybox/mountain");
+		Skybox skybox = new Skybox("darkbox/db");
 
 		scene = new Scene(camera, skybox);
 		world = new EntityWorld();
@@ -56,7 +56,7 @@ public class DungeonGameState implements GameState {
 
 		RoomType.initializeRoomTypes();
 
-		level = new DungeonLevel(10, 10);
+		level = new DungeonLevel(2, 2, scene.getLightManager());
 
 		scene.getSceneGraph().addSubObject(level);
 
@@ -76,7 +76,7 @@ public class DungeonGameState implements GameState {
 		world.add(playerEntity);
 
 		//light
-		DirectionalLight sun = new DirectionalLight(Color.WHITE, new Vector3f(0, -1, 0));
+		DirectionalLight sun = new DirectionalLight(new Color(8, 7, 6), new Vector3f(0, -1, 0));
 		scene.getLightManager().addLight(sun);
 
 		glEnable(GL_DEPTH_TEST);
