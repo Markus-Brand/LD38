@@ -8,14 +8,13 @@ import org.joml.*;
 import org.lwjgl.glfw.*;
 
 import mbeb.ld38.overworld.*;
-import mbeb.lifeforms.Player;
-import mbeb.lifeforms.PlayerEntity;
+import mbeb.lifeforms.*;
 import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.controls.*;
 import mbeb.opengldefault.gl.*;
 import mbeb.opengldefault.gl.shader.*;
-import mbeb.opengldefault.gl.texture.Texture;
+import mbeb.opengldefault.gl.texture.*;
 import mbeb.opengldefault.light.*;
 import mbeb.opengldefault.options.*;
 import mbeb.opengldefault.rendering.io.*;
@@ -23,6 +22,7 @@ import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.scene.*;
 import mbeb.opengldefault.scene.behaviour.*;
 import mbeb.opengldefault.scene.entities.*;
+import mbeb.opengldefault.scene.materials.*;
 import mbeb.opengldefault.shapes.Rectangle;
 
 public class OverworldGameState implements GameState {
@@ -62,7 +62,7 @@ public class OverworldGameState implements GameState {
 		overworldScene = new Scene(topDownViewCamera, skybox);
 
 		final IRenderable water = new ObjectLoader().loadFromFile("overworld/water.obj");
-		//final IRenderable playerRenderable = new ObjectLoader().loadFromFile("bunny.obj").withMaterial(new Material("material/beach", 1));
+		final IRenderable goblinRenderable = new ObjectLoader().loadFromFile("bunny.obj").withMaterial(new Material("material/beach", 1));
 
 		waterShader = new ShaderProgram("water.frag", "planet.vert");
 		waterShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
@@ -74,8 +74,7 @@ public class OverworldGameState implements GameState {
 		overworldScene.getLightManager().addShader(defaultShader);
 		overworldScene.getSceneGraph().setShader(defaultShader);
 
-		final SceneObject waterObject =
-				new SceneObject(water, new BoneTransformation(new Vector3f(), new Quaternionf(), new Vector3f(100)));
+		final SceneObject waterObject = new SceneObject(water, new BoneTransformation(new Vector3f(), new Quaternionf(), new Vector3f(100)));
 		waterObject.setShader(waterShader);
 
 		final ShaderProgram animationShader = new ShaderProgram("boneAnimation.vert", "basic.frag");
@@ -86,23 +85,20 @@ public class OverworldGameState implements GameState {
 		overworldScene.getSceneGraph().addSubObject(overworld.getSceneObject());
 		overworld.getSceneObject().addSubObject(waterObject);
 
-		player =
-				new Player(100, animationShader, new HeightFromHeightMap(
-						Texture.loadBufferedImage("overworldHeight.png"),
-						new Rectangle(new Vector2f(-16), new Vector2f(32)), 2f, 1f));
-		PlayerEntity playerEntity = player.spawnNew(new Vector3f(0, 10, 1), 0, overworld.getSceneObject());
+		player = new Player(100, animationShader, new HeightFromHeightMap(Texture.loadBufferedImage("overworldHeight.png"), new Rectangle(new Vector2f(-16), new Vector2f(32)), 2f, 1f));
+		final PlayerEntity playerEntity = player.spawnNew(new Vector3f(0, 10, 1), 0, overworld.getSceneObject());
 		world.add(playerEntity);
 
-		world.add(topDownViewCamera).addBehaviour(0, new TopDownViewBehaviour(playerEntity, 7, 2, 2))
-				.setPosition(new Vector3f(3, 4, 5));
+		world.add(topDownViewCamera).addBehaviour(0, new TopDownViewBehaviour(playerEntity, 7, 2, 2)).setPosition(new Vector3f(3, 4, 5));
 
 		final DirectionalLight sun = new DirectionalLight(Color.WHITE, new Vector3f(0.2f, -1, 0).normalize());
 		overworldScene.getLightManager().addLight(sun);
 
 		world.update(0.0001f);
 
-		//final Monster monster = new Monster(123456, 123456, 12345, 1234, 123, playerRenderable, null);
-		//monster.spawnNew(new Vector3f(3), 0, overworld.getSceneObject());
+		final Goblin goblin = new Goblin(123456, 123456, 0.5f, 1234, 0.5f, goblinRenderable, playerEntity);
+		final MonsterEntity goblinEntity = goblin.spawnNew(new Vector3f(1, 3, 0), 0, overworld.getSceneObject());
+		world.add(goblinEntity);
 	}
 
 	@Override
