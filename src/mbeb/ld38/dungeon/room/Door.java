@@ -16,6 +16,10 @@ public class Door extends SceneObject{
 		return open;
 	}
 
+	public boolean isPhysicallyOpen() {
+		return this.movement.progress > 0.9f;
+	}
+
 	public enum Direction {
 		LEFT(-1,0),
 		RIGHT(1,0),
@@ -50,7 +54,7 @@ public class Door extends SceneObject{
 		}
 	}
 
-	private static final float DOOR_SPEED = 0.5f;
+	private static final float DOOR_SPEED = 1.0f;
 
 	private class Behaviour implements IBehaviour {
 
@@ -90,7 +94,7 @@ public class Door extends SceneObject{
 	private SceneObject door;
 	private Behaviour movement;
 	private Direction direction;
-	private boolean open = false;
+	private boolean open = true;
 
 	public Door(SceneObject frame, SceneObject door, Direction direction) {
 		this.frame = frame;
