@@ -1,4 +1,9 @@
 sizeFactor: 1.5
 animations:
   Jogging:
-    RootBone: 5
+    RootBone: 2
+    Leg: 6
+  Pierce:
+    RootBone: 3
+    Arm: 5
+    Arm.Right: 9

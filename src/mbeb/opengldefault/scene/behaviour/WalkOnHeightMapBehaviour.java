@@ -55,9 +55,9 @@ public class WalkOnHeightMapBehaviour extends PitchYawMouseBehaviour {
 	protected void updateDirection(IEntity entity) {
 		Vector3f direction = new Vector3f();
 
-		direction.x = (float) Math.cos(yaw);
+		direction.x = (float) Math.cos(yaw / 3);
 		direction.y = 0;
-		direction.z = (float) Math.sin(yaw);
+		direction.z = (float) Math.sin(yaw / 3);
 
 		direction.normalize();
 
