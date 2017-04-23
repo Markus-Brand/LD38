@@ -69,6 +69,13 @@ public class OverWorld {
 			number++;
 		}
 
+
+		Material testMaterial = new Material("material/stonewall/seam", 1);
+		IRenderable test = loader.loadFromFile("dungeon/corridor/floor/+x.obj");
+		test = test.withMaterial(testMaterial);
+
+		parent.addSubObject(test);
+
 	}
 
 	public SceneObject getSceneObject() {

@@ -12,23 +12,21 @@ log/
 .project
 .idea/
 *.options
+*.blend1
 
 ### Eclipse ###
 
 .metadata
-bin/
 tmp/
 *.tmp
 *.bak
 *.swp
 *~.nib
 local.properties
-.settings/
 .loadpath
 .recommenders
 
 # Eclipse Core
-.project
 
 # External tool builders
 .externalToolBuilders/
@@ -43,7 +41,6 @@ local.properties
 .cproject
 
 # JDT-specific (Eclipse Java Development Tools)
-.classpath
 
 # Java annotation processor (APT)
 .factorypath

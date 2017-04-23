@@ -12,5 +12,6 @@ public enum GameStateIdentifier {
 	BEZIER_FLIGHT,
 	EXIT,
 	OVERWORLD,
+	DUNGEON,
 	INTRO
 }
