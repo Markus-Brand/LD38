@@ -45,14 +45,14 @@ public class HeightFromHeightMap implements HeightSource {
 		float bottom = bottomRight * relativeX + bottomLeft * (1.0f - relativeX);
 		float middle = bottom * relativeY + top * (1.0f - relativeY);
 
-		return middle;
+		return topLeft;
 	}
 
 	private float sampleHeightAt(int x, int y) {
 		if (x < 0 || y < 0 || x >= heightMap.getWidth() || y >= heightMap.getHeight()) {
 			return 0;
 		}
-		return (heightMap.getRGB(x, y) >> 16 & 0xFF) / 255f * height + minLevel;
+		return (heightMap.getRGB(x, heightMap.getHeight() - y - 1) >> 16 & 0xFF) / 255f * height + minLevel;
 	}
 
 }

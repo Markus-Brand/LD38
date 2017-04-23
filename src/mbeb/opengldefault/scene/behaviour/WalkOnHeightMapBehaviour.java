@@ -47,7 +47,10 @@ public class WalkOnHeightMapBehaviour extends PitchYawMouseBehaviour {
 		float oldHeight = heightSource.getHeight(new Vector2f(position.x, position.z));
 		float newHeight = heightSource.getHeight(new Vector2f(newPosition.x, newPosition.z));
 
-		entity.setPosition(new Vector3f(newPosition.x, newHeight, newPosition.z));
+		float slope = (newHeight - oldHeight) / delta.length();
+		if (newHeight < 3f) {
+			entity.setPosition(new Vector3f(newPosition.x, newHeight, newPosition.z));
+		}
 
 	}
 

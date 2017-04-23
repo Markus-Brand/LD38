@@ -101,7 +101,7 @@ public class OverworldGameState implements GameState {
 				new SceneObject(water, new BoneTransformation(new Vector3f(), new Quaternionf(), new Vector3f(100)));
 		waterObject.setShader(waterShader);
 
-		player = new SceneObject(playerAnimatedRenderable, new BoneTransformation(new Vector3f(0, 10, 0)));
+		player = new SceneObject(playerAnimatedRenderable, new BoneTransformation(new Vector3f(1, 10, 0)));
 		player.setShader(animationShader);
 
 		IEntity playerEntity =
