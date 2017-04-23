@@ -17,19 +17,16 @@ log/
 ### Eclipse ###
 
 .metadata
-bin/
 tmp/
 *.tmp
 *.bak
 *.swp
 *~.nib
 local.properties
-.settings/
 .loadpath
 .recommenders
 
 # Eclipse Core
-.project
 
 # External tool builders
 .externalToolBuilders/
@@ -44,7 +41,6 @@ local.properties
 .cproject
 
 # JDT-specific (Eclipse Java Development Tools)
-.classpath
 
 # Java annotation processor (APT)
 .factorypath
@@ -154,6 +150,5 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
-options.options
 
 # End of https://www.gitignore.io/api/intellij,netbeans,eclipse,osx
