@@ -4,12 +4,10 @@ import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.scene.behaviour.*;
 import mbeb.opengldefault.scene.entities.*;
 
-public abstract class AttackingBehaviour extends ReferenceEntityBehaviour {
-	private static final String TAG = "AttackingBehaviour";
+public class JumpingBehaviour extends ReferenceEntityBehaviour {
+	private static final String TAG = "JumpingBehaviour";
 
-	FollowingBehaviour followingBehaviour;
-
-	public AttackingBehaviour(final PlayerEntity playerEntity) {
+	public JumpingBehaviour(final PlayerEntity playerEntity) {
 		super(playerEntity);
 	}
 
@@ -21,5 +19,6 @@ public abstract class AttackingBehaviour extends ReferenceEntityBehaviour {
 			Log.error(TAG, "Entity has to be a MonsterEntity to use " + TAG, e);
 		}
 
+		System.out.println("Jump!!!");
 	}
 }
