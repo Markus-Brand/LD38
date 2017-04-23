@@ -1,5 +1,7 @@
 package mbeb.opengldefault.shapes;
 
+import mbeb.opengldefault.logging.Log;
+
 import org.joml.Vector2f;
 
 /**
@@ -7,7 +9,9 @@ import org.joml.Vector2f;
  *
  * @author Markus
  */
-public class Rectangle {
+public class Rectangle implements Shape {
+
+	private static final String TAG = "Rectangle";
 
 	/**
 	 * position of the downLeft corner
@@ -88,6 +92,7 @@ public class Rectangle {
 	 *            input point
 	 * @return true if he point is within the Rectange
 	 */
+	@Override
 	public boolean contains(Vector2f point) {
 		return !(point.x < position.x || point.y < position.y || point.x > position.x + size.x || point.y > position.y
 				+ size.y);
@@ -134,5 +139,34 @@ public class Rectangle {
 	public void setPositionRelativeTo(Rectangle bounding, float relativeX, float relativeY) {
 		Vector2f maxPosition = bounding.position.add(bounding.size.sub(getSize(), new Vector2f()), new Vector2f());
 		setPosition(bounding.position.lerp(maxPosition, new Vector2f(relativeX, relativeY), new Vector2f()));
+	}
+
+	@Override
+	public boolean intersectsShape(Shape other) {
+		if (other instanceof Rectangle) {
+			return intersectsRectangle((Rectangle) other);
+		} else if (other instanceof Circle) {
+			return intersectsCircle((Circle) other);
+		} else if (other instanceof Line) {
+			return intersectsLine((Line) other);
+		} else {
+			Log.error(TAG, "Intersections with Shape not supported");
+			return false;
+		}
+	}
+
+	private boolean intersectsLine(Line other) {
+		Log.error(TAG, "Intersections with Line not supported");
+		return false;
+	}
+
+	private boolean intersectsCircle(Circle other) {
+		Log.error(TAG, "Intersections with Circle not supported");
+		return false;
+	}
+
+	private boolean intersectsRectangle(Rectangle other) {
+		Log.error(TAG, "Intersections with Rectangle not supported");
+		return false;
 	}
 }
