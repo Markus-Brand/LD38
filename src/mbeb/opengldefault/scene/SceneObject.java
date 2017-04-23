@@ -34,6 +34,8 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 	private SceneObject parent;
 	/** true, if the user hovers over the object currently */
 	private boolean selected;
+	/** false to not render this sub-tree */
+	private boolean visible;
 
 	/**
 	 * Create a new sceneObject. All parameters are optional
@@ -105,6 +107,14 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 		this.subObjects = subObjects;
 		this.renderable = renderable != null ? renderable.getRenderable() : null;
 		box = null;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
+	public boolean isVisible() {
+		return visible;
 	}
 
 	/**
