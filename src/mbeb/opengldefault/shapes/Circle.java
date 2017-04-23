@@ -37,6 +37,9 @@ public class Circle implements Shape {
 	}
 
 	private boolean intersectsLine(Line other) {
+		if (contains(other.getStart()) || contains(other.getEnd())) {
+			return true;
+		}
 
 		Vector2f lineDirection = other.directionVector();
 		Vector2f centerToLineStart = other.getStart().sub(position, new Vector2f());
