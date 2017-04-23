@@ -51,11 +51,11 @@ public class OverWorld {
 		ObjectLoader loader = new ObjectLoader();
 		IRenderable island = loader.loadFromFile("overworld/island.obj").withMaterial(landMaterial);
 
-		parent.addSubObject(island);
+		parent.addSubObject(new SceneObject(island, new BoneTransformation(new Vector3f(), new Quaternionf(),
+				new Vector3f(1, 1, -1))));
 
 		entrance = new DungeonEntrance(new BoneTransformation(new Vector3f(-2.74f, 0.65f, -7.43f)));
 		entrance.addTo(parent);
-
 
 		//add palms
 		int number = 0;
