@@ -128,6 +128,7 @@ public class OverworldGameState implements GameState {
 				new BoneTrackingBehaviour(player, playerAnimatedRenderable.getAnimatedRenderable(), "Item.Right"));
 
 		//generateHeightMap();
+		world.update(0.0001f);
 	}
 
 	ShaderProgram depthShader;

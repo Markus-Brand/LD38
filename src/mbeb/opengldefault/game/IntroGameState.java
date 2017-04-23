@@ -121,7 +121,7 @@ public class IntroGameState implements GameState {
 		final IRenderable worldRenderable = new ObjectLoader().loadFromFile("planet.obj");
 
 		final IRenderable islandRenderable =
-				new ObjectLoader().loadFromFile("island.obj").withMaterial(new Material("material/beach", 1));
+				new ObjectLoader().loadFromFile("overworld/island.obj").withMaterial(new Material("material/beach", 1));
 
 		world = new SceneObject(worldRenderable);
 		world.setShader(worldShader);
