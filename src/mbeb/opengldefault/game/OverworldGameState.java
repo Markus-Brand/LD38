@@ -109,7 +109,7 @@ public class OverworldGameState implements GameState {
 						0,
 						new WalkOnHeightMapBehaviour(new HeightFromHeightMap(Texture
 								.loadBufferedImage("overworldHeight.png"), new Rectangle(new Vector2f(-16),
-								new Vector2f(32)), 2f, 1f)));
+								new Vector2f(32)), 2f, 1f), 4f));
 		world.add(topDownViewCamera).addBehaviour(0, new TopDownViewBehaviour(playerEntity));
 
 		overworld = new OverWorld();

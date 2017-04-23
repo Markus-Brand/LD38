@@ -11,9 +11,11 @@ public class WalkOnHeightMapBehaviour extends PitchYawMouseBehaviour {
 
 	private static final Vector3f worldUp = new Vector3f(0, 1, 0);
 	private HeightSource heightSource;
+	private float speed;
 
-	public WalkOnHeightMapBehaviour(HeightSource heightSource) {
+	public WalkOnHeightMapBehaviour(HeightSource heightSource, float speed) {
 		this.heightSource = heightSource;
+		this.speed = speed;
 	}
 
 	@Override
@@ -37,10 +39,10 @@ public class WalkOnHeightMapBehaviour extends PitchYawMouseBehaviour {
 			delta.sub(direction);
 		}
 		if (delta.length() == 0) {
-			return;
+			//return;
 		}
 
-		Vector3f newPosition = delta.add(position);
+		Vector3f newPosition = delta.mul(speed * (float) deltaTime).add(position);
 
 		float oldHeight = heightSource.getHeight(new Vector2f(position.x, position.z));
 		float newHeight = heightSource.getHeight(new Vector2f(newPosition.x, newPosition.z));
