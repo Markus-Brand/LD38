@@ -12,6 +12,10 @@ import java.util.EnumMap;
 
 public class Door extends SceneObject{
 
+	public boolean isOpen() {
+		return open;
+	}
+
 	public enum Direction {
 		LEFT(-1,0),
 		RIGHT(1,0),
