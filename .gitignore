@@ -12,6 +12,7 @@ log/
 .project
 .idea/
 *.options
+*.blend1
 
 ### Eclipse ###
 
