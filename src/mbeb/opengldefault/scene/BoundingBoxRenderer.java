@@ -1,13 +1,11 @@
 package mbeb.opengldefault.scene;
 
 import org.joml.*;
-import org.lwjgl.opengl.*;
-
 import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.gl.shader.*;
 
-public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
+public class BoundingBoxRenderer extends SceneGraphRenderer {
 
 	public static final boolean RENDER_BONE_BOXES = true;
 
@@ -31,7 +29,7 @@ public class BoundingBoxRenderer extends VisibleSceneGraphRenderer {
 				.scale(obj.getBoundingBox().getLocalSize());
 	}
 
-	/** 
+	/**
 	 * renders a single objects bounding box
 	 *
 	 * @param owner

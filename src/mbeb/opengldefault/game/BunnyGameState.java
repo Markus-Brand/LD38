@@ -58,10 +58,6 @@ public class BunnyGameState implements GameState {
 	@ButtonOption
 	public static boolean showFPS = true;
 
-	@Option(category = "Game")
-	@ButtonOption
-	public static boolean showBBs = true;
-
 	private static final String TAG = "BunnyGameState";
 
 	GameStateIdentifier nextGameState;
@@ -165,7 +161,7 @@ public class BunnyGameState implements GameState {
 		entityWorld = new EntityWorld();
 
 		IEntity camEntity = entityWorld.add(camera).addBehaviour(1, new PlayerControlBehaviour());
-		((SoundListenerEntity) (entityWorld.add(bunnyScene.getSoundEnvironment().getListener()))).attachTo(camEntity);
+		((SoundListenerEntity) entityWorld.add(bunnyScene.getSoundEnvironment().getListener())).attachTo(camEntity);
 
 		curveObj = new SceneObject(new BezierCurveRenderable(curve));
 		curveObj.setShader(curveShader);
@@ -245,7 +241,8 @@ public class BunnyGameState implements GameState {
 	 *            the curve to follow
 	 * @return last bunny
 	 */
-	private IEntity createBunnyChain(SceneObject bunnyParent, EntityWorld world, Material bunnyMaterial, AnimatedMesh renderable, SceneObject curve) {
+	private IEntity createBunnyChain(SceneObject bunnyParent, EntityWorld world, Material bunnyMaterial,
+			AnimatedMesh renderable, SceneObject curve) {
 		AnimationStateFacade mainBunnyFacade = new AnimationStateFacade(renderable, bunnyMaterial);
 		animBunnyList.add(mainBunnyFacade);
 		final SceneObject mainBunnyObj = new SceneObject(mainBunnyFacade);
@@ -342,7 +339,7 @@ public class BunnyGameState implements GameState {
 		glViewport(0, 0, GLContext.getFramebufferWidth(), GLContext.getFramebufferHeight());
 		GLErrors.checkForError(TAG, "glViewport");
 
-		bunnyScene.render(showBBs); //bunnyScene.render(); to render without BoundingBoxes
+		bunnyScene.render(); //bunnyScene.render(); to render without BoundingBoxes
 		if (showFPS) {
 			textGUI.render();
 		}

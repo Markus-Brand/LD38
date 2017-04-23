@@ -55,7 +55,6 @@ public class MazeGrid {
 				//return;
 			}
 		}
-		System.out.println(totalNumTiles.get() + " fasgawgasfg");
 	}
 
 	ArrayList<MazeTile> getNeighbours(final int column, final int row) {

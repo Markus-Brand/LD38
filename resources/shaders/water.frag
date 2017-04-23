@@ -44,7 +44,7 @@ void main(){
 
 	vec2 yflip = vec2(frag_in_tex.x, 1.0 - frag_in_tex.y);
 
-	vec4 diffuseColorAlpha = vec4(0, 0, 1, 1);
+	vec4 diffuseColorAlpha = vec4(0, 0, 1, 0.8f);
 	vec3 diffuseColor = diffuseColorAlpha.rgb;
 	float materialAlpha = diffuseColorAlpha.a;
 	vec3 specularColor = vec3(0.1, 0.1, 0.1);

@@ -48,4 +48,8 @@ public class PalmTree {
 		parent.addSubObject(trunkObject);
 		parent.addSubObject(leavesObject);
 	}
+
+	public void setLeavesVisible(boolean visible) {
+		leavesObject.setVisible(visible);
+	}
 }

@@ -34,6 +34,8 @@ public class OverWorld {
 	};
 
 	private EntityWorld environment = new EntityWorld();
+	private List<PalmTree> palms = new ArrayList<>();
+	DungeonEntrance entrance;
 
 	private SceneObject parent;
 
@@ -44,15 +46,15 @@ public class OverWorld {
 	private void init() {
 		parent = new SceneObject();
 		Material landMaterial = new Material("material/beach", 1);
-		Material mossCobbleMaterial = new Material("material/cobble/moss", 3);
 
 		ObjectLoader loader = new ObjectLoader();
 		IRenderable island = loader.loadFromFile("overworld/island.obj").withMaterial(landMaterial);
-		IRenderable entrance = loader.loadFromFile("overworld/entrance.obj").withMaterial(mossCobbleMaterial);
 
-		parent.addSubObject(island);
+		parent.addSubObject(new SceneObject(island, new BoneTransformation(new Vector3f(), new Quaternionf(),
+				new Vector3f(1, 1, -1))));
 
-		parent.addSubObject(new SceneObject(entrance, new BoneTransformation(new Vector3f(-2.74f, 0.65f, -7.43f))));
+		entrance = new DungeonEntrance(new BoneTransformation(new Vector3f(-2.74f, 0.65f, -7.43f)));
+		entrance.addTo(parent);
 
 		//add palms
 		int number = 0;
@@ -65,20 +67,21 @@ public class OverWorld {
 					new BoneTransformation(new Vector3f(position.x, position.z, position.y), rotation, new Vector3f(
 							scale));
 
-			new PalmTree(transform).addTo(parent);
+			PalmTree currentPalm = new PalmTree(transform);
+			currentPalm.addTo(parent);
+			palms.add(currentPalm);
 			number++;
 		}
 
-
-		Material testMaterial = new Material("material/stonewall/seam", 1);
-		IRenderable test = loader.loadFromFile("dungeon/corridor/floor/+x.obj");
-		test = test.withMaterial(testMaterial);
-
-		parent.addSubObject(test);
 
 	}
 
 	public SceneObject getSceneObject() {
 		return parent;
+	}
+
+	public void setLeavesVisible(boolean visible) {
+		palms.forEach(palm -> palm.setLeavesVisible(visible));
+		entrance.setTopVisible(visible);
 	}
 }

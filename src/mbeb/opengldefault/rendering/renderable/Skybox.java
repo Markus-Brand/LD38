@@ -45,7 +45,7 @@ public class Skybox {
 	public Skybox(final String texturePath, String extension) {
 		cubeMap = new CubeMap(texturePath, extension);
 		cubeMap.whileBound(texture -> cubeMap.setWrapMode(Texture.WrapMode.CLAMP_TO_EDGE)
-				&& cubeMap.setInterpolates(true) && cubeMap.setBaseLevel(0) && cubeMap.setMaxLevel(0));
+				&& cubeMap.setInterpolates(true));
 		shader = new ShaderProgram("skybox.vert", "skybox.frag");
 		shader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
 		skyboxRenderable = StaticMeshes.getCube();

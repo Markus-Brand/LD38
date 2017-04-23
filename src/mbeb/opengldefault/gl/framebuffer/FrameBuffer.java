@@ -17,7 +17,7 @@ import mbeb.opengldefault.gl.ContextBindings;
 
 /**
  * Represents a frame buffer object in OpenGL.
- * 
+ *
  * @author Potti
  */
 public class FrameBuffer extends GLObject {
@@ -27,8 +27,10 @@ public class FrameBuffer extends GLObject {
 	 * A target OpenGL can draw to or read from.
 	 */
 	public enum Target {
-		FRONT(GL_FRONT_LEFT), LEFT(GL_FRONT_LEFT), BACK(GL_BACK_LEFT), RIGHT(GL_FRONT_RIGHT), FRONT_RIGHT(GL_FRONT_RIGHT), FRONT_LEFT(GL_FRONT_LEFT), BACK_RIGHT(GL_BACK_RIGHT),
-		BACK_LEFT(GL_BACK_LEFT), COLOR0(GL_COLOR_ATTACHMENT0), COLOR1(GL_COLOR_ATTACHMENT1), COLOR2(GL_COLOR_ATTACHMENT2), COLOR3(GL_COLOR_ATTACHMENT3), COLOR4(GL_COLOR_ATTACHMENT4),
+		FRONT(GL_FRONT_LEFT), LEFT(GL_FRONT_LEFT), BACK(GL_BACK_LEFT), RIGHT(GL_FRONT_RIGHT), FRONT_RIGHT(
+				GL_FRONT_RIGHT), FRONT_LEFT(GL_FRONT_LEFT), BACK_RIGHT(GL_BACK_RIGHT),
+		BACK_LEFT(GL_BACK_LEFT), COLOR0(GL_COLOR_ATTACHMENT0), COLOR1(GL_COLOR_ATTACHMENT1), COLOR2(
+				GL_COLOR_ATTACHMENT2), COLOR3(GL_COLOR_ATTACHMENT3), COLOR4(GL_COLOR_ATTACHMENT4),
 		COLOR5(GL_COLOR_ATTACHMENT5), COLOR6(GL_COLOR_ATTACHMENT6), COLOR7(GL_COLOR_ATTACHMENT7);
 
 		private int glEnum;
@@ -49,8 +51,10 @@ public class FrameBuffer extends GLObject {
 	 * The attachment point of a texture on a FrameBuffer.
 	 */
 	public enum Attachment {
-		COLOR0(GL_COLOR_ATTACHMENT0), COLOR1(GL_COLOR_ATTACHMENT1), COLOR2(GL_COLOR_ATTACHMENT2), COLOR3(GL_COLOR_ATTACHMENT3), COLOR4(GL_COLOR_ATTACHMENT4), COLOR5(GL_COLOR_ATTACHMENT5),
-		COLOR6(GL_COLOR_ATTACHMENT6), COLOR7(GL_COLOR_ATTACHMENT7), DEPTH(GL_DEPTH_ATTACHMENT), STENCIL(GL_STENCIL_ATTACHMENT), DEPTH_STENCIL(GL_DEPTH_STENCIL_ATTACHMENT);
+		COLOR0(GL_COLOR_ATTACHMENT0), COLOR1(GL_COLOR_ATTACHMENT1), COLOR2(GL_COLOR_ATTACHMENT2), COLOR3(
+				GL_COLOR_ATTACHMENT3), COLOR4(GL_COLOR_ATTACHMENT4), COLOR5(GL_COLOR_ATTACHMENT5),
+		COLOR6(GL_COLOR_ATTACHMENT6), COLOR7(GL_COLOR_ATTACHMENT7), DEPTH(GL_DEPTH_ATTACHMENT), STENCIL(
+				GL_STENCIL_ATTACHMENT), DEPTH_STENCIL(GL_DEPTH_STENCIL_ATTACHMENT);
 
 		private int glEnum;
 
@@ -115,7 +119,7 @@ public class FrameBuffer extends GLObject {
 
 	/**
 	 * If the given boolean is true, the given texture is stored as attached to the frame buffer at attachment.
-	 * 
+	 *
 	 * @param success
 	 * @param attachment
 	 * @param texture
@@ -142,7 +146,8 @@ public class FrameBuffer extends GLObject {
 	 */
 	protected boolean attachTexture(Attachment attachment, Texture texture, int level) {
 		return this.whileBound((FrameBuffer buffer) -> {
-			glFramebufferTexture(GL_FRAMEBUFFER, attachment.getGLEnum(), texture.getHandle(), level);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, attachment.getGLEnum(), texture.getType().getGLEnum(),
+					texture.getHandle(), level);
 			return !GLErrors.checkForError(TAG, "glFramebufferTexture");
 		});
 	}
@@ -161,10 +166,12 @@ public class FrameBuffer extends GLObject {
 	 * @return whether the operation succeeded
 	 */
 	protected boolean attachCubeMapFace(Attachment attachment, CubeMap texture, CubeMap.Face face, int level) {
-		return this.whileBound((FrameBuffer buffer) -> {
-			glFramebufferTexture2D(GL_FRAMEBUFFER, attachment.getGLEnum(), face.getGlEnum(), texture.getHandle(), level);
-			return !GLErrors.checkForError(TAG, "glFramebufferTexture2D");
-		});
+		return this
+				.whileBound((FrameBuffer buffer) -> {
+					glFramebufferTexture2D(GL_FRAMEBUFFER, attachment.getGLEnum(), face.getGlEnum(),
+							texture.getHandle(), level);
+					return !GLErrors.checkForError(TAG, "glFramebufferTexture2D");
+				});
 	}
 
 	/**
@@ -202,14 +209,15 @@ public class FrameBuffer extends GLObject {
 	 */
 	protected boolean attachTexture3D(Attachment attachment, Texture3D texture, int z, int level) {
 		return this.whileBound((FrameBuffer buffer) -> {
-			glFramebufferTexture3D(GL_FRAMEBUFFER, attachment.getGLEnum(), texture.getType().getGLEnum(), texture.getHandle(), level, z);
+			glFramebufferTexture3D(GL_FRAMEBUFFER, attachment.getGLEnum(), texture.getType().getGLEnum(),
+					texture.getHandle(), level, z);
 			return !GLErrors.checkForError(TAG, "glFramebufferTexture3D");
 		});
 	}
 
 	/**
 	 * Convenience method to remove an existing attachment.
-	 * 
+	 *
 	 * @param attachment
 	 *            the attachment to remove
 	 * @return whether the operation succeeded
@@ -226,7 +234,7 @@ public class FrameBuffer extends GLObject {
 	 * If this texture is an array of 1D or 2D textures, a 3D texture or a cube map, the texture will be bound as a
 	 * layered image.
 	 * The layers of a cube map are its faces and used in usual order.
-	 * 
+	 *
 	 * @param attachment
 	 *            the attachment point to use
 	 * @param texture
@@ -293,7 +301,7 @@ public class FrameBuffer extends GLObject {
 
 	/**
 	 * Removes the given attachment from this framebuffer object.
-	 * 
+	 *
 	 * @param key
 	 *            the attachment to remove
 	 * @return whether the operation succeeded
