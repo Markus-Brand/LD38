@@ -98,6 +98,14 @@ public class BoneTransformation {
 	}
 
 	/**
+	 * Copy constructor
+	 * @param source the thing to copy
+	 */
+	public BoneTransformation(BoneTransformation source){
+		this(source.getPosition(), source.getRotation(), source.getScale());
+	}
+
+	/**
 	 * create a new BoneTransformation based on a Matrix
 	 * 
 	 * @param matrix

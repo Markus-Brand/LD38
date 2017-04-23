@@ -136,7 +136,7 @@ public class OverworldGameState implements GameState {
 	public void update(double deltaTime) {
 		totalTimePassed += deltaTime;
 		playerAnimatedRenderable.ensureRunning("Jogging");
-		playerAnimatedRenderable.ensureRunning("Pierce", KeyBoard.isKeyDown(GLFW.GLFW_KEY_SPACE), false);
+		playerAnimatedRenderable.ensureRunning("Pierce", KeyBoard.isKeyDown(GLFW.GLFW_KEY_Q), false);
 		overworldScene.update(deltaTime);
 		world.update(deltaTime);
 	}
@@ -154,7 +154,15 @@ public class OverworldGameState implements GameState {
 
 	@Override
 	public GameStateIdentifier getNextState() {
-		return KeyBoard.isKeyDown(GLFW.GLFW_KEY_ESCAPE) ? GameStateIdentifier.INTRO : null;
+		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_ESCAPE)) {
+			return GameStateIdentifier.INTRO;
+		} else {
+			if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_K)) {
+				return GameStateIdentifier.DUNGEON;
+			} else {
+				return null;
+			}
+		}
 	}
 
 	@Override

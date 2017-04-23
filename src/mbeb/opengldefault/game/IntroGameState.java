@@ -243,7 +243,6 @@ public class IntroGameState implements GameState {
 
 	@Override
 	public void open() {
-		System.out.println(true);
 		starting = false;
 		GLContext.showCursor();
 		introScene.getLightManager().rewriteUBO();
