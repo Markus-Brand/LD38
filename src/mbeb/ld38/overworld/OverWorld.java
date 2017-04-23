@@ -46,7 +46,6 @@ public class OverWorld {
 	private void init() {
 		parent = new SceneObject();
 		Material landMaterial = new Material("material/beach", 1);
-		Material mossCobbleMaterial = new Material("material/cobble/moss", 3);
 
 		ObjectLoader loader = new ObjectLoader();
 		IRenderable island = loader.loadFromFile("overworld/island.obj").withMaterial(landMaterial);
@@ -73,6 +72,7 @@ public class OverWorld {
 			palms.add(currentPalm);
 			number++;
 		}
+
 
 	}
 

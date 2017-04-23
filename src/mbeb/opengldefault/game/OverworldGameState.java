@@ -2,6 +2,7 @@ package mbeb.opengldefault.game;
 
 import java.awt.*;
 
+import mbeb.opengldefault.gl.GLContext;
 import org.joml.AxisAngle4f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -122,65 +123,20 @@ public class OverworldGameState implements GameState {
 		overworldScene.getLightManager().addLight(sun);
 
 		playerAnimatedRenderable.registerAnimation("Jogging", "Jogging", 32);
+		playerAnimatedRenderable.registerAnimation("Pierce", "Pierce", 32, 0.1f, 0.1f, 1.1f);
 		SceneObject swordObject = new SceneObject(sword);
 		overworldScene.getSceneGraph().addSubObject(swordObject);
 		world.add(swordObject).addBehaviour(0,
 				new BoneTrackingBehaviour(player, playerAnimatedRenderable.getAnimatedRenderable(), "Item.Right"));
 
-		//generateHeightMap();
 		world.update(0.0001f);
 	}
-
-	ShaderProgram depthShader;
-
-	/*private void generateHeightMap() {
-		Camera camera = new OrthographicCamera(32, 1, 1, 400f);
-		camera.setEye(new Vector3f(0, 4f, 0));
-		camera.setCenter(new Vector3f(0, 0, 0));
-		camera.setUp(new Vector3f(1, 0, 0));
-
-		overworldScene.setCamera(camera);
-		int textureSize = 2048;
-		heightMap = new Texture2D(textureSize, textureSize, InternalFormat.DEPTH);
-		heightMap.whileBound((Texture t) -> t.setInterpolates(false));
-		heightMapGenerator = new FrameBuffer();
-
-		heightMapGenerator.ensureExists();
-		heightMapGenerator.bind();
-		heightMap.bind();
-		heightMapGenerator.attach(Attachment.DEPTH, heightMap);
-		heightMapGenerator.bind();
-		glDrawBuffer(GL_NONE);
-		glReadBuffer(GL_NONE);
-		heightMapGenerator.unbind();
-
-		depthShader = new ShaderProgram("depth.vert", "depth.frag");
-		depthShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
-		overworldScene.getSceneGraph().setShader(depthShader);
-
-		glViewport(0, 0, textureSize, textureSize);
-		heightMapGenerator.bind();
-		glClear(GL_DEPTH_BUFFER_BIT);
-		depthShader.use();
-		overworldScene.render();
-
-		heightMapGenerator.unbind();
-		depthShader.delete();
-
-		displayDepthMap = new ShaderProgram("rect.vert", "rect.frag");
-		displayDepthMap.use();
-		displayDepthMap.setUniform("u_texture", heightMap);
-		overworldScene.setCamera(topDownViewCamera);
-
-		glDrawBuffer(GL_BACK);
-		glReadBuffer(GL_BACK);
-		overworldScene.getSceneGraph().setShader(defaultShader);
-	}*/
 
 	@Override
 	public void update(double deltaTime) {
 		totalTimePassed += deltaTime;
 		playerAnimatedRenderable.ensureRunning("Jogging");
+		playerAnimatedRenderable.ensureRunning("Pierce", KeyBoard.isKeyDown(GLFW.GLFW_KEY_Q), false);
 		overworldScene.update(deltaTime);
 		world.update(deltaTime);
 	}
@@ -194,15 +150,19 @@ public class OverworldGameState implements GameState {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		overworldScene.render(showBBs);
-
-		/*displayDepthMap.use();
-		IRenderable plane = StaticMeshes.getScreenAlignedQuad();
-		plane.render(displayDepthMap);*/
 	}
 
 	@Override
 	public GameStateIdentifier getNextState() {
-		return KeyBoard.isKeyDown(GLFW.GLFW_KEY_ESCAPE) ? GameStateIdentifier.INTRO : null;
+		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_ESCAPE)) {
+			return GameStateIdentifier.INTRO;
+		} else {
+			if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_K)) {
+				return GameStateIdentifier.DUNGEON;
+			} else {
+				return null;
+			}
+		}
 	}
 
 	@Override
@@ -213,6 +173,7 @@ public class OverworldGameState implements GameState {
 	@Override
 	public void open() {
 		overworldScene.getLightManager().rewriteUBO();
+		GLContext.hideCursor();
 	}
 
 }
