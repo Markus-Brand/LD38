@@ -17,7 +17,6 @@ public class SamuraiPlayerBehaviour implements IBehaviour {
 		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_Q)) {
 			player.startStroke();
 		}
-		player.getAnimator().ensureRunning("Pierce", player.getSword().isStriking(), true);
 
 	}
 
