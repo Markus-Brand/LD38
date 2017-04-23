@@ -1,4 +1,4 @@
-package mbeb.dungeon.room;
+package mbeb.ld38.dungeon.room;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -1,19 +1,16 @@
-package mbeb.dungeon.room;
+package mbeb.ld38.dungeon.room;
 
-import mbeb.opengldefault.camera.Camera;
-import mbeb.opengldefault.rendering.renderable.Skybox;
-import mbeb.opengldefault.scene.Scene;
 import mbeb.opengldefault.scene.SceneObject;
-import mbeb.opengldefault.sound.SoundEnvironment;
 
-import java.util.LinkedList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 public class Room extends SceneObject {
 
-	SceneObject baseContainer;
-	SceneObject slotContainer;
-	List<Door> doors;
+	private SceneObject baseContainer;
+	private SceneObject slotContainer;
+	Map<Door.Direction, Door> doors;
 	private boolean open = false;
 
 	Room() {
@@ -21,7 +18,7 @@ public class Room extends SceneObject {
 		this.addSubObject(baseContainer);
 		slotContainer = new SceneObject();
 		this.addSubObject(slotContainer);
-		doors = new LinkedList<>();
+		doors = new EnumMap<>(Door.Direction.class);
 	}
 
 	void addBaseObjects(List<SceneObject> baseObjects) {
@@ -34,39 +31,43 @@ public class Room extends SceneObject {
 		slotContainer.addSubObject(object);
 		if(object instanceof Door) {
 			System.out.println("DOOR");
-			this.doors.add((Door)object);
+			this.doors.put(((Door)object).getDirection(), (Door)object);
 		}
 	}
 
 	public void open() {
-		for (Door door : doors) {
-			door.open();
-		}
+		doors.values().forEach(Door::open);
 		open = true;
 	}
 
 	public void close() {
-		for (Door door : doors) {
-			door.close();
-		}
+		doors.values().forEach(Door::close);
 		open = false;
 	}
 
 	public void forceOpen() {
-		for (Door door : doors) {
-			door.forceOpen();
-		}
+		doors.values().forEach(Door::forceOpen);
 		open = true;
 	}
 
 	public void forceClose() {
-		for (Door door : doors) {
-			door.forceClose();
-		}
+		doors.values().forEach(Door::forceClose);
 		open = false;
 	}
 
 	public boolean isOpen() {
 		return open;
 	}
+
+	public Door getDoor(Door.Direction key) {
+		return doors.get(key);
+	}
+
+	public void registerNeighbour(Door.Direction direction, Room neighbour) {
+		if(this.doors.containsKey(direction)) {
+			this.slotContainer.removeSubObject(this.doors.get(direction));
+			this.doors.put(direction, neighbour.getDoor(direction.getOpposite()));
+		}
+	}
+
 }

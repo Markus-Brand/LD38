@@ -2,7 +2,8 @@ package mbeb.mazes;
 
 import java.util.*;
 
-import mbeb.dungeon.room.RoomParameter.*;
+import mbeb.ld38.dungeon.room.Door;
+import mbeb.ld38.dungeon.room.RoomParameter.*;
 
 public class MazeTile {
 	int column;
@@ -56,18 +57,7 @@ public class MazeTile {
 		bidirectionalConnectTo(possibleConnection.get(connectionID));
 	}
 
-	public boolean hasNeighbour(final Type direction) {
-		switch(direction) {
-			case LEFT_NEIGHBOUR:
-				return isConnectedTo(column - 1, row);
-			case RIGHT_NEIGHBOUR:
-				return isConnectedTo(column + 1, row);
-			case TOP_NEIGHBOUR:
-				return isConnectedTo(column, row - 1);
-			case BOTTOM_NEIGHBOUR:
-				return isConnectedTo(column, row + 1);
-			default:
-				return false;
-		}
+	public boolean hasNeighbour(final Door.Direction direction) {
+		return isConnectedTo(this.column + direction.getX(), this.row + direction.getY());
 	}
 }

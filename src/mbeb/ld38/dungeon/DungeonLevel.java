@@ -1,8 +1,9 @@
-package mbeb.dungeon;
+package mbeb.ld38.dungeon;
 
-import mbeb.dungeon.room.Room;
-import mbeb.dungeon.room.RoomParameter;
-import mbeb.dungeon.room.RoomType;
+import mbeb.ld38.dungeon.room.Door;
+import mbeb.ld38.dungeon.room.Room;
+import mbeb.ld38.dungeon.room.RoomParameter;
+import mbeb.ld38.dungeon.room.RoomType;
 import mbeb.mazes.MazeBuilder;
 import mbeb.mazes.MazeGrid;
 import mbeb.mazes.MazeTile;
@@ -65,22 +66,34 @@ public class DungeonLevel extends SceneObject {
 	}
 
 	private void generate(int width, int height) {
-		MazeGrid grid = MazeBuilder.make4Maze(width, height, 0.25f);
+		MazeGrid grid = MazeBuilder.make4Maze(width, height, 0.11f);
 
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				RoomParameter p = new RoomParameter();
-				for (RoomParameter.Type type : RoomParameter.Type.values()) {
-					p.set(type, grid.getTile(x, y).hasNeighbour(type));
-				}
+				p.set(RoomParameter.Type.RIGHT_NEIGHBOUR, grid.getTile(x, y).hasNeighbour(Door.Direction.RIGHT));
+				p.set(RoomParameter.Type.LEFT_NEIGHBOUR, grid.getTile(x, y).hasNeighbour(Door.Direction.LEFT));
+				p.set(RoomParameter.Type.TOP_NEIGHBOUR, grid.getTile(x, y).hasNeighbour(Door.Direction.TOP));
+				p.set(RoomParameter.Type.BOTTOM_NEIGHBOUR, grid.getTile(x, y).hasNeighbour(Door.Direction.BOTTOM));
 				Room r = determineRoomType(null, grid, grid.getTile(x, y)).construct(p);
 				float o = determineOffset(x, y);
+				if(x > 0) {
+					r.registerNeighbour(Door.Direction.LEFT, getRoom(x - 1, y));
+				}
+				if(y > 0) {
+					r.registerNeighbour(Door.Direction.TOP, getRoom(x, y - 1));
+
+				}
 				r.setTransformation(new BoneTransformation(new Vector3f(9 * x + o, o, 9 * y + o)));
 				this.addSubObject(r);
 				this.rooms.put(new Point(x, y), r);
 				this.activeRoom = r;
 			}
 		}
+	}
+
+	public Room getRoom(int x, int y) {
+		return rooms.get(new Point(x, y));
 	}
 
 	private float determineOffset(int x, int y) {

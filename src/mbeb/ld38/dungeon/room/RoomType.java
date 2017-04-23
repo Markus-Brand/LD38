@@ -1,15 +1,13 @@
-package mbeb.dungeon.room;
+package mbeb.ld38.dungeon.room;
 
 import mbeb.opengldefault.animation.BoneTransformation;
 import mbeb.opengldefault.rendering.io.ObjectLoader;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
-import mbeb.opengldefault.scene.Scene;
 import mbeb.opengldefault.scene.SceneObject;
 import mbeb.opengldefault.scene.materials.Material;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import org.lwjgl.system.CallbackI;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -62,7 +60,7 @@ public class RoomType {
 		IRenderable entrance = loader.loadFromFile("bunny.obj").withMaterial(entranceMaterial);
 		IRenderable exit = loader.loadFromFile("player.fbx").withMaterial(exitMaterial);
 
-		Door door = new Door(new SceneObject(doorFrame), new SceneObject(doorDoor));
+		Door door = new Door(new SceneObject(doorFrame), new SceneObject(doorDoor), Door.Direction.RIGHT);
 
 		//<editor-fold desc="normal_room">
 		NORMAL_ROOM = new RoomType();
@@ -77,43 +75,7 @@ public class RoomType {
 		NORMAL_ROOM.addBaseObject(base);
 
 
-		NORMAL_ROOM.addSlot("right",
-				new BoneTransformation(new Vector3f(4, 0, 0), new Quaternionf(new AxisAngle4f(2 * rect, 0, 1, 0)))
-		)
-				.addIf(door,
-						roomParameter -> roomParameter.get(RoomParameter.Type.RIGHT_NEIGHBOUR)
-				)
-				.addIf(new SceneObject(wall_segment),
-						roomParameter -> !roomParameter.get(RoomParameter.Type.RIGHT_NEIGHBOUR)
-				);
-		NORMAL_ROOM.addSlot("left",
-				new BoneTransformation(new Vector3f(-4, 0, 0), new Quaternionf(new AxisAngle4f(0 * rect, 0, 1, 0)))
-		)
-				.addIf(door,
-						roomParameter -> roomParameter.get(RoomParameter.Type.LEFT_NEIGHBOUR)
-				)
-				.addIf(new SceneObject(wall_segment),
-						roomParameter -> !roomParameter.get(RoomParameter.Type.LEFT_NEIGHBOUR)
-				);
-
-		NORMAL_ROOM.addSlot("bottom",
-				new BoneTransformation(new Vector3f(0, 0, 4), new Quaternionf(new AxisAngle4f(1 * rect, 0, 1, 0)))
-		)
-				.addIf(door,
-						roomParameter -> roomParameter.get(RoomParameter.Type.BOTTOM_NEIGHBOUR)
-				)
-				.addIf(new SceneObject(wall_segment),
-						roomParameter -> !roomParameter.get(RoomParameter.Type.BOTTOM_NEIGHBOUR)
-				);
-		NORMAL_ROOM.addSlot("top",
-				new BoneTransformation(new Vector3f(0, 0, -4), new Quaternionf(new AxisAngle4f(3 * rect, 0, 1, 0)))
-		)
-				.addIf(door,
-						roomParameter -> roomParameter.get(RoomParameter.Type.TOP_NEIGHBOUR)
-				)
-				.addIf(new SceneObject(wall_segment),
-						roomParameter -> !roomParameter.get(RoomParameter.Type.TOP_NEIGHBOUR)
-				);
+		addDoor(NORMAL_ROOM, door, wall_segment);
 		//</editor-fold>
 
 		//<editor-fold desc="entrance_room">
@@ -129,43 +91,7 @@ public class RoomType {
 		ENTRANCE_ROOM.addBaseObject(base);
 
 
-		ENTRANCE_ROOM.addSlot("right",
-				new BoneTransformation(new Vector3f(4, 0, 0), new Quaternionf(new AxisAngle4f(2 * rect, 0, 1, 0)))
-		)
-				.addIf(door,
-						roomParameter -> roomParameter.get(RoomParameter.Type.RIGHT_NEIGHBOUR)
-				)
-				.addIf(new SceneObject(wall_segment),
-						roomParameter -> !roomParameter.get(RoomParameter.Type.RIGHT_NEIGHBOUR)
-				);
-		ENTRANCE_ROOM.addSlot("left",
-				new BoneTransformation(new Vector3f(-4, 0, 0), new Quaternionf(new AxisAngle4f(0 * rect, 0, 1, 0)))
-		)
-				.addIf(door,
-						roomParameter -> roomParameter.get(RoomParameter.Type.LEFT_NEIGHBOUR)
-				)
-				.addIf(new SceneObject(wall_segment),
-						roomParameter -> !roomParameter.get(RoomParameter.Type.LEFT_NEIGHBOUR)
-				);
-
-		ENTRANCE_ROOM.addSlot("bottom",
-				new BoneTransformation(new Vector3f(0, 0, 4), new Quaternionf(new AxisAngle4f(1 * rect, 0, 1, 0)))
-		)
-				.addIf(door,
-						roomParameter -> roomParameter.get(RoomParameter.Type.BOTTOM_NEIGHBOUR)
-				)
-				.addIf(new SceneObject(wall_segment),
-						roomParameter -> !roomParameter.get(RoomParameter.Type.BOTTOM_NEIGHBOUR)
-				);
-		ENTRANCE_ROOM.addSlot("top",
-				new BoneTransformation(new Vector3f(0, 0, -4), new Quaternionf(new AxisAngle4f(3 * rect, 0, 1, 0)))
-		)
-				.addIf(door,
-						roomParameter -> roomParameter.get(RoomParameter.Type.TOP_NEIGHBOUR)
-				)
-				.addIf(new SceneObject(wall_segment),
-						roomParameter -> !roomParameter.get(RoomParameter.Type.TOP_NEIGHBOUR)
-				);
+		addDoor(ENTRANCE_ROOM, door, wall_segment);
 		//</editor-fold>
 
 		//<editor-fold desc="exit_room">
@@ -181,44 +107,49 @@ public class RoomType {
 		EXIT_ROOM.addBaseObject(base);
 
 
-		EXIT_ROOM.addSlot("right",
+		addDoor(EXIT_ROOM, door, wall_segment);
+		//</editor-fold>
+	}
+
+	private static void addDoor(RoomType type, Door door, IRenderable wall_segment) {
+		float rect = (float)Math.PI / 2;
+		type.addSlot("right",
 				new BoneTransformation(new Vector3f(4, 0, 0), new Quaternionf(new AxisAngle4f(2 * rect, 0, 1, 0)))
 		)
-				.addIf(door,
+				.addIf(new Door(door, Door.Direction.RIGHT),
 						roomParameter -> roomParameter.get(RoomParameter.Type.RIGHT_NEIGHBOUR)
 				)
 				.addIf(new SceneObject(wall_segment),
 						roomParameter -> !roomParameter.get(RoomParameter.Type.RIGHT_NEIGHBOUR)
 				);
-		EXIT_ROOM.addSlot("left",
+		type.addSlot("left",
 				new BoneTransformation(new Vector3f(-4, 0, 0), new Quaternionf(new AxisAngle4f(0 * rect, 0, 1, 0)))
 		)
-				.addIf(door,
+				.addIf(new Door(door, Door.Direction.LEFT),
 						roomParameter -> roomParameter.get(RoomParameter.Type.LEFT_NEIGHBOUR)
 				)
 				.addIf(new SceneObject(wall_segment),
 						roomParameter -> !roomParameter.get(RoomParameter.Type.LEFT_NEIGHBOUR)
 				);
 
-		EXIT_ROOM.addSlot("bottom",
+		type.addSlot("bottom",
 				new BoneTransformation(new Vector3f(0, 0, 4), new Quaternionf(new AxisAngle4f(1 * rect, 0, 1, 0)))
 		)
-				.addIf(door,
+				.addIf(new Door(door, Door.Direction.BOTTOM),
 						roomParameter -> roomParameter.get(RoomParameter.Type.BOTTOM_NEIGHBOUR)
 				)
 				.addIf(new SceneObject(wall_segment),
 						roomParameter -> !roomParameter.get(RoomParameter.Type.BOTTOM_NEIGHBOUR)
 				);
-		EXIT_ROOM.addSlot("top",
+		type.addSlot("top",
 				new BoneTransformation(new Vector3f(0, 0, -4), new Quaternionf(new AxisAngle4f(3 * rect, 0, 1, 0)))
 		)
-				.addIf(door,
+				.addIf(new Door(door, Door.Direction.TOP),
 						roomParameter -> roomParameter.get(RoomParameter.Type.TOP_NEIGHBOUR)
 				)
 				.addIf(new SceneObject(wall_segment),
 						roomParameter -> !roomParameter.get(RoomParameter.Type.TOP_NEIGHBOUR)
 				);
-		//</editor-fold>
 	}
 
 	private Map<String, Slot> slots;

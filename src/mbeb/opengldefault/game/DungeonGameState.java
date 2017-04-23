@@ -9,34 +9,21 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import mbeb.dungeon.DungeonLevel;
-import mbeb.dungeon.room.Room;
-import mbeb.dungeon.room.RoomParameter;
-import mbeb.dungeon.room.RoomType;
-import org.joml.AxisAngle4f;
-import org.joml.Quaternionf;
+import mbeb.ld38.dungeon.DungeonLevel;
+import mbeb.ld38.dungeon.room.RoomType;
 import org.joml.Vector3f;
 
-import mbeb.opengldefault.animation.BoneTransformation;
 import mbeb.opengldefault.camera.Camera;
 import mbeb.opengldefault.camera.PerspectiveCamera;
 import mbeb.opengldefault.controls.KeyBoard;
-import mbeb.opengldefault.curves.BezierCurve;
-import mbeb.opengldefault.gl.GLContext;
 import mbeb.opengldefault.gl.shader.ShaderProgram;
 import mbeb.opengldefault.light.DirectionalLight;
 import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.rendering.io.ObjectLoader;
-import mbeb.opengldefault.rendering.renderable.BezierCurveRenderable;
-import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.Skybox;
 import mbeb.opengldefault.scene.Scene;
-import mbeb.opengldefault.scene.SceneObject;
 import mbeb.opengldefault.scene.behaviour.*;
 import mbeb.opengldefault.scene.entities.CameraEntity;
 import mbeb.opengldefault.scene.entities.IEntity;
-import mbeb.opengldefault.scene.entities.SceneEntity;
-import mbeb.opengldefault.scene.materials.Material;
 
 public class DungeonGameState implements GameState {
 
@@ -108,7 +95,7 @@ public class DungeonGameState implements GameState {
 
 	@Override
 	public GameStateIdentifier getNextState() {
-		return KeyBoard.pullKeyDown(GLFW_KEY_ESCAPE) ? GameStateIdentifier.MAIN_MENU : null;
+		return KeyBoard.pullKeyDown(GLFW_KEY_ESCAPE) ? GameStateIdentifier.EXIT : null;
 	}
 
 	@Override
