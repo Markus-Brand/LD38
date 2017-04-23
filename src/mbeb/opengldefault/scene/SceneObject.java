@@ -34,6 +34,8 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 	private SceneObject parent;
 	/** true, if the user hovers over the object currently */
 	private boolean selected;
+	/** false to not render this sub-tree */
+	private boolean visible = true;
 
 	/**
 	 * Create a new sceneObject. All parameters are optional
@@ -105,6 +107,15 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 		this.subObjects = subObjects;
 		this.renderable = renderable != null ? renderable.getRenderable() : null;
 		box = null;
+	}
+
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
+	public boolean isVisible() {
+		return visible;
 	}
 
 	public SceneObject(SceneObject source) {
@@ -299,10 +310,10 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 		return globalTransformation;
 	}
 
-	public void invalidatePosition() {
+	public void invalidateGlobalTransformation() {
 		globalTransformation = null;
 		box = null;
-		getSubObjects().forEach(SceneObject::invalidatePosition);
+		getSubObjects().forEach(SceneObject::invalidateGlobalTransformation);
 	}
 
 	/**
@@ -321,7 +332,7 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 	public void setGlobalPosition(Vector3f newPosition) {
 		Matrix4f inverseMatrix = getParentGlobalTranform().asMatrix().invert(new Matrix4f());
 		getTransformation().setPosition(inverseMatrix.transform(new Vector4f(newPosition, 1)));
-		invalidatePosition();
+		invalidateGlobalTransformation();
 	}
 
 	public boolean isSelected() {

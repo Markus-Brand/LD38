@@ -45,7 +45,6 @@ public class MazeBuilder {
 				if (cell.index == 0) {
 					cell.index = id++;
 				}
-				System.out.println("Added connection:" + cell.index + " to " + path.get(i + 1).index);
 				cell.bidirectionalConnectTo(path.get(i + 1));
 				unvisited.remove(cell);
 			}

@@ -47,10 +47,9 @@ public class DungeonGameState implements GameState {
 		scene.getLightManager().addShader(defaultShader);
 		scene.getSceneGraph().setShader(defaultShader);
 
-		//textures
+		//textures;
 
 		RoomType.initializeRoomTypes();
-
 
 		level = new DungeonLevel(3, 3);
 		scene.getSceneGraph().addSubObject(level);
@@ -65,9 +64,9 @@ public class DungeonGameState implements GameState {
 		DirectionalLight sun = new DirectionalLight(Color.WHITE, new Vector3f(0, -1, 0));
 		scene.getLightManager().addLight(sun);
 
-		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		GLErrors.checkForError(TAG, "glEnable");
+
 	}
 
 	@Override
@@ -96,7 +95,7 @@ public class DungeonGameState implements GameState {
 
 	@Override
 	public GameStateIdentifier getNextState() {
-		return KeyBoard.pullKeyDown(GLFW_KEY_ESCAPE) ? GameStateIdentifier.EXIT : null;
+		return KeyBoard.pullKeyDown(GLFW_KEY_ESCAPE) ? GameStateIdentifier.OVERWORLD : null;
 	}
 
 	@Override

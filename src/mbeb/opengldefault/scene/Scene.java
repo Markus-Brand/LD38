@@ -1,5 +1,6 @@
 package mbeb.opengldefault.scene;
 
+import mbeb.opengldefault.logging.Log;
 import mbeb.opengldefault.sound.SoundEnvironment;
 import org.joml.*;
 
@@ -16,12 +17,14 @@ import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
  */
 public class Scene {
 
+	private static final String TAG = "Scene";
+
 	private final LightManager lightManager;
 	private SoundEnvironment soundEnvironment;
 	private final SceneGraphRenderer renderer;
 	private final SceneGraphRenderer boundingBoxRenderer;
 	private final SceneObject sceneGraphRoot;
-	private final Camera camera;
+	private Camera camera;
 	private Skybox skybox;
 	private final MousePicker3D picker;
 
@@ -43,6 +46,10 @@ public class Scene {
 		renderer = new SceneGraphRenderer(sceneGraphRoot, camera);
 		boundingBoxRenderer = new BoundingBoxRenderer(sceneGraphRoot, camera);
 		picker = new MousePicker3D(camera);
+	}
+
+	public void setCamera(Camera camera) {
+		this.camera = Log.assertNotNull(TAG, camera);
 	}
 
 	public SceneObject getSceneGraph() {

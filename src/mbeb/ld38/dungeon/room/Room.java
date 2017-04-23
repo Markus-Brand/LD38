@@ -30,7 +30,6 @@ public class Room extends SceneObject {
 	void addSlotObject(SceneObject object) {
 		slotContainer.addSubObject(object);
 		if(object instanceof Door) {
-			System.out.println("DOOR");
 			this.doors.put(((Door)object).getDirection(), (Door)object);
 		}
 	}
