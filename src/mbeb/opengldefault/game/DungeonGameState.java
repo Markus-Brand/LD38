@@ -11,6 +11,7 @@ import java.util.List;
 
 import mbeb.ld38.dungeon.DungeonLevel;
 import mbeb.ld38.dungeon.room.RoomType;
+import mbeb.opengldefault.scene.entities.SceneEntity;
 import org.joml.Vector3f;
 
 import mbeb.opengldefault.camera.Camera;

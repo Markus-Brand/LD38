@@ -11,6 +11,7 @@ import mbeb.opengldefault.animation.BoneTransformation;
 import mbeb.opengldefault.scene.SceneObject;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import java.util.HashMap;
@@ -102,6 +103,7 @@ public class DungeonLevel extends SceneObject {
 					this.activeRoom = r;
 			}
 		}
+		System.out.println("DONE");
 	}
 
 	public Room getRoom(int x, int y) {
@@ -120,6 +122,69 @@ public class DungeonLevel extends SceneObject {
 			return RoomType.getExitRoom();
 		}
 		return RoomType.getNormalRoom();
+	}
+
+	public Room getRoom(Vector2f position) {
+		return getRoom(position, false);
+	}
+
+	public Room getRoom(Vector2f position, boolean withDoor) {
+		float offset = withDoor ? 3.5f : 4f;
+		Vector2f p = position.add(new Vector2f(offset,offset), new Vector2f());
+		float x = p.x() % 9;
+		float y = p.y() % 9;
+		if(withDoor || x <= 8f && y <= 8f) {
+			int rx = (int)Math.floor(p.x() / 9);
+			int ry = (int)Math.floor(p.y() / 9);
+			return getRoom(rx, ry);
+		}
+		return null;
+	}
+
+	public float getHeight(Vector2f position) {
+		final float wall_indent = 0.5f;
+		final float wall_offset = 0.25f;
+
+		Room r = getRoom(position, true);
+
+		if(r == null)
+			return 2.0f;
+
+		Vector2f p = position.add(new Vector2f(3.5f,3.5f), new Vector2f());
+		Vector2f c = p.sub(new Vector2f(4.5f, 4.5f), new Vector2f());
+		float x = p.x() % 9;
+		float y = p.y() % 9;
+
+		if(x > (wall_offset + wall_indent) && x < (9f - (wall_indent + wall_offset))) {
+			if(y > (wall_offset + wall_indent) && y < (9f - (wall_indent + wall_offset))) {
+				return 0.0f;
+			}
+		}
+
+		Door.Direction d = null;
+		float v = 0.0f;
+		if(Math.abs(c.x()) > Math.abs(c.y())) {
+			v = Math.abs(c.y());
+			if(c.x() < 0) {
+				d = Door.Direction.LEFT;
+			}else{
+				d = Door.Direction.RIGHT;
+			}
+		} else {
+			v = Math.abs(c.x());
+			if(c.y() < 0) {
+				d = Door.Direction.TOP;
+			}else{
+				d = Door.Direction.BOTTOM;
+			}
+		}
+
+		Door door = r.getDoor(d);
+		if(door == null || !door.isOpen())
+			return 2.0f;
+
+		return v <= (1f - wall_offset) ? 0.0f : 2.0f;
+
 	}
 
 }
