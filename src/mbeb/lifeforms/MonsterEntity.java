@@ -1,4 +1,4 @@
-package mbeb.Lifeforms;
+package mbeb.lifeforms;
 
 import mbeb.opengldefault.scene.*;
 
@@ -48,5 +48,4 @@ public class MonsterEntity extends LifeformEntity {
 	public void setMovingSpeed(final float movingSpeed) {
 		this.movingSpeed = movingSpeed;
 	}
-
 }

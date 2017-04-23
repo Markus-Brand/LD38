@@ -1,19 +1,19 @@
 package mbeb.opengldefault.game;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_T;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_TAB;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.glEnable;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.joml.AxisAngle4f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import mbeb.ld38.dungeon.DungeonLevel;
 import mbeb.ld38.dungeon.room.RoomType;
-import mbeb.opengldefault.scene.entities.SceneEntity;
-import org.joml.Vector3f;
-
+import mbeb.lifeforms.Player;
+import mbeb.opengldefault.animation.AnimationStateFacade;
 import mbeb.opengldefault.camera.Camera;
 import mbeb.opengldefault.camera.PerspectiveCamera;
 import mbeb.opengldefault.controls.KeyBoard;
@@ -22,17 +22,21 @@ import mbeb.opengldefault.light.DirectionalLight;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.rendering.renderable.Skybox;
 import mbeb.opengldefault.scene.Scene;
-import mbeb.opengldefault.scene.behaviour.*;
+import mbeb.opengldefault.scene.behaviour.TopDownViewBehaviour;
 import mbeb.opengldefault.scene.entities.CameraEntity;
+import mbeb.opengldefault.scene.entities.EntityWorld;
 import mbeb.opengldefault.scene.entities.IEntity;
 
 public class DungeonGameState implements GameState {
 
 	private static final String TAG = "DungeonGameState";
 
+	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1).rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
+
 	private Scene scene;
 	private DungeonLevel level;
-	private List<IEntity> entities = new ArrayList<>();
+	private EntityWorld world;
+	private Player player;
 
 	@Override
 	public void init() {
@@ -40,6 +44,7 @@ public class DungeonGameState implements GameState {
 		Skybox skybox = new Skybox("skybox/mountain");
 
 		scene = new Scene(camera, skybox);
+		world = new EntityWorld();
 
 		//shaders
 		ShaderProgram defaultShader = new ShaderProgram("basic.vert", "basic.frag");
@@ -51,14 +56,24 @@ public class DungeonGameState implements GameState {
 
 		RoomType.initializeRoomTypes();
 
-		level = new DungeonLevel(3, 3);
+		level = new DungeonLevel(10, 10);
+
 		scene.getSceneGraph().addSubObject(level);
 
 		IEntity cameraEntity = new CameraEntity(camera);
 		camera.setEye(new Vector3f(0, 20, 0));
 		cameraEntity.setDirection(new Vector3f(0, -1, 0));
-		cameraEntity.addBehaviour(2, new PlayerControlBehaviour(0.0f, 0.0f, 0.01f, 10.0f));
-		entities.add(cameraEntity);
+
+		ShaderProgram animationShader = new ShaderProgram("boneAnimation.vert", "basic.frag");
+		animationShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
+		scene.getLightManager().addShader(animationShader);
+
+		player = new Player(100.0f, animationShader, level);
+
+		IEntity playerEntity = player.spawnNew(new Vector3f(0, 1, 0), 0.0f, this.scene.getSceneGraph());
+		world.add(camera).addBehaviour(0, new TopDownViewBehaviour(playerEntity, 8, 1.5f, 2)).setPosition(new Vector3f(3, 4, 5));
+		level.setPlayer(playerEntity);
+		world.add(playerEntity);
 
 		//light
 		DirectionalLight sun = new DirectionalLight(Color.WHITE, new Vector3f(0, -1, 0));
@@ -71,17 +86,17 @@ public class DungeonGameState implements GameState {
 
 	@Override
 	public void update(double deltaTime) {
-		if(KeyBoard.pullKeyDown(GLFW_KEY_T)) {
-			if(this.level.getActiveRoom().isOpen()){
-				this.level.getActiveRoom().close();
-			}else{
-				this.level.getActiveRoom().open();
+		if (KeyBoard.pullKeyDown(GLFW_KEY_T)) {
+			if (this.level.getActiveRoom() != null) {
+				if (this.level.getActiveRoom().isOpen()) {
+					this.level.getActiveRoom().close();
+				} else {
+					this.level.getActiveRoom().open();
+				}
 			}
 		}
 		scene.update(deltaTime);
-		for (IEntity entity : entities) {
-			entity.update(deltaTime);
-		}
+		world.update(deltaTime);
 	}
 
 	@Override

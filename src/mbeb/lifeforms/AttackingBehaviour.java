@@ -1,10 +1,10 @@
-package mbeb.Lifeforms;
+package mbeb.lifeforms;
 
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.scene.behaviour.*;
 import mbeb.opengldefault.scene.entities.*;
 
-public class AttackingBehaviour extends ReferenceEntityBehaviour {
+public abstract class AttackingBehaviour extends ReferenceEntityBehaviour {
 	private static final String TAG = "AttackingBehaviour";
 
 	FollowingBehaviour followingBehaviour;
@@ -22,15 +22,4 @@ public class AttackingBehaviour extends ReferenceEntityBehaviour {
 		}
 
 	}
-
-	public void checkRange(final MonsterEntity monsterEntity) {
-		final PlayerEntity playerEntity = (PlayerEntity) this.getReference();
-
-		final float distanceSquared = playerEntity.getPosition().distanceSquared(monsterEntity.getPosition());
-
-		if (distanceSquared < monsterEntity.getVisionRange() * monsterEntity.getVisionRange()) {
-
-		}
-	}
-
 }
