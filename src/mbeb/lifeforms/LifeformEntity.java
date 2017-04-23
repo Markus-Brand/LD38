@@ -1,4 +1,4 @@
-package mbeb.Lifeforms;
+package mbeb.lifeforms;
 
 import mbeb.opengldefault.scene.*;
 import mbeb.opengldefault.scene.entities.*;

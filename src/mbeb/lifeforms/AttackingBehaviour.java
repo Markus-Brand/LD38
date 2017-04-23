@@ -1,4 +1,4 @@
-package mbeb.Lifeforms;
+package mbeb.lifeforms;
 
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.scene.behaviour.*;
