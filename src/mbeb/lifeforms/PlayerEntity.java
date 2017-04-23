@@ -34,11 +34,22 @@ public class PlayerEntity extends LifeformEntity {
 	public void startStroke() {
 		if (!swordEntity.isStriking()) {
 			swordEntity.startStriking();
+			getAnimator().ensureRunning("Pierce", true, false);
+			getAnimator().ensureRunning("Pierce", false, false);
 		}
 	}
 
 	public AnimationStateFacade getAnimator() {
 		return animator;
+	}
+
+	public void setSword(Sword sword) {
+		setSwordEntity(sword.spawnNew(swordEntity.getSceneObject().getParent(), getSceneObject(), animator));
+	}
+
+	public void setSwordEntity(SwordEntity swordEntity) {
+		this.swordEntity.getSceneObject().removeSelf();
+		this.swordEntity = swordEntity;
 	}
 
 	public SwordEntity getSword() {

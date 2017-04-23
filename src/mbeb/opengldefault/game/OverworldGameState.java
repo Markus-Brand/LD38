@@ -85,8 +85,16 @@ public class OverworldGameState implements GameState {
 		overworldScene.getSceneGraph().addSubObject(overworld.getSceneObject());
 		overworld.getSceneObject().addSubObject(waterObject);
 
+<<<<<<< HEAD
 		player = new Player(100, animationShader, new HeightFromHeightMap(Texture.loadBufferedImage("overworldHeight.png"), new Rectangle(new Vector2f(-16), new Vector2f(32)), 2f, 1f));
+=======
+		player =
+				new Player(100, animationShader, new HeightFromHeightMap(
+						Texture.loadBufferedImage("overworldHeight.png"), new Rectangle(new Vector2f(-16),
+								new Vector2f(32)), 2f, 1f), new Sword(10, 1f, 1f));
+>>>>>>> 6a116288e04a92695ddea95ff8f5fc6f631314ef
 		final PlayerEntity playerEntity = player.spawnNew(new Vector3f(0, 10, 1), 0, overworld.getSceneObject());
+		playerEntity.setSword(new Sword(20f, 1f, 1f));
 		world.add(playerEntity);
 
 		world.add(topDownViewCamera).addBehaviour(0, new TopDownViewBehaviour(playerEntity, 7, 2, 2)).setPosition(new Vector3f(3, 4, 5));

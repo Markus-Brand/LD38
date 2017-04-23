@@ -7,7 +7,6 @@ import org.joml.*;
 import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.gl.shader.*;
 import mbeb.opengldefault.rendering.io.*;
-import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.scene.*;
 import mbeb.opengldefault.scene.behaviour.*;
 import mbeb.opengldefault.scene.materials.*;
@@ -20,18 +19,23 @@ public class Player extends Lifeform {
 	private final AnimatedMesh mesh;
 	private final ShaderProgram animationShader;
 	private HeightSource heightSource;
-	private final IRenderable sword;
 
-	public Player(final float healthpoints, final ShaderProgram animationShader, final HeightSource heightSource) {
+	private Sword sword;
+
+	public Player(final float healthpoints, final ShaderProgram animationShader, final HeightSource heightSource, final Sword sword) {
 		super(0.3f, healthpoints);
 		this.animationShader = animationShader;
 		material = new Material("material/samurai", 1);
-		sword = new ObjectLoader().loadFromFile("sword.obj").withMaterial(material);
 		mesh = new ObjectLoader().loadFromFileAnim("samurai.fbx");
 		mesh.setTransform(MeshFlip);
 		mesh.getSkeleton().printRecursive("");
 		this.heightSource = heightSource;
+		this.sword = sword;
 
+	}
+
+	public void setSword(final Sword sword) {
+		this.sword = sword;
 	}
 
 	public void setHeightSource(final HeightSource heightSource) {
@@ -53,9 +57,7 @@ public class Player extends Lifeform {
 
 		parent.addSubObject(playerObject);
 
-		final SceneObject swordObject = new SceneObject(sword);
-		parent.addSubObject(swordObject);
-		final SwordEntity swordEntity = new SwordEntity(swordObject, 10f, 1f, 0.7f, playerObject, playerAnimatedRenderable);
+		final SwordEntity swordEntity = sword.spawnNew(parent, playerObject, playerAnimatedRenderable);
 
 		final PlayerEntity playerEntity = new PlayerEntity(1f, playerObject, playerAnimatedRenderable, healthpoints, heightSource, swordEntity);
 
