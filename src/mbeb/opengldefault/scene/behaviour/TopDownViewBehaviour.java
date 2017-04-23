@@ -14,7 +14,7 @@ public class TopDownViewBehaviour extends ReferenceEntityBehaviour {
 	public TopDownViewBehaviour(IEntity reference) {
 		super(reference);
 		angle = (float) Math.PI / 3f;
-		distance = 10f;
+		distance = 5f;
 	}
 
 	@Override

@@ -5,9 +5,11 @@ import java.awt.*;
 import org.joml.AxisAngle4f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
+import static org.lwjgl.opengl.GL11.*;
 import mbeb.ld38.overworld.OverWorld;
 import mbeb.opengldefault.animation.AnimatedMesh;
 import mbeb.opengldefault.animation.AnimationStateFacade;
@@ -16,22 +18,27 @@ import mbeb.opengldefault.camera.Camera;
 import mbeb.opengldefault.camera.PerspectiveCamera;
 import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.gl.shader.ShaderProgram;
+import mbeb.opengldefault.gl.texture.Texture;
 import mbeb.opengldefault.light.DirectionalLight;
+import mbeb.opengldefault.options.ButtonOption;
+import mbeb.opengldefault.options.Option;
 import mbeb.opengldefault.rendering.io.ObjectLoader;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.Skybox;
 import mbeb.opengldefault.scene.Scene;
 import mbeb.opengldefault.scene.SceneObject;
 import mbeb.opengldefault.scene.behaviour.BoneTrackingBehaviour;
-import mbeb.opengldefault.scene.behaviour.PlayerControlBehaviour;
 import mbeb.opengldefault.scene.behaviour.TopDownViewBehaviour;
+import mbeb.opengldefault.scene.behaviour.WalkOnHeightMapBehaviour;
 import mbeb.opengldefault.scene.entities.EntityWorld;
 import mbeb.opengldefault.scene.entities.IEntity;
 import mbeb.opengldefault.scene.materials.Material;
+import mbeb.opengldefault.shapes.Rectangle;
 
 public class OverworldGameState implements GameState {
 
-	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1).rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
+	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1)
+			.rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
 
 	private Scene overworldScene;
 	private EntityWorld world;
@@ -45,14 +52,27 @@ public class OverworldGameState implements GameState {
 	private float totalTimePassed;
 
 	private Skybox skybox;
+	//private FrameBuffer heightMapGenerator;
+	//private Texture2D heightMap;
+
+	private Camera topDownViewCamera;
+
+	private ShaderProgram defaultShader;
+
+	//private ShaderProgram displayDepthMap;
+
+	@Option(category = "Game")
+	@ButtonOption
+	public static boolean showBBs = true;
 
 	@Override
 	public void init() {
+
 		world = new EntityWorld();
-		Camera camera = new PerspectiveCamera();
+		topDownViewCamera = new PerspectiveCamera();
 
 		skybox = new Skybox("beachbox/beach", "png");
-		overworldScene = new Scene(camera, skybox);
+		overworldScene = new Scene(topDownViewCamera, skybox);
 
 		Material samuraiMaterial = new Material("material/samurai", 1);
 		AnimatedMesh samuraiMesh = new ObjectLoader().loadFromFileAnim("samurai.fbx");
@@ -66,9 +86,9 @@ public class OverworldGameState implements GameState {
 		waterShader = new ShaderProgram("water.frag", "planet.vert");
 		waterShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
 		overworldScene.getLightManager().addShader(waterShader);
-		overworldScene.getSceneGraph().setShader(waterShader);
+		//overworldScene.getSceneGraph().setShader(waterShader);
 
-		ShaderProgram defaultShader = new ShaderProgram("basic.frag", "basic.vert");
+		defaultShader = new ShaderProgram("basic.frag", "basic.vert");
 		defaultShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
 		overworldScene.getLightManager().addShader(defaultShader);
 		overworldScene.getSceneGraph().setShader(defaultShader);
@@ -77,14 +97,19 @@ public class OverworldGameState implements GameState {
 		animationShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
 		overworldScene.getLightManager().addShader(animationShader);
 
-		SceneObject waterObject = new SceneObject(water, new BoneTransformation(new Vector3f(), new Quaternionf(), new Vector3f(100)));
+		SceneObject waterObject =
+				new SceneObject(water, new BoneTransformation(new Vector3f(), new Quaternionf(), new Vector3f(100)));
 		waterObject.setShader(waterShader);
 
 		player = new SceneObject(playerAnimatedRenderable, new BoneTransformation(new Vector3f(0, 10, 0)));
 		player.setShader(animationShader);
 
-		IEntity playerEntity = world.add(player).addBehaviour(0, new PlayerControlBehaviour());
-		world.add(camera).addBehaviour(0, new TopDownViewBehaviour(playerEntity));
+		IEntity playerEntity =
+				world.add(player).addBehaviour(
+						0,
+						new WalkOnHeightMapBehaviour(Texture.loadBufferedImage("overworldHeight.png"),
+								new Rectangle(new Vector2f(-16), new Vector2f(32))));
+		world.add(topDownViewCamera).addBehaviour(0, new TopDownViewBehaviour(playerEntity));
 
 		overworld = new OverWorld();
 		overworldScene.getSceneGraph().addSubObject(overworld.getSceneObject());
@@ -97,8 +122,57 @@ public class OverworldGameState implements GameState {
 		playerAnimatedRenderable.registerAnimation("Jogging", "Jogging", 32);
 		SceneObject swordObject = new SceneObject(sword);
 		overworldScene.getSceneGraph().addSubObject(swordObject);
-		world.add(swordObject).addBehaviour(0, new BoneTrackingBehaviour(player, playerAnimatedRenderable.getAnimatedRenderable(), "Item.Right"));
+		world.add(swordObject).addBehaviour(0,
+				new BoneTrackingBehaviour(player, playerAnimatedRenderable.getAnimatedRenderable(), "Item.Right"));
+
+		//generateHeightMap();
 	}
+
+	ShaderProgram depthShader;
+
+	/*private void generateHeightMap() {
+		Camera camera = new OrthographicCamera(32, 1, 1, 400f);
+		camera.setEye(new Vector3f(0, 4f, 0));
+		camera.setCenter(new Vector3f(0, 0, 0));
+		camera.setUp(new Vector3f(1, 0, 0));
+
+		overworldScene.setCamera(camera);
+		int textureSize = 2048;
+		heightMap = new Texture2D(textureSize, textureSize, InternalFormat.DEPTH);
+		heightMap.whileBound((Texture t) -> t.setInterpolates(false));
+		heightMapGenerator = new FrameBuffer();
+
+		heightMapGenerator.ensureExists();
+		heightMapGenerator.bind();
+		heightMap.bind();
+		heightMapGenerator.attach(Attachment.DEPTH, heightMap);
+		heightMapGenerator.bind();
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+		heightMapGenerator.unbind();
+
+		depthShader = new ShaderProgram("depth.vert", "depth.frag");
+		depthShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
+		overworldScene.getSceneGraph().setShader(depthShader);
+
+		glViewport(0, 0, textureSize, textureSize);
+		heightMapGenerator.bind();
+		glClear(GL_DEPTH_BUFFER_BIT);
+		depthShader.use();
+		overworldScene.render();
+
+		heightMapGenerator.unbind();
+		depthShader.delete();
+
+		displayDepthMap = new ShaderProgram("rect.vert", "rect.frag");
+		displayDepthMap.use();
+		displayDepthMap.setUniform("u_texture", heightMap);
+		overworldScene.setCamera(topDownViewCamera);
+
+		glDrawBuffer(GL_BACK);
+		glReadBuffer(GL_BACK);
+		overworldScene.getSceneGraph().setShader(defaultShader);
+	}*/
 
 	@Override
 	public void update(double deltaTime) {
@@ -114,7 +188,13 @@ public class OverworldGameState implements GameState {
 		skybox.getTexture().bind();
 		waterShader.setUniform("skybox", skybox.getTexture());
 		waterShader.setUniform("time", totalTimePassed);
-		overworldScene.render();
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		overworldScene.render(showBBs);
+
+		/*displayDepthMap.use();
+		IRenderable plane = StaticMeshes.getScreenAlignedQuad();
+		plane.render(displayDepthMap);*/
 	}
 
 	@Override

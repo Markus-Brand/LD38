@@ -18,7 +18,8 @@ public class PitchYawMouseBehaviour implements IBehaviour {
 	/** mouse position at last update time */
 	private Vector2f lastMousePosition;
 	/** current orientation */
-	private float pitch, yaw;
+	protected float pitch;
+	protected float yaw;
 	/** speed of the rotation in radians per Pixel */
 	private final float rotationSpeed;
 
@@ -65,7 +66,7 @@ public class PitchYawMouseBehaviour implements IBehaviour {
 	 * @param entity
 	 *            the entity the behaviour is applied to
 	 */
-	private void updateDirection(IEntity entity) {
+	protected void updateDirection(IEntity entity) {
 		Vector3f direction = new Vector3f();
 
 		direction.x = (float) (Math.cos(pitch) * Math.cos(yaw));
