@@ -56,7 +56,7 @@ public class DungeonGameState implements GameState {
 
 		RoomType.initializeRoomTypes();
 
-		level = new DungeonLevel(2, 2, scene.getLightManager());
+		level = new DungeonLevel(4, 4, scene.getLightManager());
 
 		scene.getSceneGraph().addSubObject(level);
 
