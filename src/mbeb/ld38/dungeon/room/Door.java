@@ -17,7 +17,7 @@ public class Door extends SceneObject{
 	}
 
 	public boolean isPhysicallyOpen() {
-		return this.movement.progress > 0.9f;
+		return this.movement.progress > 0.99f;
 	}
 
 	public enum Direction {

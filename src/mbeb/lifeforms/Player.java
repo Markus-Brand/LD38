@@ -10,7 +10,7 @@ import mbeb.opengldefault.animation.BoneTransformation;
 import mbeb.opengldefault.gl.shader.ShaderProgram;
 import mbeb.opengldefault.rendering.io.ObjectLoader;
 import mbeb.opengldefault.scene.*;
-import mbeb.opengldefault.scene.behaviour.HeightSource;
+import mbeb.opengldefault.scene.behaviour.IHeightSource;
 import mbeb.opengldefault.scene.materials.Material;
 
 public class Player extends Lifeform {
@@ -21,9 +21,9 @@ public class Player extends Lifeform {
 	private Material material;
 	private AnimatedMesh mesh;
 	private ShaderProgram animationShader;
-	private HeightSource heightSource;
+	private IHeightSource heightSource;
 
-	public Player(final float healthpoints, ShaderProgram animationShader, HeightSource heightSource) {
+	public Player(final float healthpoints, ShaderProgram animationShader, IHeightSource heightSource) {
 		super(healthpoints);
 		this.animationShader = animationShader;
 		material = new Material("material/samurai", 1);
@@ -35,7 +35,7 @@ public class Player extends Lifeform {
 
 	}
 
-	public void setHeightSource(HeightSource heightSource) {
+	public void setHeightSource(IHeightSource heightSource) {
 		this.heightSource = heightSource;
 	}
 

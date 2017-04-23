@@ -1,31 +1,19 @@
 package mbeb.opengldefault.game;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_T;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_TAB;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.glEnable;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.joml.AxisAngle4f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import mbeb.ld38.dungeon.DungeonLevel;
 import mbeb.ld38.dungeon.room.RoomType;
-import mbeb.opengldefault.animation.AnimatedMesh;
+import mbeb.lifeforms.Player;
 import mbeb.opengldefault.animation.AnimationStateFacade;
-import mbeb.opengldefault.animation.BoneTransformation;
-import mbeb.opengldefault.gl.texture.Texture;
-import mbeb.opengldefault.rendering.io.ObjectLoader;
-import mbeb.opengldefault.scene.SceneObject;
-import mbeb.opengldefault.scene.entities.EntityWorld;
-import mbeb.opengldefault.scene.entities.SceneEntity;
-import mbeb.opengldefault.scene.materials.Material;
-import mbeb.opengldefault.shapes.*;
-import org.joml.AxisAngle4f;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-
 import mbeb.opengldefault.camera.Camera;
 import mbeb.opengldefault.camera.PerspectiveCamera;
 import mbeb.opengldefault.controls.KeyBoard;
@@ -34,22 +22,21 @@ import mbeb.opengldefault.light.DirectionalLight;
 import mbeb.opengldefault.logging.GLErrors;
 import mbeb.opengldefault.rendering.renderable.Skybox;
 import mbeb.opengldefault.scene.Scene;
-import mbeb.opengldefault.scene.behaviour.*;
+import mbeb.opengldefault.scene.behaviour.TopDownViewBehaviour;
 import mbeb.opengldefault.scene.entities.CameraEntity;
+import mbeb.opengldefault.scene.entities.EntityWorld;
 import mbeb.opengldefault.scene.entities.IEntity;
 
 public class DungeonGameState implements GameState {
 
 	private static final String TAG = "DungeonGameState";
 
-	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1)
-			.rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
+	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1).rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
 
 	private Scene scene;
 	private DungeonLevel level;
 	private EntityWorld world;
-	private SceneObject player;
-	AnimationStateFacade playerAnimatedRenderable;
+	private Player player;
 
 	@Override
 	public void init() {
@@ -77,29 +64,16 @@ public class DungeonGameState implements GameState {
 		camera.setEye(new Vector3f(0, 20, 0));
 		cameraEntity.setDirection(new Vector3f(0, -1, 0));
 
-
-		Material samuraiMaterial = new Material("material/samurai", 1);
-		AnimatedMesh samuraiMesh = new ObjectLoader().loadFromFileAnim("samurai.fbx");
-		samuraiMesh.setTransform(MeshFlip);
-		samuraiMesh.getSkeleton().printRecursive("");
-		playerAnimatedRenderable = new AnimationStateFacade(samuraiMesh, samuraiMaterial);
-		playerAnimatedRenderable.registerAnimation("Jogging", "Jogging", 32);
-
 		ShaderProgram animationShader = new ShaderProgram("boneAnimation.vert", "basic.frag");
 		animationShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
 		scene.getLightManager().addShader(animationShader);
 
-		player = new SceneObject(playerAnimatedRenderable, new BoneTransformation(new Vector3f(0, 10, 0)));
-		player.setShader(animationShader);
+		player = new Player(100.0f, animationShader, level);
 
-		IEntity playerEntity =
-				world.add(player).addBehaviour(
-						0,
-						new WalkOnHeightMapBehaviour(level, 4f));
-		world.add(camera).addBehaviour(0, new TopDownViewBehaviour(playerEntity, 8, 1.5f, 2))
-				.setPosition(new Vector3f(3, 4, 5));
+		IEntity playerEntity = player.spawnNew(new Vector3f(0, 1, 0), 0.0f, this.scene.getSceneGraph());
+		world.add(camera).addBehaviour(0, new TopDownViewBehaviour(playerEntity, 8, 1.5f, 2)).setPosition(new Vector3f(3, 4, 5));
 		level.setPlayer(playerEntity);
-		scene.getSceneGraph().addSubObject(player);
+		world.add(playerEntity);
 
 		//light
 		DirectionalLight sun = new DirectionalLight(Color.WHITE, new Vector3f(0, -1, 0));
@@ -112,16 +86,15 @@ public class DungeonGameState implements GameState {
 
 	@Override
 	public void update(double deltaTime) {
-		if(KeyBoard.pullKeyDown(GLFW_KEY_T)) {
-			if(this.level.getActiveRoom() != null){
-				if(this.level.getActiveRoom().isOpen()){
+		if (KeyBoard.pullKeyDown(GLFW_KEY_T)) {
+			if (this.level.getActiveRoom() != null) {
+				if (this.level.getActiveRoom().isOpen()) {
 					this.level.getActiveRoom().close();
-				}else{
+				} else {
 					this.level.getActiveRoom().open();
 				}
 			}
 		}
-		playerAnimatedRenderable.ensureRunning("Jogging");
 		scene.update(deltaTime);
 		world.update(deltaTime);
 	}

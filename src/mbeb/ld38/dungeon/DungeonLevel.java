@@ -18,10 +18,10 @@ import mbeb.mazes.MazeGrid;
 import mbeb.mazes.MazeTile;
 import mbeb.opengldefault.animation.BoneTransformation;
 import mbeb.opengldefault.scene.SceneObject;
-import mbeb.opengldefault.scene.behaviour.HeightSource;
+import mbeb.opengldefault.scene.behaviour.IHeightSource;
 import mbeb.opengldefault.scene.entities.IEntity;
 
-public class DungeonLevel extends SceneObject implements HeightSource {
+public class DungeonLevel extends SceneObject implements IHeightSource {
 
 	public Room getActiveRoom() {
 		return activeRoom;
@@ -221,7 +221,7 @@ public class DungeonLevel extends SceneObject implements HeightSource {
 		super.update(deltaTime);
 		if (this.getPlayer() != null) {
 			Room current;
-			if(this.activeRoom != null) {
+			if (this.activeRoom != null) {
 				current = this.getRoom(new Vector2f(this.getPlayer().getPosition().x(), this.getPlayer().getPosition().z()));
 			} else {
 				current = this.getRoom(new Vector2f(this.getPlayer().getPosition().x(), this.getPlayer().getPosition().z()), 0.25f);

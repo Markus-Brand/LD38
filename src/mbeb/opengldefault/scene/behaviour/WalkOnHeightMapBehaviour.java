@@ -10,10 +10,10 @@ import mbeb.opengldefault.scene.entities.IEntity;
 public class WalkOnHeightMapBehaviour extends PitchYawMouseBehaviour {
 
 	private static final Vector3f worldUp = new Vector3f(0, 1, 0);
-	private HeightSource heightSource;
+	private IHeightSource heightSource;
 	private float speed;
 
-	public WalkOnHeightMapBehaviour(HeightSource heightSource, float speed) {
+	public WalkOnHeightMapBehaviour(IHeightSource heightSource, float speed) {
 		this.heightSource = heightSource;
 		this.speed = speed;
 	}
