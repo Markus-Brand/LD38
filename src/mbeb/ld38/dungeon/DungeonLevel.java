@@ -27,7 +27,7 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 		return activeRoom;
 	}
 
-	private class Point {
+	public class Point {
 		int x, y;
 
 		public Point(int x, int y) {
@@ -67,6 +67,8 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 
 	private Map<Point, Room> rooms;
 	private Room activeRoom;
+	private Room entrance;
+	private Room exit;
 	private IEntity player;
 
 	public DungeonLevel(int width, int height) {
@@ -106,10 +108,16 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 
 				}
 				r.setTransformation(new BoneTransformation(new Vector3f(9 * x + o, o, 9 * y + o)));
+				Point pt = new Point(x, y);
+				r.setPosition(pt);
 				this.addSubObject(r);
-				this.rooms.put(new Point(x, y), r);
-				if (grid.getTile(x, y) == grid.getEntrance())
-					this.activeRoom = r;
+				this.rooms.put(pt, r);
+				if (grid.getTile(x, y) == grid.getEntrance()) {
+					this.entrance = r;
+				}
+				if(grid.getTile(x, y) == grid.getExit()) {
+					this.exit = r;
+				}
 			}
 		}
 	}
@@ -214,6 +222,9 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 
 	public void setPlayer(IEntity player) {
 		this.player = player;
+		int x = this.entrance.getPosition().x;
+		int y = this.entrance.getPosition().y;
+		player.setPosition(new Vector3f(9 * x, 1, 9 * y));
 	}
 
 	@Override

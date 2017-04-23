@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import mbeb.ld38.dungeon.DungeonLevel;
 import mbeb.opengldefault.scene.SceneObject;
 
 public class Room extends SceneObject {
@@ -12,6 +13,7 @@ public class Room extends SceneObject {
 	private SceneObject baseContainer;
 	private SceneObject slotContainer;
 	Map<Door.Direction, Door> doors;
+	private DungeonLevel.Point position;
 	private boolean open = false;
 	private Consumer<Room> entryListener;
 	private Consumer<Room> exitListener;
@@ -90,5 +92,13 @@ public class Room extends SceneObject {
 		if (this.exitListener != null) {
 			this.exitListener.accept(this);
 		}
+	}
+
+	public DungeonLevel.Point getPosition() {
+		return position;
+	}
+
+	public void setPosition(DungeonLevel.Point position) {
+		this.position = position;
 	}
 }
