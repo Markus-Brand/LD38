@@ -9,6 +9,8 @@ import mbeb.mazes.MazeGrid;
 import mbeb.mazes.MazeTile;
 import mbeb.opengldefault.animation.BoneTransformation;
 import mbeb.opengldefault.scene.SceneObject;
+import org.joml.AxisAngle4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import java.util.HashMap;
@@ -67,6 +69,15 @@ public class DungeonLevel extends SceneObject {
 
 	private void generate(int width, int height) {
 		MazeGrid grid = MazeBuilder.make4Maze(width, height, 0.11f);
+		this.addSubObject(new SceneObject(RoomType.getCORNER(), new BoneTransformation(null, new Quaternionf(new AxisAngle4f((float)Math.PI / -2, 0, 1, 0)))));
+		for (int x = 0; x < width; x++) {
+			float o = determineOffset(x, 0);
+			this.addSubObject(new SceneObject(RoomType.getSEGMENT(), new BoneTransformation(new Vector3f(9 * x + o, o, o), new Quaternionf(new AxisAngle4f((float)Math.PI / -2, 0, 1, 0)))));
+		}
+		for (int y = 0; y < width; y++) {
+			float o = determineOffset(0, y);
+			this.addSubObject(new SceneObject(RoomType.getSEGMENT(), new BoneTransformation(new Vector3f(o, o, 9 * y + o), new Quaternionf(new AxisAngle4f((float)Math.PI, 0, 1, 0)), new Vector3f(-1f,1,1))));
+		}
 
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
@@ -87,7 +98,8 @@ public class DungeonLevel extends SceneObject {
 				r.setTransformation(new BoneTransformation(new Vector3f(9 * x + o, o, 9 * y + o)));
 				this.addSubObject(r);
 				this.rooms.put(new Point(x, y), r);
-				this.activeRoom = r;
+				if(grid.getTile(x, y) == grid.getEntrance())
+					this.activeRoom = r;
 			}
 		}
 	}

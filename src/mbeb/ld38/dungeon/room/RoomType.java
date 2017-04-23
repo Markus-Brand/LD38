@@ -3,11 +3,13 @@ package mbeb.ld38.dungeon.room;
 import mbeb.opengldefault.animation.BoneTransformation;
 import mbeb.opengldefault.rendering.io.ObjectLoader;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
+import mbeb.opengldefault.scene.Scene;
 import mbeb.opengldefault.scene.SceneObject;
 import mbeb.opengldefault.scene.materials.Material;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.lwjgl.system.CallbackI;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -19,14 +21,11 @@ public class RoomType {
 	private static RoomType NORMAL_ROOM;
 	private static RoomType ENTRANCE_ROOM;
 	private static RoomType EXIT_ROOM;
-	private static RoomType NORMAL_CORRIDOR;
+	private static IRenderable CORNER;
+	private static IRenderable SEGMENT;
 
 	public static RoomType getNormalRoom() {
 		return NORMAL_ROOM;
-	}
-
-	public static RoomType getNormalCorridor() {
-		return NORMAL_CORRIDOR;
 	}
 
 	public static RoomType getEntranceRoom() {
@@ -35,6 +34,14 @@ public class RoomType {
 
 	public static RoomType getExitRoom() {
 		return EXIT_ROOM;
+	}
+
+	public static IRenderable getCORNER() {
+		return CORNER;
+	}
+
+	public static IRenderable getSEGMENT() {
+		return SEGMENT;
 	}
 
 	public static void initializeRoomTypes() {
@@ -49,29 +56,24 @@ public class RoomType {
 		IRenderable doorFrame = loader.loadFromFile("dungeon/general/door_frame.obj").withMaterial(doorFrameMaterial);
 		IRenderable doorDoor = loader.loadFromFile("dungeon/general/door.obj").withMaterial(wallMaterial);
 		IRenderable wall_segment = loader.loadFromFile("dungeon/general/wall_segment.obj").withMaterial(wallMaterial);
-		IRenderable room_corner = loader.loadFromFile("dungeon/room/corner.obj").withMaterial(wallMaterial);
-		IRenderable corridor_corner = loader.loadFromFile("dungeon/corridor/corner.obj").withMaterial(wallMaterial);
+		IRenderable room_corner = loader.loadFromFile("dungeon/room/big_corner.obj").withMaterial(wallMaterial);
 		IRenderable room_floor = loader.loadFromFile("dungeon/room/floor.obj").withMaterial(floorMaterial);
-		IRenderable corridor_floor_center = loader.loadFromFile("dungeon/corridor/floor/center.obj").withMaterial(floorMaterial);
-		IRenderable corridor_floor_right = loader.loadFromFile("dungeon/corridor/floor/+x.obj").withMaterial(floorMaterial);
-		IRenderable corridor_floor_left = loader.loadFromFile("dungeon/corridor/floor/-x.obj").withMaterial(floorMaterial);
-		IRenderable corridor_floor_bottom = loader.loadFromFile("dungeon/corridor/floor/+y.obj").withMaterial(floorMaterial);
-		IRenderable corridor_floor_top = loader.loadFromFile("dungeon/corridor/floor/-y.obj").withMaterial(floorMaterial);
+		CORNER = loader.loadFromFile("dungeon/general/origin_corner.obj").withMaterial(wallMaterial);
+		SEGMENT = loader.loadFromFile("dungeon/general/axis_corner.obj").withMaterial(wallMaterial);
+
 		IRenderable entrance = loader.loadFromFile("bunny.obj").withMaterial(entranceMaterial);
 		IRenderable exit = loader.loadFromFile("player.fbx").withMaterial(exitMaterial);
 
 		Door door = new Door(new SceneObject(doorFrame), new SceneObject(doorDoor), Door.Direction.RIGHT);
 
+		SceneObject big_corner = new SceneObject(room_corner, new BoneTransformation(new Vector3f(0,0,0), new Quaternionf(new AxisAngle4f((float)Math.PI / -2, 0, 1, 0))));
+
 		//<editor-fold desc="normal_room">
 		NORMAL_ROOM = new RoomType();
 
 		SceneObject base = new SceneObject();
-		float rect = (float)Math.PI / 2;
 		base.addSubObject(room_floor);
-		base.addSubObject(new SceneObject(room_corner, new BoneTransformation(new Vector3f(-4, 0, 4), new Quaternionf(new AxisAngle4f(0, 0, 1, 0)))));
-		base.addSubObject(new SceneObject(room_corner, new BoneTransformation(new Vector3f(4, 0, 4), new Quaternionf(new AxisAngle4f(1 * rect, 0, 1, 0)))));
-		base.addSubObject(new SceneObject(room_corner, new BoneTransformation(new Vector3f(4, 0, -4), new Quaternionf(new AxisAngle4f(2 * rect, 0, 1, 0)))));
-		base.addSubObject(new SceneObject(room_corner, new BoneTransformation(new Vector3f(-4, 0, -4), new Quaternionf(new AxisAngle4f(3 * rect, 0, 1, 0)))));
+		base.addSubObject(big_corner);
 		NORMAL_ROOM.addBaseObject(base);
 
 
@@ -83,10 +85,7 @@ public class RoomType {
 
 		base = new SceneObject();
 		base.addSubObject(room_floor);
-		base.addSubObject(new SceneObject(room_corner, new BoneTransformation(new Vector3f(-4, 0, 4), new Quaternionf(new AxisAngle4f(0, 0, 1, 0)))));
-		base.addSubObject(new SceneObject(room_corner, new BoneTransformation(new Vector3f(4, 0, 4), new Quaternionf(new AxisAngle4f(1 * rect, 0, 1, 0)))));
-		base.addSubObject(new SceneObject(room_corner, new BoneTransformation(new Vector3f(4, 0, -4), new Quaternionf(new AxisAngle4f(2 * rect, 0, 1, 0)))));
-		base.addSubObject(new SceneObject(room_corner, new BoneTransformation(new Vector3f(-4, 0, -4), new Quaternionf(new AxisAngle4f(3 * rect, 0, 1, 0)))));
+		base.addSubObject(big_corner);
 		base.addSubObject(entrance);
 		ENTRANCE_ROOM.addBaseObject(base);
 
@@ -99,10 +98,7 @@ public class RoomType {
 
 		base = new SceneObject();
 		base.addSubObject(room_floor);
-		base.addSubObject(new SceneObject(room_corner, new BoneTransformation(new Vector3f(-4, 0, 4), new Quaternionf(new AxisAngle4f(0, 0, 1, 0)))));
-		base.addSubObject(new SceneObject(room_corner, new BoneTransformation(new Vector3f(4, 0, 4), new Quaternionf(new AxisAngle4f(1 * rect, 0, 1, 0)))));
-		base.addSubObject(new SceneObject(room_corner, new BoneTransformation(new Vector3f(4, 0, -4), new Quaternionf(new AxisAngle4f(2 * rect, 0, 1, 0)))));
-		base.addSubObject(new SceneObject(room_corner, new BoneTransformation(new Vector3f(-4, 0, -4), new Quaternionf(new AxisAngle4f(3 * rect, 0, 1, 0)))));
+		base.addSubObject(big_corner);
 		base.addSubObject(exit);
 		EXIT_ROOM.addBaseObject(base);
 
