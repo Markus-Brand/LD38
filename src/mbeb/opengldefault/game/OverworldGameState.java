@@ -96,7 +96,7 @@ public class OverworldGameState implements GameState {
 
 		world.update(0.0001f);
 
-		final Goblin goblin = new Goblin(123456, 123456, 0.5f, 1234, 0.5f, goblinRenderable, playerEntity);
+		final Goblin goblin = new Goblin(123456, 123456, 0.5f, 1234, 2, 0.5f, goblinRenderable, playerEntity, animationShader);
 		final MonsterEntity goblinEntity = goblin.spawnNew(new Vector3f(1, 3, 0), 0, overworld.getSceneObject());
 		world.add(goblinEntity);
 	}
