@@ -31,6 +31,12 @@ public class PlayerEntity extends LifeformEntity {
 		swordEntity.update(deltaTime);
 	}
 
+	public void startStroke() {
+		if (!swordEntity.isStriking()) {
+			swordEntity.startStriking();
+		}
+	}
+
 	public AnimationStateFacade getAnimator() {
 		return animator;
 	}

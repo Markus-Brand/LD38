@@ -59,7 +59,7 @@ public class Player extends Lifeform {
 
 		final SceneObject swordObject = new SceneObject(sword);
 		parent.addSubObject(swordObject);
-		SwordEntity swordEntity = new SwordEntity(swordObject, 10f, 1f, playerObject, playerAnimatedRenderable);
+		SwordEntity swordEntity = new SwordEntity(swordObject, 10f, 1f, 0.7f, playerObject, playerAnimatedRenderable);
 
 		final PlayerEntity playerEntity = new PlayerEntity(1f, playerObject, playerAnimatedRenderable, healthpoints,
 				heightSource, swordEntity);

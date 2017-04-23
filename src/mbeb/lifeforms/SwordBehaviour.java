@@ -1,5 +1,7 @@
 package mbeb.lifeforms;
 
+import java.util.Map.Entry;
+
 import mbeb.opengldefault.animation.AnimationStateFacade;
 import mbeb.opengldefault.scene.SceneObject;
 import mbeb.opengldefault.scene.behaviour.BoneTrackingBehaviour;
@@ -20,13 +22,19 @@ public class SwordBehaviour implements IBehaviour {
 
 		SwordEntity sword = (SwordEntity) entity;
 
-		for (LifeformEntity tarsched : sword.getTarscheds()) {
-			if (tarsched.getBounding().intersectsShape(sword.getBounding())) {
-				tarsched.damage(sword.getDamage());
-			} else {
-				tarsched.getSceneObject().setSelected(false);
+		if (!sword.isStriking()) {
+			return;
+		}
+
+		for (Entry<LifeformEntity, Boolean> entry : sword.getTarscheds().entrySet()) {
+			if (!entry.getValue() && entry.getKey().getBounding().intersectsShape(sword.getBounding())) {
+				entry.getKey().damage(sword.getDamage());
+				entry.setValue(true);
 			}
 		}
+
+		sword.getTarscheds().keySet().removeIf(LifeformEntity::isDead);
+
 	}
 
 }

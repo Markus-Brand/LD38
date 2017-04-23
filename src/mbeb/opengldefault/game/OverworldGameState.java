@@ -47,6 +47,8 @@ public class OverworldGameState implements GameState {
 
 	Player player;
 
+	MonsterEntity goblinEntity;
+
 	@Option(category = "Game")
 	@ButtonOption
 	public static boolean showBBs = true;
@@ -102,8 +104,8 @@ public class OverworldGameState implements GameState {
 
 		world.update(0.0001f);
 
-		final Goblin goblin = new Goblin(123456, 123456, 0.5f, 1234, 0.5f, goblinRenderable, playerEntity);
-		final MonsterEntity goblinEntity = goblin.spawnNew(new Vector3f(1, 3, 0), 0, overworld.getSceneObject());
+		final Goblin goblin = new Goblin(50, 123456, 0.5f, 1234, 0.5f, goblinRenderable, playerEntity);
+		goblinEntity = goblin.spawnNew(new Vector3f(1, 3, 0), 0, overworld.getSceneObject());
 		world.add(goblinEntity);
 
 		playerEntity.addTarsched(goblinEntity);
@@ -114,6 +116,11 @@ public class OverworldGameState implements GameState {
 		totalTimePassed += deltaTime;
 		overworldScene.update(deltaTime);
 		world.update(deltaTime);
+
+		if (goblinEntity.isDead()) {
+			overworldScene.getSceneGraph().removeSubObject(goblinEntity.getSceneObject());
+			world.remove(goblinEntity);
+		}
 	}
 
 	@Override

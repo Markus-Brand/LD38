@@ -1,6 +1,8 @@
 package mbeb.lifeforms;
 
-import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.joml.Vector2f;
 
@@ -13,22 +15,50 @@ public class SwordEntity extends SceneEntity {
 
 	private float damage;
 	private float range;
-	private LinkedList<LifeformEntity> tarscheds;
+	private Map<LifeformEntity, Boolean> tarscheds;
+	private boolean striking;
+	private float timeStrinking;
+	private float strokeTime;
 
-	public SwordEntity(SceneObject sceneObject, float damage, float range, SceneObject holderObject,
+	public SwordEntity(SceneObject sceneObject, float damage, float range, float strokeTime, SceneObject holderObject,
 			AnimationStateFacade holderAnimator) {
 		super(sceneObject);
+		this.strokeTime = strokeTime;
+		this.timeStrinking = 0;
 		this.damage = damage;
 		this.range = range;
-		tarscheds = new LinkedList<>();
+		tarscheds = new HashMap<>();
 		addBehaviour(0, new SwordBehaviour(holderObject, holderAnimator));
 	}
 
-	public void addTarsched(LifeformEntity tarsched) {
-		tarscheds.add(tarsched);
+	@Override
+	public void update(double deltaTime) {
+		if (striking) {
+			timeStrinking += deltaTime;
+			if (timeStrinking >= strokeTime) {
+				stopStriking();
+				timeStrinking = 0;
+			}
+		}
+		super.update(deltaTime);
 	}
 
-	public LinkedList<LifeformEntity> getTarscheds() {
+	public void startStriking() {
+		striking = true;
+		for (Entry<LifeformEntity, Boolean> entry : getTarscheds().entrySet()) {
+			entry.setValue(false);
+		}
+	}
+
+	public void stopStriking() {
+		striking = false;
+	}
+
+	public void addTarsched(LifeformEntity tarsched) {
+		tarscheds.put(tarsched, false);
+	}
+
+	public Map<LifeformEntity, Boolean> getTarscheds() {
 		return tarscheds;
 	}
 
@@ -45,4 +75,12 @@ public class SwordEntity extends SceneEntity {
 		Vector2f end = new Vector2f(getDirection().x, getDirection().z).normalize().mul(range).add(start);
 		return new Line(start, end);
 	}
+
+	/**
+	 * @return the striking
+	 */
+	public boolean isStriking() {
+		return striking;
+	}
+
 }
