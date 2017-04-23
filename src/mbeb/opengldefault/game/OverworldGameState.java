@@ -4,28 +4,42 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.awt.*;
 
-import org.joml.*;
-import org.lwjgl.glfw.*;
+import org.joml.Quaternionf;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFW;
 
-import mbeb.ld38.overworld.*;
-import mbeb.lifeforms.*;
-import mbeb.opengldefault.animation.*;
-import mbeb.opengldefault.camera.*;
-import mbeb.opengldefault.controls.*;
-import mbeb.opengldefault.gl.*;
-import mbeb.opengldefault.gl.shader.*;
-import mbeb.opengldefault.gl.texture.*;
-import mbeb.opengldefault.light.*;
-import mbeb.opengldefault.options.*;
-import mbeb.opengldefault.rendering.io.*;
-import mbeb.opengldefault.rendering.renderable.*;
-import mbeb.opengldefault.scene.*;
-import mbeb.opengldefault.scene.behaviour.*;
-import mbeb.opengldefault.scene.entities.*;
-import mbeb.opengldefault.scene.materials.*;
+import mbeb.ld38.overworld.OverWorld;
+import mbeb.lifeforms.Goblin;
+import mbeb.lifeforms.MonsterEntity;
+import mbeb.lifeforms.Player;
+import mbeb.lifeforms.PlayerEntity;
+import mbeb.opengldefault.animation.BoneTransformation;
+import mbeb.opengldefault.camera.Camera;
+import mbeb.opengldefault.camera.PerspectiveCamera;
+import mbeb.opengldefault.controls.KeyBoard;
+import mbeb.opengldefault.gl.GLContext;
+import mbeb.opengldefault.gl.shader.ShaderProgram;
+import mbeb.opengldefault.gl.texture.Texture;
+import mbeb.opengldefault.light.DirectionalLight;
+import mbeb.opengldefault.options.ButtonOption;
+import mbeb.opengldefault.options.Option;
+import mbeb.opengldefault.rendering.io.ObjectLoader;
+import mbeb.opengldefault.rendering.renderable.IRenderable;
+import mbeb.opengldefault.rendering.renderable.Skybox;
+import mbeb.opengldefault.scene.Scene;
+import mbeb.opengldefault.scene.SceneObject;
+import mbeb.opengldefault.scene.behaviour.TopDownViewBehaviour;
+import mbeb.opengldefault.scene.entities.EntityWorld;
+import mbeb.opengldefault.scene.materials.Material;
 import mbeb.opengldefault.shapes.Rectangle;
 
 public class OverworldGameState implements GameState {
+
+	private Vector3f port = new Vector3f(0.41f, 2.509f, -7.46f);
+	private Vector3f key = new Vector3f(-2.27f, 2.74f, -7.44f);
+	private float threshold = 0.75f;
+	private boolean leftForDungeon = false;
 
 	private Scene overworldScene;
 	private EntityWorld world;
@@ -45,7 +59,8 @@ public class OverworldGameState implements GameState {
 
 	//private ShaderProgram displayDepthMap;
 
-	Player player;
+	private Player player;
+	private PlayerEntity playerEntity;
 
 	@Option(category = "Game")
 	@ButtonOption
@@ -86,7 +101,7 @@ public class OverworldGameState implements GameState {
 		overworld.getSceneObject().addSubObject(waterObject);
 
 		player = new Player(100, animationShader, new HeightFromHeightMap(Texture.loadBufferedImage("overworldHeight.png"), new Rectangle(new Vector2f(-16), new Vector2f(32)), 2f, 1f));
-		final PlayerEntity playerEntity = player.spawnNew(new Vector3f(0, 10, 1), 0, overworld.getSceneObject());
+		playerEntity = player.spawnNew(new Vector3f(0, 10, 1), 0, overworld.getSceneObject());
 		world.add(playerEntity);
 
 		world.add(topDownViewCamera).addBehaviour(0, new TopDownViewBehaviour(playerEntity, 7, 2, 2)).setPosition(new Vector3f(3, 4, 5));
@@ -99,6 +114,7 @@ public class OverworldGameState implements GameState {
 		final Goblin goblin = new Goblin(123456, 123456, 0.5f, 1234, 0.5f, goblinRenderable, playerEntity);
 		final MonsterEntity goblinEntity = goblin.spawnNew(new Vector3f(1, 3, 0), 0, overworld.getSceneObject());
 		world.add(goblinEntity);
+
 	}
 
 	@Override
@@ -124,7 +140,8 @@ public class OverworldGameState implements GameState {
 		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_ESCAPE)) {
 			return GameStateIdentifier.INTRO;
 		} else {
-			if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_K)) {
+			if (playerEntity.getPosition().distance(key) < threshold) {
+				this.leftForDungeon = true;
 				return GameStateIdentifier.DUNGEON;
 			} else {
 				return null;
@@ -139,6 +156,10 @@ public class OverworldGameState implements GameState {
 
 	@Override
 	public void open() {
+		if(leftForDungeon){
+			leftForDungeon = false;
+			playerEntity.setPosition(port);
+		}
 		overworldScene.getLightManager().rewriteUBO();
 		GLContext.hideCursor();
 	}
