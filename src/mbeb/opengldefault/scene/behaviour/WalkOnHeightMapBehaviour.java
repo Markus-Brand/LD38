@@ -1,25 +1,19 @@
 package mbeb.opengldefault.scene.behaviour;
 
-import java.awt.image.BufferedImage;
-
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.scene.entities.IEntity;
-import mbeb.opengldefault.shapes.Rectangle;
 
 public class WalkOnHeightMapBehaviour extends PitchYawMouseBehaviour {
 
-	private BufferedImage heightMap;
-	private Rectangle heightMapBounding;
 	private static final Vector3f worldUp = new Vector3f(0, 1, 0);
 	private HeightSource heightSource;
 
-	public WalkOnHeightMapBehaviour(HeightSource heightSource, Rectangle heightMapBounding) {
+	public WalkOnHeightMapBehaviour(HeightSource heightSource) {
 		this.heightSource = heightSource;
-		this.heightMapBounding = heightMapBounding;
 	}
 
 	@Override
@@ -48,46 +42,11 @@ public class WalkOnHeightMapBehaviour extends PitchYawMouseBehaviour {
 
 		Vector3f newPosition = delta.add(position);
 
-		Vector2f oldRelativeMapPosition =
-				new Vector2f(position.x, position.z).sub(heightMapBounding.getPosition()).mul(
-						new Vector2f(1 / heightMapBounding.getWidth(), 1 / heightMapBounding.getHeight()));
-
-		Vector2f newRelativeMapPosition =
-				new Vector2f(newPosition.x, newPosition.z).sub(heightMapBounding.getPosition()).mul(
-						new Vector2f(1 / heightMapBounding.getWidth(), 1 / heightMapBounding.getHeight()));
-
-		float oldHeight = getHeight(oldRelativeMapPosition);
-		float newHeight = getHeight(newRelativeMapPosition);
+		float oldHeight = heightSource.getHeight(new Vector2f(position.x, position.z));
+		float newHeight = heightSource.getHeight(new Vector2f(newPosition.x, newPosition.z));
 
 		entity.setPosition(new Vector3f(newPosition.x, newHeight, newPosition.z));
 
-	}
-
-	private float getHeight(Vector2f oldRelativeMapPosition) {
-		float realX = oldRelativeMapPosition.x * heightMap.getWidth();
-		float realY = oldRelativeMapPosition.y * heightMap.getHeight();
-		int sampleX = (int) realX;
-		int sampleY = (int) realY;
-		float topLeft = sampleHeightAt(sampleX, sampleY);
-		float topRight = sampleHeightAt(sampleX + 1, sampleY);
-		float bottomLeft = sampleHeightAt(sampleX, sampleY + 1);
-		float bottomRight = sampleHeightAt(sampleX + 1, sampleY + 1);
-
-		float relativeX = realX - sampleX;
-		float relativeY = realY - sampleY;
-
-		float top = topRight * relativeX + topLeft * (1.0f - relativeX);
-		float bottom = bottomRight * relativeX + bottomLeft * (1.0f - relativeX);
-		float middle = bottom * relativeY + top * (1.0f - relativeY);
-
-		return middle;
-	}
-
-	private float sampleHeightAt(int x, int y) {
-		if (x < 0 || y < 0 || x >= heightMap.getWidth() || y >= heightMap.getHeight()) {
-			return 0;
-		}
-		return (heightMap.getRGB(x, y) >> 16 & 0xFF) / 255f * 2f + 1f;
 	}
 
 	@Override

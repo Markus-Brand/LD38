@@ -339,7 +339,7 @@ public class BunnyGameState implements GameState {
 		glViewport(0, 0, GLContext.getFramebufferWidth(), GLContext.getFramebufferHeight());
 		GLErrors.checkForError(TAG, "glViewport");
 
-		bunnyScene.render(showBBs); //bunnyScene.render(); to render without BoundingBoxes
+		bunnyScene.render(); //bunnyScene.render(); to render without BoundingBoxes
 		if (showFPS) {
 			textGUI.render();
 		}
