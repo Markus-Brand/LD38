@@ -1,4 +1,4 @@
-package mbeb.Lifeforms;
+package mbeb.lifeforms;
 
 import org.joml.*;
 
