@@ -9,8 +9,9 @@ public class MonsterEntity extends LifeformEntity {
 	float attackDamage;
 	float movingSpeed;
 
-	public MonsterEntity(final SceneObject monsterObject, final float healthpoints, final float visionRange, final float attackRange, final float attackDamage, final float movingSpeed) {
-		super(monsterObject, healthpoints);
+	public MonsterEntity(float size, final SceneObject monsterObject, final float healthpoints,
+			final float visionRange, final float attackRange, final float attackDamage, final float movingSpeed) {
+		super(monsterObject, healthpoints, size);
 		this.visionRange = visionRange;
 		this.attackRange = attackRange;
 		this.attackDamage = attackDamage;

@@ -15,7 +15,8 @@ public abstract class Monster extends Lifeform {
 	IRenderable body;
 	PlayerEntity playerEntity;
 
-	public Monster(final float healthpoints, final float visionRange, final float attackRange, final float attackDamage, final float movingSpeed, final IRenderable body,
+	public Monster(final float healthpoints, final float visionRange, final float attackRange,
+			final float attackDamage, final float movingSpeed, final IRenderable body,
 			final PlayerEntity playerEntity) {
 		super(healthpoints);
 		this.visionRange = visionRange;
@@ -28,9 +29,11 @@ public abstract class Monster extends Lifeform {
 
 	@Override
 	public MonsterEntity spawnNew(final Vector3f position, final float angle, final SceneObject parent) {
-		final SceneObject monsterObject = new SceneObject(body, new BoneTransformation(position, new Quaternionf(new AxisAngle4f(angle, new Vector3f(0, 1, 0)))));
+		final SceneObject monsterObject =
+				new SceneObject(body, new BoneTransformation(position, new Quaternionf(new AxisAngle4f(angle,
+						new Vector3f(0, 1, 0)))));
 		parent.addSubObject(monsterObject);
-		return new MonsterEntity(monsterObject, healthpoints, visionRange, attackRange, attackDamage, movingSpeed);
+		return new MonsterEntity(1f, monsterObject, healthpoints, visionRange, attackRange, attackDamage, movingSpeed);
 	}
 
 	private float getMovingSpeed() {

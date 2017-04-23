@@ -15,9 +15,9 @@ public class PlayerEntity extends LifeformEntity {
 
 	private float playerSpeed = 4f;
 
-	public PlayerEntity(final SceneObject sceneObject, AnimationStateFacade animator,
+	public PlayerEntity(float radius, final SceneObject sceneObject, AnimationStateFacade animator,
 			final float healthpoints, HeightSource heightSource, SwordEntity swordEntity) {
-		super(sceneObject, healthpoints);
+		super(sceneObject, healthpoints, radius);
 		this.animator = animator;
 		this.swordEntity = swordEntity;
 		addBehaviour(0, new CombinedBehaviour(
@@ -37,5 +37,9 @@ public class PlayerEntity extends LifeformEntity {
 
 	public SwordEntity getSword() {
 		return swordEntity;
+	}
+
+	public void addTarsched(LifeformEntity tarsched) {
+		swordEntity.addTarsched(tarsched);
 	}
 }

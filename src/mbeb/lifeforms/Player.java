@@ -11,7 +11,6 @@ import mbeb.opengldefault.gl.shader.ShaderProgram;
 import mbeb.opengldefault.rendering.io.ObjectLoader;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.scene.*;
-import mbeb.opengldefault.scene.behaviour.BoneTrackingBehaviour;
 import mbeb.opengldefault.scene.behaviour.HeightSource;
 import mbeb.opengldefault.scene.materials.Material;
 
@@ -60,13 +59,9 @@ public class Player extends Lifeform {
 
 		final SceneObject swordObject = new SceneObject(sword);
 		parent.addSubObject(swordObject);
-		SwordEntity swordEntity = new SwordEntity(swordObject);
-		swordEntity
-				.addBehaviour(0,
-						new BoneTrackingBehaviour(playerObject, playerAnimatedRenderable.getAnimatedRenderable(),
-								"Item.Right"));
+		SwordEntity swordEntity = new SwordEntity(swordObject, 10f, 1f, playerObject, playerAnimatedRenderable);
 
-		final PlayerEntity playerEntity = new PlayerEntity(playerObject, playerAnimatedRenderable, healthpoints,
+		final PlayerEntity playerEntity = new PlayerEntity(1f, playerObject, playerAnimatedRenderable, healthpoints,
 				heightSource, swordEntity);
 
 		return playerEntity;

@@ -81,4 +81,9 @@ public class Line implements Shape {
 	public Vector2f directionVector() {
 		return getEnd().sub(getStart(), new Vector2f());
 	}
+
+	@Override
+	public void setPosition(Vector2f position) {
+		this.setStart(position);
+	}
 }
