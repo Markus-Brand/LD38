@@ -44,6 +44,7 @@ public class SceneEntity extends Entity {
 		Quaternionf rotationPitch = new Quaternionf().rotateTo(xzPlane, direction);
 
 		sceneObject.getTransformation().setRotation(rotationPitch.mul(rotationYaw));
+		sceneObject.invalidateGlobalTransformation();
 	}
 
 }

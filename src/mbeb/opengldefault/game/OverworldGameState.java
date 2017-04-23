@@ -22,6 +22,7 @@ import mbeb.opengldefault.rendering.renderable.IRenderable;
 import mbeb.opengldefault.rendering.renderable.Skybox;
 import mbeb.opengldefault.scene.Scene;
 import mbeb.opengldefault.scene.SceneObject;
+import mbeb.opengldefault.scene.behaviour.BoneTrackingBehaviour;
 import mbeb.opengldefault.scene.behaviour.PlayerControlBehaviour;
 import mbeb.opengldefault.scene.behaviour.TopDownViewBehaviour;
 import mbeb.opengldefault.scene.entities.EntityWorld;
@@ -30,8 +31,7 @@ import mbeb.opengldefault.scene.materials.Material;
 
 public class OverworldGameState implements GameState {
 
-	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1)
-			.rotate(new AxisAngle4f((float)Math.PI / 2, 0, 0, 1));
+	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1).rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
 
 	private Scene overworldScene;
 	private EntityWorld world;
@@ -61,6 +61,7 @@ public class OverworldGameState implements GameState {
 		playerAnimatedRenderable = new AnimationStateFacade(samuraiMesh, samuraiMaterial);
 
 		IRenderable water = new ObjectLoader().loadFromFile("overworld/water.obj");
+		IRenderable sword = new ObjectLoader().loadFromFile("sword.obj").withMaterial(samuraiMaterial);
 
 		waterShader = new ShaderProgram("water.frag", "planet.vert");
 		waterShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
@@ -94,6 +95,9 @@ public class OverworldGameState implements GameState {
 		overworldScene.getLightManager().addLight(sun);
 
 		playerAnimatedRenderable.registerAnimation("Jogging", "Jogging", 32);
+		SceneObject swordObject = new SceneObject(sword);
+		overworldScene.getSceneGraph().addSubObject(swordObject);
+		world.add(swordObject).addBehaviour(0, new BoneTrackingBehaviour(player, playerAnimatedRenderable.getAnimatedRenderable(), "Item.Right"));
 	}
 
 	@Override

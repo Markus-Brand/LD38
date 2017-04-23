@@ -296,10 +296,10 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 		return globalTransformation;
 	}
 
-	public void invalidatePosition() {
+	public void invalidateGlobalTransformation() {
 		globalTransformation = null;
 		box = null;
-		getSubObjects().forEach(SceneObject::invalidatePosition);
+		getSubObjects().forEach(SceneObject::invalidateGlobalTransformation);
 	}
 
 	/**
@@ -318,7 +318,7 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 	public void setGlobalPosition(Vector3f newPosition) {
 		Matrix4f inverseMatrix = getParentGlobalTranform().asMatrix().invert(new Matrix4f());
 		getTransformation().setPosition(inverseMatrix.transform(new Vector4f(newPosition, 1)));
-		invalidatePosition();
+		invalidateGlobalTransformation();
 	}
 
 	public boolean isSelected() {

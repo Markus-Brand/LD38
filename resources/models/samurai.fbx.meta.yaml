@@ -1,4 +1,4 @@
 sizeFactor: 1.5
 animations:
   Jogging:
-    Bone: 10
+    RootBone: 5
