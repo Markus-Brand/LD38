@@ -11,19 +11,31 @@ public class PlayerEntity extends LifeformEntity {
 
 	private AnimationStateFacade animator;
 
+	private SwordEntity swordEntity;
+
 	private float playerSpeed = 4f;
 
 	public PlayerEntity(final SceneObject sceneObject, AnimationStateFacade animator,
-			final float healthpoints, HeightSource heightSource) {
+			final float healthpoints, HeightSource heightSource, SwordEntity swordEntity) {
 		super(sceneObject, healthpoints);
 		this.animator = animator;
+		this.swordEntity = swordEntity;
 		addBehaviour(0, new CombinedBehaviour(
 				new SamuraiPlayerBehaviour(),
 				new WalkOnHeightMapBehaviour(heightSource, playerSpeed)));
+	}
+
+	@Override
+	public void update(double deltaTime) {
+		super.update(deltaTime);
+		swordEntity.update(deltaTime);
 	}
 
 	public AnimationStateFacade getAnimator() {
 		return animator;
 	}
 
+	public SwordEntity getSword() {
+		return swordEntity;
+	}
 }
