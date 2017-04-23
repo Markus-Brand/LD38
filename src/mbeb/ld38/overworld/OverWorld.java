@@ -35,6 +35,7 @@ public class OverWorld {
 
 	private EntityWorld environment = new EntityWorld();
 	private List<PalmTree> palms = new ArrayList<>();
+	DungeonEntrance entrance;
 
 	private SceneObject parent;
 
@@ -49,11 +50,11 @@ public class OverWorld {
 
 		ObjectLoader loader = new ObjectLoader();
 		IRenderable island = loader.loadFromFile("overworld/island.obj").withMaterial(landMaterial);
-		IRenderable entrance = loader.loadFromFile("overworld/entrance.obj").withMaterial(mossCobbleMaterial);
 
 		parent.addSubObject(island);
 
-		parent.addSubObject(new SceneObject(entrance, new BoneTransformation(new Vector3f(-2.74f, 0.65f, -7.43f))));
+		entrance = new DungeonEntrance(new BoneTransformation(new Vector3f(-2.74f, 0.65f, -7.43f)));
+		entrance.addTo(parent);
 
 
 		//add palms
@@ -81,5 +82,6 @@ public class OverWorld {
 
 	public void setLeavesVisible(boolean visible) {
 		palms.forEach(palm -> palm.setLeavesVisible(visible));
+		entrance.setTopVisible(visible);
 	}
 }

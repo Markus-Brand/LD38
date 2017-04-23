@@ -110,7 +110,6 @@ public class OverworldGameState implements GameState {
 		skybox.getTexture().bind();
 		waterShader.setUniform("skybox", skybox.getTexture());
 		waterShader.setUniform("time", totalTimePassed);
-
 		overworldScene.render();
 	}
 
