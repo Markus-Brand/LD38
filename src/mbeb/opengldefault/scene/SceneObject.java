@@ -35,7 +35,7 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 	/** true, if the user hovers over the object currently */
 	private boolean selected;
 	/** false to not render this sub-tree */
-	private boolean visible;
+	private boolean visible = true;
 
 	/**
 	 * Create a new sceneObject. All parameters are optional

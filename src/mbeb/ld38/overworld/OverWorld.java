@@ -34,6 +34,7 @@ public class OverWorld {
 	};
 
 	private EntityWorld environment = new EntityWorld();
+	private List<PalmTree> palms = new ArrayList<>();
 
 	private SceneObject parent;
 
@@ -54,6 +55,7 @@ public class OverWorld {
 
 		parent.addSubObject(new SceneObject(entrance, new BoneTransformation(new Vector3f(-2.74f, 0.65f, -7.43f))));
 
+
 		//add palms
 		int number = 0;
 		for (Vector3f position : palmPositions) {
@@ -65,7 +67,9 @@ public class OverWorld {
 					new BoneTransformation(new Vector3f(position.x, position.z, position.y), rotation, new Vector3f(
 							scale));
 
-			new PalmTree(transform).addTo(parent);
+			PalmTree currentPalm = new PalmTree(transform);
+			currentPalm.addTo(parent);
+			palms.add(currentPalm);
 			number++;
 		}
 
@@ -73,5 +77,9 @@ public class OverWorld {
 
 	public SceneObject getSceneObject() {
 		return parent;
+	}
+
+	public void setLeavesVisible(boolean visible) {
+		palms.forEach(palm -> palm.setLeavesVisible(visible));
 	}
 }

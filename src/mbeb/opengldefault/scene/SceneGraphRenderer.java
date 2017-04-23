@@ -48,6 +48,9 @@ public class SceneGraphRenderer {
 	 *            the parent transformation for this graph
 	 */
 	public void renderObject(final SceneObject object, final Matrix4f parentTransform) {
+		if (!object.isVisible()) {
+			return;
+		}
 		final Matrix4f transform = parentTransform.mul(object.getTransformation().asMatrix(), new Matrix4f());
 		renderSelf(object, transform);
 		final Collection<SceneObject> subObjects = object.getSubObjects();
