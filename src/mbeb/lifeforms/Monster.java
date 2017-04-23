@@ -6,30 +6,31 @@ import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.scene.*;
 
-public class Monster extends Lifeform {
+public abstract class Monster extends Lifeform {
 
 	float visionRange;
 	float attackRange;
 	float attackDamage;
 	float movingSpeed;
 	IRenderable body;
-	Player player;
+	PlayerEntity playerEntity;
 
-	public Monster(final float healthpoints, final float visionRange, final float attackRange, final float attackDamage, final float movingSpeed, final IRenderable body, final Player player) {
+	public Monster(final float healthpoints, final float visionRange, final float attackRange, final float attackDamage, final float movingSpeed, final IRenderable body,
+			final PlayerEntity playerEntity) {
 		super(healthpoints);
 		this.visionRange = visionRange;
 		this.attackRange = attackRange;
 		this.attackDamage = attackDamage;
 		this.movingSpeed = movingSpeed;
 		this.body = body;
-		this.player = player;
+		this.playerEntity = playerEntity;
 	}
 
 	@Override
 	public MonsterEntity spawnNew(final Vector3f position, final float angle, final SceneObject parent) {
 		final SceneObject monsterObject = new SceneObject(body, new BoneTransformation(position, new Quaternionf(new AxisAngle4f(angle, new Vector3f(0, 1, 0)))));
 		parent.addSubObject(monsterObject);
-		return (MonsterEntity) new MonsterEntity(monsterObject, healthpoints, visionRange, attackRange, attackDamage, movingSpeed).addBehaviour(0, new AttackingBehaviour(player.playerEntity));
+		return new MonsterEntity(monsterObject, healthpoints, visionRange, attackRange, attackDamage, movingSpeed);
 	}
 
 	private float getMovingSpeed() {
