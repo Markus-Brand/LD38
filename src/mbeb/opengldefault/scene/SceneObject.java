@@ -109,7 +109,6 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 		box = null;
 	}
 
-
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
@@ -344,7 +343,11 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 	}
 
 	public void removeSubObject(SceneObject curveObj) {
-		subObjects.remove(curveObj);
+		if (!subObjects.remove(curveObj)) {
+			for (SceneObject sceneObject : subObjects) {
+				sceneObject.removeSubObject(curveObj);
+			}
+		}
 	}
 
 	@Override

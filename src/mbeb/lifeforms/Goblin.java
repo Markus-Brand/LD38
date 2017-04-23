@@ -3,16 +3,16 @@ package mbeb.lifeforms;
 import org.joml.*;
 
 import mbeb.opengldefault.gl.shader.*;
-import mbeb.opengldefault.rendering.renderable.*;
+import mbeb.opengldefault.rendering.io.*;
 import mbeb.opengldefault.scene.*;
 import mbeb.opengldefault.scene.behaviour.*;
 import mbeb.opengldefault.scene.entities.*;
+import mbeb.opengldefault.scene.materials.*;
 
 public class Goblin extends Monster {
 
-	public Goblin(final float healthpoints, final float visionRange, final float attackRange, final float attackDamage, final float attackDuration, final float movingSpeed, final IRenderable body,
-			final PlayerEntity playerEntity, final ShaderProgram animationShader) {
-		super(healthpoints, visionRange, attackRange, attackDamage, attackDuration, movingSpeed, body, playerEntity, animationShader);
+	public Goblin(final PlayerEntity playerEntity, final ShaderProgram animationShader) {
+		super(123, 123456, 123456, 0.5f, 1234, 2, 0.5f, new ObjectLoader().loadFromFile("bunny.obj").withMaterial(new Material("material/beach", 1)), playerEntity, animationShader);
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class Goblin extends Monster {
 				super.update(deltaTime, entity);
 				final MonsterEntity goblin = (MonsterEntity) entity;
 
-				goblin.getAnimator().ensureRunning("Follow");
+				goblin.getAnimator().ensureRunning("Run");
 			}
 		}.limited(monster.getVisionRange())).addBehaviour(0, new JumpingBehaviour(playerEntity).limited(monster.getAttackRange()));
 		return monster;

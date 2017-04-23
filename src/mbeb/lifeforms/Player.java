@@ -1,33 +1,32 @@
 package mbeb.lifeforms;
 
-import org.joml.AxisAngle4f;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
+import java.lang.Math;
 
-import mbeb.opengldefault.animation.AnimatedMesh;
-import mbeb.opengldefault.animation.AnimationStateFacade;
-import mbeb.opengldefault.animation.BoneTransformation;
-import mbeb.opengldefault.gl.shader.ShaderProgram;
-import mbeb.opengldefault.rendering.io.ObjectLoader;
+import org.joml.*;
+
+import mbeb.opengldefault.animation.*;
+import mbeb.opengldefault.gl.shader.*;
+import mbeb.opengldefault.rendering.io.*;
+import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.scene.*;
-import mbeb.opengldefault.scene.behaviour.HeightSource;
-import mbeb.opengldefault.scene.materials.Material;
+import mbeb.opengldefault.scene.behaviour.*;
+import mbeb.opengldefault.scene.materials.*;
 
 public class Player extends Lifeform {
 
-	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1)
-			.rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
+	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1).rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
 
-	private Material material;
-	private AnimatedMesh mesh;
-	private ShaderProgram animationShader;
+	private final Material material;
+	private final AnimatedMesh mesh;
+	private final ShaderProgram animationShader;
 	private HeightSource heightSource;
+	private final IRenderable sword;
 
-	public Player(final float healthpoints, ShaderProgram animationShader, HeightSource heightSource) {
-		super(healthpoints);
+	public Player(final float healthpoints, final ShaderProgram animationShader, final HeightSource heightSource) {
+		super(0.3f, healthpoints);
 		this.animationShader = animationShader;
 		material = new Material("material/samurai", 1);
-		//final IRenderable sword = new ObjectLoader().loadFromFile("sword.obj").withMaterial(samuraiMaterial);
+		sword = new ObjectLoader().loadFromFile("sword.obj").withMaterial(material);
 		mesh = new ObjectLoader().loadFromFileAnim("samurai.fbx");
 		mesh.setTransform(MeshFlip);
 		mesh.getSkeleton().printRecursive("");
@@ -35,33 +34,31 @@ public class Player extends Lifeform {
 
 	}
 
-	public void setHeightSource(HeightSource heightSource) {
+	public void setHeightSource(final HeightSource heightSource) {
 		this.heightSource = heightSource;
 	}
 
 	@Override
 	public PlayerEntity spawnNew(final Vector3f position, final float angle, final SceneObject parent) {
 
-		AnimationStateFacade playerAnimatedRenderable = new AnimationStateFacade(mesh, material);
+		final AnimationStateFacade playerAnimatedRenderable = new AnimationStateFacade(mesh, material);
 
 		playerAnimatedRenderable.registerAnimation("Idle", "Idle", 32);
 		playerAnimatedRenderable.registerAnimation("Jogging", "Jogging", 32, 0.4f, 0.4f);
 		playerAnimatedRenderable.registerAnimation("Pierce", "Pierce", 32, 0.1f, 0.1f, 1.1f);
 
-		SceneObject playerObject =
-				new SceneObject(playerAnimatedRenderable, new BoneTransformation(new Vector3f(1, 10, 0)));
+		final SceneObject playerObject = new SceneObject(playerAnimatedRenderable, new BoneTransformation(new Vector3f(1, 10, 0)));
 
 		playerObject.setShader(animationShader);
 
 		parent.addSubObject(playerObject);
 
-		final PlayerEntity playerEntity = new PlayerEntity(playerObject, playerAnimatedRenderable, healthpoints,
-				heightSource);
+		final SceneObject swordObject = new SceneObject(sword);
+		parent.addSubObject(swordObject);
+		final SwordEntity swordEntity = new SwordEntity(swordObject, 10f, 1f, 0.7f, playerObject, playerAnimatedRenderable);
 
-		/*final SceneObject swordObject = new SceneObject(sword);
-		overworldScene.getSceneGraph().addSubObject(swordObject);
-		world.add(swordObject).addBehaviour(0,
-				new BoneTrackingBehaviour(playerObject, playerAnimatedRenderable.getAnimatedRenderable(), "Item.Right"));*/
+		final PlayerEntity playerEntity = new PlayerEntity(1f, playerObject, playerAnimatedRenderable, healthpoints, heightSource, swordEntity);
+
 		return playerEntity;
 	}
 }

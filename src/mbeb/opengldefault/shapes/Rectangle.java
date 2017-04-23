@@ -81,6 +81,7 @@ public class Rectangle implements Shape {
 	 * @param position
 	 *            the new position
 	 */
+	@Override
 	public void setPosition(Vector2f position) {
 		this.position = position;
 	}
@@ -169,4 +170,5 @@ public class Rectangle implements Shape {
 		Log.error(TAG, "Intersections with Rectangle not supported");
 		return false;
 	}
+
 }

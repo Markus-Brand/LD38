@@ -26,9 +26,9 @@ public abstract class Monster extends Lifeform {
 	AnimatedMesh mesh;
 	ShaderProgram animationShader;
 
-	public Monster(final float healthpoints, final float visionRange, final float attackRange, final float attackDamage, final float attackDuration, final float movingSpeed, final IRenderable body,
-			final PlayerEntity playerEntity, final ShaderProgram animationShader) {
-		super(healthpoints);
+	public Monster(final float radius, final float healthpoints, final float visionRange, final float attackRange, final float attackDamage, final float attackDuration, final float movingSpeed,
+			final IRenderable body, final PlayerEntity playerEntity, final ShaderProgram animationShader) {
+		super(radius, healthpoints);
 		this.visionRange = visionRange;
 		this.attackRange = attackRange;
 		this.attackDamage = attackDamage;
@@ -39,7 +39,7 @@ public abstract class Monster extends Lifeform {
 		//TODO cahnge this
 		this.animationShader = animationShader;
 		material = new Material("material/samurai", 1);
-		mesh = new ObjectLoader().loadFromFileAnim("samurai.fbx");
+		mesh = new ObjectLoader().loadFromFileAnim("goblin.fbx");
 		mesh.setTransform(MeshFlip);
 		mesh.getSkeleton().printRecursive("");
 	}
@@ -48,15 +48,14 @@ public abstract class Monster extends Lifeform {
 	public MonsterEntity spawnNew(final Vector3f position, final float angle, final SceneObject parent) {
 		final AnimationStateFacade goblinAnimatedRenderable = new AnimationStateFacade(mesh, material);
 
-		//TODO replace
 		goblinAnimatedRenderable.registerAnimation("Idle", "Idle", 32);
-		goblinAnimatedRenderable.registerAnimation("Follow", "Follow", 32, 0.4f, 0.4f);
-		goblinAnimatedRenderable.registerAnimation("Pierce", "Pierce", 32, 0.1f, 0.1f, 1.1f);
+		goblinAnimatedRenderable.registerAnimation("Run", "Run", 32, 0.4f, 0.4f);
+		goblinAnimatedRenderable.registerAnimation("Jump", "Jump", 32, 0.1f, 0.1f, 1.1f);
 
 		final SceneObject monsterObject = new SceneObject(goblinAnimatedRenderable, new BoneTransformation(position, new Quaternionf(new AxisAngle4f(angle, new Vector3f(0, 1, 0)))));
 
 		parent.addSubObject(monsterObject);
-		return new MonsterEntity(monsterObject, goblinAnimatedRenderable, healthpoints, visionRange, attackRange, attackDamage, attackDuration, movingSpeed);
+		return new MonsterEntity(radius, monsterObject, goblinAnimatedRenderable, healthpoints, visionRange, attackRange, attackDamage, attackDuration, movingSpeed);
 	}
 
 	private float getMovingSpeed() {

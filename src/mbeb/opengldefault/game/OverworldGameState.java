@@ -22,7 +22,6 @@ import mbeb.opengldefault.rendering.renderable.*;
 import mbeb.opengldefault.scene.*;
 import mbeb.opengldefault.scene.behaviour.*;
 import mbeb.opengldefault.scene.entities.*;
-import mbeb.opengldefault.scene.materials.*;
 import mbeb.opengldefault.shapes.Rectangle;
 
 public class OverworldGameState implements GameState {
@@ -47,6 +46,8 @@ public class OverworldGameState implements GameState {
 
 	Player player;
 
+	MonsterEntity goblinEntity;
+
 	@Option(category = "Game")
 	@ButtonOption
 	public static boolean showBBs = true;
@@ -62,7 +63,6 @@ public class OverworldGameState implements GameState {
 		overworldScene = new Scene(topDownViewCamera, skybox);
 
 		final IRenderable water = new ObjectLoader().loadFromFile("overworld/water.obj");
-		final IRenderable goblinRenderable = new ObjectLoader().loadFromFile("bunny.obj").withMaterial(new Material("material/beach", 1));
 
 		waterShader = new ShaderProgram("water.frag", "planet.vert");
 		waterShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
@@ -96,9 +96,11 @@ public class OverworldGameState implements GameState {
 
 		world.update(0.0001f);
 
-		final Goblin goblin = new Goblin(123456, 123456, 0.5f, 1234, 2, 0.5f, goblinRenderable, playerEntity, animationShader);
-		final MonsterEntity goblinEntity = goblin.spawnNew(new Vector3f(1, 3, 0), 0, overworld.getSceneObject());
-		world.add(goblinEntity);
+		final Goblin goblin = new Goblin(playerEntity, animationShader);
+		goblinEntity = goblin.spawnNew(new Vector3f(1, 3, 0), 0, overworld.getSceneObject());
+		//world.add(goblinEntity);
+
+		//playerEntity.addTarsched(goblinEntity);
 	}
 
 	@Override
@@ -106,6 +108,11 @@ public class OverworldGameState implements GameState {
 		totalTimePassed += deltaTime;
 		overworldScene.update(deltaTime);
 		world.update(deltaTime);
+
+		/*if (goblinEntity.isDead()) {
+			overworldScene.getSceneGraph().removeSubObject(goblinEntity.getSceneObject());
+			world.remove(goblinEntity);
+		}*/
 	}
 
 	@Override
