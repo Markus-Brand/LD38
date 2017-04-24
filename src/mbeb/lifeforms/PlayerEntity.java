@@ -30,8 +30,8 @@ public class PlayerEntity extends LifeformEntity {
 		setHealthBarOffset(new Vector3f(0, 2, 0));
 		inventory = new Inventory();
 
-		inventory.addSword(new Sword(10, 1, 1.5f, LootType.Wood));
-		inventory.addSword(new Sword(5, 1, 0.1f, LootType.Diamond));
+		inventory.addSword(new Sword(10, 1, 1.5f, LootType.Wood, SwordType.LONG_SWORD));
+		inventory.addSword(new Sword(5, 1, 0.1f, LootType.Diamond, SwordType.LONG_SWORD));
 
 		setSword(inventory.getSelectedSword());
 	}
@@ -80,7 +80,7 @@ public class PlayerEntity extends LifeformEntity {
 		this.swordEntity = swordEntity;
 	}
 
-	public void addTo(SceneObject so) {
+	public void addTo(final SceneObject so) {
 		this.getSceneObject().removeSelf();
 		so.addSubObject(this.getSceneObject());
 		this.swordEntity.getSceneObject().removeSelf();
