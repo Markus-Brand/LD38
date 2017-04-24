@@ -17,7 +17,7 @@ public class HealthBarGUIElement extends AtlasGUIElement {
 	private Vector3f color3;
 
 	private float oldHealth;
-	private float shadowDuration = 0.9f;
+	private float shadowDuration = 1.5f;
 	private float shadowProgress;
 
 	private float health;

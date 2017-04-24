@@ -35,7 +35,7 @@ public abstract class LifeformEntity extends SceneEntity {
 		hitCircle = new Circle(new Vector2f(sceneObject.getGlobalPosition().x, sceneObject.getGlobalPosition().z), radius);
 		dead = false;
 
-		healthBar = new HealthBarGUIElement(getHealthBarSize(), new Vector3f(0f, 1, 0.2f), new Vector3f(1f, 0.4f, 0.2f), new Vector3f(0f));
+		healthBar = new HealthBarGUIElement(getHealthBarSize(), new Vector3f(0f, 1, 0.2f), new Vector3f(1f, 0.4f, 0.2f), new Vector3f(0.2f));
 	}
 
 	protected float getHealthBarSize() {
