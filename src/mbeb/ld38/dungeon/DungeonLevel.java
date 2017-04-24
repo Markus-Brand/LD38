@@ -29,7 +29,6 @@ import mbeb.opengldefault.camera.Camera;
 import mbeb.opengldefault.light.LightManager;
 import mbeb.opengldefault.scene.SceneObject;
 import mbeb.opengldefault.scene.behaviour.IHeightSource;
-import sun.tools.jconsole.Tab;
 
 public class DungeonLevel extends SceneObject implements IHeightSource {
 
