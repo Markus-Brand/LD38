@@ -9,10 +9,11 @@ import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.scene.*;
 import mbeb.opengldefault.scene.entities.*;
 import mbeb.opengldefault.shapes.*;
+import mbeb.opengldefault.sound.*;
 
 public abstract class LifeformEntity extends SceneEntity {
 
-	private float healthpoints;
+	protected float healthpoints;
 	private final float maxHealth;
 
 	private boolean dead;
@@ -27,7 +28,11 @@ public abstract class LifeformEntity extends SceneEntity {
 
 	private Camera camera = null; //used to project the healthbar on the screen
 
-	public LifeformEntity(final SceneObject sceneObject, final float healthpoints, final float radius, final HealthBarGUI healthGui) {
+	public SoundSource AttackSource;
+	public SoundSource HurtSource;
+	public SoundSource DieSource;
+
+	public LifeformEntity(final SceneObject sceneObject, final float healthpoints, final float radius, final HealthBarGUI healthGui, final SoundEnvironment soundEnvironment) {
 		super(sceneObject);
 		this.healthpoints = healthpoints;
 		this.maxHealth = healthpoints;
@@ -36,6 +41,29 @@ public abstract class LifeformEntity extends SceneEntity {
 		dead = false;
 
 		healthBar = new HealthBarGUIElement(getHealthBarSize(), new Vector3f(0f, 1, 0.2f), new Vector3f(1f, 0.4f, 0.2f), new Vector3f(0.2f));
+
+		initSound(soundEnvironment);
+	}
+
+	public abstract String getAttackSound();
+
+	public abstract String getHurtSound();
+
+	public abstract String getDieSound();
+
+	protected void initSound(final SoundEnvironment soundEnvironment) {
+		final Sound AttackSound = soundEnvironment.createSound(getAttackSound());
+		final Sound HurtSound = soundEnvironment.createSound(getHurtSound());
+		final Sound DieSound = soundEnvironment.createSound(getDieSound());
+		this.AttackSource = soundEnvironment.createSoundSource(false, false);
+		this.HurtSource = soundEnvironment.createSoundSource(false, false);
+		this.DieSource = soundEnvironment.createSoundSource(false, false);
+		AttackSource.setSound(AttackSound);
+		AttackSource.asNewEntity().attachTo(this);
+		HurtSource.setSound(HurtSound);
+		HurtSource.asNewEntity().attachTo(this);
+		DieSource.setSound(DieSound);
+		DieSource.asNewEntity().attachTo(this);
 	}
 
 	protected float getHealthBarSize() {
@@ -129,8 +157,8 @@ public abstract class LifeformEntity extends SceneEntity {
 		this.deathListener = deathListener;
 	}
 
-	public void knockBack(Vector3f direction, float strength) {
-		Vector3f target = direction.mul(strength, new Vector3f()).add(getPosition());
+	public void knockBack(final Vector3f direction, final float strength) {
+		final Vector3f target = direction.mul(strength, new Vector3f()).add(getPosition());
 		setPosition(target);
 	}
 }

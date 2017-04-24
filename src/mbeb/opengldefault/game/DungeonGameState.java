@@ -8,8 +8,6 @@ import java.lang.Math;
 import java.util.Collection;
 import java.util.HashSet;
 
-import mbeb.opengldefault.gui.TextGUI;
-import mbeb.opengldefault.gui.elements.TextGUIElement;
 import org.joml.*;
 
 import mbeb.ld38.*;
@@ -20,6 +18,8 @@ import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.controls.*;
 import mbeb.opengldefault.gl.*;
 import mbeb.opengldefault.gl.shader.*;
+import mbeb.opengldefault.gui.*;
+import mbeb.opengldefault.gui.elements.*;
 import mbeb.opengldefault.light.*;
 import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.rendering.renderable.*;
@@ -31,8 +31,7 @@ public class DungeonGameState implements GameState {
 
 	private static final String TAG = "DungeonGameState";
 
-	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1)
-			.rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
+	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1).rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
 
 	private Scene scene;
 	private DungeonLevel level;
@@ -72,7 +71,8 @@ public class DungeonGameState implements GameState {
 
 		goblin = new Goblin(shared.playerEntity, animationShader);
 
-		RoomType.initializeRoomTypes(shared.soundEnv);
+		RoomType.initializeRoomTypes(shared.soundEnvironment);
+		chest = new Chest(animationShader, shared.playerEntity);
 		chest = new Chest(animationShader, shared.playerEntity);
 
 		infoGUI = new TextGUI(new Font("Comic Sans MS", 0, 64));
@@ -84,7 +84,7 @@ public class DungeonGameState implements GameState {
 		level.setEnemySpawns(0.2f, 0.2f, 0.2f, 0.2f, 0.2f);
 		level.generate(size, size);
 		level.setFinishListener(dungeonLevel -> {
-			if(!exitDungeon) {
+			if (!exitDungeon) {
 				this.exitDungeon = true;
 				this.shared.playerEntity.resetHealth();
 				this.size++;
@@ -104,8 +104,7 @@ public class DungeonGameState implements GameState {
 			this.exitDungeon = true;
 		});
 
-		world.add(camera).addBehaviour(0, new TopDownViewBehaviour(shared.playerEntity, 8, 1.5f, 2))
-				.setPosition(new Vector3f(3, 4, 5));
+		world.add(camera).addBehaviour(0, new TopDownViewBehaviour(shared.playerEntity, 8, 1.5f, 2)).setPosition(new Vector3f(3, 4, 5));
 
 		//light
 		final DirectionalLight sun = new DirectionalLight(new Color(8, 7, 6), new Vector3f(0, -1, 0));
@@ -167,13 +166,13 @@ public class DungeonGameState implements GameState {
 
 	@Override
 	public void open() {
-		if(this.exitDungeon) {
+		if (this.exitDungeon) {
 			this.level.removeSelf();
 			this.level = new DungeonLevel(scene.getLightManager(), goblin, shared.healthBarGUI, camera, chest, infoBox, scene.getSoundEnvironment());
 			this.level.generate(size, size);
 			this.scene.getSceneGraph().addSubObject(this.level);
 			level.setFinishListener(dungeonLevel -> {
-				if(!exitDungeon) {
+				if (!exitDungeon) {
 					this.exitDungeon = true;
 					this.shared.playerEntity.resetHealth();
 					this.size++;
@@ -186,6 +185,6 @@ public class DungeonGameState implements GameState {
 		this.level.setPlayer(this.shared.playerEntity);
 		GLContext.hideCursor();
 		scene.getLightManager().rewriteUBO();
-		shared.soundEnv.makeCurrent();
+		shared.soundEnvironment.makeCurrent();
 	}
 }

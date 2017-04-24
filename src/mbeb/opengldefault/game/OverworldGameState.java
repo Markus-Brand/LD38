@@ -86,7 +86,7 @@ public class OverworldGameState implements GameState {
 
 		skybox = new Skybox("beachbox/beach", "png");
 		scene = new Scene(topDownViewCamera, skybox);
-		shared.soundEnv = scene.getSoundEnvironment();
+		shared.soundEnvironment = scene.getSoundEnvironment();
 
 		final IRenderable water = new ObjectLoader().loadFromFile("overworld/water.obj");
 
@@ -120,7 +120,7 @@ public class OverworldGameState implements GameState {
 		shared.playerEntity.setHeightSource(playerHeight);
 
 		world.add(topDownViewCamera).addBehaviour(0, new TopDownViewBehaviour(shared.playerEntity, 7, 3, 1))
-				.setPosition(new Vector3f(3, 4, 5));
+				.setPosition(port.add(new Vector3f(0.01f), new Vector3f()));
 
 		final DirectionalLight sun = new DirectionalLight(Color.WHITE, new Vector3f(0.2f, -1, 0).normalize());
 		scene.getLightManager().addLight(sun);
@@ -186,17 +186,16 @@ public class OverworldGameState implements GameState {
 				GLContext.hideCursor();
 			}
 			craftingHUD.update(deltaTime);
-		} else {
-			totalTimePassed += deltaTime;
-			world.update(deltaTime);
-
-			if (goblinEntity.isDead()) {
-				scene.getSceneGraph().removeSubObject(goblinEntity.getSceneObject());
-				world.remove(goblinEntity);
-			}
-			scene.update(deltaTime);
-			shared.healthBarGUI.update(deltaTime);
 		}
+		totalTimePassed += deltaTime;
+		world.update(deltaTime);
+
+		if (goblinEntity.isDead()) {
+			scene.getSceneGraph().removeSubObject(goblinEntity.getSceneObject());
+			world.remove(goblinEntity);
+		}
+		scene.update(deltaTime);
+		shared.healthBarGUI.update(deltaTime);
 		text.update(deltaTime);
 		hud.update(deltaTime);
 
@@ -253,7 +252,7 @@ public class OverworldGameState implements GameState {
 		}
 		scene.getLightManager().rewriteUBO();
 		GLContext.hideCursor();
-		scene.getSoundEnvironment().makeCurrent();
+		shared.soundEnvironment.makeCurrent();
 		shared.playerEntity.setStoneWalkingSound(false);
 	}
 

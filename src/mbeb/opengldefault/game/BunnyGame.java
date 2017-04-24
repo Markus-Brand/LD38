@@ -18,7 +18,6 @@ public class BunnyGame extends Game {
 		addGameState(GameStateIdentifier.INTRO, new IntroGameState(data));
 		addGameState(GameStateIdentifier.OVERWORLD, new OverworldGameState(data));
 		addGameState(GameStateIdentifier.DUNGEON, new DungeonGameState(data));
-		addGameState(GameStateIdentifier.OPTIONS, options);
 		super.init();
 	}
 
