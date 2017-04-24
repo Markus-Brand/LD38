@@ -32,6 +32,7 @@ public class ChestBehaviour extends ReferenceEntityBehaviour {
 		if (!started) {
 			if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_E)) {
 				started = true;
+				chest.chestSoundSource.play();
 			}
 		} else {
 			if (timePassed < openingTime) {

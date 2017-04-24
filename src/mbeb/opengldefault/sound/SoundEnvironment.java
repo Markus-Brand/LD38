@@ -1,18 +1,13 @@
 package mbeb.opengldefault.sound;
 
-import org.lwjgl.openal.AL;
-import org.lwjgl.openal.AL11;
-import org.lwjgl.openal.ALC;
-import org.lwjgl.openal.ALCCapabilities;
-
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.lwjgl.openal.AL10.alDistanceModel;
+import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.openal.ALC10.*;
-import static org.lwjgl.system.MemoryUtil.NULL;
+import static org.lwjgl.system.MemoryUtil.*;
+
+import java.nio.*;
+import java.util.*;
+
+import org.lwjgl.openal.*;
 
 /**
  * A Context for OpenAL calculations. Sounds and SoundSources belong to one.
@@ -41,10 +36,10 @@ public class SoundEnvironment {
 	 *
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		SoundEnvironment env = new SoundEnvironment();
-		Sound sound = env.createSound("sounds/soundtrackSmall.ogg");
-		SoundSource source = env.createSoundSource(true, false);
+	public static void main(final String[] args) {
+		final SoundEnvironment env = new SoundEnvironment();
+		final Sound sound = env.createSound("sounds/soundtrackSmall.ogg");
+		final SoundSource source = env.createSoundSource(true, false);
 		source.setSound(sound);
 
 		source.play();
@@ -70,7 +65,7 @@ public class SoundEnvironment {
 		if (device == NULL) {
 			throw new IllegalStateException("Failed to open the default OpenAL device.");
 		}
-		ALCCapabilities deviceCaps = ALC.createCapabilities(device);
+		final ALCCapabilities deviceCaps = ALC.createCapabilities(device);
 		this.context = alcCreateContext(device, (IntBuffer) null);
 		if (context == NULL) {
 			throw new IllegalStateException("Failed to create OpenAL context.");
@@ -87,9 +82,9 @@ public class SoundEnvironment {
 	 *            the name of the sound file to load
 	 * @return an object representing that sound
 	 */
-	public Sound createSound(String filename) {
+	public Sound createSound(final String filename) {
 		makeCurrent();
-		Sound sound = new Sound(filename);
+		final Sound sound = new Sound("resources/sounds/" + filename + ".ogg");
 		soundList.add(sound);
 		return sound;
 	}
@@ -104,9 +99,9 @@ public class SoundEnvironment {
 	 *            (could be useful for "screen-space-sounds like background music or HUD/GUI-sounds)
 	 * @return an Object that can play sounds
 	 */
-	public SoundSource createSoundSource(boolean loop, boolean relative) {
+	public SoundSource createSoundSource(final boolean loop, final boolean relative) {
 		makeCurrent();
-		SoundSource source = new SoundSource(loop, relative);
+		final SoundSource source = new SoundSource(loop, relative);
 		soundSourceList.add(source);
 		return source;
 	}
@@ -134,7 +129,7 @@ public class SoundEnvironment {
 	 *
 	 * @param model
 	 */
-	public void setAttenuationModel(int model) {
+	public void setAttenuationModel(final int model) {
 		alDistanceModel(model);
 		ALErrors.checkForError(TAG, "alDistanceModel");
 	}

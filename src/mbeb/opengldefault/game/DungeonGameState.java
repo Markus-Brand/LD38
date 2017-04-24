@@ -1,67 +1,59 @@
 package mbeb.opengldefault.game;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glGetBoolean;
+import static org.lwjgl.opengl.GL11.*;
 
 import java.awt.*;
+import java.lang.Math;
 
-import mbeb.ld38.SharedData;
-import mbeb.lifeforms.Chest;
-import mbeb.lifeforms.Goblin;
-import mbeb.opengldefault.gl.GLContext;
-import org.joml.AxisAngle4f;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
+import org.joml.*;
 
-import mbeb.ld38.dungeon.DungeonLevel;
-import mbeb.ld38.dungeon.room.RoomType;
-import mbeb.opengldefault.camera.Camera;
-import mbeb.opengldefault.camera.PerspectiveCamera;
-import mbeb.opengldefault.controls.KeyBoard;
-import mbeb.opengldefault.gl.shader.ShaderProgram;
-import mbeb.opengldefault.light.DirectionalLight;
-import mbeb.opengldefault.logging.GLErrors;
-import mbeb.opengldefault.rendering.renderable.Skybox;
-import mbeb.opengldefault.scene.Scene;
-import mbeb.opengldefault.scene.behaviour.TopDownViewBehaviour;
-import mbeb.opengldefault.scene.entities.CameraEntity;
-import mbeb.opengldefault.scene.entities.EntityWorld;
-import mbeb.opengldefault.scene.entities.IEntity;
+import mbeb.ld38.*;
+import mbeb.ld38.dungeon.*;
+import mbeb.ld38.dungeon.room.*;
+import mbeb.lifeforms.*;
+import mbeb.opengldefault.camera.*;
+import mbeb.opengldefault.controls.*;
+import mbeb.opengldefault.gl.*;
+import mbeb.opengldefault.gl.shader.*;
+import mbeb.opengldefault.light.*;
+import mbeb.opengldefault.logging.*;
+import mbeb.opengldefault.rendering.renderable.*;
+import mbeb.opengldefault.scene.*;
+import mbeb.opengldefault.scene.behaviour.*;
+import mbeb.opengldefault.scene.entities.*;
 
 public class DungeonGameState implements GameState {
 
 	private static final String TAG = "DungeonGameState";
 
-	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1)
-			.rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
+	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1).rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
 
 	private Scene scene;
 	private DungeonLevel level;
 	private EntityWorld world;
 	private Goblin goblin;
 
-	private SharedData shared;
+	private final SharedData shared;
 
-	public DungeonGameState(SharedData data) {
+	public DungeonGameState(final SharedData data) {
 		this.shared = data;
 	}
 
 	@Override
 	public void init() {
-		Camera camera = new PerspectiveCamera();
-		Skybox skybox = new Skybox("darkbox/db");
+		final Camera camera = new PerspectiveCamera();
+		final Skybox skybox = new Skybox("darkbox/db");
 
 		scene = new Scene(camera, skybox);
 		world = new EntityWorld();
 
 		//shaders
-		ShaderProgram defaultShader = new ShaderProgram("basic.vert", "basic.frag");
+		final ShaderProgram defaultShader = new ShaderProgram("basic.vert", "basic.frag");
 		defaultShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
 		scene.getLightManager().addShader(defaultShader);
 		scene.getSceneGraph().setShader(defaultShader);
-		ShaderProgram animationShader = new ShaderProgram("boneAnimation.vert", "basic.frag");
+		final ShaderProgram animationShader = new ShaderProgram("boneAnimation.vert", "basic.frag");
 		animationShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
 		scene.getLightManager().addShader(animationShader);
 
@@ -70,27 +62,24 @@ public class DungeonGameState implements GameState {
 		goblin = new Goblin(shared.playerEntity, animationShader);
 
 		RoomType.initializeRoomTypes();
-		Chest chest = new Chest(animationShader, shared.playerEntity);
+		final Chest chest = new Chest(animationShader, shared.playerEntity);
 
 		level = new DungeonLevel(scene.getLightManager(), goblin, shared.healthBarGUI, camera, chest);
 		level.setEnemySpawns(0.2f, 0.2f, 0.2f, 0.2f, 0.2f);
-		level.generate(3, 4);
+		level.generate(3, 4, scene.getSoundEnvironment());
 
 		scene.getSceneGraph().addSubObject(level);
 
-		IEntity cameraEntity = new CameraEntity(camera);
+		final IEntity cameraEntity = new CameraEntity(camera);
 		camera.setEye(new Vector3f(0, 20, 0));
 		cameraEntity.setDirection(new Vector3f(0, -1, 0));
 
-
-
 		shared.playerEntity.setHeightSource(level);
 
-		world.add(camera).addBehaviour(0, new TopDownViewBehaviour(shared.playerEntity, 8, 1.5f, 2))
-				.setPosition(new Vector3f(3, 4, 5));
+		world.add(camera).addBehaviour(0, new TopDownViewBehaviour(shared.playerEntity, 8, 1.5f, 2)).setPosition(new Vector3f(3, 4, 5));
 
 		//light
-		DirectionalLight sun = new DirectionalLight(new Color(8, 7, 6), new Vector3f(0, -1, 0));
+		final DirectionalLight sun = new DirectionalLight(new Color(8, 7, 6), new Vector3f(0, -1, 0));
 		scene.getLightManager().addLight(sun);
 		world.add(shared.playerEntity);
 
@@ -100,7 +89,7 @@ public class DungeonGameState implements GameState {
 	}
 
 	@Override
-	public void update(double deltaTime) {
+	public void update(final double deltaTime) {
 		if (KeyBoard.pullKeyDown(GLFW_KEY_T)) {
 			if (this.level.getActiveRoom() != null) {
 				if (this.level.getActiveRoom().isOpen()) {

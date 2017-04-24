@@ -1,26 +1,24 @@
 package mbeb.lifeforms;
 
-import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
+import org.joml.*;
+import org.lwjgl.glfw.*;
 
-import mbeb.ld38.HealthBarGUI;
-import mbeb.opengldefault.animation.AnimationStateFacade;
-import mbeb.opengldefault.animation.BoneTransformation;
-import mbeb.opengldefault.controls.KeyBoard;
-import mbeb.opengldefault.light.LightManager;
-import mbeb.opengldefault.light.PointLight;
-import mbeb.opengldefault.scene.SceneObject;
+import mbeb.ld38.*;
+import mbeb.opengldefault.animation.*;
+import mbeb.opengldefault.controls.*;
+import mbeb.opengldefault.light.*;
+import mbeb.opengldefault.scene.*;
 import mbeb.opengldefault.scene.behaviour.*;
-import mbeb.opengldefault.scene.entities.PointLightEntity;
-import mbeb.opengldefault.scene.entities.SceneEntity;
+import mbeb.opengldefault.scene.entities.*;
+import mbeb.opengldefault.sound.*;
 
 public class PlayerEntity extends LifeformEntity {
 
 	private final AnimationStateFacade animator;
 
 	private SwordEntity swordEntity;
-	private SceneEntity lampEntity;
-	private PointLightEntity lightEntity;
+	private final SceneEntity lampEntity;
+	private final PointLightEntity lightEntity;
 
 	private final float playerSpeed = 4f;
 
@@ -28,9 +26,10 @@ public class PlayerEntity extends LifeformEntity {
 
 	private final WalkOnHeightMapBehaviour heightWalk;
 
-	public PlayerEntity(final float radius, final SceneObject sceneObject, final AnimationStateFacade animator,
-			final float healthpoints, final IHeightSource heightSource,
-			final HealthBarGUI healthGui) {
+	public SoundSource craftingSoundSource;
+
+	public PlayerEntity(final float radius, final SceneObject sceneObject, final AnimationStateFacade animator, final float healthpoints, final IHeightSource heightSource,
+			final HealthBarGUI healthGui, final SoundEnvironment soundEnvironment) {
 		super(sceneObject, healthpoints, radius, healthGui);
 		this.animator = animator;
 		heightWalk = new WalkOnHeightMapBehaviour(heightSource, playerSpeed);
@@ -43,18 +42,20 @@ public class PlayerEntity extends LifeformEntity {
 
 		setSword(inventory.getSelectedSword());
 
-		SceneObject lampObject =
-				new SceneObject(Player.lampRenderable, new BoneTransformation(null, null, new Vector3f(0.3f)));
+		final SceneObject lampObject = new SceneObject(Player.lampRenderable, new BoneTransformation(null, null, new Vector3f(0.3f)));
 
-		PointLight light = new PointLight(new Vector3f(1f, 0.5f, 0.2f), new Vector3f(), 15f);
-		lightEntity =
-				(PointLightEntity) light.asEntity().addBehaviour(0,
-						new ParentBehaviour(lampObject, new Vector3f(0, 2, 0)));
-		lampEntity =
-				(SceneEntity) lampObject.asNewEntity().addBehaviour(
-						0,
-						new BoneTrackingBehaviour(sceneObject, animator.getAnimatedRenderable(), "Hand.Left")
-								.fixedDirection());
+		final PointLight light = new PointLight(new Vector3f(1f, 0.5f, 0.2f), new Vector3f(), 15f);
+		lightEntity = (PointLightEntity) light.asEntity().addBehaviour(0, new ParentBehaviour(lampObject, new Vector3f(0, 2, 0)));
+		lampEntity = (SceneEntity) lampObject.asNewEntity().addBehaviour(0, new BoneTrackingBehaviour(sceneObject, animator.getAnimatedRenderable(), "Hand.Left").fixedDirection());
+
+		initCraftingSound(soundEnvironment);
+	}
+
+	private void initCraftingSound(final SoundEnvironment soundEnvironment) {
+		final Sound craftingSound = soundEnvironment.createSound("crafting");
+		this.craftingSoundSource = soundEnvironment.createSoundSource(false, true);
+		craftingSoundSource.setSound(craftingSound);
+		craftingSoundSource.asNewEntity().attachTo(this);
 	}
 
 	@Override
@@ -115,8 +116,8 @@ public class PlayerEntity extends LifeformEntity {
 		this.lampEntity.getSceneObject().removeSelf();
 		so.addSubObject(this.lampEntity.getSceneObject());
 
-		PointLight oldLight = lightEntity.getLight();
-		PointLight newLight = new PointLight(oldLight);
+		final PointLight oldLight = lightEntity.getLight();
+		final PointLight newLight = new PointLight(oldLight);
 		oldLight.remove();
 		newLightManager.addLight(newLight);
 		lightEntity.setPointlight(newLight);

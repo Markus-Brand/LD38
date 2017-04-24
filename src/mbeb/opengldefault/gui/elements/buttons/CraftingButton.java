@@ -1,26 +1,24 @@
 package mbeb.opengldefault.gui.elements.buttons;
 
-import java.awt.Color;
-import java.util.HashMap;
-import java.util.Map.Entry;
+import java.awt.*;
+import java.util.*;
+import java.util.Map.*;
 
-import org.joml.Vector2f;
+import org.joml.*;
 
-import mbeb.ld38.recipe.Recipe;
-import mbeb.lifeforms.Inventory;
-import mbeb.lifeforms.LootType;
-import mbeb.lifeforms.Sword;
-import mbeb.opengldefault.gui.AtlasGUI;
-import mbeb.opengldefault.gui.TextGUI;
-import mbeb.opengldefault.gui.elements.AtlasGUIElement;
-import mbeb.opengldefault.gui.elements.TextGUIElement;
+import mbeb.ld38.recipe.*;
+import mbeb.lifeforms.*;
+import mbeb.opengldefault.gui.*;
+import mbeb.opengldefault.gui.elements.*;
 import mbeb.opengldefault.shapes.Rectangle;
 
 public class CraftingButton extends Button {
 
-	private Recipe recipe;
+	private final Recipe recipe;
 
-	private Inventory inventory;
+	private final Inventory inventory;
+
+	PlayerEntity playerEntity;
 
 	private HashMap<LootType, TextGUIElement> buttonTexts;
 
@@ -30,9 +28,10 @@ public class CraftingButton extends Button {
 
 	private boolean dirty;
 
-	public CraftingButton(Rectangle bounding, Recipe recipe, Inventory inventory) {
+	public CraftingButton(final Rectangle bounding, final Recipe recipe, final PlayerEntity playerEntity) {
 		super(bounding, false);
-		this.inventory = inventory;
+		this.inventory = playerEntity.getInventory();
+		this.playerEntity = playerEntity;
 		this.recipe = recipe;
 		buttonTexts = new HashMap<>();
 		dirty = false;
@@ -44,7 +43,7 @@ public class CraftingButton extends Button {
 	 * @param atlasGUI
 	 * @param textGUI
 	 */
-	public void show(AtlasGUI atlasGUI, TextGUI textGUI) {
+	public void show(final AtlasGUI atlasGUI, final TextGUI textGUI) {
 		if (buttonTexts.size() > 0) {
 			return;
 		}
@@ -52,31 +51,27 @@ public class CraftingButton extends Button {
 		buttonAtlas.setColor(Color.LIGHT_GRAY);
 		buttonAtlas.setColor(Color.BLACK, 0);
 
-		float spacePerLine = 0.2f;
+		final float spacePerLine = 0.2f;
 		float height = 0.5f;
 
-		Sword sword = recipe.getResultingSword();
+		final Sword sword = recipe.getResultingSword();
 
 		title = textGUI.addText(sword.getName(), new Vector2f());
 		title.setColor(Color.BLACK);
 		title.setPositionRelativeTo(bounding, 0.5f, 0.90f);
 
-		info =
-				textGUI.addText("Damage:" + (int) sword.getDamage() + " | " + "Range:" + sword.getRange() + "m | "
-						+ "Speed:"
-						+ (int) (10 / sword.getStrokeTime()),
-						new Vector2f(), 0.03f);
+		info = textGUI.addText("Damage:" + (int) sword.getDamage() + " | " + "Range:" + sword.getRange() + "m | " + "Speed:" + (int) (10 / sword.getStrokeTime()), new Vector2f(), 0.03f);
 		info.setColor(Color.BLACK);
 		info.setPositionRelativeTo(bounding, 0.5f, 0.70f);
 
-		for (Entry<LootType, Integer> entry : recipe.getNeededItems().entrySet()) {
-			int numNeeded = entry.getValue();
-			Integer integerNumInInventory = inventory.getLootMap().get(entry.getKey());
-			int numInInventory = integerNumInInventory == null ? 0 : integerNumInInventory;
+		for (final Entry<LootType, Integer> entry : recipe.getNeededItems().entrySet()) {
+			final int numNeeded = entry.getValue();
+			final Integer integerNumInInventory = inventory.getLootMap().get(entry.getKey());
+			final int numInInventory = integerNumInInventory == null ? 0 : integerNumInInventory;
 
-			String text = entry.getKey() + ": " + numInInventory + "/" + numNeeded;
+			final String text = entry.getKey() + ": " + numInInventory + "/" + numNeeded;
 
-			TextGUIElement newElement = textGUI.addText(text, new Vector2f());
+			final TextGUIElement newElement = textGUI.addText(text, new Vector2f());
 			newElement.setPositionRelativeTo(bounding, 0.5f, height);
 			if (numInInventory >= numNeeded) {
 				newElement.setColor(new Color(0, 150, 0));
@@ -92,12 +87,12 @@ public class CraftingButton extends Button {
 	}
 
 	public void updateTexts() {
-		for (Entry<LootType, Integer> entry : recipe.getNeededItems().entrySet()) {
-			int numNeeded = entry.getValue();
-			Integer integerNumInInventory = inventory.getLootMap().get(entry.getKey());
-			int numInInventory = integerNumInInventory == null ? 0 : integerNumInInventory;
+		for (final Entry<LootType, Integer> entry : recipe.getNeededItems().entrySet()) {
+			final int numNeeded = entry.getValue();
+			final Integer integerNumInInventory = inventory.getLootMap().get(entry.getKey());
+			final int numInInventory = integerNumInInventory == null ? 0 : integerNumInInventory;
 
-			String text = entry.getKey() + ": " + numInInventory + "/" + numNeeded;
+			final String text = entry.getKey() + ": " + numInInventory + "/" + numNeeded;
 
 			buttonTexts.get(entry.getKey()).setText(text);
 
@@ -124,10 +119,10 @@ public class CraftingButton extends Button {
 		buttonAtlas.setColor(Color.LIGHT_GRAY);
 	}
 
-	public void hide(AtlasGUI atlasGUI, TextGUI textGUI) {
+	public void hide(final AtlasGUI atlasGUI, final TextGUI textGUI) {
 		textGUI.remove(title);
 		textGUI.remove(info);
-		for (TextGUIElement lines : buttonTexts.values()) {
+		for (final TextGUIElement lines : buttonTexts.values()) {
 			textGUI.remove(lines);
 		}
 		atlasGUI.remove(buttonAtlas);
@@ -140,6 +135,7 @@ public class CraftingButton extends Button {
 			inventory.craft(recipe);
 			buttonAtlas.setColor(Color.LIGHT_GRAY);
 			dirty = true;
+			playerEntity.craftingSoundSource.play();
 		}
 	}
 

@@ -12,6 +12,7 @@ import mbeb.opengldefault.scene.*;
 import mbeb.opengldefault.scene.behaviour.*;
 import mbeb.opengldefault.scene.entities.*;
 import mbeb.opengldefault.scene.materials.*;
+import mbeb.opengldefault.sound.*;
 
 public class Goblin extends Monster {
 
@@ -35,14 +36,15 @@ public class Goblin extends Monster {
 	}
 
 	@Override
-	public MonsterEntity spawnNew(final Vector3f position, final float angle, final SceneObject parent, final HealthBarGUI healthBarGui) {
+	public MonsterEntity spawnNew(final Vector3f position, final float angle, final SceneObject parent, final HealthBarGUI healthBarGui, final SoundEnvironment soundEnvironment) {
 		final AnimationStateFacade goblinAnimatedRenderable = new AnimationStateFacade(mesh, material);
 
 		goblinAnimatedRenderable.registerAnimation("Idle", "Idle", 32);
 		goblinAnimatedRenderable.registerAnimation("Run", "Run", 32, 0.4f, 0.4f);
 		goblinAnimatedRenderable.registerAnimation("Jump", "Jump", 32, 0.1f, 0.1f, 1.1f);
 
-		final SceneObject monsterObject = new SceneObject(goblinAnimatedRenderable, new BoneTransformation(position, new Quaternionf(new AxisAngle4f(angle, new Vector3f(0, 1, 0))), new Vector3f(0.5f)));
+		final SceneObject monsterObject =
+				new SceneObject(goblinAnimatedRenderable, new BoneTransformation(position, new Quaternionf(new AxisAngle4f(angle, new Vector3f(0, 1, 0))), new Vector3f(0.5f)));
 
 		monsterObject.setShader(animationShader);
 

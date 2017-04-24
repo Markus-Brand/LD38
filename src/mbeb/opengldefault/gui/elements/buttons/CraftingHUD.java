@@ -1,61 +1,53 @@
 package mbeb.opengldefault.gui.elements.buttons;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import org.joml.Vector2f;
+import org.joml.*;
 
-import mbeb.ld38.recipe.DiamondSwordRecipe;
-import mbeb.ld38.recipe.GoldSwordRecipe;
-import mbeb.ld38.recipe.Recipe;
-import mbeb.ld38.recipe.SteelSwordRecipe;
-import mbeb.ld38.recipe.StoneSwordRecipe;
-import mbeb.ld38.recipe.WoodenSwordRecipe;
-import mbeb.lifeforms.Inventory;
-import mbeb.opengldefault.gui.AtlasGUI;
-import mbeb.opengldefault.gui.TextGUI;
-import mbeb.opengldefault.shapes.Rectangle;
+import mbeb.ld38.recipe.*;
+import mbeb.lifeforms.*;
+import mbeb.opengldefault.gui.*;
+import mbeb.opengldefault.shapes.*;
 
 public class CraftingHUD {
-	private List<CraftingButton> buttons;
+	private final List<CraftingButton> buttons;
 
-	private AtlasGUI atlasGUI;
-	private TextGUI textGUI;
+	private final AtlasGUI atlasGUI;
+	private final TextGUI textGUI;
 
-	public CraftingHUD(AtlasGUI atlasGUI, TextGUI textGUI, Inventory inventory) {
+	public CraftingHUD(final AtlasGUI atlasGUI, final TextGUI textGUI, final PlayerEntity playerEntity) {
 		this.atlasGUI = atlasGUI;
 		this.textGUI = textGUI;
 		buttons = new ArrayList<>();
 
-		addNew(new WoodenSwordRecipe(), inventory);
-		addNew(new StoneSwordRecipe(), inventory);
-		addNew(new SteelSwordRecipe(), inventory);
-		addNew(new GoldSwordRecipe(), inventory);
-		addNew(new DiamondSwordRecipe(), inventory);
+		addNew(new WoodenSwordRecipe(), playerEntity);
+		addNew(new StoneSwordRecipe(), playerEntity);
+		addNew(new SteelSwordRecipe(), playerEntity);
+		addNew(new GoldSwordRecipe(), playerEntity);
+		addNew(new DiamondSwordRecipe(), playerEntity);
 	}
 
-	private void addNew(Recipe recipe, Inventory inventory) {
-		buttons.add(new CraftingButton(new Rectangle(new Vector2f(-0.95f + buttons.size() * 0.39f, -0.275f),
-				new Vector2f(0.35f, 0.55f)), recipe, inventory));
+	private void addNew(final Recipe recipe, final PlayerEntity playerEntity) {
+		buttons.add(new CraftingButton(new Rectangle(new Vector2f(-0.95f + buttons.size() * 0.39f, -0.275f), new Vector2f(0.35f, 0.55f)), recipe, playerEntity));
 	}
 
 	public void show() {
-		for (CraftingButton button : buttons) {
+		for (final CraftingButton button : buttons) {
 			button.show(atlasGUI, textGUI);
 		}
 	}
 
 	public void hide() {
-		for (CraftingButton button : buttons) {
+		for (final CraftingButton button : buttons) {
 			button.hide(atlasGUI, textGUI);
 		}
 	}
 
-	public void update(double deltaTime) {
-		for (CraftingButton button : buttons) {
+	public void update(final double deltaTime) {
+		for (final CraftingButton button : buttons) {
 			button.update(deltaTime);
 			if (button.isDirty()) {
-				for (CraftingButton b : buttons) {
+				for (final CraftingButton b : buttons) {
 					b.updateTexts();
 				}
 			}
