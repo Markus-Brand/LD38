@@ -136,7 +136,7 @@ public class OverworldGameState implements GameState {
 		shared.playerEntity.showHealthBar(null);
 
 		hud = new AtlasGUI("menu.png", 4, 4);
-		text = new TextGUI(new Font("Arial", 0, 64));
+		text = new TextGUI(new Font("Comic Sans MS", 0, 64));
 		infoBox = text.addText(" ", new Vector2f());
 		infoBox.setPositionRelativeToScreen(0.01f, 0.01f);
 		infoBox.setColor(Color.WHITE);
