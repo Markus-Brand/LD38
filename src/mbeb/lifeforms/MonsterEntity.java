@@ -91,6 +91,13 @@ public class MonsterEntity extends LifeformEntity {
 		this.swordEntity = swordEntity;
 	}
 
+	@Override
+	public void onDie() {
+		super.onDie();
+		this.swordEntity.getSceneObject().removeSelf();
+		this.getSceneObject().removeSelf();
+	}
+
 	public SwordEntity getSword() {
 		return swordEntity;
 	}

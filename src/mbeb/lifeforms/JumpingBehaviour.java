@@ -37,8 +37,6 @@ public class JumpingBehaviour extends ReferenceEntityBehaviour {
 		if (!isActive) {
 			startingPosition = new Vector3f(goblin.getPosition());
 			playerPosition = new Vector3f(getReference().getPosition());
-			System.out.println(startingPosition);
-			System.out.println(playerPosition);
 			goblin.setDirection(playerPosition.sub(startingPosition, new Vector3f()));
 			isActive = true;
 			timePassed = 0;
@@ -55,7 +53,6 @@ public class JumpingBehaviour extends ReferenceEntityBehaviour {
 			} else if (timePassed < attackPreperationTime + attackDuration) {
 				final float progress = 1.0f - (attackPreperationTime + attackDuration - timePassed) / attackDuration;
 				goblin.setPosition(startingPosition.lerp(playerPosition, progress, new Vector3f()));
-				System.out.println(progress + " " + goblin.getPosition());
 				goblin.getAnimator().ensureRunning("Jump", isActive, false);
 				goblin.getAnimator().ensureRunning("Jump", false, false);
 			} else {

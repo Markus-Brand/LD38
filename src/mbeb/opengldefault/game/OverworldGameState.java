@@ -132,8 +132,6 @@ public class OverworldGameState implements GameState {
 
 		goblinEntity.showHealthBar(topDownViewCamera);
 
-		shared.playerEntity.showHealthBar(null);
-
 		goblinEntity.addTarsched(shared.playerEntity);
 
 		shared.playerEntity.showHealthBar(null);
@@ -160,7 +158,6 @@ public class OverworldGameState implements GameState {
 		world.update(deltaTime);
 
 		if (goblinEntity.isDead()) {
-			overworldScene.getSceneGraph().removeSubObject(goblinEntity.getSceneObject());
 			world.remove(goblinEntity);
 		}
 		shared.healthBarGUI.update(deltaTime);

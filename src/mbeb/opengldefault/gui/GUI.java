@@ -156,6 +156,8 @@ public class GUI implements IRenderable {
 
 	@Override
 	public void render(ShaderProgram shader) {
+		if(this.elements.isEmpty())
+			return;
 		vbo.bind();
 		if (dirty) {
 			setupVAO();

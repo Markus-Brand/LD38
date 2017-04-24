@@ -105,20 +105,23 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 			return !visited;
 		};
 
+		Random random = new Random();
+
 		Consumer<Room> normalRoom = room -> {
 			if (markVisited.apply(room)) {
 				room.close();
-				MonsterEntity e = enemy.spawnNew(new Vector3f(0, 1, 0), 0.0f, room, gui);
-				e.showHealthBar(camera);
-				player.addTarsched(e);
-				room.getEnemies().add(e);
-				e.setDeathListener(lifeformEntity -> {
-					e.getSceneObject().removeSelf();
-					room.getEnemies().remove(e);
-					if (room.getEnemies().isEmpty()) {
-						room.open();
-					}
-				});
+				for (int i = 0; i < 64; i++) {
+					MonsterEntity e = enemy.spawnNew(new Vector3f(random.nextFloat() * 6 - 3, 1, random.nextFloat() * 6 - 3), 0.0f, room, gui);
+					e.showHealthBar(camera);
+					player.addTarsched(e);
+					room.getEnemies().add(e);
+					e.setDeathListener(lifeformEntity -> {
+						room.getEnemies().remove(e);
+						if (room.getEnemies().isEmpty()) {
+							room.open();
+						}
+					});
+				}
 			}
 		};
 
@@ -137,26 +140,26 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 				p.set(RoomParameter.Type.BOTTOM_NEIGHBOUR, grid.getTile(x, y).hasNeighbour(Door.Direction.BOTTOM));
 				float o = determineOffset(x, y);
 				Vector3f pos = new Vector3f(9 * x + o, o, 9 * y + o);
-				Room r = determineRoomType(null, grid, grid.getTile(x, y)).construct(p, manager, pos);
+				Room room = determineRoomType(null, grid, grid.getTile(x, y)).construct(p, manager, pos);
 				if (x > 0) {
-					r.registerNeighbour(Door.Direction.LEFT, getRoom(x - 1, y));
+					room.registerNeighbour(Door.Direction.LEFT, getRoom(x - 1, y));
 				}
 				if (y > 0) {
-					r.registerNeighbour(Door.Direction.TOP, getRoom(x, y - 1));
+					room.registerNeighbour(Door.Direction.TOP, getRoom(x, y - 1));
 
 				}
-				r.setTransformation(new BoneTransformation(pos));
+				room.setTransformation(new BoneTransformation(pos));
 				Point pt = new Point(x, y);
-				r.setPosition(pt);
-				this.addSubObject(r);
-				this.rooms.put(pt, r);
+				room.setPosition(pt);
+				this.addSubObject(room);
+				this.rooms.put(pt, room);
 				if (grid.getTile(x, y) == grid.getEntrance()) {
-					this.entrance = r;
+					this.entrance = room;
 				} else if (grid.getTile(x, y) == grid.getExit()) {
-					this.exit = r;
-					r.setEntryListener(exitRoom);
+					this.exit = room;
+					room.setEntryListener(exitRoom);
 				} else {
-					r.setEntryListener(normalRoom);
+					room.setEntryListener(normalRoom);
 				}
 			}
 		}

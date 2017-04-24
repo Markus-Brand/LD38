@@ -63,7 +63,6 @@ public abstract class LifeformEntity extends SceneEntity {
 			return;
 		}
 		healthpoints -= damage;
-		System.out.println(healthpoints);
 		if (healthpoints <= 0) {
 			onDie();
 		}
