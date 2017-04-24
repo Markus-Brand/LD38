@@ -2,6 +2,7 @@ package mbeb.lifeforms;
 
 import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.scene.*;
+import org.joml.Vector3f;
 
 public class MonsterEntity extends LifeformEntity {
 

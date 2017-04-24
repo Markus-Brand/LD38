@@ -4,6 +4,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.awt.*;
 
+import mbeb.ld38.HealthBarGUI;
 import org.joml.*;
 import org.lwjgl.glfw.*;
 
@@ -12,7 +13,6 @@ import mbeb.lifeforms.*;
 import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.controls.*;
-import mbeb.opengldefault.gl.*;
 import mbeb.opengldefault.gl.shader.*;
 import mbeb.opengldefault.gl.texture.*;
 import mbeb.opengldefault.light.*;
@@ -47,6 +47,7 @@ public class OverworldGameState implements GameState {
 	Player player;
 
 	MonsterEntity goblinEntity;
+	PlayerEntity playerEntity;
 
 	@Option(category = "Game")
 	@ButtonOption
@@ -92,7 +93,7 @@ public class OverworldGameState implements GameState {
 								new Vector2f(32)), 2f, 1f),
 						new Sword(10, 1f, 1f));
 
-		final PlayerEntity playerEntity = player.spawnNew(new Vector3f(0, 10, 1), 0, overworld.getSceneObject());
+		playerEntity = player.spawnNew(new Vector3f(0, 10, 1), 0, overworld.getSceneObject());
 		playerEntity.setSword(new Sword(20f, 1f, 1f));
 		world.add(playerEntity);
 
@@ -109,7 +110,13 @@ public class OverworldGameState implements GameState {
 		world.add(goblinEntity);
 
 		playerEntity.addTarsched(goblinEntity);
+
+		healthGui = new HealthBarGUI();
+		goblinEntity.showHealthBar(healthGui, topDownViewCamera);
+		//playerEntity.showHealthBar(healthGui, topDownViewCamera);
 	}
+
+	private HealthBarGUI healthGui;
 
 	@Override
 	public void update(final double deltaTime) {
@@ -121,6 +128,7 @@ public class OverworldGameState implements GameState {
 			overworldScene.getSceneGraph().removeSubObject(goblinEntity.getSceneObject());
 			world.remove(goblinEntity);
 		}
+		healthGui.update(deltaTime);
 	}
 
 	@Override
@@ -132,6 +140,8 @@ public class OverworldGameState implements GameState {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		overworldScene.render(showBBs);
+
+		healthGui.render();
 	}
 
 	@Override
@@ -155,7 +165,7 @@ public class OverworldGameState implements GameState {
 	@Override
 	public void open() {
 		overworldScene.getLightManager().rewriteUBO();
-		GLContext.hideCursor();
+		//GLContext.hideCursor();
 	}
 
 }

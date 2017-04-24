@@ -49,6 +49,10 @@ public class Scene {
 		this.camera = Log.assertNotNull(TAG, camera);
 	}
 
+	public Camera getCamera() {
+		return camera;
+	}
+
 	public SceneObject getSceneGraph() {
 		return sceneGraphRoot;
 	}

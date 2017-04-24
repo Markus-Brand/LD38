@@ -80,6 +80,8 @@ public class Goblin extends Monster {
 		}.limited(monster.getVisionRange()));
 
 		monster.addBehaviour(0, new JumpingBehaviour(playerEntity));
+
+		monster.setHealthBarOffset(new Vector3f(0, 2.5f, 0));
 		return monster;
 	}
 
