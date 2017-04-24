@@ -74,10 +74,18 @@ public abstract class LifeformEntity extends SceneEntity {
 		if (this.deathListener != null) {
 			this.deathListener.accept(this);
 		}
-		if (healthGui != null) {
+		if (healthGui != null && this.deletesBar()) {
 			healthGui.remove(healthBar);
 		}
+	}
 
+	public void revive() {
+		this.dead = false;
+		this.resetHealth();
+	}
+
+	public boolean deletesBar() {
+		return true;
 	}
 
 	public boolean isDead() {

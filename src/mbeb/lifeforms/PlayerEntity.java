@@ -20,6 +20,7 @@ public class PlayerEntity extends LifeformEntity {
 	private final AnimationStateFacade animator;
 
 	private SwordEntity swordEntity;
+	private boolean justDied = false;
 	private final SceneEntity lampEntity;
 	private final PointLightEntity lightEntity;
 
@@ -129,6 +130,11 @@ public class PlayerEntity extends LifeformEntity {
 		}
 	}
 
+	@Override
+	public boolean deletesBar() {
+		return false;
+	}
+
 	public AnimationStateFacade getAnimator() {
 		return animator;
 	}
@@ -162,6 +168,14 @@ public class PlayerEntity extends LifeformEntity {
 		oldLight.remove();
 		newLightManager.addLight(newLight);
 		lightEntity.setPointlight(newLight);
+	}
+
+	public boolean isJustDied() {
+		return justDied;
+	}
+
+	public void setJustDied(boolean justDied) {
+		this.justDied = justDied;
 	}
 
 	public SwordEntity getSword() {

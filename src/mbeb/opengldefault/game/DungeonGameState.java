@@ -5,6 +5,8 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.awt.*;
 import java.lang.Math;
+import java.util.Collection;
+import java.util.HashSet;
 
 import mbeb.opengldefault.gui.TextGUI;
 import mbeb.opengldefault.gui.elements.TextGUIElement;
@@ -96,6 +98,11 @@ public class DungeonGameState implements GameState {
 		cameraEntity.setDirection(new Vector3f(0, -1, 0));
 
 		shared.playerEntity.setHeightSource(level);
+		shared.playerEntity.setDeathListener(lifeformEntity -> {
+			shared.playerEntity.revive();
+			shared.playerEntity.setJustDied(true);
+			this.exitDungeon = true;
+		});
 
 		world.add(camera).addBehaviour(0, new TopDownViewBehaviour(shared.playerEntity, 8, 1.5f, 2))
 				.setPosition(new Vector3f(3, 4, 5));
@@ -140,7 +147,17 @@ public class DungeonGameState implements GameState {
 
 	@Override
 	public GameStateIdentifier getNextState() {
-		return exitDungeon ? GameStateIdentifier.OVERWORLD : null;
+		if(exitDungeon) {
+			Collection<MonsterEntity> enemies = new HashSet<>(this.level.getActiveRoom().getEnemies());
+			this.level.getActiveRoom().getEnemies().clear();
+			enemies.forEach(monsterEntity -> {
+				monsterEntity.setDeathListener(null);
+				monsterEntity.damage(100000.0f);
+			});
+			return GameStateIdentifier.OVERWORLD;
+		} else {
+			return null;
+		}
 	}
 
 	@Override
