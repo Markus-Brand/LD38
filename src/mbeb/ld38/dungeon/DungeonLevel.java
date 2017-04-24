@@ -4,25 +4,29 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
-import mbeb.lifeforms.PlayerEntity;
-import mbeb.opengldefault.light.LightManager;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+import mbeb.ld38.HealthBarGUI;
 import mbeb.ld38.dungeon.room.Door;
 import mbeb.ld38.dungeon.room.Room;
 import mbeb.ld38.dungeon.room.RoomParameter;
 import mbeb.ld38.dungeon.room.RoomType;
+import mbeb.lifeforms.Goblin;
+import mbeb.lifeforms.MonsterEntity;
+import mbeb.lifeforms.PlayerEntity;
 import mbeb.mazes.MazeBuilder;
 import mbeb.mazes.MazeGrid;
 import mbeb.mazes.MazeTile;
 import mbeb.opengldefault.animation.BoneTransformation;
+import mbeb.opengldefault.camera.Camera;
+import mbeb.opengldefault.light.LightManager;
 import mbeb.opengldefault.scene.SceneObject;
 import mbeb.opengldefault.scene.behaviour.IHeightSource;
-import mbeb.opengldefault.scene.entities.IEntity;
 
 public class DungeonLevel extends SceneObject implements IHeightSource {
 
@@ -74,13 +78,13 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 	private Room exit;
 	private PlayerEntity player;
 
-	public DungeonLevel(int width, int height, LightManager manager) {
+	public DungeonLevel(int width, int height, LightManager manager, Goblin enemy, HealthBarGUI gui, Camera camera) {
 		super();
 		rooms = new HashMap<>();
-		this.generate(width, height, manager);
+		this.generate(width, height, manager, enemy, gui, camera);
 	}
 
-	private void generate(int width, int height, LightManager manager) {
+	private void generate(int width, int height, LightManager manager, Goblin enemy, HealthBarGUI gui, Camera camera) {
 		MazeGrid grid = MazeBuilder.make4Maze(width, height, 0.11f);
 		this.addSubObject(new SceneObject(RoomType.getCORNER(), new BoneTransformation(null, new Quaternionf(new AxisAngle4f((float) Math.PI / -2, 0, 1, 0)))));
 		for (int x = 0; x < width; x++) {
@@ -93,16 +97,36 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 					new SceneObject(RoomType.getSEGMENT(), new BoneTransformation(new Vector3f(o, o, 9 * y + o), new Quaternionf(new AxisAngle4f((float) Math.PI, 0, 1, 0)), new Vector3f(-1f, 1, 1))));
 		}
 
-		Consumer<Room> closeDoors = room -> {
-			if(!room.wasVisited()) {
+		Function<Room, Boolean> markVisited = room -> {
+			boolean visited = room.wasVisited();
+			if (!visited) {
 				room.setVisited();
+			}
+			return !visited;
+		};
+
+		Consumer<Room> normalRoom = room -> {
+			if (markVisited.apply(room)) {
 				room.close();
+				MonsterEntity e = enemy.spawnNew(new Vector3f(0, 1, 0), 0.0f, room, gui);
+				e.showHealthBar(camera);
+				player.addTarsched(e);
+				room.getEnemies().add(e);
+				e.setDeathListener(lifeformEntity -> {
+					e.getSceneObject().removeSelf();
+					room.getEnemies().remove(e);
+					if (room.getEnemies().isEmpty()) {
+						room.open();
+					}
+				});
 			}
 		};
 
-		Consumer<Room> exitRoom = closeDoors.andThen(room -> {
-			room.getSlotObject("exit").setVisible(true);
-		});
+		Consumer<Room> exitRoom = room -> {
+			if (markVisited.apply(room)) {
+				room.getSlotObject("exit").setVisible(true);
+			}
+		};
 
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
@@ -128,11 +152,11 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 				this.rooms.put(pt, r);
 				if (grid.getTile(x, y) == grid.getEntrance()) {
 					this.entrance = r;
-				} else if(grid.getTile(x, y) == grid.getExit()) {
+				} else if (grid.getTile(x, y) == grid.getExit()) {
 					this.exit = r;
 					r.setEntryListener(exitRoom);
 				} else {
-					r.setEntryListener(closeDoors);
+					r.setEntryListener(normalRoom);
 				}
 			}
 		}

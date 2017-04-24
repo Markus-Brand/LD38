@@ -71,6 +71,7 @@ public class Goblin extends Monster {
 		monster.addBehaviour(0, new JumpingBehaviour(playerEntity));
 
 		monster.setHealthBarOffset(new Vector3f(0, 2.5f, 0));
+		monster.addTarsched(playerEntity);
 		return monster;
 	}
 

@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 import mbeb.ld38.dungeon.DungeonLevel;
+import mbeb.lifeforms.Monster;
 import mbeb.lifeforms.MonsterEntity;
 import mbeb.opengldefault.scene.SceneObject;
 
@@ -78,6 +79,12 @@ public class Room extends SceneObject {
 			this.slotContainer.removeSubObject(this.doors.get(direction));
 			this.doors.put(direction, neighbour.getDoor(direction.getOpposite()));
 		}
+	}
+
+	@Override
+	public void update(double deltaTime) {
+		super.update(deltaTime);
+		this.enemies.forEach(monsterEntity -> monsterEntity.update(deltaTime));
 	}
 
 	public void setEntryListener(Consumer<Room> entryListener) {

@@ -3,10 +3,12 @@ package mbeb.opengldefault.game;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glGetBoolean;
 
 import java.awt.*;
 
 import mbeb.ld38.SharedData;
+import mbeb.lifeforms.Goblin;
 import mbeb.opengldefault.gl.GLContext;
 import org.joml.AxisAngle4f;
 import org.joml.Matrix4f;
@@ -14,7 +16,6 @@ import org.joml.Vector3f;
 
 import mbeb.ld38.dungeon.DungeonLevel;
 import mbeb.ld38.dungeon.room.RoomType;
-import mbeb.lifeforms.Player;
 import mbeb.opengldefault.camera.Camera;
 import mbeb.opengldefault.camera.PerspectiveCamera;
 import mbeb.opengldefault.controls.KeyBoard;
@@ -38,6 +39,7 @@ public class DungeonGameState implements GameState {
 	private Scene scene;
 	private DungeonLevel level;
 	private EntityWorld world;
+	private Goblin goblin;
 
 	private SharedData shared;
 
@@ -58,12 +60,17 @@ public class DungeonGameState implements GameState {
 		defaultShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
 		scene.getLightManager().addShader(defaultShader);
 		scene.getSceneGraph().setShader(defaultShader);
+		ShaderProgram animationShader = new ShaderProgram("boneAnimation.vert", "basic.frag");
+		animationShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
+		scene.getLightManager().addShader(animationShader);
 
 		//textures;
 
+		goblin = new Goblin(shared.playerEntity, animationShader);
+
 		RoomType.initializeRoomTypes();
 
-		level = new DungeonLevel(4, 4, scene.getLightManager());
+		level = new DungeonLevel(4, 4, scene.getLightManager(), goblin, shared.healthBarGUI, camera);
 
 		scene.getSceneGraph().addSubObject(level);
 
@@ -71,9 +78,7 @@ public class DungeonGameState implements GameState {
 		camera.setEye(new Vector3f(0, 20, 0));
 		cameraEntity.setDirection(new Vector3f(0, -1, 0));
 
-		ShaderProgram animationShader = new ShaderProgram("boneAnimation.vert", "basic.frag");
-		animationShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
-		scene.getLightManager().addShader(animationShader);
+
 
 		shared.playerEntity.setHeightSource(level);
 
