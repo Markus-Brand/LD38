@@ -6,6 +6,8 @@ import static org.lwjgl.opengl.GL11.*;
 import java.awt.*;
 import java.lang.Math;
 
+import mbeb.opengldefault.gui.TextGUI;
+import mbeb.opengldefault.gui.elements.TextGUIElement;
 import org.joml.*;
 
 import mbeb.ld38.*;
@@ -33,6 +35,8 @@ public class DungeonGameState implements GameState {
 	private DungeonLevel level;
 	private EntityWorld world;
 	private Goblin goblin;
+	private TextGUI infoGUI;
+	private TextGUIElement infoBox;
 
 	private final SharedData shared;
 
@@ -64,7 +68,12 @@ public class DungeonGameState implements GameState {
 		RoomType.initializeRoomTypes();
 		final Chest chest = new Chest(animationShader, shared.playerEntity);
 
-		level = new DungeonLevel(scene.getLightManager(), goblin, shared.healthBarGUI, camera, chest);
+		infoGUI = new TextGUI(new Font("Comic Sans MS", 0, 64));
+		infoBox =infoGUI.addText(" ", new Vector2f());
+		infoBox.setPositionRelativeToScreen(new Vector2f(0.01f, 0.01f));
+		infoBox.setColor(Color.WHITE);
+
+		level = new DungeonLevel(scene.getLightManager(), goblin, shared.healthBarGUI, camera, chest, infoBox);
 		level.setEnemySpawns(0.2f, 0.2f, 0.2f, 0.2f, 0.2f);
 		level.generate(3, 4, scene.getSoundEnvironment());
 
@@ -100,6 +109,7 @@ public class DungeonGameState implements GameState {
 			}
 		}
 		shared.healthBarGUI.update(deltaTime);
+		infoGUI.update(deltaTime);
 		scene.update(deltaTime);
 		world.update(deltaTime);
 	}
@@ -108,6 +118,7 @@ public class DungeonGameState implements GameState {
 	public void render() {
 		scene.render(KeyBoard.isKeyDown(GLFW_KEY_TAB));
 		shared.healthBarGUI.render();
+		infoGUI.render();
 	}
 
 	@Override

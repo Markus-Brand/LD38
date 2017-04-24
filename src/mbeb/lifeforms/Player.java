@@ -47,7 +47,8 @@ public class Player extends Lifeform {
 		final AnimationStateFacade playerAnimatedRenderable = new AnimationStateFacade(mesh, material);
 
 		playerAnimatedRenderable.registerAnimation("Idle", "Idle", 32);
-		playerAnimatedRenderable.registerAnimation("Jogging", "Jogging", 32, 0.4f, 0.4f);
+		playerAnimatedRenderable.registerAnimation("Jogging", "Jogging", 32, 0.3f, 0.2f);
+		playerAnimatedRenderable.registerAnimation("JoggingBack", "Jogging", -16, 0.2f, 0.5f, 0.7f);
 		playerAnimatedRenderable.registerAnimation("Pierce", "Pierce", 32, 0.1f, 0.1f, 1.1f);
 
 		final SceneObject playerObject = new SceneObject(playerAnimatedRenderable, new BoneTransformation(new Vector3f(1, 10, 0)));
