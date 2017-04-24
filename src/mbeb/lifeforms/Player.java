@@ -21,10 +21,7 @@ public class Player extends Lifeform {
 	private final ShaderProgram animationShader;
 	private IHeightSource heightSource;
 
-	private Sword sword;
-
-	public Player(final float healthpoints, final ShaderProgram animationShader, final IHeightSource heightSource,
-			final Sword sword) {
+	public Player(final float healthpoints, final ShaderProgram animationShader, final IHeightSource heightSource) {
 		super(0.3f, healthpoints);
 		this.animationShader = animationShader;
 		material = new Material("material/samurai", 1);
@@ -32,12 +29,7 @@ public class Player extends Lifeform {
 		mesh.setTransform(MeshFlip);
 		mesh.getSkeleton().printRecursive("");
 		this.heightSource = heightSource;
-		this.sword = sword;
 
-	}
-
-	public void setSword(final Sword sword) {
-		this.sword = sword;
 	}
 
 	public void setHeightSource(final IHeightSource heightSource) {
@@ -60,10 +52,8 @@ public class Player extends Lifeform {
 
 		parent.addSubObject(playerObject);
 
-		final SwordEntity swordEntity = sword.spawnNew(parent, playerObject, playerAnimatedRenderable);
-
 		final PlayerEntity playerEntity =
-				new PlayerEntity(1f, playerObject, playerAnimatedRenderable, healthpoints, heightSource, swordEntity);
+				new PlayerEntity(1f, playerObject, playerAnimatedRenderable, healthpoints, heightSource);
 
 		return playerEntity;
 	}

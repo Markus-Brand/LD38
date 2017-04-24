@@ -27,4 +27,8 @@ public class Sword {
 		parent.addSubObject(swordObject);
 		return new SwordEntity(swordObject, damage, range, strokeTime, playerObject, playerAnimatedRenderable);
 	}
+
+	public float getDamage() {
+		return damage;
+	}
 }

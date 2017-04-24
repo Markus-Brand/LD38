@@ -4,6 +4,7 @@ import org.lwjgl.glfw.GLFW;
 
 import mbeb.lifeforms.PlayerEntity;
 import mbeb.opengldefault.controls.KeyBoard;
+import mbeb.opengldefault.controls.Mouse;
 import mbeb.opengldefault.scene.entities.IEntity;
 
 public class SamuraiPlayerBehaviour implements IBehaviour {
@@ -14,7 +15,7 @@ public class SamuraiPlayerBehaviour implements IBehaviour {
 
 		player.getAnimator().ensureRunning("Idle");
 		player.getAnimator().ensureRunning("Jogging", KeyBoard.isKeyDown(GLFW.GLFW_KEY_W));
-		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_Q)) {
+		if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
 			player.startStroke();
 		}
 

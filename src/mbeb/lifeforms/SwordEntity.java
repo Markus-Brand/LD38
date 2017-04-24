@@ -70,6 +70,10 @@ public class SwordEntity extends SceneEntity {
 		return range;
 	}
 
+	public float getStrokeTime() {
+		return strokeTime;
+	}
+
 	public Line getBounding() {
 		Vector2f start = new Vector2f(getPosition().x, getPosition().z);
 		Vector2f end = new Vector2f(getDirection().x, getDirection().z).normalize().mul(range).add(start);

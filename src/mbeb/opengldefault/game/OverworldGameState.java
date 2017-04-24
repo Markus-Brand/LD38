@@ -97,8 +97,7 @@ public class OverworldGameState implements GameState {
 		player =
 				new Player(100, animationShader, new HeightFromHeightMap(
 						Texture.loadBufferedImage("overworldHeight.png"), new Rectangle(new Vector2f(-16),
-								new Vector2f(32)), 2f, 1f),
-						new Sword(10, 1f, 0.02f));
+								new Vector2f(32)), 2f, 1f));
 
 		playerEntity = player.spawnNew(new Vector3f(0, 10, 1), 0, overworld.getSceneObject());
 		world.add(playerEntity);
@@ -170,7 +169,7 @@ public class OverworldGameState implements GameState {
 
 	@Override
 	public void open() {
-		if(leftForDungeon){
+		if (leftForDungeon) {
 			leftForDungeon = false;
 			playerEntity.setPosition(port);
 		}

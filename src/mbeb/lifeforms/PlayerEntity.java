@@ -1,12 +1,15 @@
 package mbeb.lifeforms;
 
 import mbeb.opengldefault.animation.AnimationStateFacade;
+import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.scene.*;
 import mbeb.opengldefault.scene.behaviour.CombinedBehaviour;
 import mbeb.opengldefault.scene.behaviour.IHeightSource;
 import mbeb.opengldefault.scene.behaviour.SamuraiPlayerBehaviour;
 import mbeb.opengldefault.scene.behaviour.WalkOnHeightMapBehaviour;
+
 import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFW;
 
 public class PlayerEntity extends LifeformEntity {
 
@@ -16,15 +19,22 @@ public class PlayerEntity extends LifeformEntity {
 
 	private float playerSpeed = 4f;
 
+	private Inventory inventory;
+
 	public PlayerEntity(float radius, final SceneObject sceneObject, AnimationStateFacade animator,
-			final float healthpoints, IHeightSource heightSource, SwordEntity swordEntity) {
+			final float healthpoints, IHeightSource heightSource) {
 		super(sceneObject, healthpoints, radius);
 		this.animator = animator;
-		this.swordEntity = swordEntity;
 		addBehaviour(0, new CombinedBehaviour(
 				new SamuraiPlayerBehaviour(),
 				new WalkOnHeightMapBehaviour(heightSource, playerSpeed)));
 		setHealthBarOffset(new Vector3f(0, 2, 0));
+		inventory = new Inventory();
+
+		inventory.addSword(new Sword(10, 1, 6));
+		inventory.addSword(new Sword(5, 1, 0.1f));
+
+		setSword(inventory.getSelectedSword());
 	}
 
 	@Override
@@ -36,11 +46,18 @@ public class PlayerEntity extends LifeformEntity {
 	public void update(double deltaTime) {
 		super.update(deltaTime);
 		swordEntity.update(deltaTime);
+
+		if (KeyBoard.pullKeyDown(GLFW.GLFW_KEY_TAB)) {
+			inventory.switchSword();
+			System.out.println(inventory.getSelectedSword().getDamage());
+			setSword(inventory.getSelectedSword());
+		}
 	}
 
 	public void startStroke() {
 		if (!swordEntity.isStriking()) {
 			swordEntity.startStriking();
+			getAnimator().setDuration("Pierce", swordEntity.getStrokeTime());
 			getAnimator().ensureRunning("Pierce", true, false);
 			getAnimator().ensureRunning("Pierce", false, false);
 		}
@@ -51,11 +68,16 @@ public class PlayerEntity extends LifeformEntity {
 	}
 
 	public void setSword(Sword sword) {
-		setSwordEntity(sword.spawnNew(swordEntity.getSceneObject().getParent(), getSceneObject(), animator));
+		setSwordEntity(sword.spawnNew(getSceneObject().getParent(), getSceneObject(), animator));
 	}
 
 	public void setSwordEntity(SwordEntity swordEntity) {
-		this.swordEntity.getSceneObject().removeSelf();
+		if (this.swordEntity != null) {
+			for (LifeformEntity tarsched : this.swordEntity.getTarscheds().keySet()) {
+				swordEntity.addTarsched(tarsched);
+			}
+			this.swordEntity.getSceneObject().removeSelf();
+		}
 		this.swordEntity = swordEntity;
 	}
 

@@ -6,7 +6,6 @@ import static org.lwjgl.opengl.GL11.glEnable;
 
 import java.awt.*;
 
-import mbeb.lifeforms.Sword;
 import mbeb.opengldefault.gl.GLContext;
 import org.joml.AxisAngle4f;
 import org.joml.Matrix4f;
@@ -32,13 +31,13 @@ public class DungeonGameState implements GameState {
 
 	private static final String TAG = "DungeonGameState";
 
-	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1).rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
+	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1)
+			.rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
 
 	private Scene scene;
 	private DungeonLevel level;
 	private EntityWorld world;
 	private Player player;
-	private Sword sword;
 
 	@Override
 	public void init() {
@@ -70,12 +69,11 @@ public class DungeonGameState implements GameState {
 		animationShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
 		scene.getLightManager().addShader(animationShader);
 
-		sword = new Sword(10.0f, 1.0f, 0.5f);
-
-		player = new Player(100.0f, animationShader, level, sword);
+		player = new Player(100.0f, animationShader, level);
 
 		IEntity playerEntity = player.spawnNew(new Vector3f(0, 1, 0), 0.0f, this.scene.getSceneGraph());
-		world.add(camera).addBehaviour(0, new TopDownViewBehaviour(playerEntity, 8, 1.5f, 2)).setPosition(new Vector3f(3, 4, 5));
+		world.add(camera).addBehaviour(0, new TopDownViewBehaviour(playerEntity, 8, 1.5f, 2))
+				.setPosition(new Vector3f(3, 4, 5));
 		level.setPlayer(playerEntity);
 		world.add(playerEntity);
 
