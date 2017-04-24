@@ -4,6 +4,8 @@ import java.util.*;
 import java.util.function.Consumer;
 
 import mbeb.ld38.dungeon.DungeonLevel;
+import mbeb.lifeforms.Chest;
+import mbeb.lifeforms.ChestEntity;
 import mbeb.lifeforms.Monster;
 import mbeb.lifeforms.MonsterEntity;
 import mbeb.opengldefault.scene.SceneObject;
@@ -16,6 +18,7 @@ public class Room extends SceneObject {
 	private Map<String, SceneObject> slotObjects;
 	private boolean visited = false;
 	private Collection<MonsterEntity> enemies;
+	private ChestEntity chest;
 
 	private DungeonLevel.Point position;
 	private boolean open = true;
@@ -85,6 +88,9 @@ public class Room extends SceneObject {
 	public void update(double deltaTime) {
 		super.update(deltaTime);
 		this.enemies.forEach(monsterEntity -> monsterEntity.update(deltaTime));
+		if(this.chest != null) {
+			this.chest.update(deltaTime);
+		}
 	}
 
 	public void setEntryListener(Consumer<Room> entryListener) {
@@ -105,6 +111,14 @@ public class Room extends SceneObject {
 		if (this.exitListener != null) {
 			this.exitListener.accept(this);
 		}
+	}
+
+	public ChestEntity getChest() {
+		return chest;
+	}
+
+	public void setChest(ChestEntity chest) {
+		this.chest = chest;
 	}
 
 	public DungeonLevel.Point getPosition() {

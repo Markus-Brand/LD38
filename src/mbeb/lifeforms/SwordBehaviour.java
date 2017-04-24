@@ -29,6 +29,7 @@ public class SwordBehaviour implements IBehaviour {
 		for (Entry<LifeformEntity, Boolean> entry : sword.getTarscheds().entrySet()) {
 			if (!entry.getValue() && entry.getKey().getBounding().intersectsShape(sword.getBounding())) {
 				entry.getKey().damage(sword.getDamage());
+				//entry.getKey().knockBack(sword.getDirection(), sword.getDamage() / 10f);
 				entry.setValue(true);
 			}
 		}

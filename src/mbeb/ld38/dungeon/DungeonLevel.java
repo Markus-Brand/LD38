@@ -7,7 +7,7 @@ import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import mbeb.lifeforms.LootType;
+import mbeb.lifeforms.*;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
@@ -18,9 +18,6 @@ import mbeb.ld38.dungeon.room.Door;
 import mbeb.ld38.dungeon.room.Room;
 import mbeb.ld38.dungeon.room.RoomParameter;
 import mbeb.ld38.dungeon.room.RoomType;
-import mbeb.lifeforms.Goblin;
-import mbeb.lifeforms.MonsterEntity;
-import mbeb.lifeforms.PlayerEntity;
 import mbeb.mazes.MazeBuilder;
 import mbeb.mazes.MazeGrid;
 import mbeb.mazes.MazeTile;
@@ -99,17 +96,23 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 	private Table enemySpawns;
 	private LightManager manager;
 	private Goblin enemy;
+	private Chest chest;
 	private HealthBarGUI gui;
 	private Camera camera;
 	private EnumMap<LootType, Table> lootSpawns;
 
-	public DungeonLevel(LightManager manager, Goblin enemy, HealthBarGUI gui, Camera camera) {
+	public DungeonLevel(LightManager manager, Goblin enemy, HealthBarGUI gui, Camera camera, Chest chest) {
 		super();
 		this.manager = manager;
 		this.enemy = enemy;
 		this.gui = gui;
 		this.camera = camera;
+		this.chest = chest;
 		this.lootSpawns = new EnumMap<>(LootType.class);
+		for (LootType lootType : LootType.values()) {
+			this.setLootSpawn(lootType, 1.0f);
+		}
+		this.setLootSpawn(LootType.Wood, 0.0f, 0.5f, 0.5f);
 		this.enemySpawns = new Table(0.25f, 0.5f, 0.25f);
 	}
 
@@ -148,6 +151,19 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 					e.setDeathListener(lifeformEntity -> {
 						room.getEnemies().remove(e);
 						if (room.getEnemies().isEmpty()) {
+							room.setChest(
+									chest.spawnNew(
+											new Vector3f(0.0f, 0.0f, 0.0f),
+											0.0f,
+											room,
+											chestEntity -> {
+												for (LootType lootType : LootType.values()) {
+													int itemCount = this.getLootSpawn(lootType).getValue(random.nextFloat());
+													System.out.println("GOT " + itemCount + " " + lootType.toString());
+													player.getInventory().addLoot(lootType, itemCount);
+												}
+											}
+									));
 							room.open();
 						}
 					});

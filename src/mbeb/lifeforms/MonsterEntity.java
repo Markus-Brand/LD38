@@ -34,7 +34,7 @@ public class MonsterEntity extends LifeformEntity {
 
 		this.animator = animator;
 
-		setSword(new Sword(10, 1, 6, LootType.Steel, SwordType.DAGGER_REVERSE));
+		setSword(new Sword(4, -0.4f, 2, LootType.Steel, SwordType.DAGGER_REVERSE));
 	}
 
 	@Override

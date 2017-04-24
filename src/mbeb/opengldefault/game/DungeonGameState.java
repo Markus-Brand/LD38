@@ -8,6 +8,7 @@ import static org.lwjgl.opengl.GL11.glGetBoolean;
 import java.awt.*;
 
 import mbeb.ld38.SharedData;
+import mbeb.lifeforms.Chest;
 import mbeb.lifeforms.Goblin;
 import mbeb.opengldefault.gl.GLContext;
 import org.joml.AxisAngle4f;
@@ -69,8 +70,9 @@ public class DungeonGameState implements GameState {
 		goblin = new Goblin(shared.playerEntity, animationShader);
 
 		RoomType.initializeRoomTypes();
+		Chest chest = new Chest(animationShader, shared.playerEntity);
 
-		level = new DungeonLevel(scene.getLightManager(), goblin, shared.healthBarGUI, camera);
+		level = new DungeonLevel(scene.getLightManager(), goblin, shared.healthBarGUI, camera, chest);
 		level.setEnemySpawns(0.2f, 0.2f, 0.2f, 0.2f, 0.2f);
 		level.generate(3, 4);
 
