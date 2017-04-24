@@ -220,11 +220,19 @@ public class ShaderProgram extends GLObject {
 	 *            the integer array
 	 * @return the location of the set uniform or -1 if an error occurred
 	 */
-	public int setUniform(final String name, final int[] value) {
+	public int setUniform(final String name, final int[] value, boolean onlyTry) {
 		ensureCompiled();
-		final int uniformLocation = getUniform(name);
+		final int uniformLocation = getUniform(name, !onlyTry);
+		if (uniformLocation < 0 && onlyTry) {
+			return -1;
+		}
 		glUniform1iv(uniformLocation, value);
 		return GLErrors.checkForError(TAG, "setUniformIntArray") ? -1 : uniformLocation;
+	}
+
+
+	public int setUniform(final String name, final int value) {
+		return setUniform(name, value, false);
 	}
 
 	/**
@@ -236,8 +244,8 @@ public class ShaderProgram extends GLObject {
 	 *            the integer
 	 * @return the location of the set uniform or -1 if an error occurred
 	 */
-	public int setUniform(final String name, final int value) {
-		return setUniform(name, new int[] {value});
+	public int setUniform(final String name, final int value, boolean onlyTry) {
+		return setUniform(name, new int[] {value}, onlyTry);
 	}
 
 	/**
@@ -463,7 +471,7 @@ public class ShaderProgram extends GLObject {
 
 	/**
 	 * Attempts to set the value of the given uniform to the given texture.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the uniform
 	 * @param value
@@ -471,7 +479,7 @@ public class ShaderProgram extends GLObject {
 	 * @return the location of the set uniform or -1 if an error occurred
 	 */
 	public int setUniform(final String name, final Texture value) {
-		return setUniform(name, value, false);
+		return setUniform(name, value, true, false);
 	}
 
 	/**
@@ -485,7 +493,7 @@ public class ShaderProgram extends GLObject {
 	 *            whether the texture will be bound if it is not already bound
 	 * @return the location of the set uniform or -1 if an error occurred
 	 */
-	public int setUniform(final String name, final Texture value, final boolean forceBind) {
+	public int setUniform(final String name, final Texture value, final boolean forceBind, final boolean onlyTry) {
 		if (!value.isBound()) {
 			if (forceBind) {
 				if (!value.bind()) {
@@ -497,7 +505,7 @@ public class ShaderProgram extends GLObject {
 				return -1;
 			}
 		}
-		return setUniform(name, value.getTextureUnit());
+		return setUniform(name, value.getTextureUnit(), onlyTry);
 	}
 
 	//</editor-fold>

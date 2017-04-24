@@ -109,8 +109,6 @@ public class OverworldGameState implements GameState {
 		final DirectionalLight sun = new DirectionalLight(Color.WHITE, new Vector3f(0.2f, -1, 0).normalize());
 		overworldScene.getLightManager().addLight(sun);
 
-		world.update(0.0001f);
-
 		final Goblin goblin = new Goblin(playerEntity, animationShader);
 		goblinEntity = goblin.spawnNew(new Vector3f(10, 3, 0), 0, overworld.getSceneObject());
 		world.add(goblinEntity);
@@ -119,7 +117,8 @@ public class OverworldGameState implements GameState {
 
 		healthGui = new HealthBarGUI();
 		goblinEntity.showHealthBar(healthGui, topDownViewCamera);
-		//playerEntity.showHealthBar(healthGui, topDownViewCamera);
+		playerEntity.showHealthBar(healthGui, topDownViewCamera);
+
 	}
 
 	private HealthBarGUI healthGui;
