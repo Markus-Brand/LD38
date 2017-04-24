@@ -84,6 +84,7 @@ public class OverworldGameState implements GameState {
 
 		skybox = new Skybox("beachbox/beach", "png");
 		scene = new Scene(topDownViewCamera, skybox);
+		shared.soundEnv = scene.getSoundEnvironment();
 
 		final IRenderable water = new ObjectLoader().loadFromFile("overworld/water.obj");
 
