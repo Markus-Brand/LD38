@@ -50,7 +50,7 @@ public class RoomType {
 		Material wallMaterial = new Material("material/stonewall/seam", 1);
 		Material doorFrameMaterial = new Material("material/stonewall/purple", 1);
 		Material floorMaterial = new Material("material/cobble/moss", 4);
-		Material entranceMaterial = new Material("material/bunny", 4);
+		Material entranceMaterial = new Material("material/carpet", 1);
 		Material exitMaterial = new Material("material/player", 2);
 
 		//meshes
@@ -63,7 +63,7 @@ public class RoomType {
 		CORNER = loader.loadFromFile("dungeon/general/origin_corner.obj").withMaterial(wallMaterial);
 		SEGMENT = loader.loadFromFile("dungeon/general/axis_corner.obj").withMaterial(wallMaterial);
 
-		IRenderable entrance = loader.loadFromFile("bunny.obj").withMaterial(entranceMaterial);
+		IRenderable entrance = loader.loadFromFile("dungeon/carpet.obj").withMaterial(entranceMaterial);
 		IRenderable exit = loader.loadFromFile("player.fbx").withMaterial(exitMaterial);
 		SceneObject exitObject = new SceneObject(exit);
 		exitObject.setVisible(false);

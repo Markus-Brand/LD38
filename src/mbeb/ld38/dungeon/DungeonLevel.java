@@ -158,6 +158,7 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 		final Random random = new Random();
 
 		final Consumer<Room> normalRoom = room -> {
+			infoBox.setText(" ");
 			if (markVisited.apply(room)) {
 				final int count = this.getEnemySpawns().getValue(random.nextFloat());
 				for (int i = 0; i < count; i++) {
@@ -212,6 +213,7 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 		};
 
 		final Consumer<Room> exitRoom = room -> {
+			infoBox.setText(" ");
 			if (markVisited.apply(room)) {
 				room.getSlotObject("exit").setVisible(true);
 			}

@@ -8,14 +8,12 @@ import mbeb.opengldefault.sound.*;
 public class ChestEntity extends SceneEntity {
 
 	private final AnimationStateFacade animator;
-	private final float interactionRadius;
 	SoundSource chestSoundSource;
 
-	public ChestEntity(final SceneObject sceneObject, final AnimationStateFacade animator, final float interactionRadius, final SoundEnvironment soundEnvironment) {
+	public ChestEntity(final SceneObject sceneObject, final AnimationStateFacade animator, final SoundEnvironment soundEnvironment) {
 		super(sceneObject);
 
 		this.animator = animator;
-		this.interactionRadius = interactionRadius;
 		initSound(soundEnvironment);
 	}
 
