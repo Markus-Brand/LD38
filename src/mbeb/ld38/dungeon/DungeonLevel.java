@@ -98,7 +98,8 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 	private final EnumMap<LootType, Table> lootSpawns;
 	private Consumer<DungeonLevel> finishListener;
 
-	public DungeonLevel(final LightManager manager, final Goblin enemy, final HealthBarGUI gui, final Camera camera, final Chest chest, final TextGUIElement infoBox, final SoundEnvironment soundEnvironment) {
+	public DungeonLevel(final LightManager manager, final Goblin enemy, final HealthBarGUI gui, final Camera camera,
+			final Chest chest, final TextGUIElement infoBox, final SoundEnvironment soundEnvironment) {
 
 		super();
 		this.manager = manager;
@@ -118,15 +119,18 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 	public void generate(final int width, final int height) {
 		rooms = new HashMap<>();
 		final MazeGrid grid = MazeBuilder.make4Maze(width, height, 0.11f);
-		this.addSubObject(new SceneObject(RoomType.getCORNER(), new BoneTransformation(null, new Quaternionf(new AxisAngle4f((float) Math.PI / -2, 0, 1, 0)))));
+		this.addSubObject(new SceneObject(RoomType.getCORNER(), new BoneTransformation(null, new Quaternionf(
+				new AxisAngle4f((float) Math.PI / -2, 0, 1, 0)))));
 		for (int x = 0; x < width; x++) {
 			final float o = determineOffset(x, 0);
-			this.addSubObject(new SceneObject(RoomType.getSEGMENT(), new BoneTransformation(new Vector3f(9 * x + o, o, o), new Quaternionf(new AxisAngle4f((float) Math.PI / -2, 0, 1, 0)))));
+			this.addSubObject(new SceneObject(RoomType.getSEGMENT(), new BoneTransformation(new Vector3f(9 * x + o, o,
+					o), new Quaternionf(new AxisAngle4f((float) Math.PI / -2, 0, 1, 0)))));
 		}
 		for (int y = 0; y < height; y++) {
 			final float o = determineOffset(0, y);
 			this.addSubObject(
-					new SceneObject(RoomType.getSEGMENT(), new BoneTransformation(new Vector3f(o, o, 9 * y + o), new Quaternionf(new AxisAngle4f((float) Math.PI, 0, 1, 0)), new Vector3f(-1f, 1, 1))));
+					new SceneObject(RoomType.getSEGMENT(), new BoneTransformation(new Vector3f(o, o, 9 * y + o),
+							new Quaternionf(new AxisAngle4f((float) Math.PI, 0, 1, 0)), new Vector3f(-1f, 1, 1))));
 		}
 
 		final Function<Room, Boolean> markVisited = room -> {
@@ -139,58 +143,69 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 
 		final Random random = new Random();
 
-		final Consumer<Room> normalRoom = room -> {
-			if (markVisited.apply(room)) {
-				final int count = this.getEnemySpawns().getValue(random.nextFloat());
-				for (int i = 0; i < count; i++) {
-					final MonsterEntity e = enemy.spawnNew(new Vector3f(random.nextFloat() * 6 - 3, 1, random.nextFloat() * 6 - 3), 0.0f, room, gui, soundEnvironment);
-					e.showHealthBar(camera);
-					player.addTarsched(e);
-					room.getEnemies().add(e);
-					e.setDeathListener(lifeformEntity -> {
-						room.getEnemies().remove(e);
-						if (room.getEnemies().isEmpty()) {
-							room.setChest(chest.spawnNew(new Vector3f(0.0f, 0.0f, 0.0f), 0.0f, room, chestEntity -> {
-								final EnumMap<LootType, Integer> counts = new EnumMap<>(LootType.class);
-								for (final LootType lootType : LootType.values()) {
-									final int itemCount = this.getLootSpawn(lootType).getValue(random.nextFloat());
-									if(itemCount > 0){
-										counts.put(lootType, itemCount);
-										player.getInventory().addLoot(lootType, itemCount);
-									}
+		final Consumer<Room> normalRoom =
+				room -> {
+					if (markVisited.apply(room)) {
+						final int count = this.getEnemySpawns().getValue(random.nextFloat());
+						for (int i = 0; i < count; i++) {
+							final MonsterEntity e =
+									enemy.spawnNew(new Vector3f(random.nextFloat() * 6 - 3, 1,
+											random.nextFloat() * 6 - 3), 0.0f, room, gui, soundEnvironment);
+							e.showHealthBar(camera);
+							player.addTarsched(e);
+							room.getEnemies().add(e);
+							e.setDeathListener(lifeformEntity -> {
+								room.getEnemies().remove(e);
+								if (room.getEnemies().isEmpty()) {
+									room.setChest(chest
+											.spawnNew(
+													new Vector3f(0.0f, 0.0f, 0.0f),
+													0.0f,
+													room,
+													chestEntity -> {
+														final EnumMap<LootType, Integer> counts =
+																new EnumMap<>(LootType.class);
+														for (final LootType lootType : LootType.values()) {
+															final int itemCount =
+																	this.getLootSpawn(lootType).getValue(
+																			random.nextFloat());
+															if (itemCount > 0) {
+																counts.put(lootType, itemCount);
+																player.getInventory().addLoot(lootType, itemCount);
+															}
+														}
+														StringBuilder b = new StringBuilder("You found ");
+														if (counts.isEmpty()) {
+															b.append("nothing");
+														} else {
+															int rem = counts.size();
+															boolean first = true;
+															for (Map.Entry<LootType, Integer> entry : counts.entrySet()) {
+																if (first) {
+																	first = false;
+																} else if (rem == 1) {
+																	b.append(" and ");
+																} else {
+																	b.append(", ");
+																}
+																rem--;
+																b.append(entry.getValue());
+																b.append(' ');
+																b.append(entry.getKey().toString());
+															}
+														}
+														b.append('.');
+														infoBox.setText(b.toString());
+													}, soundEnvironment));
+									room.open();
 								}
-								StringBuilder b = new StringBuilder("You found ");
-								if(counts.isEmpty()){
-									b.append("nothing");
-								} else {
-									int rem = counts.size();
-									boolean first = true;
-									for (Map.Entry<LootType, Integer> entry : counts.entrySet()) {
-										if(first) {
-											first = false;
-										} else if (rem == 1) {
-											b.append(" and ");
-										} else {
-											b.append(", ");
-										}
-										rem--;
-										b.append(entry.getValue());
-										b.append(' ');
-										b.append(entry.getKey().toString());
-									}
-								}
-								b.append('.');
-								infoBox.setText(b.toString());
-							}, soundEnvironment));
-							room.open();
+							});
 						}
-					});
-				}
-				if (count > 0) {
-					room.close();
-				}
-			}
-		};
+						if (count > 0) {
+							room.close();
+						}
+					}
+				};
 
 		final Consumer<Room> exitRoom = room -> {
 			if (markVisited.apply(room)) {
@@ -207,7 +222,8 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 				p.set(RoomParameter.Type.BOTTOM_NEIGHBOUR, grid.getTile(x, y).hasNeighbour(Door.Direction.BOTTOM));
 				final float o = determineOffset(x, y);
 				final Vector3f pos = new Vector3f(9 * x + o, o, 9 * y + o);
-				final Room room = determineRoomType(null, grid, grid.getTile(x, y)).construct(p, manager, pos);
+				final Room room =
+						determineRoomType(null, grid, grid.getTile(x, y)).construct(p, manager, pos, soundEnvironment);
 				if (x > 0) {
 					room.registerNeighbour(Door.Direction.LEFT, getRoom(x - 1, y));
 				}
@@ -253,7 +269,7 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 	}
 
 	private float determineOffset(final int x, final int y) {
-		return -0.0025f + (0.00125f * ((x % 2) + ((y % 2) * 2)));
+		return -0.0025f + 0.00125f * (x % 2 + y % 2 * 2);
 	}
 
 	private RoomType determineRoomType(final Random r, final MazeGrid grid, final MazeTile tile) {
@@ -285,7 +301,7 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 		final float y = p.y() % 9;
 		final float min = threshold;
 		final float max = 8f - threshold;
-		if (withDoor || (min <= x && x <= max && min <= y && y <= max)) {
+		if (withDoor || min <= x && x <= max && min <= y && y <= max) {
 			final int rx = (int) Math.floor(p.x() / 9);
 			final int ry = (int) Math.floor(p.y() / 9);
 			return getRoom(rx, ry);
@@ -311,8 +327,8 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 
 		final float x = p.x() % 9;
 		final float y = p.y() % 9;
-		if (x > (wall_offset + wall_indent) && x < (9f - (wall_indent + wall_offset))) {
-			if (y > (wall_offset + wall_indent) && y < (9f - (wall_indent + wall_offset))) {
+		if (x > wall_offset + wall_indent && x < 9f - (wall_indent + wall_offset)) {
+			if (y > wall_offset + wall_indent && y < 9f - (wall_indent + wall_offset)) {
 				return bottom_height;
 			}
 		}
@@ -341,7 +357,7 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 			return top_height;
 		}
 
-		return v <= (1f - wall_offset) ? bottom_height : top_height;
+		return v <= 1f - wall_offset ? bottom_height : top_height;
 
 	}
 
@@ -371,9 +387,13 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 		if (this.getPlayer() != null) {
 			Room current;
 			if (this.activeRoom != null) {
-				current = this.getRoom(new Vector2f(this.getPlayer().getPosition().x(), this.getPlayer().getPosition().z()));
+				current =
+						this.getRoom(new Vector2f(this.getPlayer().getPosition().x(), this.getPlayer().getPosition()
+								.z()));
 			} else {
-				current = this.getRoom(new Vector2f(this.getPlayer().getPosition().x(), this.getPlayer().getPosition().z()), 0.25f);
+				current =
+						this.getRoom(new Vector2f(this.getPlayer().getPosition().x(), this.getPlayer().getPosition()
+								.z()), 0.25f);
 			}
 			if (current != this.activeRoom) {
 				if (this.activeRoom != null) {

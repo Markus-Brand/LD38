@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mbeb.ld38.SharedData;
+
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
@@ -40,7 +41,9 @@ import mbeb.opengldefault.scene.behaviour.BezierBehaviour;
 import mbeb.opengldefault.scene.behaviour.CombinedBehaviour;
 import mbeb.opengldefault.scene.behaviour.LookAtBehaviour;
 import mbeb.opengldefault.scene.entities.EntityWorld;
-import mbeb.opengldefault.scene.materials.Material;
+import mbeb.opengldefault.sound.Sound;
+import mbeb.opengldefault.sound.SoundEnvironment;
+import mbeb.opengldefault.sound.SoundSource;
 
 public class IntroGameState implements GameState {
 
@@ -82,10 +85,13 @@ public class IntroGameState implements GameState {
 
 	private boolean starting;
 
+	private SoundSource clickSound;
+
 	private SharedData shared;
-	private final BoneTransformation islandTransform = new BoneTransformation(new Vector3f(0.9999f, 0, 0), new Quaternionf(new AxisAngle4f(
-			(float) Math.PI / 2f,
-			new Vector3f(0, 0, -1))), new Vector3f(0.001f));
+	private final BoneTransformation islandTransform = new BoneTransformation(new Vector3f(0.9999f, 0, 0),
+			new Quaternionf(new AxisAngle4f(
+					(float) Math.PI / 2f,
+					new Vector3f(0, 0, -1))), new Vector3f(0.001f));
 
 	public IntroGameState(SharedData shared) {
 		this.shared = shared;
@@ -130,7 +136,6 @@ public class IntroGameState implements GameState {
 
 		final IRenderable worldRenderable = new ObjectLoader().loadFromFile("planet.obj");
 
-
 		world = new SceneObject(worldRenderable);
 		world.setShader(worldShader);
 
@@ -171,6 +176,7 @@ public class IntroGameState implements GameState {
 				menuGUI.addAtlasGUIElement(0, new Vector2f(), new Vector2f(0.1f, GLContext.getAspectRatio() * 0.1f))
 						.setPositionRelativeToScreen(0.01f, 0.99f);
 		entities.update(0.0000001f);
+		initClickSound(introScene.getSoundEnvironment());
 	}
 
 	@Override
@@ -190,6 +196,36 @@ public class IntroGameState implements GameState {
 			if (KeyBoard.isKeyDown(GLFW_KEY_ESCAPE)) {
 				nextGameState = GameStateIdentifier.EXIT;
 			}
+
+			if (buttonGame.selected()) {
+				buttonGame.setColor(Color.RED);
+				if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
+					starting = true;
+					clickSound.play();
+				}
+			} else {
+				buttonGame.setColor(Color.GREEN);
+			}
+
+			if (buttonOptions.selected()) {
+				buttonOptions.setColor(Color.RED);
+				if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
+					nextGameState = GameStateIdentifier.OPTIONS;
+					clickSound.play();
+				}
+			} else {
+				buttonOptions.setColor(Color.GREEN);
+			}
+
+			if (buttonExit.selected()) {
+				buttonExit.setColor(Color.RED);
+				if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
+					nextGameState = GameStateIdentifier.EXIT;
+					clickSound.play();
+				}
+			} else {
+				buttonExit.setColor(Color.GREEN);
+			}
 		}
 		camera.update(deltaTime);
 
@@ -197,32 +233,6 @@ public class IntroGameState implements GameState {
 		menuGUI.update(deltaTime);
 		textGUI.update(deltaTime);
 
-		if (buttonGame.selected()) {
-			buttonGame.setColor(Color.RED);
-			if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
-				starting = true;
-			}
-		} else {
-			buttonGame.setColor(Color.GREEN);
-		}
-
-		if (buttonOptions.selected()) {
-			buttonOptions.setColor(Color.RED);
-			if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
-				nextGameState = GameStateIdentifier.OPTIONS;
-			}
-		} else {
-			buttonOptions.setColor(Color.GREEN);
-		}
-
-		if (buttonExit.selected()) {
-			buttonExit.setColor(Color.RED);
-			if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
-				nextGameState = GameStateIdentifier.EXIT;
-			}
-		} else {
-			buttonExit.setColor(Color.GREEN);
-		}
 	}
 
 	@Override
@@ -245,6 +255,12 @@ public class IntroGameState implements GameState {
 		nextGameState = null;
 	}
 
+	private void initClickSound(final SoundEnvironment soundEnvironment) {
+		final Sound sound = soundEnvironment.createSound("click");
+		clickSound = soundEnvironment.createSoundSource(false, true);
+		clickSound.setSound(sound);
+	}
+
 	@Override
 	public void open() {
 		shared.overworld.getSceneObject().setTransformation(islandTransform);
@@ -254,6 +270,7 @@ public class IntroGameState implements GameState {
 		bezierBehaviour.resetProgress();
 		progress = 0;
 		entities.update(0.0000001f);
+		introScene.getSoundEnvironment().makeCurrent();
 	}
 
 }

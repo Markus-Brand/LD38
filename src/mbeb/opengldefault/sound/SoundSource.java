@@ -17,6 +17,8 @@ public class SoundSource implements IEntityConvertable {
 	/** the openAL - handle for the speaker object */
 	private final int sourceId;
 
+	private boolean hasSound = false;
+
 	/**
 	 * create a new speaker that is capable of playing multiple sounds
 	 *
@@ -63,7 +65,10 @@ public class SoundSource implements IEntityConvertable {
 	 * @param sound
 	 */
 	public void setSound(final Sound sound) {
-		stop();
+		if (hasSound) {
+			stop();
+		}
+		hasSound = true;
 		setProperty(AL_BUFFER, sound.getBufferId());
 	}
 
@@ -196,9 +201,6 @@ public class SoundSource implements IEntityConvertable {
 	 * position.
 	 */
 	public void pause() {
-		if (isPlaying()) {
-			return;
-		}
 		alSourcePause(sourceId);
 		ALErrors.checkForError(TAG, "alSourcePause");
 	}
@@ -208,9 +210,6 @@ public class SoundSource implements IEntityConvertable {
 	 * again.
 	 */
 	public void stop() {
-		if (isPlaying()) {
-			return;
-		}
 		alSourceStop(sourceId);
 		ALErrors.checkForError(TAG, "alSourceStop");
 	}

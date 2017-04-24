@@ -72,7 +72,9 @@ public class OverworldGameState implements GameState {
 	public OverworldGameState(final SharedData shared) {
 		this.shared = shared;
 		player = new Player(100, null, null);
-		playerHeight = new HeightFromHeightMap(Texture.loadBufferedImage("overworldHeight.png"), new Rectangle(new Vector2f(-16), new Vector2f(32)), 2f, 1f);
+		playerHeight =
+				new HeightFromHeightMap(Texture.loadBufferedImage("overworldHeight.png"), new Rectangle(new Vector2f(
+						-16), new Vector2f(32)), 2f, 1f);
 	}
 
 	@Override
@@ -84,6 +86,7 @@ public class OverworldGameState implements GameState {
 
 		skybox = new Skybox("beachbox/beach", "png");
 		scene = new Scene(topDownViewCamera, skybox);
+		shared.soundEnv = scene.getSoundEnvironment();
 
 		final IRenderable water = new ObjectLoader().loadFromFile("overworld/water.obj");
 
@@ -97,7 +100,8 @@ public class OverworldGameState implements GameState {
 		scene.getLightManager().addShader(defaultShader);
 		scene.getSceneGraph().setShader(defaultShader);
 
-		final SceneObject waterObject = new SceneObject(water, new BoneTransformation(new Vector3f(), new Quaternionf(), new Vector3f(100)));
+		final SceneObject waterObject =
+				new SceneObject(water, new BoneTransformation(new Vector3f(), new Quaternionf(), new Vector3f(100)));
 		waterObject.setShader(waterShader);
 
 		final ShaderProgram animationShader = new ShaderProgram("boneAnimation.vert", "basic.frag");
@@ -108,18 +112,23 @@ public class OverworldGameState implements GameState {
 
 		player.setAnimationShader(animationShader);
 
-		shared.playerEntity = player.spawnNew(new Vector3f(0, 10, 1), 0, scene.getSceneGraph(), shared.healthBarGUI, scene.getSoundEnvironment());
+		shared.playerEntity =
+				player.spawnNew(new Vector3f(0, 10, 1), 0, scene.getSceneGraph(), shared.healthBarGUI,
+						scene.getSoundEnvironment());
 		world.add(shared.playerEntity);
 
 		shared.playerEntity.setHeightSource(playerHeight);
 
-		world.add(topDownViewCamera).addBehaviour(0, new TopDownViewBehaviour(shared.playerEntity, 7, 3, 1)).setPosition(new Vector3f(3, 4, 5));
+		world.add(topDownViewCamera).addBehaviour(0, new TopDownViewBehaviour(shared.playerEntity, 7, 3, 1))
+				.setPosition(new Vector3f(3, 4, 5));
 
 		final DirectionalLight sun = new DirectionalLight(Color.WHITE, new Vector3f(0.2f, -1, 0).normalize());
 		scene.getLightManager().addLight(sun);
 
 		final Goblin goblin = new Goblin(shared.playerEntity, animationShader);
-		goblinEntity = goblin.spawnNew(new Vector3f(10, 3, 0), 0, scene.getSceneGraph(), shared.healthBarGUI, scene.getSoundEnvironment());
+		goblinEntity =
+				goblin.spawnNew(new Vector3f(10, 3, 0), 0, scene.getSceneGraph(), shared.healthBarGUI,
+						scene.getSoundEnvironment());
 		world.add(goblinEntity);
 
 		shared.playerEntity.addTarsched(goblinEntity);
@@ -157,7 +166,8 @@ public class OverworldGameState implements GameState {
 	@Override
 	public void update(final double deltaTime) {
 
-		if (new Vector2f(anvilPos.x, anvilPos.z).distance(new Vector2f(shared.playerEntity.getPosition().x, shared.playerEntity.getPosition().z)) < 1.3f) {
+		if (new Vector2f(anvilPos.x, anvilPos.z).distance(new Vector2f(shared.playerEntity.getPosition().x,
+				shared.playerEntity.getPosition().z)) < 1.3f) {
 			infoBox.setText("Press C for crafting");
 			if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_C)) {
 				infoBox.setText(" ");
@@ -234,6 +244,7 @@ public class OverworldGameState implements GameState {
 		shared.playerEntity.addTo(scene.getSceneGraph(), scene.getLightManager());
 		shared.playerEntity.setHeightSource(playerHeight);
 		shared.playerEntity.setPosition(port);
+		shared.playerEntity.setStoneWalkingSound(false);
 		if (leftForDungeon) {
 			leftForDungeon = false;
 		}

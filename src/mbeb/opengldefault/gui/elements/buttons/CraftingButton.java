@@ -60,7 +60,9 @@ public class CraftingButton extends Button {
 		title.setColor(Color.BLACK);
 		title.setPositionRelativeTo(bounding, 0.5f, 0.90f);
 
-		info = textGUI.addText("Damage:" + (int) sword.getDamage() + " | " + "Range:" + sword.getRange() + "m | " + "Speed:" + (int) (10 / sword.getStrokeTime()), new Vector2f(), 0.03f);
+		info =
+				textGUI.addText("Damage:" + (int) sword.getDamage() + " | " + "Range:" + sword.getRange() + "m | "
+						+ "Speed:" + (int) (10 / sword.getStrokeTime()), new Vector2f(), 0.03f);
 		info.setColor(Color.BLACK);
 		info.setPositionRelativeTo(bounding, 0.5f, 0.70f);
 
@@ -132,10 +134,12 @@ public class CraftingButton extends Button {
 	@Override
 	public void onButtonChanged() {
 		if (isPressed) {
+			if (inventory.canCraft(recipe)) {
+				playerEntity.craftingSoundSource.play();
+				buttonAtlas.setColor(Color.LIGHT_GRAY);
+				dirty = true;
+			}
 			inventory.craft(recipe);
-			buttonAtlas.setColor(Color.LIGHT_GRAY);
-			dirty = true;
-			playerEntity.craftingSoundSource.play();
 		}
 	}
 
