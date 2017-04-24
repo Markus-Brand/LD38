@@ -6,6 +6,7 @@ import mbeb.opengldefault.scene.behaviour.CombinedBehaviour;
 import mbeb.opengldefault.scene.behaviour.HeightSource;
 import mbeb.opengldefault.scene.behaviour.SamuraiPlayerBehaviour;
 import mbeb.opengldefault.scene.behaviour.WalkOnHeightMapBehaviour;
+import org.joml.Vector3f;
 
 public class PlayerEntity extends LifeformEntity {
 
@@ -23,6 +24,7 @@ public class PlayerEntity extends LifeformEntity {
 		addBehaviour(0, new CombinedBehaviour(
 				new SamuraiPlayerBehaviour(),
 				new WalkOnHeightMapBehaviour(heightSource, playerSpeed)));
+		setHealthBarOffset(new Vector3f(0, 2, 0));
 	}
 
 	@Override

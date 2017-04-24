@@ -129,7 +129,7 @@ public class GUI implements IRenderable {
 	private void loadBufferData() {
 		GLBufferWriter writer = vbo.writer(getElementsSize() * stride * FLOAT_SIZE);
 		elements.forEach(writer::write);
-		writer.flush();
+		writer.flush(GLBufferWriter.WriteType.FULL_DATA);
 	}
 
 	/**

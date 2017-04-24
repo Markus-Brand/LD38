@@ -1,5 +1,8 @@
 package mbeb.lifeforms;
 
+import mbeb.ld38.HealthBarGUI;
+import mbeb.ld38.HealthBarGUIElement;
+import mbeb.opengldefault.camera.Camera;
 import org.joml.Vector2f;
 
 import mbeb.opengldefault.scene.*;
@@ -11,19 +14,29 @@ import org.joml.Vector3f;
 public abstract class LifeformEntity extends SceneEntity {
 
 	private float healthpoints;
+	private float maxHealth;
 
 	private boolean dead;
 
 	private Shape hitCircle;
 
 	Vector3f healthBarOffset = new Vector3f();
+	private HealthBarGUIElement healthBar;
+	
+	private Camera camera = null; //used to project the healthbar on the screen
 
 	public LifeformEntity(final SceneObject sceneObject, final float healthpoints, float radius) {
 		super(sceneObject);
 		this.healthpoints = healthpoints;
+		this.maxHealth = healthpoints;
 		hitCircle =
 				new Circle(new Vector2f(sceneObject.getGlobalPosition().x, sceneObject.getGlobalPosition().z), radius);
 		dead = false;
+		
+		healthBar = new HealthBarGUIElement(0.8f,
+				                                   new Vector3f(0f, 0.3f, 1),
+				                                   new Vector3f(1, 1, 0.4f),
+				                                   new Vector3f(0.01f));
 	}
 
 	public Shape getBounding() {
@@ -41,6 +54,8 @@ public abstract class LifeformEntity extends SceneEntity {
 		if (healthpoints <= 0) {
 			dead = true;
 		}
+		healthBar.setHealth(healthpoints / maxHealth);
+		
 		getSceneObject().setSelected(true);
 	}
 
@@ -54,5 +69,30 @@ public abstract class LifeformEntity extends SceneEntity {
 
 	public Vector3f getHealthBarPosition() {
 		return getPosition().add(healthBarOffset, new Vector3f());
+	}
+	
+	public void showHealthBar(HealthBarGUI gui, Camera camera) {
+		gui.addGUIElement(healthBar);
+		setCamera(camera);
+	}
+	
+	@Override
+	public void update(double deltaTime) {
+		super.update(deltaTime);
+		healthBar.update(deltaTime);
+		
+		if (camera == null) {
+			healthBar.setPositionRelativeToScreen(0.01f, 0.99f);
+		} else {
+			Vector3f screenSpace = camera.getPositionOnScreen(getHealthBarPosition());
+			System.out.println(screenSpace);
+			Vector2f hudSpace = new Vector2f((screenSpace.x + 1) / 2, (screenSpace.y + 1) / 2);
+			System.out.println(hudSpace);
+			healthBar.setPositionRelativeToScreen(hudSpace);
+		}
+	}
+	
+	public void setCamera(Camera camera) {
+		this.camera = camera;
 	}
 }

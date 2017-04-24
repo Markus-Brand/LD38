@@ -4,7 +4,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.awt.*;
 
-import mbeb.ld38.LifeformHealthBar;
+import mbeb.ld38.HealthBarGUI;
 import org.joml.*;
 import org.lwjgl.glfw.*;
 
@@ -103,17 +103,17 @@ public class OverworldGameState implements GameState {
 
 		final Goblin goblin = new Goblin(playerEntity, animationShader);
 		goblinEntity = goblin.spawnNew(new Vector3f(1, 3, 0), 0, overworld.getSceneObject());
-		//world.add(goblinEntity);
+		world.add(goblinEntity);
 
 		playerEntity.addTarsched(goblinEntity);
 
+		healthGui = new HealthBarGUI();
+		goblinEntity.showHealthBar(healthGui, topDownViewCamera);
+		//playerEntity.showHealthBar(healthGui, topDownViewCamera);
 
-		bar = new LifeformHealthBar(goblinEntity);
-		bar2 = new LifeformHealthBar(playerEntity);
 	}
 
-	private LifeformHealthBar bar;
-	private LifeformHealthBar bar2;
+	private HealthBarGUI healthGui;
 
 	@Override
 	public void update(final double deltaTime) {
@@ -125,8 +125,7 @@ public class OverworldGameState implements GameState {
 			overworldScene.getSceneGraph().removeSubObject(goblinEntity.getSceneObject());
 			world.remove(goblinEntity);
 		}*/
-		bar.update(deltaTime);
-		bar2.update(deltaTime);
+		healthGui.update(deltaTime);
 	}
 
 	@Override
@@ -139,10 +138,7 @@ public class OverworldGameState implements GameState {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		overworldScene.render(showBBs);
 
-		bar.setPosition(overworldScene.getCamera().getPositionOnScreen(goblinEntity.getHealthBarPosition()));
-		bar.render();
-		bar2.setPosition(overworldScene.getCamera().getPositionOnScreen(playerEntity.getHealthBarPosition()));
-		bar2.render();
+		healthGui.render();
 	}
 
 	@Override
@@ -166,7 +162,7 @@ public class OverworldGameState implements GameState {
 	@Override
 	public void open() {
 		overworldScene.getLightManager().rewriteUBO();
-		GLContext.hideCursor();
+		//GLContext.hideCursor();
 	}
 
 }

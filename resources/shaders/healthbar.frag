@@ -1,21 +1,21 @@
 
 in vec2 tex;
 in vec3 pos;
+
 flat in vec4 colorInfo;
 
 uniform sampler2D u_texture;
-uniform sampler2D u_lut;
 
 
 //2 borders for nice effects
 
 const vec3 borderColor = vec3(0.7);
 
-uniform vec3 color1;
-uniform float progress1;
-uniform vec3 color2;
-uniform float progress2;
-uniform vec3 color3;
+flat in vec3 color1;
+flat in float progress1;
+flat in vec3 color2;
+flat in float progress2;
+flat in vec3 color3;
 
 out vec4 color;
 
