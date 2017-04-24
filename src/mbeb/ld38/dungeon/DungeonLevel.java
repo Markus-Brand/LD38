@@ -4,6 +4,7 @@ import java.lang.Math;
 import java.util.*;
 import java.util.function.*;
 
+import mbeb.opengldefault.gui.elements.TextGUIElement;
 import org.joml.*;
 
 import mbeb.ld38.*;
@@ -88,13 +89,14 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 	private PlayerEntity player;
 	private Table enemySpawns;
 	private final LightManager manager;
+	private final TextGUIElement infoBox;
 	private final Goblin enemy;
 	private final Chest chest;
 	private final HealthBarGUI gui;
 	private final Camera camera;
 	private final EnumMap<LootType, Table> lootSpawns;
 
-	public DungeonLevel(final LightManager manager, final Goblin enemy, final HealthBarGUI gui, final Camera camera, final Chest chest) {
+	public DungeonLevel(final LightManager manager, final Goblin enemy, final HealthBarGUI gui, final Camera camera, final Chest chest, final TextGUIElement infoBox) {
 
 		super();
 		this.manager = manager;
@@ -103,10 +105,10 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 		this.camera = camera;
 		this.chest = chest;
 		this.lootSpawns = new EnumMap<>(LootType.class);
+		this.infoBox = infoBox;
 		for (final LootType lootType : LootType.values()) {
 			this.setLootSpawn(lootType, 1.0f);
 		}
-		this.setLootSpawn(LootType.Wood, 0.0f, 0.5f, 0.5f);
 		this.enemySpawns = new Table(0.25f, 0.5f, 0.25f);
 	}
 
@@ -146,11 +148,36 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 						room.getEnemies().remove(e);
 						if (room.getEnemies().isEmpty()) {
 							room.setChest(chest.spawnNew(new Vector3f(0.0f, 0.0f, 0.0f), 0.0f, room, chestEntity -> {
+								final EnumMap<LootType, Integer> counts = new EnumMap<>(LootType.class);
 								for (final LootType lootType : LootType.values()) {
 									final int itemCount = this.getLootSpawn(lootType).getValue(random.nextFloat());
-									System.out.println("GOT " + itemCount + " " + lootType.toString());
-									player.getInventory().addLoot(lootType, itemCount);
+									if(itemCount > 0){
+										counts.put(lootType, itemCount);
+										player.getInventory().addLoot(lootType, itemCount);
+									}
 								}
+								StringBuilder b = new StringBuilder("You found ");
+								if(counts.isEmpty()){
+									b.append("nothing");
+								} else {
+									int rem = counts.size();
+									boolean first = true;
+									for (Map.Entry<LootType, Integer> entry : counts.entrySet()) {
+										if(first) {
+											first = false;
+										} else if (rem == 1) {
+											b.append(" and ");
+										} else {
+											b.append(", ");
+										}
+										rem--;
+										b.append(entry.getValue());
+										b.append(' ');
+										b.append(entry.getKey().toString());
+									}
+								}
+								b.append('.');
+								infoBox.setText(b.toString());
 							}, soundEnvironment));
 							room.open();
 						}
