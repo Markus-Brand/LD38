@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import mbeb.ld38.recipe.Recipe;
+
 public class Inventory {
 	private HashMap<LootType, Integer> lootMap;
 
@@ -56,5 +58,9 @@ public class Inventory {
 	public void switchSword() {
 		selectedSword++;
 		selectedSword %= swords.size();
+	}
+
+	public HashMap<LootType, Integer> getLootMap() {
+		return lootMap;
 	}
 }

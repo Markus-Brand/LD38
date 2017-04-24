@@ -19,8 +19,10 @@ public class MonsterEntity extends LifeformEntity {
 
 	private final AnimationStateFacade animator;
 
-	public MonsterEntity(final float radius, final SceneObject monsterObject, final AnimationStateFacade animator, final float healthpoints, final float visionRange, final float attackRange,
-			final float attackDamage, final float attackPreperationTime, final float attackDuration, final float attackCooldown, final float movingSpeed, final HealthBarGUI healthGui) {
+	public MonsterEntity(final float radius, final SceneObject monsterObject, final AnimationStateFacade animator,
+			final float healthpoints, final float visionRange, final float attackRange,
+			final float attackDamage, final float attackPreperationTime, final float attackDuration,
+			final float attackCooldown, final float movingSpeed, final HealthBarGUI healthGui) {
 		super(monsterObject, healthpoints, radius, healthGui);
 		this.visionRange = visionRange;
 		this.attackRange = attackRange;

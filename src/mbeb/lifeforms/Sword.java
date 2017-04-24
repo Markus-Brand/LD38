@@ -31,15 +31,19 @@ public class Sword {
 	private final float range;
 	private final float strokeTime;
 	private final IRenderable sword;
+	private String name;
 
-	public Sword(final float damage, final float range, final float strokeTime, final LootType lootType, final SwordType swordType) {
+	public Sword(final float damage, final float range, final float strokeTime, final LootType lootType,
+			final SwordType swordType) {
 		this.damage = damage;
 		this.range = range;
 		this.strokeTime = strokeTime;
+		this.name = lootType.toString() + " " + swordType.toString();
 		sword = getSwordMesh(swordType).withMaterial(getMaterialFor(lootType));
 	}
 
-	public SwordEntity spawnNew(final SceneObject parent, final SceneObject playerObject, final AnimationStateFacade playerAnimatedRenderable) {
+	public SwordEntity spawnNew(final SceneObject parent, final SceneObject playerObject,
+			final AnimationStateFacade playerAnimatedRenderable) {
 		final SceneObject swordObject = new SceneObject(sword);
 		parent.addSubObject(swordObject);
 		return new SwordEntity(swordObject, damage, range, strokeTime, playerObject, playerAnimatedRenderable);
@@ -47,5 +51,17 @@ public class Sword {
 
 	public float getDamage() {
 		return damage;
+	}
+
+	public float getRange() {
+		return range;
+	}
+
+	public float getStrokeTime() {
+		return strokeTime;
+	}
+
+	public String getName() {
+		return name;
 	}
 }

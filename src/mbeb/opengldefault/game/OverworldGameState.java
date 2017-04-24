@@ -18,8 +18,10 @@ import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.controls.*;
 import mbeb.opengldefault.gl.shader.*;
 import mbeb.opengldefault.gl.texture.*;
+import mbeb.opengldefault.gui.AtlasGUI;
 import mbeb.opengldefault.gui.TextGUI;
 import mbeb.opengldefault.gui.elements.TextGUIElement;
+import mbeb.opengldefault.gui.elements.buttons.CraftingHUD;
 import mbeb.opengldefault.light.*;
 import mbeb.opengldefault.options.*;
 import mbeb.opengldefault.rendering.io.*;
@@ -56,7 +58,12 @@ public class OverworldGameState implements GameState {
 	private final SharedData shared;
 
 	private TextGUI text;
+	private AtlasGUI hud;
 	private TextGUIElement infoBox;
+
+	private CraftingHUD craftingHUD;
+
+	private boolean crafting;
 
 	MonsterEntity goblinEntity;
 
@@ -76,7 +83,7 @@ public class OverworldGameState implements GameState {
 
 	@Override
 	public void init() {
-
+		crafting = false;
 		world = new EntityWorld();
 
 		topDownViewCamera = new PerspectiveCamera();
@@ -132,10 +139,16 @@ public class OverworldGameState implements GameState {
 
 		shared.playerEntity.showHealthBar(null);
 
+		hud = new AtlasGUI("menu.png", 4, 4);
 		text = new TextGUI(new Font("Arial", 0, 64));
 		infoBox = text.addText(" ", new Vector2f());
 		infoBox.setPositionRelativeToScreen(0.01f, 0.01f);
 		infoBox.setColor(Color.WHITE);
+
+		shared.playerEntity.getInventory().addLoot(LootType.Steel, 10);
+		shared.playerEntity.getInventory().addLoot(LootType.Wood, 10);
+
+		craftingHUD = new CraftingHUD(hud, text, shared.playerEntity.getInventory());
 	}
 
 	@Override
@@ -145,19 +158,37 @@ public class OverworldGameState implements GameState {
 				shared.playerEntity
 						.getPosition().z)) < 1.3f) {
 			infoBox.setText("Press C for crafting");
+			if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_C)) {
+				infoBox.setText(" ");
+				crafting = true;
+				craftingHUD.show();
+				GLContext.showCursor();
+			}
 		} else {
 			infoBox.setText(" ");
 		}
+		if (crafting) {
+			if (KeyBoard.pullKeyDown(GLFW.GLFW_KEY_ESCAPE)) {
+				crafting = false;
+				craftingHUD.hide();
+				infoBox.setText(" ");
+				GLContext.hideCursor();
+			}
+			craftingHUD.update(deltaTime);
+		} else {
+			totalTimePassed += deltaTime;
+			world.update(deltaTime);
 
-		totalTimePassed += deltaTime;
-		scene.update(deltaTime);
-		world.update(deltaTime);
-
-		if (goblinEntity.isDead()) {
-			world.remove(goblinEntity);
+			if (goblinEntity.isDead()) {
+				scene.getSceneGraph().removeSubObject(goblinEntity.getSceneObject());
+				world.remove(goblinEntity);
+			}
+			scene.update(deltaTime);
+			shared.healthBarGUI.update(deltaTime);
 		}
-		shared.healthBarGUI.update(deltaTime);
 		text.update(deltaTime);
+		hud.update(deltaTime);
+
 	}
 
 	@Override
@@ -171,6 +202,7 @@ public class OverworldGameState implements GameState {
 		scene.render(showBBs);
 
 		shared.healthBarGUI.render();
+		hud.render();
 		text.render();
 	}
 

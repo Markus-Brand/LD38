@@ -28,7 +28,8 @@ public class PlayerEntity extends LifeformEntity {
 
 	private final WalkOnHeightMapBehaviour heightWalk;
 
-	public PlayerEntity(final float radius, final SceneObject sceneObject, final AnimationStateFacade animator, final float healthpoints, final IHeightSource heightSource,
+	public PlayerEntity(final float radius, final SceneObject sceneObject, final AnimationStateFacade animator,
+			final float healthpoints, final IHeightSource heightSource,
 			final HealthBarGUI healthGui) {
 		super(sceneObject, healthpoints, radius, healthGui);
 		this.animator = animator;
@@ -42,11 +43,18 @@ public class PlayerEntity extends LifeformEntity {
 
 		setSword(inventory.getSelectedSword());
 
-		SceneObject lampObject = new SceneObject(Player.lampRenderable, new BoneTransformation(null, null, new Vector3f(0.3f)));
+		SceneObject lampObject =
+				new SceneObject(Player.lampRenderable, new BoneTransformation(null, null, new Vector3f(0.3f)));
 
 		PointLight light = new PointLight(new Vector3f(1f, 0.5f, 0.2f), new Vector3f(), 15f);
-		lightEntity = (PointLightEntity) light.asEntity().addBehaviour(0, new ParentBehaviour(lampObject, new Vector3f(0, 2, 0)));
-		lampEntity = (SceneEntity) lampObject.asNewEntity().addBehaviour(0, new BoneTrackingBehaviour(sceneObject, animator.getAnimatedRenderable(), "Hand.Left").fixedDirection());
+		lightEntity =
+				(PointLightEntity) light.asEntity().addBehaviour(0,
+						new ParentBehaviour(lampObject, new Vector3f(0, 2, 0)));
+		lampEntity =
+				(SceneEntity) lampObject.asNewEntity().addBehaviour(
+						0,
+						new BoneTrackingBehaviour(sceneObject, animator.getAnimatedRenderable(), "Hand.Left")
+								.fixedDirection());
 	}
 
 	@Override
@@ -124,5 +132,9 @@ public class PlayerEntity extends LifeformEntity {
 
 	public void setHeightSource(final IHeightSource heightSource) {
 		heightWalk.setHeightSource(heightSource);
+	}
+
+	public Inventory getInventory() {
+		return inventory;
 	}
 }
