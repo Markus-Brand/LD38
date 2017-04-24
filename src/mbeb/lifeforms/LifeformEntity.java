@@ -14,7 +14,7 @@ import mbeb.opengldefault.sound.*;
 public abstract class LifeformEntity extends SceneEntity {
 
 	protected float healthpoints;
-	private final float maxHealth;
+	protected final float maxHealth;
 
 	private boolean dead;
 
@@ -126,6 +126,10 @@ public abstract class LifeformEntity extends SceneEntity {
 
 	public Vector3f getHealthBarPosition() {
 		return getPosition().add(healthBarOffset, new Vector3f());
+	}
+
+	public void setHealthpoints(final float healthpoints) {
+		this.healthpoints = healthpoints;
 	}
 
 	public void showHealthBar(final Camera camera) {
