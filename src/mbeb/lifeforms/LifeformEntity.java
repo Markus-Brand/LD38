@@ -1,48 +1,41 @@
 package mbeb.lifeforms;
 
-import mbeb.ld38.HealthBarGUI;
-import mbeb.ld38.HealthBarGUIElement;
-import mbeb.opengldefault.camera.Camera;
-import org.joml.Vector2f;
+import java.util.function.*;
 
+import org.joml.*;
+
+import mbeb.ld38.*;
+import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.scene.*;
 import mbeb.opengldefault.scene.entities.*;
-import mbeb.opengldefault.shapes.Circle;
-import mbeb.opengldefault.shapes.Shape;
-import org.joml.Vector3f;
-
-import java.util.function.Consumer;
+import mbeb.opengldefault.shapes.*;
 
 public abstract class LifeformEntity extends SceneEntity {
 
 	private float healthpoints;
-	private float maxHealth;
+	private final float maxHealth;
 
 	private boolean dead;
 
-	private Shape hitCircle;
+	private final Shape hitCircle;
 
 	private Consumer<LifeformEntity> deathListener;
 
 	Vector3f healthBarOffset = new Vector3f();
-	private HealthBarGUIElement healthBar;
+	private final HealthBarGUIElement healthBar;
 	private final HealthBarGUI healthGui;
-	
+
 	private Camera camera = null; //used to project the healthbar on the screen
 
-	public LifeformEntity(final SceneObject sceneObject, final float healthpoints, float radius, HealthBarGUI healthGui) {
+	public LifeformEntity(final SceneObject sceneObject, final float healthpoints, final float radius, final HealthBarGUI healthGui) {
 		super(sceneObject);
 		this.healthpoints = healthpoints;
 		this.maxHealth = healthpoints;
 		this.healthGui = healthGui;
-		hitCircle =
-				new Circle(new Vector2f(sceneObject.getGlobalPosition().x, sceneObject.getGlobalPosition().z), radius);
+		hitCircle = new Circle(new Vector2f(sceneObject.getGlobalPosition().x, sceneObject.getGlobalPosition().z), radius);
 		dead = false;
-		
-		healthBar = new HealthBarGUIElement(getHealthBarSize(),
-				                                   new Vector3f(0f, 1, 0.2f),
-				                                   new Vector3f(1f, 0.4f, 0.2f),
-				                                   new Vector3f(0f));
+
+		healthBar = new HealthBarGUIElement(getHealthBarSize(), new Vector3f(0f, 1, 0.2f), new Vector3f(1f, 0.4f, 0.2f), new Vector3f(0f));
 	}
 
 	protected float getHealthBarSize() {
@@ -58,7 +51,7 @@ public abstract class LifeformEntity extends SceneEntity {
 		return healthpoints;
 	}
 
-	public void damage(float damage) {
+	public void damage(final float damage) {
 		if (dead) {
 			return;
 		}
@@ -67,13 +60,13 @@ public abstract class LifeformEntity extends SceneEntity {
 			onDie();
 		}
 		healthBar.setHealth(healthpoints / maxHealth);
-		
+
 		getSceneObject().setSelected(true);
 	}
 
 	public void onDie() {
 		dead = true;
-		if(this.deathListener != null) {
+		if (this.deathListener != null) {
 			this.deathListener.accept(this);
 		}
 		if (healthGui != null) {
@@ -85,40 +78,40 @@ public abstract class LifeformEntity extends SceneEntity {
 		return dead;
 	}
 
-	public void setHealthBarOffset(Vector3f healthBarOffset) {
+	public void setHealthBarOffset(final Vector3f healthBarOffset) {
 		this.healthBarOffset = healthBarOffset;
 	}
 
 	public Vector3f getHealthBarPosition() {
 		return getPosition().add(healthBarOffset, new Vector3f());
 	}
-	
-	public void showHealthBar(Camera camera) {
+
+	public void showHealthBar(final Camera camera) {
 		if (healthGui != null) {
 			healthGui.addGUIElement(healthBar);
 		}
 		setCamera(camera);
 	}
-	
+
 	@Override
-	public void update(double deltaTime) {
+	public void update(final double deltaTime) {
 		super.update(deltaTime);
 		healthBar.update(deltaTime);
-		
+
 		if (camera == null) {
 			healthBar.setPositionRelativeToScreen(0.01f, 0.99f);
 		} else {
-			Vector3f screenSpace = camera.getPositionOnScreen(getHealthBarPosition());
-			Vector2f hudSpace = new Vector2f((screenSpace.x + 1) / 2, (screenSpace.y + 1) / 2);
+			final Vector3f screenSpace = camera.getPositionOnScreen(getHealthBarPosition());
+			final Vector2f hudSpace = new Vector2f((screenSpace.x + 1) / 2, (screenSpace.y + 1) / 2);
 			healthBar.setPositionRelativeToScreen(hudSpace);
 		}
 	}
-	
-	public void setCamera(Camera camera) {
+
+	public void setCamera(final Camera camera) {
 		this.camera = camera;
 	}
 
-	public void setDeathListener(Consumer<LifeformEntity> deathListener) {
+	public void setDeathListener(final Consumer<LifeformEntity> deathListener) {
 		this.deathListener = deathListener;
 	}
 }
