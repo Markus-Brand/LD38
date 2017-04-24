@@ -6,6 +6,7 @@ import mbeb.opengldefault.scene.*;
 import mbeb.opengldefault.scene.entities.*;
 import mbeb.opengldefault.shapes.Circle;
 import mbeb.opengldefault.shapes.Shape;
+import org.joml.Vector3f;
 
 public abstract class LifeformEntity extends SceneEntity {
 
@@ -14,6 +15,8 @@ public abstract class LifeformEntity extends SceneEntity {
 	private boolean dead;
 
 	private Shape hitCircle;
+
+	Vector3f healthBarOffset = new Vector3f();
 
 	public LifeformEntity(final SceneObject sceneObject, final float healthpoints, float radius) {
 		super(sceneObject);
@@ -43,5 +46,13 @@ public abstract class LifeformEntity extends SceneEntity {
 
 	public boolean isDead() {
 		return dead;
+	}
+
+	public void setHealthBarOffset(Vector3f healthBarOffset) {
+		this.healthBarOffset = healthBarOffset;
+	}
+
+	public Vector3f getHealthBarPosition() {
+		return getPosition().add(healthBarOffset, new Vector3f());
 	}
 }

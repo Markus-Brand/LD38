@@ -4,8 +4,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.awt.*;
 
-import mbeb.ld38.HealthBar;
-import mbeb.ld38.MonsterHealthBar;
+import mbeb.ld38.LifeformHealthBar;
 import org.joml.*;
 import org.lwjgl.glfw.*;
 
@@ -49,6 +48,7 @@ public class OverworldGameState implements GameState {
 	Player player;
 
 	MonsterEntity goblinEntity;
+	PlayerEntity playerEntity;
 
 	@Option(category = "Game")
 	@ButtonOption
@@ -90,7 +90,7 @@ public class OverworldGameState implements GameState {
 		player = new Player(100, animationShader, new HeightFromHeightMap(Texture.loadBufferedImage("overworldHeight.png"), new Rectangle(new Vector2f(-16), new Vector2f(32)), 2f, 1f),
 				new Sword(10, 1f, 1f));
 
-		final PlayerEntity playerEntity = player.spawnNew(new Vector3f(0, 10, 1), 0, overworld.getSceneObject());
+		playerEntity = player.spawnNew(new Vector3f(0, 10, 1), 0, overworld.getSceneObject());
 		playerEntity.setSword(new Sword(20f, 1f, 1f));
 		world.add(playerEntity);
 
@@ -108,10 +108,12 @@ public class OverworldGameState implements GameState {
 		playerEntity.addTarsched(goblinEntity);
 
 
-		bar = new MonsterHealthBar(goblinEntity);
+		bar = new LifeformHealthBar(goblinEntity);
+		bar2 = new LifeformHealthBar(playerEntity);
 	}
 
-	private MonsterHealthBar bar;
+	private LifeformHealthBar bar;
+	private LifeformHealthBar bar2;
 
 	@Override
 	public void update(final double deltaTime) {
@@ -123,8 +125,8 @@ public class OverworldGameState implements GameState {
 			overworldScene.getSceneGraph().removeSubObject(goblinEntity.getSceneObject());
 			world.remove(goblinEntity);
 		}*/
-		bar.setPosition(overworldScene.getCamera().getPositionOnScreen(goblinEntity.getHealthBarPosition()));
 		bar.update(deltaTime);
+		bar2.update(deltaTime);
 	}
 
 	@Override
@@ -136,7 +138,11 @@ public class OverworldGameState implements GameState {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		overworldScene.render(showBBs);
+
+		bar.setPosition(overworldScene.getCamera().getPositionOnScreen(goblinEntity.getHealthBarPosition()));
 		bar.render();
+		bar2.setPosition(overworldScene.getCamera().getPositionOnScreen(playerEntity.getHealthBarPosition()));
+		bar2.render();
 	}
 
 	@Override

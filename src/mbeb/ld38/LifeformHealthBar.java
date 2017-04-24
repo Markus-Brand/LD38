@@ -1,19 +1,20 @@
 package mbeb.ld38;
 
+import mbeb.lifeforms.LifeformEntity;
 import mbeb.lifeforms.MonsterEntity;
 import org.joml.Vector3f;
 
 /**
  * a health bar that displas the health of a monsterEntity
  */
-public class MonsterHealthBar {
+public class LifeformHealthBar {
 
-	private MonsterEntity monster;
+	private LifeformEntity monster;
 	private HealthBar bar;
 
 	float lastHealth;
 
-	public MonsterHealthBar(MonsterEntity entity) {
+	public LifeformHealthBar(LifeformEntity entity) {
 		this.monster = entity;
 		this.bar = new HealthBar((int)entity.getHealthpoints());
 		lastHealth = entity.getHealthpoints();

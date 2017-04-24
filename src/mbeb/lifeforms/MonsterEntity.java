@@ -13,8 +13,6 @@ public class MonsterEntity extends LifeformEntity {
 	float attackDuration;
 	float movingSpeed;
 
-	Vector3f healthBarOffset = new Vector3f();
-
 	private final AnimationStateFacade animator;
 
 	public MonsterEntity(final float radius, final SceneObject monsterObject, final AnimationStateFacade animator, final float healthpoints, final float visionRange, final float attackRange,
@@ -63,13 +61,5 @@ public class MonsterEntity extends LifeformEntity {
 
 	public AnimationStateFacade getAnimator() {
 		return animator;
-	}
-
-	public void setHealthBarOffset(Vector3f healthBarOffset) {
-		this.healthBarOffset = healthBarOffset;
-	}
-
-	public Vector3f getHealthBarPosition() {
-		return getPosition().add(healthBarOffset, new Vector3f());
 	}
 }
