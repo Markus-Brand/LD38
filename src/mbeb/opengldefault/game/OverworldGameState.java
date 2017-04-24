@@ -239,6 +239,7 @@ public class OverworldGameState implements GameState {
 		}
 		scene.getLightManager().rewriteUBO();
 		GLContext.hideCursor();
+		scene.getSoundEnvironment().makeCurrent();
 	}
 
 }
