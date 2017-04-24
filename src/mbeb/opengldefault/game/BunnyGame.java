@@ -2,9 +2,7 @@ package mbeb.opengldefault.game;
 
 import mbeb.ld38.HealthBarGUI;
 import mbeb.ld38.SharedData;
-import mbeb.lifeforms.Player;
-import mbeb.opengldefault.camera.Camera;
-import mbeb.opengldefault.gl.shader.ShaderProgram;
+import mbeb.ld38.overworld.OverWorld;
 
 public class BunnyGame extends Game {
 	/** Class Name Tag */
@@ -15,8 +13,9 @@ public class BunnyGame extends Game {
 		final OptionsMenu options = new OptionsMenu();
 
 		SharedData data = new SharedData(new HealthBarGUI());
+		data.overworld = new OverWorld();
 
-		addGameState(GameStateIdentifier.INTRO, new IntroGameState());
+		addGameState(GameStateIdentifier.INTRO, new IntroGameState(data));
 		addGameState(GameStateIdentifier.OVERWORLD, new OverworldGameState(data));
 		addGameState(GameStateIdentifier.DUNGEON, new DungeonGameState(data));
 		addGameState(GameStateIdentifier.OPTIONS, options);

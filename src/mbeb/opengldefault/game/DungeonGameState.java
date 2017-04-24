@@ -70,7 +70,9 @@ public class DungeonGameState implements GameState {
 
 		RoomType.initializeRoomTypes();
 
-		level = new DungeonLevel(4, 4, scene.getLightManager(), goblin, shared.healthBarGUI, camera);
+		level = new DungeonLevel(scene.getLightManager(), goblin, shared.healthBarGUI, camera);
+		level.setEnemySpawns(0.2f, 0.2f, 0.2f, 0.2f, 0.2f);
+		level.generate(3, 4);
 
 		scene.getSceneGraph().addSubObject(level);
 

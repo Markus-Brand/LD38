@@ -180,6 +180,18 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 	}
 
 	/**
+	 * add a new Scene-Object as child of this one to the scene, but render it before the other children
+	 *
+	 * @param object
+	 *            the new object to add
+	 */
+	public void addSubObjectFront(SceneObject object) {
+		getSubObjects().add(0, object);
+		object.setParent(this);
+		adjustBoundingBoxFor(object);
+	}
+
+	/**
 	 * add a new Scene-Object wrapping the provided model as child of this one to the scene
 	 *
 	 * @param model
