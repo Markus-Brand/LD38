@@ -29,10 +29,10 @@ public class Goblin extends Monster {
 	ShaderProgram animationShader;
 
 	public Goblin(final PlayerEntity playerEntity, final ShaderProgram animationShader) {
-		super(123, 100, 10, 2f, 1234, 0.8f, 0.5f, playerEntity);
+		super(2, 100, 10, 2f, 5, 0.8f, 1f, playerEntity);
 
 		mesh = new ObjectLoader().loadFromFileAnim("goblin.fbx");
-		mesh.setTransform(MeshFlip);
+		mesh.setTransform(new Matrix4f().rotate(new AxisAngle4f((float)(Math.PI) / -2, 1, 0, 0)));
 		mesh.getSkeleton().printRecursive("");
 		material = new ColorMaterial(Color.ORANGE);
 
