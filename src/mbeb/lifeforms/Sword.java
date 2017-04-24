@@ -1,48 +1,45 @@
 package mbeb.lifeforms;
 
-import mbeb.opengldefault.animation.AnimationStateFacade;
-import mbeb.opengldefault.rendering.io.ObjectLoader;
-import mbeb.opengldefault.rendering.renderable.IRenderable;
-import mbeb.opengldefault.scene.SceneObject;
-import mbeb.opengldefault.scene.materials.Material;
+import java.util.*;
 
-import java.util.EnumMap;
-import java.util.Map;
+import mbeb.opengldefault.animation.*;
+import mbeb.opengldefault.rendering.io.*;
+import mbeb.opengldefault.rendering.renderable.*;
+import mbeb.opengldefault.scene.*;
+import mbeb.opengldefault.scene.materials.*;
 
 public class Sword {
 
-	private static IRenderable swordMesh = null;
 	private static Map<LootType, Material> swordMaterials = new EnumMap<>(LootType.class);
+	private static Map<SwordType, IRenderable> swordMeshes = new EnumMap<>(SwordType.class);
 
-	private static IRenderable getSwordMesh() {
-		if (swordMesh == null) {
-			swordMesh = new ObjectLoader().loadFromFile("sword.obj");
-		}
-		return swordMesh;
+	private static IRenderable getSwordMesh(final SwordType swordType) {
+		return swordMeshes.computeIfAbsent(swordType, (st) -> {
+			final String meshName = "sword/" + st.name() + ".obj";
+			return new ObjectLoader().loadFromFile(meshName);
+		});
 	}
 
-	private static Material getMaterialFor(LootType type) {
+	private static Material getMaterialFor(final LootType type) {
 		return swordMaterials.computeIfAbsent(type, (lootType) -> {
-			String materialName = "material/sword/" + lootType.name();
+			final String materialName = "material/sword/" + lootType.name();
 			return new Material(materialName, 1);
 		});
 	}
 
+	private final float damage;
+	private final float range;
+	private final float strokeTime;
+	private final IRenderable sword;
 
-	private float damage;
-	private float range;
-	private float strokeTime;
-	private IRenderable sword;
-
-	public Sword(float damage, float range, float strokeTime, LootType type) {
+	public Sword(final float damage, final float range, final float strokeTime, final LootType lootType, final SwordType swordType) {
 		this.damage = damage;
 		this.range = range;
 		this.strokeTime = strokeTime;
-		sword = getSwordMesh().withMaterial(getMaterialFor(type));
+		sword = getSwordMesh(swordType).withMaterial(getMaterialFor(lootType));
 	}
 
-	public SwordEntity spawnNew(final SceneObject parent, SceneObject playerObject,
-			AnimationStateFacade playerAnimatedRenderable) {
+	public SwordEntity spawnNew(final SceneObject parent, final SceneObject playerObject, final AnimationStateFacade playerAnimatedRenderable) {
 		final SceneObject swordObject = new SceneObject(sword);
 		parent.addSubObject(swordObject);
 		return new SwordEntity(swordObject, damage, range, strokeTime, playerObject, playerAnimatedRenderable);
