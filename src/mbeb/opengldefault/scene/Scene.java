@@ -23,7 +23,6 @@ public class Scene {
 	private final SceneObject sceneGraphRoot;
 	private Camera camera;
 	private Skybox skybox;
-	private final MousePicker3D picker;
 
 	public Scene(final Camera camera) {
 		this(camera, null);
