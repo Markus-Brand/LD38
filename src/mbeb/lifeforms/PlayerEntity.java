@@ -12,6 +12,9 @@ import mbeb.opengldefault.scene.behaviour.*;
 import mbeb.opengldefault.scene.entities.*;
 import mbeb.opengldefault.sound.*;
 
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
+
 public class PlayerEntity extends LifeformEntity {
 
 	private final AnimationStateFacade animator;
@@ -28,12 +31,15 @@ public class PlayerEntity extends LifeformEntity {
 
 	public SoundSource craftingSoundSource;
 	public SoundSource swordChangeSoundSource;
+	public SoundSource walkingSoundSource;
+	private Sound walkingSandSound;
+	private Sound walkingStoneSound;
 
 	public PlayerEntity(final float radius, final SceneObject sceneObject, final AnimationStateFacade animator,
 			final float healthpoints, final IHeightSource heightSource,
 			final HealthBarGUI healthGui, final SoundEnvironment soundEnvironment) {
 		super(sceneObject, healthpoints, radius, healthGui);
-		initCraftingSound(soundEnvironment);
+		initSounds(soundEnvironment);
 		initSwordChangingSound(soundEnvironment);
 		this.animator = animator;
 		heightWalk = new WalkOnHeightMapBehaviour(heightSource, playerSpeed);
@@ -61,11 +67,17 @@ public class PlayerEntity extends LifeformEntity {
 
 	}
 
-	private void initCraftingSound(final SoundEnvironment soundEnvironment) {
+	private void initSounds(final SoundEnvironment soundEnvironment) {
 		final Sound sound = soundEnvironment.createSound("crafting");
 		this.craftingSoundSource = soundEnvironment.createSoundSource(false, true);
 		craftingSoundSource.setSound(sound);
 		craftingSoundSource.asNewEntity().attachTo(this);
+
+		walkingSandSound = soundEnvironment.createSound("walking_sand");
+		walkingStoneSound = soundEnvironment.createSound("walking_stone");
+		this.walkingSoundSource = soundEnvironment.createSoundSource(true, true);
+		walkingSoundSource.setSound(walkingSandSound);
+		walkingSoundSource.asNewEntity().attachTo(this);
 	}
 
 	private void initSwordChangingSound(final SoundEnvironment soundEnvironment) {
@@ -86,13 +98,25 @@ public class PlayerEntity extends LifeformEntity {
 		swordEntity.update(deltaTime);
 		lampEntity.update(deltaTime);
 		lightEntity.update(deltaTime);
-		//Random r = new Random();
-		//lightEntity.setColor(new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()));
 
 		if (KeyBoard.pullKeyDown(GLFW.GLFW_KEY_TAB)) {
 			swordChangeSoundSource.play();
 			inventory.switchSword();
 			setSword(inventory.getSelectedSword());
+		}
+
+		if (KeyBoard.isKeyDown(GLFW_KEY_W) || KeyBoard.isKeyDown(GLFW_KEY_S)) {
+			walkingSoundSource.play();
+		} else {
+			walkingSoundSource.stop();
+		}
+	}
+
+	public void setStoneWalkingSound(boolean stoneNotSand) {
+		if (stoneNotSand) {
+			walkingSoundSource.setSound(walkingStoneSound);
+		} else {
+			walkingSoundSource.setSound(walkingSandSound);
 		}
 	}
 
