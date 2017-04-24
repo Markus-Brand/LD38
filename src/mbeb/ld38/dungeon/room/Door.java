@@ -1,16 +1,19 @@
 package mbeb.ld38.dungeon.room;
 
-
 import mbeb.opengldefault.animation.BoneTransformation;
 import mbeb.opengldefault.scene.SceneObject;
 import mbeb.opengldefault.scene.behaviour.IBehaviour;
 import mbeb.opengldefault.scene.entities.IEntity;
 import mbeb.opengldefault.scene.entities.SceneEntity;
+import mbeb.opengldefault.sound.Sound;
+import mbeb.opengldefault.sound.SoundEnvironment;
+import mbeb.opengldefault.sound.SoundSource;
+
 import org.joml.Vector3f;
 
 import java.util.EnumMap;
 
-public class Door extends SceneObject{
+public class Door extends SceneObject {
 
 	public boolean isOpen() {
 		return open;
@@ -21,12 +24,12 @@ public class Door extends SceneObject{
 	}
 
 	public enum Direction {
-		LEFT(-1,0),
-		RIGHT(1,0),
-		TOP(0,-1),
-		BOTTOM(0,1);
+		LEFT(-1, 0),
+		RIGHT(1, 0),
+		TOP(0, -1),
+		BOTTOM(0, 1);
 
-		private static final EnumMap<Direction, Direction> opposites= new EnumMap<>(Direction.class);
+		private static final EnumMap<Direction, Direction> opposites = new EnumMap<>(Direction.class);
 		private int x, y;
 
 		static {
@@ -77,10 +80,10 @@ public class Door extends SceneObject{
 		public void update(double deltaTime, IEntity entity) {
 			if (running) {
 				progress += speed * deltaTime;
-				if(progress <= 0.0f){
+				if (progress <= 0.0f) {
 					progress = 0.0f;
 					running = false;
-				} else if(progress >= 1.0f){
+				} else if (progress >= 1.0f) {
 					progress = 1.0f;
 					running = false;
 				}
@@ -95,33 +98,41 @@ public class Door extends SceneObject{
 	private Behaviour movement;
 	private Direction direction;
 	private boolean open = true;
+	private SoundSource wallMoving;
 
-	public Door(SceneObject frame, SceneObject door, Direction direction) {
+	public Door(SceneObject frame, SceneObject door, Direction direction, SoundEnvironment soundEnvironment) {
 		this.frame = frame;
 		this.addSubObject(frame);
 		this.door = door;
 		this.addSubObject(door);
 		this.direction = direction;
 		SceneEntity e = new SceneEntity(door);
-		movement = new Behaviour(new Vector3f(0,0,0), new Vector3f(0,-2,0), e);
+		movement = new Behaviour(new Vector3f(0, 0, 0), new Vector3f(0, -2, 0), e);
 		e.addBehaviour(1, movement);
+
+		final Sound sound = soundEnvironment.createSound("wall_open");
+		wallMoving = soundEnvironment.createSoundSource(false, false);
+		wallMoving.setSound(sound);
+		wallMoving.asNewEntity().attachTo(e);
 	}
 
-	public Door(Door door) {
-		this(new SceneObject(door.frame), new SceneObject(door.door), door.direction);
+	public Door(Door door, SoundEnvironment soundEnvironment) {
+		this(new SceneObject(door.frame), new SceneObject(door.door), door.direction, soundEnvironment);
 	}
 
-	public Door(Door door, Direction direction) {
-		this(new SceneObject(door.frame), new SceneObject(door.door), direction);
+	public Door(Door door, Direction direction, SoundEnvironment soundEnvironment) {
+		this(new SceneObject(door.frame), new SceneObject(door.door), direction, soundEnvironment);
 	}
 
 	public void open() {
+		wallMoving.play();
 		this.open = true;
 		this.movement.speed = DOOR_SPEED;
 		this.movement.running = true;
 	}
 
 	public void close() {
+		wallMoving.play();
 		this.open = false;
 		this.movement.speed = -DOOR_SPEED;
 		this.movement.running = true;

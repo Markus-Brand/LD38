@@ -29,7 +29,8 @@ public class DungeonGameState implements GameState {
 
 	private static final String TAG = "DungeonGameState";
 
-	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1).rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
+	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1)
+			.rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
 
 	private Scene scene;
 	private DungeonLevel level;
@@ -65,17 +66,17 @@ public class DungeonGameState implements GameState {
 
 		goblin = new Goblin(shared.playerEntity, animationShader);
 
-		RoomType.initializeRoomTypes();
+		RoomType.initializeRoomTypes(shared.soundEnv);
 		final Chest chest = new Chest(animationShader, shared.playerEntity);
 
 		infoGUI = new TextGUI(new Font("Comic Sans MS", 0, 64));
-		infoBox =infoGUI.addText(" ", new Vector2f());
+		infoBox = infoGUI.addText(" ", new Vector2f());
 		infoBox.setPositionRelativeToScreen(new Vector2f(0.01f, 0.01f));
 		infoBox.setColor(Color.WHITE);
 
 		level = new DungeonLevel(scene.getLightManager(), goblin, shared.healthBarGUI, camera, chest, infoBox);
 		level.setEnemySpawns(0.2f, 0.2f, 0.2f, 0.2f, 0.2f);
-		level.generate(3, 4, scene.getSoundEnvironment());
+		level.generate(3, 4, shared.soundEnv);
 
 		scene.getSceneGraph().addSubObject(level);
 
@@ -85,7 +86,8 @@ public class DungeonGameState implements GameState {
 
 		shared.playerEntity.setHeightSource(level);
 
-		world.add(camera).addBehaviour(0, new TopDownViewBehaviour(shared.playerEntity, 8, 1.5f, 2)).setPosition(new Vector3f(3, 4, 5));
+		world.add(camera).addBehaviour(0, new TopDownViewBehaviour(shared.playerEntity, 8, 1.5f, 2))
+				.setPosition(new Vector3f(3, 4, 5));
 
 		//light
 		final DirectionalLight sun = new DirectionalLight(new Color(8, 7, 6), new Vector3f(0, -1, 0));
@@ -147,5 +149,6 @@ public class DungeonGameState implements GameState {
 		this.level.setPlayer(this.shared.playerEntity);
 		GLContext.hideCursor();
 		scene.getLightManager().rewriteUBO();
+		shared.soundEnv.makeCurrent();
 	}
 }
