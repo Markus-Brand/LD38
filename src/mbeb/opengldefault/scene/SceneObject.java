@@ -129,6 +129,7 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 		this.globalTransformation = null;
 		this.transformation = new BoneTransformation(source.transformation);
 		this.selected = false;
+		this.visible = source.visible;
 		for (SceneObject su : source.getSubObjects()) {
 			this.addSubObject(new SceneObject(su));
 		}

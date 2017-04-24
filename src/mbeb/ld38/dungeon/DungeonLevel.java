@@ -3,6 +3,7 @@ package mbeb.ld38.dungeon;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.Consumer;
 
 import mbeb.opengldefault.light.LightManager;
 import org.joml.AxisAngle4f;
@@ -91,6 +92,17 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 					new SceneObject(RoomType.getSEGMENT(), new BoneTransformation(new Vector3f(o, o, 9 * y + o), new Quaternionf(new AxisAngle4f((float) Math.PI, 0, 1, 0)), new Vector3f(-1f, 1, 1))));
 		}
 
+		Consumer<Room> closeDoors = room -> {
+			if(!room.wasVisited()) {
+				room.setVisited();
+				room.close();
+			}
+		};
+
+		Consumer<Room> exitRoom = closeDoors.andThen(room -> {
+			room.getSlotObject("exit").setVisible(true);
+		});
+
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				RoomParameter p = new RoomParameter();
@@ -101,7 +113,6 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 				float o = determineOffset(x, y);
 				Vector3f pos = new Vector3f(9 * x + o, o, 9 * y + o);
 				Room r = determineRoomType(null, grid, grid.getTile(x, y)).construct(p, manager, pos);
-				r.setEntryListener(Room::close);
 				if (x > 0) {
 					r.registerNeighbour(Door.Direction.LEFT, getRoom(x - 1, y));
 				}
@@ -116,9 +127,11 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 				this.rooms.put(pt, r);
 				if (grid.getTile(x, y) == grid.getEntrance()) {
 					this.entrance = r;
-				}
-				if(grid.getTile(x, y) == grid.getExit()) {
+				} else if(grid.getTile(x, y) == grid.getExit()) {
 					this.exit = r;
+					r.setEntryListener(exitRoom);
+				} else {
+					r.setEntryListener(closeDoors);
 				}
 			}
 		}

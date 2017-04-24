@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class RoomType {
 
@@ -66,6 +67,8 @@ public class RoomType {
 
 		IRenderable entrance = loader.loadFromFile("bunny.obj").withMaterial(entranceMaterial);
 		IRenderable exit = loader.loadFromFile("player.fbx").withMaterial(exitMaterial);
+		SceneObject exitObject = new SceneObject(exit);
+		exitObject.setVisible(false);
 
 		Door door = new Door(new SceneObject(doorFrame), new SceneObject(doorDoor), Door.Direction.RIGHT);
 
@@ -102,8 +105,12 @@ public class RoomType {
 		base = new SceneObject();
 		base.addSubObject(room_floor);
 		base.addSubObject(big_corner);
-		base.addSubObject(exit);
 		EXIT_ROOM.addBaseObject(base);
+
+		EXIT_ROOM.addSlot(
+				"exit", new BoneTransformation(new Vector3f(0,1,0), new Quaternionf(), new Vector3f(0.25f))
+		).
+				addIf(exitObject, roomParameter -> true);
 
 
 		addDoor(EXIT_ROOM, door, wall_segment);
@@ -193,22 +200,24 @@ public class RoomType {
 	public Room construct(RoomParameter parameters, LightManager manager, Vector3f position) {
 		Room result = new Room();
 		result.addBaseObjects(this.baseObjects);
-		for (Slot slot : slots.values()) {
-			SceneObject add = slot.getApplicable(parameters);
+		for (Map.Entry<String, Slot> slot : slots.entrySet()) {
+
+			SceneObject add = slot.getValue().getApplicable(parameters);
 			if(add != null) {
 				if (add instanceof Door) {
 					add = new Door((Door) add);
 				}else {
 					add = new SceneObject(add);
 				}
-				add.setTransformation(slot.getTransformation());
-				result.addSlotObject(add);
+				add.setTransformation(slot.getValue().getTransformation());
+				result.addSlotObject(slot.getKey(), add);
 			}
 		}
 
 		for (LightPlacement light : lights) {
 			manager.addLight(new PointLight(light.getColor(), position.add(light.getPosition(), new Vector3f()), light.getReach()));
 		}
+
 		return result;
 	}
 

@@ -1,20 +1,23 @@
 package mbeb.ld38.dungeon.room;
 
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 import mbeb.ld38.dungeon.DungeonLevel;
+import mbeb.lifeforms.MonsterEntity;
 import mbeb.opengldefault.scene.SceneObject;
 
 public class Room extends SceneObject {
 
 	private SceneObject baseContainer;
 	private SceneObject slotContainer;
-	Map<Door.Direction, Door> doors;
+	private Map<Door.Direction, Door> doors;
+	private Map<String, SceneObject> slotObjects;
+	private boolean visited = false;
+	private Collection<MonsterEntity> enemies;
+
 	private DungeonLevel.Point position;
-	private boolean open = false;
+	private boolean open = true;
 	private Consumer<Room> entryListener;
 	private Consumer<Room> exitListener;
 
@@ -24,6 +27,8 @@ public class Room extends SceneObject {
 		slotContainer = new SceneObject();
 		this.addSubObject(slotContainer);
 		doors = new EnumMap<>(Door.Direction.class);
+		slotObjects = new HashMap<>();
+		enemies = new HashSet<>();
 	}
 
 	void addBaseObjects(List<SceneObject> baseObjects) {
@@ -32,8 +37,9 @@ public class Room extends SceneObject {
 		}
 	}
 
-	void addSlotObject(SceneObject object) {
+	void addSlotObject(String key, SceneObject object) {
 		slotContainer.addSubObject(object);
+		this.slotObjects.put(key, object);
 		if (object instanceof Door) {
 			this.doors.put(((Door) object).getDirection(), (Door) object);
 		}
@@ -100,5 +106,21 @@ public class Room extends SceneObject {
 
 	public void setPosition(DungeonLevel.Point position) {
 		this.position = position;
+	}
+
+	public boolean wasVisited() {
+		return visited;
+	}
+
+	public void setVisited() {
+		this.visited = true;
+	}
+
+	public Collection<MonsterEntity> getEnemies() {
+		return enemies;
+	}
+
+	public SceneObject getSlotObject(String key) {
+		return slotObjects.get(key);
 	}
 }
