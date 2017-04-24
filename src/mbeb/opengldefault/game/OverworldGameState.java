@@ -176,7 +176,7 @@ public class OverworldGameState implements GameState {
 				GLContext.showCursor();
 			}
 		} else {
-			infoBox.setText(" ");
+			//infoBox.setText(" ");
 		}
 		if (crafting) {
 			if (KeyBoard.pullKeyDown(GLFW.GLFW_KEY_ESCAPE)) {
