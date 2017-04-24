@@ -2,3 +2,7 @@ bezierCurveSize 120
 showFPS true
 showBBs false
 startText Start Bunnycoaster
+bezierCurveSize 120
+showFPS false
+showBBs true
+startText Start Bunnycoaster
