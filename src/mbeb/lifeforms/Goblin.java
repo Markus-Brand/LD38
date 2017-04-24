@@ -42,7 +42,7 @@ public class Goblin extends Monster {
 		goblinAnimatedRenderable.registerAnimation("Run", "Run", 32, 0.4f, 0.4f);
 		goblinAnimatedRenderable.registerAnimation("Jump", "Jump", 32, 0.1f, 0.1f, 1.1f);
 
-		final SceneObject monsterObject = new SceneObject(goblinAnimatedRenderable, new BoneTransformation(position, new Quaternionf(new AxisAngle4f(angle, new Vector3f(0, 1, 0)))));
+		final SceneObject monsterObject = new SceneObject(goblinAnimatedRenderable, new BoneTransformation(position, new Quaternionf(new AxisAngle4f(angle, new Vector3f(0, 1, 0))), new Vector3f(0.5f)));
 
 		monsterObject.setShader(animationShader);
 

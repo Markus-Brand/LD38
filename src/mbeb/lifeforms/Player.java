@@ -1,26 +1,30 @@
 package mbeb.lifeforms;
 
-import java.lang.Math;
+import org.joml.AxisAngle4f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import mbeb.ld38.HealthBarGUI;
-import org.joml.*;
-
-import mbeb.opengldefault.animation.*;
-import mbeb.opengldefault.gl.shader.*;
-import mbeb.opengldefault.rendering.io.*;
-import mbeb.opengldefault.scene.*;
-import mbeb.opengldefault.scene.behaviour.*;
-import mbeb.opengldefault.scene.materials.*;
+import mbeb.opengldefault.animation.AnimatedMesh;
+import mbeb.opengldefault.animation.AnimationStateFacade;
+import mbeb.opengldefault.animation.BoneTransformation;
+import mbeb.opengldefault.gl.shader.ShaderProgram;
+import mbeb.opengldefault.rendering.io.ObjectLoader;
+import mbeb.opengldefault.rendering.renderable.IRenderable;
+import mbeb.opengldefault.scene.SceneObject;
+import mbeb.opengldefault.scene.behaviour.IHeightSource;
+import mbeb.opengldefault.scene.materials.Material;
 
 public class Player extends Lifeform {
 
-	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1)
-			.rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
+	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1).rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
 
 	private final Material material;
 	private final AnimatedMesh mesh;
 	private ShaderProgram animationShader;
 	private IHeightSource heightSource;
+
+	public static IRenderable lampRenderable;
 
 	public Player(final float healthpoints, final ShaderProgram animationShader, final IHeightSource heightSource) {
 		super(0.3f, healthpoints);
@@ -30,6 +34,8 @@ public class Player extends Lifeform {
 		mesh.setTransform(MeshFlip);
 		mesh.getSkeleton().printRecursive("");
 		this.heightSource = heightSource;
+
+		lampRenderable = new ObjectLoader().loadFromFile("lamp.obj").withMaterial(new Material("material/lamp", 3));
 	}
 
 	public void setAnimationShader(ShaderProgram animationShader) {

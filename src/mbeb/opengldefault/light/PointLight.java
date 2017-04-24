@@ -109,6 +109,18 @@ public class PointLight extends Light implements LimitedLight {
 	}
 
 	/**
+	 * copy constructor
+	 * @param reference
+	 */
+	public PointLight(PointLight reference) {
+		super(reference);
+		this.position = reference.position;
+		this.constant = reference.constant;
+		this.linear = reference.linear;
+		this.quadratic = reference.quadratic;
+	}
+
+	/**
 	 * @param position
 	 *            my new position as Vector3f
 	 */
