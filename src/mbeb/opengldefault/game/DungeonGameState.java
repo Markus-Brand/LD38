@@ -79,12 +79,11 @@ public class DungeonGameState implements GameState {
 
 		world.add(camera).addBehaviour(0, new TopDownViewBehaviour(shared.playerEntity, 8, 1.5f, 2))
 				.setPosition(new Vector3f(3, 4, 5));
-		level.setPlayer(shared.playerEntity);
-		world.add(shared.playerEntity);
 
 		//light
 		DirectionalLight sun = new DirectionalLight(new Color(8, 7, 6), new Vector3f(0, -1, 0));
 		scene.getLightManager().addLight(sun);
+		world.add(shared.playerEntity);
 
 		glEnable(GL_DEPTH_TEST);
 		GLErrors.checkForError(TAG, "glEnable");
@@ -132,6 +131,8 @@ public class DungeonGameState implements GameState {
 
 	@Override
 	public void open() {
+		this.shared.playerEntity.addTo(scene.getSceneGraph());
+		this.level.setPlayer(this.shared.playerEntity);
 		GLContext.hideCursor();
 		scene.getLightManager().rewriteUBO();
 	}

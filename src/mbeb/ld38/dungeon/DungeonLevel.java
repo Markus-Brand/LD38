@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Consumer;
 
+import mbeb.lifeforms.PlayerEntity;
 import mbeb.opengldefault.light.LightManager;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
@@ -71,7 +72,7 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 	private Room activeRoom;
 	private Room entrance;
 	private Room exit;
-	private IEntity player;
+	private PlayerEntity player;
 
 	public DungeonLevel(int width, int height, LightManager manager) {
 		super();
@@ -231,12 +232,13 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 
 	}
 
-	public IEntity getPlayer() {
+	public PlayerEntity getPlayer() {
 		return player;
 	}
 
-	public void setPlayer(IEntity player) {
+	public void setPlayer(PlayerEntity player) {
 		this.player = player;
+		player.setHeightSource(this);
 		int x = this.entrance.getPosition().x;
 		int y = this.entrance.getPosition().y;
 		player.setPosition(new Vector3f(9 * x, 1, 9 * y));
