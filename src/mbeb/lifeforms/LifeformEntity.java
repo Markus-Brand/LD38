@@ -115,4 +115,9 @@ public abstract class LifeformEntity extends SceneEntity {
 	public void setDeathListener(final Consumer<LifeformEntity> deathListener) {
 		this.deathListener = deathListener;
 	}
+
+	public void knockBack(Vector3f direction, float strength) {
+		Vector3f target = direction.mul(strength, new Vector3f()).add(getPosition());
+		setPosition(target);
+	}
 }
