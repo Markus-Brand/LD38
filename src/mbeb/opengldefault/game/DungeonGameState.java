@@ -71,7 +71,7 @@ public class DungeonGameState implements GameState {
 
 		player = new Player(100.0f, animationShader, level);
 
-		IEntity playerEntity = player.spawnNew(new Vector3f(0, 1, 0), 0.0f, this.scene.getSceneGraph());
+		IEntity playerEntity = player.spawnNew(new Vector3f(0, 1, 0), 0.0f, this.scene.getSceneGraph(), null);
 		world.add(camera).addBehaviour(0, new TopDownViewBehaviour(playerEntity, 8, 1.5f, 2))
 				.setPosition(new Vector3f(3, 4, 5));
 		level.setPlayer(playerEntity);

@@ -2,6 +2,7 @@ package mbeb.lifeforms;
 
 import java.lang.Math;
 
+import mbeb.ld38.HealthBarGUI;
 import org.joml.*;
 
 import mbeb.opengldefault.animation.*;
@@ -37,7 +38,7 @@ public class Player extends Lifeform {
 	}
 
 	@Override
-	public PlayerEntity spawnNew(final Vector3f position, final float angle, final SceneObject parent) {
+	public PlayerEntity spawnNew(final Vector3f position, final float angle, final SceneObject parent, final HealthBarGUI healthGui) {
 
 		final AnimationStateFacade playerAnimatedRenderable = new AnimationStateFacade(mesh, material);
 
@@ -53,7 +54,7 @@ public class Player extends Lifeform {
 		parent.addSubObject(playerObject);
 
 		final PlayerEntity playerEntity =
-				new PlayerEntity(1f, playerObject, playerAnimatedRenderable, healthpoints, heightSource);
+				new PlayerEntity(1f, playerObject, playerAnimatedRenderable, healthpoints, heightSource, healthGui);
 
 		return playerEntity;
 	}

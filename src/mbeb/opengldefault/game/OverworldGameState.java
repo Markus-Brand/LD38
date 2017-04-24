@@ -99,7 +99,10 @@ public class OverworldGameState implements GameState {
 						Texture.loadBufferedImage("overworldHeight.png"), new Rectangle(new Vector2f(-16),
 								new Vector2f(32)), 2f, 1f));
 
-		playerEntity = player.spawnNew(new Vector3f(0, 10, 1), 0, overworld.getSceneObject());
+
+		healthGui = new HealthBarGUI();
+
+		playerEntity = player.spawnNew(new Vector3f(0, 10, 1), 0, overworld.getSceneObject(), healthGui);
 		world.add(playerEntity);
 
 		world.add(topDownViewCamera).addBehaviour(0, new TopDownViewBehaviour(playerEntity, 7, 2, 2))
@@ -109,15 +112,13 @@ public class OverworldGameState implements GameState {
 		overworldScene.getLightManager().addLight(sun);
 
 		final Goblin goblin = new Goblin(playerEntity, animationShader);
-		goblinEntity = goblin.spawnNew(new Vector3f(10, 3, 0), 0, overworld.getSceneObject());
+		goblinEntity = goblin.spawnNew(new Vector3f(10, 3, 0), 0, overworld.getSceneObject(), healthGui);
 		world.add(goblinEntity);
 
 		playerEntity.addTarsched(goblinEntity);
 
-		healthGui = new HealthBarGUI();
-		goblinEntity.showHealthBar(healthGui, topDownViewCamera);
-		playerEntity.showHealthBar(healthGui, null);
-
+		goblinEntity.showHealthBar(topDownViewCamera);
+		playerEntity.showHealthBar(null);
 	}
 
 	private HealthBarGUI healthGui;

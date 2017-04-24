@@ -1,5 +1,6 @@
 package mbeb.lifeforms;
 
+import mbeb.ld38.HealthBarGUI;
 import mbeb.opengldefault.animation.AnimationStateFacade;
 import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.scene.*;
@@ -22,8 +23,8 @@ public class PlayerEntity extends LifeformEntity {
 	private Inventory inventory;
 
 	public PlayerEntity(float radius, final SceneObject sceneObject, AnimationStateFacade animator,
-			final float healthpoints, IHeightSource heightSource) {
-		super(sceneObject, healthpoints, radius);
+						final float healthpoints, IHeightSource heightSource, final HealthBarGUI healthGui) {
+		super(sceneObject, healthpoints, radius, healthGui);
 		this.animator = animator;
 		addBehaviour(0, new CombinedBehaviour(
 				new SamuraiPlayerBehaviour(),
@@ -35,6 +36,7 @@ public class PlayerEntity extends LifeformEntity {
 		inventory.addSword(new Sword(5, 1, 0.1f));
 
 		setSword(inventory.getSelectedSword());
+
 	}
 
 	@Override

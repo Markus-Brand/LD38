@@ -2,6 +2,7 @@ package mbeb.lifeforms;
 
 import java.awt.Color;
 
+import mbeb.ld38.HealthBarGUI;
 import mbeb.opengldefault.animation.AnimatedMesh;
 import mbeb.opengldefault.animation.AnimationStateFacade;
 import mbeb.opengldefault.animation.BoneTransformation;
@@ -41,7 +42,7 @@ public class Goblin extends Monster {
 	}
 
 	@Override
-	public MonsterEntity spawnNew(final Vector3f position, final float angle, final SceneObject parent) {
+	public MonsterEntity spawnNew(final Vector3f position, final float angle, final SceneObject parent, final HealthBarGUI healthBarGui) {
 		final AnimationStateFacade goblinAnimatedRenderable = new AnimationStateFacade(mesh, material);
 
 		goblinAnimatedRenderable.registerAnimation("Idle", "Idle", 32);
@@ -57,7 +58,7 @@ public class Goblin extends Monster {
 		parent.addSubObject(monsterObject);
 		MonsterEntity monster =
 				new MonsterEntity(radius, monsterObject, goblinAnimatedRenderable, healthpoints, visionRange,
-						attackRange, attackDamage, attackDuration, movingSpeed);
+						attackRange, attackDamage, attackDuration, movingSpeed, healthBarGui);
 
 		System.out.println("DUR" + monster.attackDuration);
 

@@ -26,13 +26,15 @@ public abstract class LifeformEntity extends SceneEntity {
 
 	Vector3f healthBarOffset = new Vector3f();
 	private HealthBarGUIElement healthBar;
+	private final HealthBarGUI healthGui;
 	
 	private Camera camera = null; //used to project the healthbar on the screen
 
-	public LifeformEntity(final SceneObject sceneObject, final float healthpoints, float radius) {
+	public LifeformEntity(final SceneObject sceneObject, final float healthpoints, float radius, HealthBarGUI healthGui) {
 		super(sceneObject);
 		this.healthpoints = healthpoints;
 		this.maxHealth = healthpoints;
+		this.healthGui = healthGui;
 		hitCircle =
 				new Circle(new Vector2f(sceneObject.getGlobalPosition().x, sceneObject.getGlobalPosition().z), radius);
 		dead = false;
@@ -63,14 +65,21 @@ public abstract class LifeformEntity extends SceneEntity {
 		healthpoints -= damage;
 		System.out.println(healthpoints);
 		if (healthpoints <= 0) {
-			dead = true;
-			if(this.deathListener != null) {
-				this.deathListener.accept(this);
-			}
+			onDie();
 		}
 		healthBar.setHealth(healthpoints / maxHealth);
 		
 		getSceneObject().setSelected(true);
+	}
+
+	public void onDie() {
+		dead = true;
+		if(this.deathListener != null) {
+			this.deathListener.accept(this);
+		}
+		if (healthGui != null) {
+			healthGui.remove(healthBar);
+		}
 	}
 
 	public boolean isDead() {
@@ -85,8 +94,10 @@ public abstract class LifeformEntity extends SceneEntity {
 		return getPosition().add(healthBarOffset, new Vector3f());
 	}
 	
-	public void showHealthBar(HealthBarGUI gui, Camera camera) {
-		gui.addGUIElement(healthBar);
+	public void showHealthBar(Camera camera) {
+		if (healthGui != null) {
+			healthGui.addGUIElement(healthBar);
+		}
 		setCamera(camera);
 	}
 	

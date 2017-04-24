@@ -1,5 +1,6 @@
 package mbeb.lifeforms;
 
+import mbeb.ld38.HealthBarGUI;
 import org.joml.*;
 
 import mbeb.opengldefault.scene.*;
@@ -21,5 +22,5 @@ public abstract class Lifeform {
 		this.healthpoints = healthpoints;
 	}
 
-	protected abstract LifeformEntity spawnNew(final Vector3f position, final float angle, final SceneObject parent);
+	protected abstract LifeformEntity spawnNew(final Vector3f position, final float angle, final SceneObject parent, final HealthBarGUI healthBarGui);
 }
