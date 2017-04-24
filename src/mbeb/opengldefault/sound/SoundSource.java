@@ -2,10 +2,10 @@ package mbeb.opengldefault.sound;
 
 import static org.lwjgl.openal.AL10.*;
 
-import mbeb.opengldefault.logging.Log;
-import mbeb.opengldefault.scene.entities.IEntity;
-import mbeb.opengldefault.scene.entities.IEntityConvertable;
-import org.joml.Vector3f;
+import org.joml.*;
+
+import mbeb.opengldefault.logging.*;
+import mbeb.opengldefault.scene.entities.*;
 
 /**
  * a speaker inside a 3D-world
@@ -25,7 +25,7 @@ public class SoundSource implements IEntityConvertable {
 	 * @param relativeToListener
 	 *            whether this sound (and its positions) are seen as relative to the listener
 	 */
-	SoundSource(boolean loop, boolean relativeToListener) {
+	SoundSource(final boolean loop, final boolean relativeToListener) {
 		this.sourceId = alGenSources();
 		setMaxDistance(20f);
 		setReferenceDistance(10f);
@@ -41,7 +41,7 @@ public class SoundSource implements IEntityConvertable {
 	 *            true -> looping;
 	 *            false -> not looping
 	 */
-	private void setLooping(boolean loop) {
+	private void setLooping(final boolean loop) {
 		setProperty(AL_LOOPING, loop ? AL_TRUE : AL_FALSE);
 	}
 
@@ -53,7 +53,7 @@ public class SoundSource implements IEntityConvertable {
 	 * @param relativeToListener
 	 *            whether this sound (and its positions) are seen as relative to the listener
 	 */
-	private void setRelativeToListener(boolean relativeToListener) {
+	private void setRelativeToListener(final boolean relativeToListener) {
 		setProperty(AL_SOURCE_RELATIVE, relativeToListener ? AL_TRUE : AL_FALSE);
 	}
 
@@ -62,7 +62,7 @@ public class SoundSource implements IEntityConvertable {
 	 *
 	 * @param sound
 	 */
-	public void setSound(Sound sound) {
+	public void setSound(final Sound sound) {
 		stop();
 		setProperty(AL_BUFFER, sound.getBufferId());
 	}
@@ -73,7 +73,7 @@ public class SoundSource implements IEntityConvertable {
 	 * @param position
 	 *            a new position
 	 */
-	public void setPosition(Vector3f position) {
+	public void setPosition(final Vector3f position) {
 		Log.log(TAG, "Source Position: " + position);
 		setProperty(AL_POSITION, position);
 	}
@@ -84,7 +84,7 @@ public class SoundSource implements IEntityConvertable {
 	 * @param speed
 	 *            a new speed
 	 */
-	public void setSpeed(Vector3f speed) {
+	public void setSpeed(final Vector3f speed) {
 		setProperty(AL_VELOCITY, speed);
 	}
 
@@ -94,7 +94,7 @@ public class SoundSource implements IEntityConvertable {
 	 * @param gain
 	 *            the new volume for this SoundSource
 	 */
-	public void setGain(float gain) {
+	public void setGain(final float gain) {
 		setProperty(AL_GAIN, gain);
 	}
 
@@ -106,7 +106,7 @@ public class SoundSource implements IEntityConvertable {
 	 * @param rolloff
 	 *            the new rolloff factor
 	 */
-	public void setRolloffFactor(float rolloff) {
+	public void setRolloffFactor(final float rolloff) {
 		setProperty(AL_ROLLOFF_FACTOR, rolloff);
 	}
 
@@ -117,7 +117,7 @@ public class SoundSource implements IEntityConvertable {
 	 * @param referenceDistance
 	 *            the new referenceDistance
 	 */
-	public void setReferenceDistance(float referenceDistance) {
+	public void setReferenceDistance(final float referenceDistance) {
 		setProperty(AL_REFERENCE_DISTANCE, referenceDistance);
 	}
 
@@ -128,7 +128,7 @@ public class SoundSource implements IEntityConvertable {
 	 * @param maxDistance
 	 *            the new maxDistance
 	 */
-	public void setMaxDistance(float maxDistance) {
+	public void setMaxDistance(final float maxDistance) {
 		setProperty(AL_MAX_DISTANCE, maxDistance);
 	}
 
@@ -140,7 +140,7 @@ public class SoundSource implements IEntityConvertable {
 	 * @param value
 	 *            the value for that property
 	 */
-	private void setProperty(int param, int value) {
+	private void setProperty(final int param, final int value) {
 		alSourcei(sourceId, param, value);
 		ALErrors.checkForError(TAG, "alSourcei");
 	}
@@ -153,7 +153,7 @@ public class SoundSource implements IEntityConvertable {
 	 * @param value
 	 *            the value for that property
 	 */
-	private void setProperty(int param, float value) {
+	private void setProperty(final int param, final float value) {
 		alSourcef(sourceId, param, value);
 		ALErrors.checkForError(TAG, "alSourcef");
 	}
@@ -166,7 +166,7 @@ public class SoundSource implements IEntityConvertable {
 	 * @param value
 	 *            the value for that property
 	 */
-	private void setProperty(int param, Vector3f value) {
+	private void setProperty(final int param, final Vector3f value) {
 		alSource3f(sourceId, param, value.x, value.y, value.z);
 		ALErrors.checkForError(TAG, "alSource3f");
 	}
@@ -186,7 +186,7 @@ public class SoundSource implements IEntityConvertable {
 	 * @return whether this SoundSource currently plays a Sound
 	 */
 	public boolean isPlaying() {
-		boolean isPlaying = alGetSourcei(sourceId, AL_SOURCE_STATE) == AL_PLAYING;
+		final boolean isPlaying = alGetSourcei(sourceId, AL_SOURCE_STATE) == AL_PLAYING;
 		ALErrors.checkForError(TAG, "alGetSourcei");
 		return isPlaying;
 	}
@@ -225,7 +225,7 @@ public class SoundSource implements IEntityConvertable {
 	}
 
 	@Override
-	public IEntity asNewEntity() {
+	public SoundSourceEntity asNewEntity() {
 		return new SoundSourceEntity(this);
 	}
 }

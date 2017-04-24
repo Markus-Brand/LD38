@@ -15,10 +15,9 @@ import mbeb.opengldefault.controls.*;
 import mbeb.opengldefault.gl.*;
 import mbeb.opengldefault.gl.shader.*;
 import mbeb.opengldefault.gl.texture.*;
-import mbeb.opengldefault.gui.AtlasGUI;
-import mbeb.opengldefault.gui.TextGUI;
-import mbeb.opengldefault.gui.elements.TextGUIElement;
-import mbeb.opengldefault.gui.elements.buttons.CraftingHUD;
+import mbeb.opengldefault.gui.*;
+import mbeb.opengldefault.gui.elements.*;
+import mbeb.opengldefault.gui.elements.buttons.*;
 import mbeb.opengldefault.light.*;
 import mbeb.opengldefault.options.*;
 import mbeb.opengldefault.rendering.io.*;
@@ -73,9 +72,7 @@ public class OverworldGameState implements GameState {
 	public OverworldGameState(final SharedData shared) {
 		this.shared = shared;
 		player = new Player(100, null, null);
-		playerHeight =
-				new HeightFromHeightMap(Texture.loadBufferedImage("overworldHeight.png"), new Rectangle(new Vector2f(
-						-16), new Vector2f(32)), 2f, 1f);
+		playerHeight = new HeightFromHeightMap(Texture.loadBufferedImage("overworldHeight.png"), new Rectangle(new Vector2f(-16), new Vector2f(32)), 2f, 1f);
 	}
 
 	@Override
@@ -100,8 +97,7 @@ public class OverworldGameState implements GameState {
 		scene.getLightManager().addShader(defaultShader);
 		scene.getSceneGraph().setShader(defaultShader);
 
-		final SceneObject waterObject =
-				new SceneObject(water, new BoneTransformation(new Vector3f(), new Quaternionf(), new Vector3f(100)));
+		final SceneObject waterObject = new SceneObject(water, new BoneTransformation(new Vector3f(), new Quaternionf(), new Vector3f(100)));
 		waterObject.setShader(waterShader);
 
 		final ShaderProgram animationShader = new ShaderProgram("boneAnimation.vert", "basic.frag");
@@ -112,19 +108,18 @@ public class OverworldGameState implements GameState {
 
 		player.setAnimationShader(animationShader);
 
-		shared.playerEntity = player.spawnNew(new Vector3f(0, 10, 1), 0, scene.getSceneGraph(), shared.healthBarGUI);
+		shared.playerEntity = player.spawnNew(new Vector3f(0, 10, 1), 0, scene.getSceneGraph(), shared.healthBarGUI, scene.getSoundEnvironment());
 		world.add(shared.playerEntity);
 
 		shared.playerEntity.setHeightSource(playerHeight);
 
-		world.add(topDownViewCamera).addBehaviour(0, new TopDownViewBehaviour(shared.playerEntity, 7, 3, 1))
-				.setPosition(new Vector3f(3, 4, 5));
+		world.add(topDownViewCamera).addBehaviour(0, new TopDownViewBehaviour(shared.playerEntity, 7, 3, 1)).setPosition(new Vector3f(3, 4, 5));
 
 		final DirectionalLight sun = new DirectionalLight(Color.WHITE, new Vector3f(0.2f, -1, 0).normalize());
 		scene.getLightManager().addLight(sun);
 
 		final Goblin goblin = new Goblin(shared.playerEntity, animationShader);
-		goblinEntity = goblin.spawnNew(new Vector3f(10, 3, 0), 0, scene.getSceneGraph(), shared.healthBarGUI);
+		goblinEntity = goblin.spawnNew(new Vector3f(10, 3, 0), 0, scene.getSceneGraph(), shared.healthBarGUI, scene.getSoundEnvironment());
 		world.add(goblinEntity);
 
 		shared.playerEntity.addTarsched(goblinEntity);
@@ -144,25 +139,25 @@ public class OverworldGameState implements GameState {
 		shared.playerEntity.getInventory().addLoot(LootType.Steel, 10);
 		shared.playerEntity.getInventory().addLoot(LootType.Wood, 10);
 
-		craftingHUD = new CraftingHUD(hud, text, shared.playerEntity.getInventory());
+		craftingHUD = new CraftingHUD(hud, text, shared.playerEntity);
 
 		final Chest chest = new Chest(animationShader, shared.playerEntity);
-		final ChestEntity chestEntity =
-				chest.spawnNew(new Vector3f(-5, 3, -5), 0, scene.getSceneGraph(), ce -> {
-					shared.playerEntity.getInventory().addLoot(LootType.Wood, 100);
-					shared.playerEntity.getInventory().addLoot(LootType.Stone, 100);
-					shared.playerEntity.getInventory().addLoot(LootType.Steel, 100);
-					shared.playerEntity.getInventory().addLoot(LootType.Gold, 100);
-					shared.playerEntity.getInventory().addLoot(LootType.Diamond, 100);
-				});
+		final ChestEntity chestEntity = chest.spawnNew(new Vector3f(-5, 3, -5), 0, scene.getSceneGraph(), ce -> {
+			shared.playerEntity.getInventory().addLoot(LootType.Wood, 100);
+			shared.playerEntity.getInventory().addLoot(LootType.Stone, 100);
+			shared.playerEntity.getInventory().addLoot(LootType.Steel, 100);
+			shared.playerEntity.getInventory().addLoot(LootType.Gold, 100);
+			shared.playerEntity.getInventory().addLoot(LootType.Diamond, 100);
+		}, scene.getSoundEnvironment());
 		world.add(chestEntity);
+
+		scene.getSoundEnvironment().getListener().asNewEntity().attachTo(topDownViewCamera.asEntity());
 	}
 
 	@Override
 	public void update(final double deltaTime) {
 
-		if (new Vector2f(anvilPos.x, anvilPos.z).distance(new Vector2f(shared.playerEntity.getPosition().x,
-				shared.playerEntity.getPosition().z)) < 1.3f) {
+		if (new Vector2f(anvilPos.x, anvilPos.z).distance(new Vector2f(shared.playerEntity.getPosition().x, shared.playerEntity.getPosition().z)) < 1.3f) {
 			infoBox.setText("Press C for crafting");
 			if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_C)) {
 				infoBox.setText(" ");

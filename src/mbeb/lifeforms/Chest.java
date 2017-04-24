@@ -10,6 +10,7 @@ import mbeb.opengldefault.gl.shader.*;
 import mbeb.opengldefault.rendering.io.*;
 import mbeb.opengldefault.scene.*;
 import mbeb.opengldefault.scene.materials.*;
+import mbeb.opengldefault.sound.*;
 
 public class Chest {
 	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1).rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
@@ -34,7 +35,7 @@ public class Chest {
 		this.playerEntity = playerEntity;
 	}
 
-	public ChestEntity spawnNew(final Vector3f position, final float angle, final SceneObject parent, final Consumer<ChestEntity> consumer) {
+	public ChestEntity spawnNew(final Vector3f position, final float angle, final SceneObject parent, final Consumer<ChestEntity> consumer, final SoundEnvironment soundEnvironment) {
 		final AnimationStateFacade chestAnimatedRenderable = new AnimationStateFacade(mesh, material);
 
 		chestAnimatedRenderable.registerAnimation("Open", "Open", 32, 0, 0);
@@ -46,7 +47,7 @@ public class Chest {
 		chestObject.setShader(animationShader);
 
 		parent.addSubObject(chestObject);
-		final ChestEntity chest = new ChestEntity(chestObject, chestAnimatedRenderable, 3);
+		final ChestEntity chest = new ChestEntity(chestObject, chestAnimatedRenderable, 3, soundEnvironment);
 		chest.addBehaviour(1, new ChestBehaviour(playerEntity, consumer).limited(interactionRadius));
 		return chest;
 	}

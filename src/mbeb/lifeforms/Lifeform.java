@@ -4,6 +4,7 @@ import mbeb.ld38.HealthBarGUI;
 import org.joml.*;
 
 import mbeb.opengldefault.scene.*;
+import mbeb.opengldefault.sound.*;
 
 public abstract class Lifeform {
 	protected float radius;
@@ -22,5 +23,5 @@ public abstract class Lifeform {
 		this.healthpoints = healthpoints;
 	}
 
-	protected abstract LifeformEntity spawnNew(final Vector3f position, final float angle, final SceneObject parent, final HealthBarGUI healthBarGui);
+	protected abstract LifeformEntity spawnNew(final Vector3f position, final float angle, final SceneObject parent, final HealthBarGUI healthBarGui, SoundEnvironment soundEnvironment);
 }
