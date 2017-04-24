@@ -1,6 +1,5 @@
 package mbeb.lifeforms;
 
-import java.awt.*;
 import java.lang.Math;
 
 import org.joml.*;
@@ -28,6 +27,7 @@ public class Goblin extends Monster {
 		mesh = new ObjectLoader().loadFromFileAnim("goblin.fbx");
 		mesh.setTransform(new Matrix4f().rotate(new AxisAngle4f((float) (Math.PI) / -2, 1, 0, 0)));
 		mesh.getSkeleton().printRecursive("");
+		//mesh.setTransform(MeshFlip);
 		material = new Material("material/goblin", 2);
 
 		this.animationShader = animationShader;
