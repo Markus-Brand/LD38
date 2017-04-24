@@ -37,10 +37,14 @@ public abstract class LifeformEntity extends SceneEntity {
 				new Circle(new Vector2f(sceneObject.getGlobalPosition().x, sceneObject.getGlobalPosition().z), radius);
 		dead = false;
 		
-		healthBar = new HealthBarGUIElement(0.8f,
-				                                   new Vector3f(0f, 0.3f, 1),
-				                                   new Vector3f(1, 1, 0.4f),
-				                                   new Vector3f(0.01f));
+		healthBar = new HealthBarGUIElement(getHealthBarSize(),
+				                                   new Vector3f(0f, 1, 0.2f),
+				                                   new Vector3f(1f, 0.4f, 0.2f),
+				                                   new Vector3f(0f));
+	}
+
+	protected float getHealthBarSize() {
+		return 0.2f;
 	}
 
 	public Shape getBounding() {

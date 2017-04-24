@@ -117,7 +117,7 @@ public class OverworldGameState implements GameState {
 
 		healthGui = new HealthBarGUI();
 		goblinEntity.showHealthBar(healthGui, topDownViewCamera);
-		playerEntity.showHealthBar(healthGui, topDownViewCamera);
+		playerEntity.showHealthBar(healthGui, null);
 
 	}
 

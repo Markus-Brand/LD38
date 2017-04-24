@@ -1,6 +1,7 @@
 package mbeb.ld38;
 
 import mbeb.opengldefault.gl.buffer.GLBufferWriter;
+import mbeb.opengldefault.gui.elements.AtlasGUIElement;
 import mbeb.opengldefault.gui.elements.GUIElement;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -9,7 +10,7 @@ import org.joml.Vector4f;
 /**
  * Created by erik on 24.04.17.
  */
-public class HealthBarGUIElement extends GUIElement {
+public class HealthBarGUIElement extends AtlasGUIElement {
 
 	private Vector3f color1;
 	private Vector3f color2;
@@ -23,7 +24,7 @@ public class HealthBarGUIElement extends GUIElement {
 	private float shadowHealth;
 	
 	public HealthBarGUIElement(float size, Vector3f color1, Vector3f color2, Vector3f color3) {
-		super(new Vector2f(0.5f), new Vector2f(0.4f, 0.05f).mul(size));
+		super(0, 1, 1, new Vector2f(0.5f), new Vector2f(0.4f, 0.05f).mul(size));
 		this.color1 = color1;
 		this.color2 = color2;
 		this.color3 = color3;

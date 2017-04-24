@@ -28,6 +28,11 @@ public class PlayerEntity extends LifeformEntity {
 	}
 
 	@Override
+	protected float getHealthBarSize() {
+		return 1.5f;
+	}
+
+	@Override
 	public void update(double deltaTime) {
 		super.update(deltaTime);
 		swordEntity.update(deltaTime);
