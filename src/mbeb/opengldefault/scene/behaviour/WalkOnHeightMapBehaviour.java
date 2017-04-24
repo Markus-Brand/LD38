@@ -31,16 +31,18 @@ public class WalkOnHeightMapBehaviour extends PitchYawMouseBehaviour {
 		final Vector3f delta = new Vector3f();
 
 		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_A)) {
-			worldUp.cross(direction, delta);
+			//worldUp.cross(direction, delta);
+			yaw -= 10 * deltaTime;
 		}
 		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_D)) {
-			direction.cross(worldUp, delta);
+			//direction.cross(worldUp, delta);
+			yaw += 10 * deltaTime;
 		}
 		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_W)) {
 			delta.add(direction);
 		}
 		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_S)) {
-			delta.sub(direction);
+			delta.sub(direction.mul(0.5f));
 		}
 		if (delta.length() == 0) {
 			//return;
