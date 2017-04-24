@@ -2,3 +2,5 @@ sizeFactor: 1.5
 animations:
   Open:
     Bone: 1
+  Opened:
+      Bone: 1
