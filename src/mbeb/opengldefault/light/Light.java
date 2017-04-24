@@ -40,6 +40,16 @@ public abstract class Light implements IEntityConvertable, GLBufferWritable {
 	}
 
 	/**
+	 * copy constructor
+	 * @param reference
+	 */
+	public Light(Light reference) {
+		this.color = reference.color;
+		this.markedForRemoval = reference.markedForRemoval;
+		this.dirty = true;
+	}
+
+	/**
 	 * transforms <i>color</i> with range [0,255] to Vec3 with range [0,1]
 	 *
 	 * @param color

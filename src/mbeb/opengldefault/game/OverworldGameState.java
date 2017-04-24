@@ -199,7 +199,7 @@ public class OverworldGameState implements GameState {
 
 	@Override
 	public void open() {
-		shared.playerEntity.addTo(overworld.getSceneObject());
+		shared.playerEntity.addTo(overworld.getSceneObject(), overworldScene.getLightManager());
 		shared.playerEntity.setHeightSource(playerHeight);
 		shared.playerEntity.setPosition(port);
 		if (leftForDungeon) {

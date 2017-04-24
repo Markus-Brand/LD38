@@ -22,7 +22,7 @@ public class Goblin extends Monster {
 	ShaderProgram animationShader;
 
 	public Goblin(final PlayerEntity playerEntity, final ShaderProgram animationShader) {
-		super(2, 100, 10, 2f, 5, 0.5f, 0.8f, 0.5f, 1f, playerEntity);
+		super(0.6f, 10, 10, 2f, 5, 0.5f, 0.8f, 0.5f, 1f, playerEntity);
 
 		mesh = new ObjectLoader().loadFromFileAnim("goblin.fbx");
 		mesh.setTransform(new Matrix4f().rotate(new AxisAngle4f((float) (Math.PI) / -2, 1, 0, 0)));
@@ -42,7 +42,7 @@ public class Goblin extends Monster {
 		goblinAnimatedRenderable.registerAnimation("Run", "Run", 32, 0.4f, 0.4f);
 		goblinAnimatedRenderable.registerAnimation("Jump", "Jump", 32, 0.1f, 0.1f, 1.1f);
 
-		final SceneObject monsterObject = new SceneObject(goblinAnimatedRenderable, new BoneTransformation(position, new Quaternionf(new AxisAngle4f(angle, new Vector3f(0, 1, 0)))));
+		final SceneObject monsterObject = new SceneObject(goblinAnimatedRenderable, new BoneTransformation(position, new Quaternionf(new AxisAngle4f(angle, new Vector3f(0, 1, 0))), new Vector3f(0.5f)));
 
 		monsterObject.setShader(animationShader);
 

@@ -138,7 +138,7 @@ public class DungeonGameState implements GameState {
 
 	@Override
 	public void open() {
-		this.shared.playerEntity.addTo(scene.getSceneGraph());
+		this.shared.playerEntity.addTo(scene.getSceneGraph(), scene.getLightManager());
 		this.level.setPlayer(this.shared.playerEntity);
 		GLContext.hideCursor();
 		scene.getLightManager().rewriteUBO();

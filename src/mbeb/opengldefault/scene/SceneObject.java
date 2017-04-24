@@ -150,7 +150,9 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 	}
 
 	public void removeSelf() {
-		parent.removeSubObject(this);
+		if (parent != null) {
+			parent.removeSubObject(this);
+		}
 	}
 
 	/**
@@ -360,7 +362,7 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 	}
 
 	@Override
-	public IEntity asNewEntity() {
+	public SceneEntity asNewEntity() {
 		return new SceneEntity(this);
 	}
 }
