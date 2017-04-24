@@ -51,11 +51,6 @@ public abstract class LightTypeManager {
 	 */
 	void resizeBuffer() {
 
-		for (Light l : lights) {
-			l.setDirty();
-		}
-		updateDirtyLights();
-
 		UBO.bind();
 		UBO.setBufferSize(Constants.BLOCK_SIZE + getBufferSize());
 		UBO.bindBufferBase();
@@ -115,9 +110,9 @@ public abstract class LightTypeManager {
 	 */
 	public void addLight(final Light light) {
 		if (lightCapacity <= lights.size()) {
-			lights.add(light);
 			lightCapacity *= 2;
 			resizeBuffer();
+			lights.add(light);
 		} else {
 			final int offset = getTotalBufferOffset(lights.size());
 			lights.add(light);

@@ -4,10 +4,10 @@ import java.awt.image.BufferedImage;
 
 import org.joml.Vector2f;
 
-import mbeb.opengldefault.scene.behaviour.HeightSource;
+import mbeb.opengldefault.scene.behaviour.IHeightSource;
 import mbeb.opengldefault.shapes.Rectangle;
 
-public class HeightFromHeightMap implements HeightSource {
+public class HeightFromHeightMap implements IHeightSource {
 
 	private BufferedImage heightMap;
 	private Rectangle heightMapBounding;

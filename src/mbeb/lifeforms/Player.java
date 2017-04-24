@@ -19,11 +19,11 @@ public class Player extends Lifeform {
 	private final Material material;
 	private final AnimatedMesh mesh;
 	private final ShaderProgram animationShader;
-	private HeightSource heightSource;
+	private IHeightSource heightSource;
 
 	private Sword sword;
 
-	public Player(final float healthpoints, final ShaderProgram animationShader, final HeightSource heightSource,
+	public Player(final float healthpoints, final ShaderProgram animationShader, final IHeightSource heightSource,
 			final Sword sword) {
 		super(0.3f, healthpoints);
 		this.animationShader = animationShader;
@@ -40,7 +40,7 @@ public class Player extends Lifeform {
 		this.sword = sword;
 	}
 
-	public void setHeightSource(final HeightSource heightSource) {
+	public void setHeightSource(final IHeightSource heightSource) {
 		this.heightSource = heightSource;
 	}
 

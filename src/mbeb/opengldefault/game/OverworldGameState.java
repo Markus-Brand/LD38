@@ -5,8 +5,10 @@ import static org.lwjgl.opengl.GL11.*;
 import java.awt.*;
 
 import mbeb.ld38.HealthBarGUI;
-import org.joml.*;
-import org.lwjgl.glfw.*;
+import org.joml.Quaternionf;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFW;
 
 import mbeb.ld38.overworld.*;
 import mbeb.lifeforms.*;
@@ -26,6 +28,11 @@ import mbeb.opengldefault.shapes.Rectangle;
 
 public class OverworldGameState implements GameState {
 
+	private Vector3f port = new Vector3f(0.41f, 2.509f, -7.46f);
+	private Vector3f key = new Vector3f(-2.27f, 2.74f, -7.44f);
+	private float threshold = 0.75f;
+	private boolean leftForDungeon = false;
+
 	private Scene overworldScene;
 	private EntityWorld world;
 	private OverWorld overworld;
@@ -44,7 +51,7 @@ public class OverworldGameState implements GameState {
 
 	//private ShaderProgram displayDepthMap;
 
-	Player player;
+	private Player player;
 
 	MonsterEntity goblinEntity;
 	PlayerEntity playerEntity;
@@ -148,7 +155,8 @@ public class OverworldGameState implements GameState {
 		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_ESCAPE)) {
 			return GameStateIdentifier.INTRO;
 		} else {
-			if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_K)) {
+			if (playerEntity.getPosition().distance(key) < threshold) {
+				this.leftForDungeon = true;
 				return GameStateIdentifier.DUNGEON;
 			} else {
 				return null;
@@ -163,6 +171,10 @@ public class OverworldGameState implements GameState {
 
 	@Override
 	public void open() {
+		if(leftForDungeon){
+			leftForDungeon = false;
+			playerEntity.setPosition(port);
+		}
 		overworldScene.getLightManager().rewriteUBO();
 		//GLContext.hideCursor();
 	}
