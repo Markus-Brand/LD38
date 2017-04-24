@@ -16,4 +16,7 @@ public class ChestEntity extends SceneEntity {
 		this.interactionRadius = interactionRadius;
 	}
 
+	public AnimationStateFacade getAnimator() {
+		return animator;
+	}
 }
