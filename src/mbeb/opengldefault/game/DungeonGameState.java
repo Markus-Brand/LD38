@@ -6,6 +6,7 @@ import static org.lwjgl.opengl.GL11.glEnable;
 
 import java.awt.*;
 
+import mbeb.ld38.SharedData;
 import mbeb.opengldefault.gl.GLContext;
 import org.joml.AxisAngle4f;
 import org.joml.Matrix4f;
@@ -38,6 +39,10 @@ public class DungeonGameState implements GameState {
 	private DungeonLevel level;
 	private EntityWorld world;
 	private Player player;
+
+	public DungeonGameState(SharedData data) {
+
+	}
 
 	@Override
 	public void init() {

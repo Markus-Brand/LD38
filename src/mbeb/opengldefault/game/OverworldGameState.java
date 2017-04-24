@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL11.*;
 import java.awt.*;
 
 import mbeb.ld38.HealthBarGUI;
+import mbeb.ld38.SharedData;
 import mbeb.opengldefault.gl.GLContext;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
@@ -43,16 +44,14 @@ public class OverworldGameState implements GameState {
 	private float totalTimePassed;
 
 	private Skybox skybox;
-	//private FrameBuffer heightMapGenerator;
-	//private Texture2D heightMap;
 
 	private Camera topDownViewCamera;
 
 	private ShaderProgram defaultShader;
 
-	//private ShaderProgram displayDepthMap;
-
 	private Player player;
+
+	private final HealthBarGUI healthGui;
 
 	MonsterEntity goblinEntity;
 	PlayerEntity playerEntity;
@@ -60,6 +59,10 @@ public class OverworldGameState implements GameState {
 	@Option(category = "Game")
 	@ButtonOption
 	public static boolean showBBs = true;
+
+	public OverworldGameState(SharedData data) {
+		healthGui = data.healthBarGUI;
+	}
 
 	@Override
 	public void init() {
@@ -100,9 +103,6 @@ public class OverworldGameState implements GameState {
 						Texture.loadBufferedImage("overworldHeight.png"), new Rectangle(new Vector2f(-16),
 								new Vector2f(32)), 2f, 1f));
 
-
-		healthGui = new HealthBarGUI();
-
 		playerEntity = player.spawnNew(new Vector3f(0, 10, 1), 0, overworld.getSceneObject(), healthGui);
 		world.add(playerEntity);
 
@@ -121,8 +121,6 @@ public class OverworldGameState implements GameState {
 		goblinEntity.showHealthBar(topDownViewCamera);
 		playerEntity.showHealthBar(null);
 	}
-
-	private HealthBarGUI healthGui;
 
 	@Override
 	public void update(final double deltaTime) {
