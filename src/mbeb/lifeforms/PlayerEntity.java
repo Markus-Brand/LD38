@@ -27,10 +27,14 @@ public class PlayerEntity extends LifeformEntity {
 	private final WalkOnHeightMapBehaviour heightWalk;
 
 	public SoundSource craftingSoundSource;
+	public SoundSource swordChangeSoundSource;
 
-	public PlayerEntity(final float radius, final SceneObject sceneObject, final AnimationStateFacade animator, final float healthpoints, final IHeightSource heightSource,
+	public PlayerEntity(final float radius, final SceneObject sceneObject, final AnimationStateFacade animator,
+			final float healthpoints, final IHeightSource heightSource,
 			final HealthBarGUI healthGui, final SoundEnvironment soundEnvironment) {
 		super(sceneObject, healthpoints, radius, healthGui);
+		initCraftingSound(soundEnvironment);
+		initSwordChangingSound(soundEnvironment);
 		this.animator = animator;
 		heightWalk = new WalkOnHeightMapBehaviour(heightSource, playerSpeed);
 		addBehaviour(0, new CombinedBehaviour(new SamuraiPlayerBehaviour(), heightWalk));
@@ -42,20 +46,33 @@ public class PlayerEntity extends LifeformEntity {
 
 		setSword(inventory.getSelectedSword());
 
-		final SceneObject lampObject = new SceneObject(Player.lampRenderable, new BoneTransformation(null, null, new Vector3f(0.3f)));
+		final SceneObject lampObject =
+				new SceneObject(Player.lampRenderable, new BoneTransformation(null, null, new Vector3f(0.3f)));
 
 		final PointLight light = new PointLight(new Vector3f(1f, 0.5f, 0.2f), new Vector3f(), 15f);
-		lightEntity = (PointLightEntity) light.asEntity().addBehaviour(0, new ParentBehaviour(lampObject, new Vector3f(0, 2, 0)));
-		lampEntity = (SceneEntity) lampObject.asNewEntity().addBehaviour(0, new BoneTrackingBehaviour(sceneObject, animator.getAnimatedRenderable(), "Hand.Left").fixedDirection());
+		lightEntity =
+				(PointLightEntity) light.asEntity().addBehaviour(0,
+						new ParentBehaviour(lampObject, new Vector3f(0, 2, 0)));
+		lampEntity =
+				(SceneEntity) lampObject.asNewEntity().addBehaviour(
+						0,
+						new BoneTrackingBehaviour(sceneObject, animator.getAnimatedRenderable(), "Hand.Left")
+								.fixedDirection());
 
-		initCraftingSound(soundEnvironment);
 	}
 
 	private void initCraftingSound(final SoundEnvironment soundEnvironment) {
-		final Sound craftingSound = soundEnvironment.createSound("crafting");
+		final Sound sound = soundEnvironment.createSound("crafting");
 		this.craftingSoundSource = soundEnvironment.createSoundSource(false, true);
-		craftingSoundSource.setSound(craftingSound);
+		craftingSoundSource.setSound(sound);
 		craftingSoundSource.asNewEntity().attachTo(this);
+	}
+
+	private void initSwordChangingSound(final SoundEnvironment soundEnvironment) {
+		final Sound sound = soundEnvironment.createSound("change_sword");
+		this.swordChangeSoundSource = soundEnvironment.createSoundSource(false, true);
+		swordChangeSoundSource.setSound(sound);
+		swordChangeSoundSource.asNewEntity().attachTo(this);
 	}
 
 	@Override
@@ -73,8 +90,8 @@ public class PlayerEntity extends LifeformEntity {
 		//lightEntity.setColor(new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()));
 
 		if (KeyBoard.pullKeyDown(GLFW.GLFW_KEY_TAB)) {
+			swordChangeSoundSource.play();
 			inventory.switchSword();
-			System.out.println(inventory.getSelectedSword().getDamage());
 			setSword(inventory.getSelectedSword());
 		}
 	}
