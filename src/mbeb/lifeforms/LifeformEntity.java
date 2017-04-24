@@ -72,6 +72,7 @@ public abstract class LifeformEntity extends SceneEntity {
 		if (healthGui != null) {
 			healthGui.remove(healthBar);
 		}
+
 	}
 
 	public boolean isDead() {

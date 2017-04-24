@@ -4,23 +4,20 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.awt.*;
 
-import mbeb.ld38.SharedData;
-import mbeb.opengldefault.gl.GLContext;
+import org.joml.*;
+import org.lwjgl.glfw.*;
 
-import org.joml.Quaternionf;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
-
+import mbeb.ld38.*;
 import mbeb.ld38.overworld.*;
 import mbeb.lifeforms.*;
 import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.controls.*;
+import mbeb.opengldefault.gl.*;
 import mbeb.opengldefault.gl.shader.*;
 import mbeb.opengldefault.gl.texture.*;
-import mbeb.opengldefault.gui.TextGUI;
-import mbeb.opengldefault.gui.elements.TextGUIElement;
+import mbeb.opengldefault.gui.*;
+import mbeb.opengldefault.gui.elements.*;
 import mbeb.opengldefault.light.*;
 import mbeb.opengldefault.options.*;
 import mbeb.opengldefault.rendering.io.*;
@@ -32,9 +29,9 @@ import mbeb.opengldefault.shapes.Rectangle;
 
 public class OverworldGameState implements GameState {
 
-	private Vector3f port = new Vector3f(0.41f, 2.509f, -7.46f);
-	private Vector3f key = new Vector3f(-3.9f, 2.74f, -7.44f);
-	private float threshold = 0.75f;
+	private final Vector3f port = new Vector3f(0.41f, 2.509f, -7.46f);
+	private final Vector3f key = new Vector3f(-3.9f, 2.74f, -7.44f);
+	private final float threshold = 0.75f;
 
 	private boolean leftForDungeon = false;
 
@@ -62,7 +59,7 @@ public class OverworldGameState implements GameState {
 
 	MonsterEntity goblinEntity;
 
-	private Vector3f anvilPos = new Vector3f(9.27f, 0.993f, -4.43f);
+	private final Vector3f anvilPos = new Vector3f(9.27f, 0.993f, -4.43f);
 
 	@Option(category = "Game")
 	@ButtonOption
@@ -71,9 +68,7 @@ public class OverworldGameState implements GameState {
 	public OverworldGameState(final SharedData shared) {
 		this.shared = shared;
 		player = new Player(100, null, null);
-		playerHeight =
-				new HeightFromHeightMap(Texture.loadBufferedImage("overworldHeight.png"), new Rectangle(new Vector2f(
-						-16), new Vector2f(32)), 2f, 1f);
+		playerHeight = new HeightFromHeightMap(Texture.loadBufferedImage("overworldHeight.png"), new Rectangle(new Vector2f(-16), new Vector2f(32)), 2f, 1f);
 	}
 
 	@Override
@@ -98,8 +93,7 @@ public class OverworldGameState implements GameState {
 		overworldScene.getLightManager().addShader(defaultShader);
 		overworldScene.getSceneGraph().setShader(defaultShader);
 
-		final SceneObject waterObject =
-				new SceneObject(water, new BoneTransformation(new Vector3f(), new Quaternionf(), new Vector3f(100)));
+		final SceneObject waterObject = new SceneObject(water, new BoneTransformation(new Vector3f(), new Quaternionf(), new Vector3f(100)));
 		waterObject.setShader(waterShader);
 
 		final ShaderProgram animationShader = new ShaderProgram("boneAnimation.vert", "basic.frag");
@@ -112,14 +106,12 @@ public class OverworldGameState implements GameState {
 
 		player.setAnimationShader(animationShader);
 
-		shared.playerEntity =
-				player.spawnNew(new Vector3f(0, 10, 1), 0, overworld.getSceneObject(), shared.healthBarGUI);
+		shared.playerEntity = player.spawnNew(new Vector3f(0, 10, 1), 0, overworld.getSceneObject(), shared.healthBarGUI);
 		world.add(shared.playerEntity);
 
 		shared.playerEntity.setHeightSource(playerHeight);
 
-		world.add(topDownViewCamera).addBehaviour(0, new TopDownViewBehaviour(shared.playerEntity, 7, 2, 2))
-				.setPosition(new Vector3f(3, 4, 5));
+		world.add(topDownViewCamera).addBehaviour(0, new TopDownViewBehaviour(shared.playerEntity, 7, 2, 2)).setPosition(new Vector3f(3, 4, 5));
 
 		final DirectionalLight sun = new DirectionalLight(Color.WHITE, new Vector3f(0.2f, -1, 0).normalize());
 		overworldScene.getLightManager().addLight(sun);
@@ -140,14 +132,16 @@ public class OverworldGameState implements GameState {
 		infoBox = text.addText(" ", new Vector2f());
 		infoBox.setPositionRelativeToScreen(0.01f, 0.01f);
 		infoBox.setColor(Color.WHITE);
+
+		final Chest chest = new Chest(animationShader, shared.playerEntity);
+		final ChestEntity chestEntity = chest.spawnNew(new Vector3f(-5, 3, -5), 0, overworld.getSceneObject(), ce -> System.out.println("OPEJ"));
+		world.add(chestEntity);
 	}
 
 	@Override
 	public void update(final double deltaTime) {
 
-		if (new Vector2f(anvilPos.x, anvilPos.z).distance(new Vector2f(shared.playerEntity.getPosition().x,
-				shared.playerEntity
-						.getPosition().z)) < 1.3f) {
+		if (new Vector2f(anvilPos.x, anvilPos.z).distance(new Vector2f(shared.playerEntity.getPosition().x, shared.playerEntity.getPosition().z)) < 1.3f) {
 			infoBox.setText("Press C for crafting");
 		} else {
 			infoBox.setText(" ");

@@ -1,6 +1,7 @@
 package mbeb.lifeforms;
 
 import java.lang.Math;
+import java.util.function.*;
 
 import org.joml.*;
 
@@ -20,24 +21,24 @@ public class Chest {
 	ShaderProgram animationShader;
 	PlayerEntity playerEntity;
 
-	public Chest(final float interactionRadius, final ShaderProgram animationShader, final PlayerEntity playerEntity) {
-		this.interactionRadius = interactionRadius;
+	public Chest(final ShaderProgram animationShader, final PlayerEntity playerEntity) {
+		this.interactionRadius = 100;
 
 		material = new Material("material/chest", 1);
 		mesh = new ObjectLoader().loadFromFileAnim("chest.fbx");
-		mesh.setTransform(new Matrix4f().rotate(new AxisAngle4f((float) (Math.PI) / -2, 1, 0, 0)));
-		mesh.setTransform(MeshFlip);
+		mesh.setTransform(new Matrix4f().rotate(new AxisAngle4f((float) (Math.PI) / 2, 0, 0, 1)));
+		//mesh.setTransform(MeshFlip);
 		mesh.getSkeleton().printRecursive("");
 
 		this.animationShader = animationShader;
 		this.playerEntity = playerEntity;
 	}
 
-	public ChestEntity spawnNew(final Vector3f position, final float angle, final SceneObject parent, final SceneObject playerObject, final AnimationStateFacade playerAnimatedRenderable) {
+	public ChestEntity spawnNew(final Vector3f position, final float angle, final SceneObject parent, final Consumer<ChestEntity> consumer) {
 		final AnimationStateFacade chestAnimatedRenderable = new AnimationStateFacade(mesh, material);
 
-		chestAnimatedRenderable.registerAnimation("Idle", "Idle", 32);
-		chestAnimatedRenderable.registerAnimation("Open", "Open", 32, 0.4f, 0.4f);
+		chestAnimatedRenderable.registerAnimation("Open", "Open", 32, 0, 0);
+		chestAnimatedRenderable.registerAnimation("Opened", "Opened", 32, 0, 0);
 		//chestAnimatedRenderable.registerAnimation("Close","Close",32,0.1f,0.1f,1.1f);
 
 		final SceneObject chestObject = new SceneObject(chestAnimatedRenderable, new BoneTransformation(position, new Quaternionf(new AxisAngle4f(angle, new Vector3f(0, 1, 0)))));
@@ -46,7 +47,7 @@ public class Chest {
 
 		parent.addSubObject(chestObject);
 		final ChestEntity chest = new ChestEntity(chestObject, chestAnimatedRenderable, 3);
-		chest.addBehaviour(1, new ChestBehaviour(playerEntity).limited(interactionRadius));
+		chest.addBehaviour(1, new ChestBehaviour(playerEntity, consumer).limited(interactionRadius));
 		return chest;
 	}
 }
