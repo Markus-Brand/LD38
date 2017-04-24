@@ -1,6 +1,7 @@
 package mbeb.ld38;
 
 import mbeb.lifeforms.Player;
+import mbeb.lifeforms.PlayerEntity;
 import mbeb.opengldefault.rendering.renderable.IRenderable;
 
 /**
@@ -9,12 +10,10 @@ import mbeb.opengldefault.rendering.renderable.IRenderable;
 public class SharedData {
 
 	public HealthBarGUI healthBarGUI;
-	public Player player;
+	public PlayerEntity playerEntity;
 	public IRenderable island;
 
-	public SharedData(HealthBarGUI healthBarGUI, Player player, IRenderable island) {
+	public SharedData(HealthBarGUI healthBarGUI) {
 		this.healthBarGUI = healthBarGUI;
-		this.player = player;
-		this.island = island;
 	}
 }

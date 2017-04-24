@@ -18,6 +18,10 @@ public class WalkOnHeightMapBehaviour extends PitchYawMouseBehaviour {
 		this.speed = speed;
 	}
 
+	public void setHeightSource(IHeightSource heightSource) {
+		this.heightSource = heightSource;
+	}
+
 	@Override
 	public void update(double deltaTime, IEntity entity) {
 		super.update(deltaTime, entity);

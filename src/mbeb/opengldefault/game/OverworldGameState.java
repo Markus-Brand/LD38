@@ -4,7 +4,6 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.awt.*;
 
-import mbeb.ld38.HealthBarGUI;
 import mbeb.ld38.SharedData;
 import mbeb.opengldefault.gl.GLContext;
 import org.joml.Quaternionf;
@@ -49,19 +48,23 @@ public class OverworldGameState implements GameState {
 
 	private ShaderProgram defaultShader;
 
-	private Player player;
+	private final Player player;
+	private IHeightSource playerHeight;
 
-	private final HealthBarGUI healthGui;
+	private SharedData shared;
 
 	MonsterEntity goblinEntity;
-	PlayerEntity playerEntity;
 
 	@Option(category = "Game")
 	@ButtonOption
 	public static boolean showBBs = true;
 
-	public OverworldGameState(SharedData data) {
-		healthGui = data.healthBarGUI;
+	public OverworldGameState(SharedData shared) {
+		this.shared = shared;
+		player = new Player(100, null, null);
+		playerHeight = new HeightFromHeightMap(
+				Texture.loadBufferedImage("overworldHeight.png"), new Rectangle(new Vector2f(-16),
+				new Vector2f(32)), 2f, 1f);
 	}
 
 	@Override
@@ -98,28 +101,27 @@ public class OverworldGameState implements GameState {
 		overworldScene.getSceneGraph().addSubObject(overworld.getSceneObject());
 		overworld.getSceneObject().addSubObject(waterObject);
 
-		player =
-				new Player(100, animationShader, new HeightFromHeightMap(
-						Texture.loadBufferedImage("overworldHeight.png"), new Rectangle(new Vector2f(-16),
-								new Vector2f(32)), 2f, 1f));
+		player.setAnimationShader(animationShader);
 
-		playerEntity = player.spawnNew(new Vector3f(0, 10, 1), 0, overworld.getSceneObject(), healthGui);
-		world.add(playerEntity);
+		shared.playerEntity = player.spawnNew(new Vector3f(0, 10, 1), 0, overworld.getSceneObject(), shared.healthBarGUI);
+		world.add(shared.playerEntity);
 
-		world.add(topDownViewCamera).addBehaviour(0, new TopDownViewBehaviour(playerEntity, 7, 2, 2))
+		shared.playerEntity.setHeightSource(playerHeight);
+
+		world.add(topDownViewCamera).addBehaviour(0, new TopDownViewBehaviour(shared.playerEntity, 7, 2, 2))
 				.setPosition(new Vector3f(3, 4, 5));
 
 		final DirectionalLight sun = new DirectionalLight(Color.WHITE, new Vector3f(0.2f, -1, 0).normalize());
 		overworldScene.getLightManager().addLight(sun);
 
-		final Goblin goblin = new Goblin(playerEntity, animationShader);
-		goblinEntity = goblin.spawnNew(new Vector3f(10, 3, 0), 0, overworld.getSceneObject(), healthGui);
+		final Goblin goblin = new Goblin(shared.playerEntity, animationShader);
+		goblinEntity = goblin.spawnNew(new Vector3f(10, 3, 0), 0, overworld.getSceneObject(), shared.healthBarGUI);
 		world.add(goblinEntity);
 
-		playerEntity.addTarsched(goblinEntity);
+		shared.playerEntity.addTarsched(goblinEntity);
 
 		goblinEntity.showHealthBar(topDownViewCamera);
-		playerEntity.showHealthBar(null);
+		shared.playerEntity.showHealthBar(null);
 	}
 
 	@Override
@@ -132,7 +134,7 @@ public class OverworldGameState implements GameState {
 			overworldScene.getSceneGraph().removeSubObject(goblinEntity.getSceneObject());
 			world.remove(goblinEntity);
 		}
-		healthGui.update(deltaTime);
+		shared.healthBarGUI.update(deltaTime);
 	}
 
 	@Override
@@ -145,7 +147,7 @@ public class OverworldGameState implements GameState {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		overworldScene.render(showBBs);
 
-		healthGui.render();
+		shared.healthBarGUI.render();
 	}
 
 	@Override
@@ -153,7 +155,7 @@ public class OverworldGameState implements GameState {
 		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_ESCAPE)) {
 			return GameStateIdentifier.INTRO;
 		} else {
-			if (playerEntity.getPosition().distance(key) < threshold) {
+			if (shared.playerEntity.getPosition().distance(key) < threshold) {
 				this.leftForDungeon = true;
 				return GameStateIdentifier.DUNGEON;
 			} else {
@@ -169,9 +171,10 @@ public class OverworldGameState implements GameState {
 
 	@Override
 	public void open() {
+		shared.playerEntity.setHeightSource(playerHeight);
+		shared.playerEntity.setPosition(port);
 		if (leftForDungeon) {
 			leftForDungeon = false;
-			playerEntity.setPosition(port);
 		}
 		overworldScene.getLightManager().rewriteUBO();
 		GLContext.hideCursor();

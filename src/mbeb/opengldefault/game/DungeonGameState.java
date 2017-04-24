@@ -38,10 +38,11 @@ public class DungeonGameState implements GameState {
 	private Scene scene;
 	private DungeonLevel level;
 	private EntityWorld world;
-	private Player player;
+
+	private SharedData shared;
 
 	public DungeonGameState(SharedData data) {
-
+		this.shared = data;
 	}
 
 	@Override
@@ -74,13 +75,12 @@ public class DungeonGameState implements GameState {
 		animationShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
 		scene.getLightManager().addShader(animationShader);
 
-		player = new Player(100.0f, animationShader, level);
+		shared.playerEntity.setHeightSource(level);
 
-		IEntity playerEntity = player.spawnNew(new Vector3f(0, 1, 0), 0.0f, this.scene.getSceneGraph(), null);
-		world.add(camera).addBehaviour(0, new TopDownViewBehaviour(playerEntity, 8, 1.5f, 2))
+		world.add(camera).addBehaviour(0, new TopDownViewBehaviour(shared.playerEntity, 8, 1.5f, 2))
 				.setPosition(new Vector3f(3, 4, 5));
-		level.setPlayer(playerEntity);
-		world.add(playerEntity);
+		level.setPlayer(shared.playerEntity);
+		world.add(shared.playerEntity);
 
 		//light
 		DirectionalLight sun = new DirectionalLight(new Color(8, 7, 6), new Vector3f(0, -1, 0));

@@ -1,6 +1,7 @@
 package mbeb.lifeforms;
 
 import mbeb.ld38.HealthBarGUI;
+import mbeb.ld38.dungeon.DungeonLevel;
 import mbeb.opengldefault.animation.AnimationStateFacade;
 import mbeb.opengldefault.controls.KeyBoard;
 import mbeb.opengldefault.scene.*;
@@ -22,21 +23,23 @@ public class PlayerEntity extends LifeformEntity {
 
 	private Inventory inventory;
 
+	private final WalkOnHeightMapBehaviour heightWalk;
+
 	public PlayerEntity(float radius, final SceneObject sceneObject, AnimationStateFacade animator,
 						final float healthpoints, IHeightSource heightSource, final HealthBarGUI healthGui) {
 		super(sceneObject, healthpoints, radius, healthGui);
 		this.animator = animator;
+		heightWalk = new WalkOnHeightMapBehaviour(heightSource, playerSpeed);
 		addBehaviour(0, new CombinedBehaviour(
 				new SamuraiPlayerBehaviour(),
-				new WalkOnHeightMapBehaviour(heightSource, playerSpeed)));
+				heightWalk));
 		setHealthBarOffset(new Vector3f(0, 2, 0));
 		inventory = new Inventory();
 
-		inventory.addSword(new Sword(10, 1, 6, LootType.Stone));
-		inventory.addSword(new Sword(5, 1, 0.1f, LootType.Gold));
+		inventory.addSword(new Sword(10, 1, 1.5f, LootType.Wood));
+		inventory.addSword(new Sword(5, 1, 0.1f, LootType.Diamond));
 
 		setSword(inventory.getSelectedSword());
-
 	}
 
 	@Override
@@ -89,5 +92,9 @@ public class PlayerEntity extends LifeformEntity {
 
 	public void addTarsched(LifeformEntity tarsched) {
 		swordEntity.addTarsched(tarsched);
+	}
+
+	public void setHeightSource(IHeightSource heightSource) {
+		heightWalk.setHeightSource(heightSource);
 	}
 }

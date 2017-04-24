@@ -19,7 +19,7 @@ public class Player extends Lifeform {
 
 	private final Material material;
 	private final AnimatedMesh mesh;
-	private final ShaderProgram animationShader;
+	private ShaderProgram animationShader;
 	private IHeightSource heightSource;
 
 	public Player(final float healthpoints, final ShaderProgram animationShader, final IHeightSource heightSource) {
@@ -30,11 +30,10 @@ public class Player extends Lifeform {
 		mesh.setTransform(MeshFlip);
 		mesh.getSkeleton().printRecursive("");
 		this.heightSource = heightSource;
-
 	}
 
-	public void setHeightSource(final IHeightSource heightSource) {
-		this.heightSource = heightSource;
+	public void setAnimationShader(ShaderProgram animationShader) {
+		this.animationShader = animationShader;
 	}
 
 	@Override
