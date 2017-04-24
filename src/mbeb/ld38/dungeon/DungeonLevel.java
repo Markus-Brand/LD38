@@ -121,7 +121,7 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 			float o = determineOffset(x, 0);
 			this.addSubObject(new SceneObject(RoomType.getSEGMENT(), new BoneTransformation(new Vector3f(9 * x + o, o, o), new Quaternionf(new AxisAngle4f((float) Math.PI / -2, 0, 1, 0)))));
 		}
-		for (int y = 0; y < width; y++) {
+		for (int y = 0; y < height; y++) {
 			float o = determineOffset(0, y);
 			this.addSubObject(
 					new SceneObject(RoomType.getSEGMENT(), new BoneTransformation(new Vector3f(o, o, 9 * y + o), new Quaternionf(new AxisAngle4f((float) Math.PI, 0, 1, 0)), new Vector3f(-1f, 1, 1))));

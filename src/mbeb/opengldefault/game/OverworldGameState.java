@@ -148,7 +148,13 @@ public class OverworldGameState implements GameState {
 
 		final Chest chest = new Chest(animationShader, shared.playerEntity);
 		final ChestEntity chestEntity =
-				chest.spawnNew(new Vector3f(-5, 3, -5), 0, scene.getSceneGraph(), ce -> System.out.println("OPEJ"));
+				chest.spawnNew(new Vector3f(-5, 3, -5), 0, scene.getSceneGraph(), ce -> {
+					shared.playerEntity.getInventory().addLoot(LootType.Wood, 100);
+					shared.playerEntity.getInventory().addLoot(LootType.Stone, 100);
+					shared.playerEntity.getInventory().addLoot(LootType.Steel, 100);
+					shared.playerEntity.getInventory().addLoot(LootType.Gold, 100);
+					shared.playerEntity.getInventory().addLoot(LootType.Diamond, 100);
+				});
 		world.add(chestEntity);
 	}
 
