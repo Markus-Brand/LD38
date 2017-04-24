@@ -1,8 +1,7 @@
 package mbeb.ld38;
 
-import mbeb.lifeforms.Player;
+import mbeb.ld38.overworld.OverWorld;
 import mbeb.lifeforms.PlayerEntity;
-import mbeb.opengldefault.rendering.renderable.IRenderable;
 
 /**
  * things that each gameState / scene needs to have
@@ -11,7 +10,7 @@ public class SharedData {
 
 	public HealthBarGUI healthBarGUI;
 	public PlayerEntity playerEntity;
-	public IRenderable island;
+	public OverWorld overworld;
 
 	public SharedData(HealthBarGUI healthBarGUI) {
 		this.healthBarGUI = healthBarGUI;

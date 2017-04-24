@@ -12,7 +12,6 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
-import mbeb.ld38.overworld.*;
 import mbeb.lifeforms.*;
 import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.camera.*;
@@ -38,9 +37,8 @@ public class OverworldGameState implements GameState {
 
 	private boolean leftForDungeon = false;
 
-	private Scene overworldScene;
+	private Scene scene;
 	private EntityWorld world;
-	private OverWorld overworld;
 
 	private ShaderProgram waterShader;
 
@@ -84,19 +82,19 @@ public class OverworldGameState implements GameState {
 		topDownViewCamera = new PerspectiveCamera();
 
 		skybox = new Skybox("beachbox/beach", "png");
-		overworldScene = new Scene(topDownViewCamera, skybox);
+		scene = new Scene(topDownViewCamera, skybox);
 
 		final IRenderable water = new ObjectLoader().loadFromFile("overworld/water.obj");
 
 		waterShader = new ShaderProgram("water.frag", "planet.vert");
 		waterShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
-		overworldScene.getLightManager().addShader(waterShader);
-		//overworldScene.getSceneGraph().setShader(waterShader);
+		scene.getLightManager().addShader(waterShader);
+		//scene.getSceneGraph().setShader(waterShader);
 
 		defaultShader = new ShaderProgram("basic.frag", "basic.vert");
 		defaultShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
-		overworldScene.getLightManager().addShader(defaultShader);
-		overworldScene.getSceneGraph().setShader(defaultShader);
+		scene.getLightManager().addShader(defaultShader);
+		scene.getSceneGraph().setShader(defaultShader);
 
 		final SceneObject waterObject =
 				new SceneObject(water, new BoneTransformation(new Vector3f(), new Quaternionf(), new Vector3f(100)));
@@ -104,16 +102,14 @@ public class OverworldGameState implements GameState {
 
 		final ShaderProgram animationShader = new ShaderProgram("boneAnimation.vert", "basic.frag");
 		animationShader.addUniformBlockIndex(Camera.UBO_NAME, Camera.UBO_INDEX);
-		overworldScene.getLightManager().addShader(animationShader);
+		scene.getLightManager().addShader(animationShader);
 
-		overworld = new OverWorld();
-		overworldScene.getSceneGraph().addSubObject(overworld.getSceneObject());
-		overworld.getSceneObject().addSubObject(waterObject);
+		scene.getSceneGraph().addSubObject(waterObject);
 
 		player.setAnimationShader(animationShader);
 
 		shared.playerEntity =
-				player.spawnNew(new Vector3f(0, 10, 1), 0, overworld.getSceneObject(), shared.healthBarGUI);
+				player.spawnNew(new Vector3f(0, 10, 1), 0, scene.getSceneGraph(), shared.healthBarGUI);
 		world.add(shared.playerEntity);
 
 		shared.playerEntity.setHeightSource(playerHeight);
@@ -122,10 +118,10 @@ public class OverworldGameState implements GameState {
 				.setPosition(new Vector3f(3, 4, 5));
 
 		final DirectionalLight sun = new DirectionalLight(Color.WHITE, new Vector3f(0.2f, -1, 0).normalize());
-		overworldScene.getLightManager().addLight(sun);
+		scene.getLightManager().addLight(sun);
 
 		final Goblin goblin = new Goblin(shared.playerEntity, animationShader);
-		goblinEntity = goblin.spawnNew(new Vector3f(10, 3, 0), 0, overworld.getSceneObject(), shared.healthBarGUI);
+		goblinEntity = goblin.spawnNew(new Vector3f(10, 3, 0), 0, scene.getSceneGraph(), shared.healthBarGUI);
 		world.add(goblinEntity);
 
 		shared.playerEntity.addTarsched(goblinEntity);
@@ -154,7 +150,7 @@ public class OverworldGameState implements GameState {
 		}
 
 		totalTimePassed += deltaTime;
-		overworldScene.update(deltaTime);
+		scene.update(deltaTime);
 		world.update(deltaTime);
 
 		if (goblinEntity.isDead()) {
@@ -172,7 +168,7 @@ public class OverworldGameState implements GameState {
 		waterShader.setUniform("time", totalTimePassed);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		overworldScene.render(showBBs);
+		scene.render(showBBs);
 
 		shared.healthBarGUI.render();
 		text.render();
@@ -199,13 +195,16 @@ public class OverworldGameState implements GameState {
 
 	@Override
 	public void open() {
-		shared.playerEntity.addTo(overworld.getSceneObject(), overworldScene.getLightManager());
+		scene.getSceneGraph().addSubObjectFront(shared.overworld.getSceneObject());
+		shared.overworld.getSceneObject().setShader(defaultShader);
+		shared.overworld.getSceneObject().setTransformation(BoneTransformation.identity());
+		shared.playerEntity.addTo(scene.getSceneGraph(), scene.getLightManager());
 		shared.playerEntity.setHeightSource(playerHeight);
 		shared.playerEntity.setPosition(port);
 		if (leftForDungeon) {
 			leftForDungeon = false;
 		}
-		overworldScene.getLightManager().rewriteUBO();
+		scene.getLightManager().rewriteUBO();
 		GLContext.hideCursor();
 	}
 

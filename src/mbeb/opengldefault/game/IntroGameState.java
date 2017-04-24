@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 
+import mbeb.ld38.SharedData;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
@@ -53,7 +54,7 @@ public class IntroGameState implements GameState {
 
 	private Camera camera;
 
-	private SceneObject world, island;
+	private SceneObject world;
 
 	private ShaderProgram worldShader;
 	private ShaderProgram curveShader;
@@ -80,6 +81,15 @@ public class IntroGameState implements GameState {
 	private GameStateIdentifier nextGameState = null;
 
 	private boolean starting;
+
+	private SharedData shared;
+	private final BoneTransformation islandTransform = new BoneTransformation(new Vector3f(0.9999f, 0, 0), new Quaternionf(new AxisAngle4f(
+			(float) Math.PI / 2f,
+			new Vector3f(0, 0, -1))), new Vector3f(0.001f));
+
+	public IntroGameState(SharedData shared) {
+		this.shared = shared;
+	}
 
 	@Override
 	public void init() {
@@ -120,20 +130,14 @@ public class IntroGameState implements GameState {
 
 		final IRenderable worldRenderable = new ObjectLoader().loadFromFile("planet.obj");
 
-		final IRenderable islandRenderable =
-				new ObjectLoader().loadFromFile("overworld/island.obj").withMaterial(new Material("material/beach", 1));
 
 		world = new SceneObject(worldRenderable);
 		world.setShader(worldShader);
 
-		island = new SceneObject(islandRenderable);
-		island.setTransformation(new BoneTransformation(new Vector3f(0.9999f, 0, 0), new Quaternionf(new AxisAngle4f(
-				(float) Math.PI / 2f,
-				new Vector3f(0, 0, -1))), new Vector3f(0.001f)));
-		island.setShader(islandShader);
+		shared.overworld.getSceneObject().setShader(islandShader);
 
 		introScene.getSceneGraph().addSubObject(world);
-		introScene.getSceneGraph().addSubObject(island);
+		introScene.getSceneGraph().addSubObject(shared.overworld.getSceneObject());
 
 		SceneObject curveObj = new SceneObject(new BezierCurveRenderable(curve));
 		curveObj.setShader(curveShader);
@@ -144,7 +148,7 @@ public class IntroGameState implements GameState {
 		entities.add(camera).addBehaviour(0,
 				new CombinedBehaviour(
 						bezierBehaviour,
-						new LookAtBehaviour(island.asEntity())));
+						new LookAtBehaviour(new SceneObject(null, islandTransform).asEntity())));
 		GL11.glDisable(GL_CULL_FACE);
 
 		menuGUI = new AtlasGUI("menu.png", 4, 4);
@@ -243,6 +247,7 @@ public class IntroGameState implements GameState {
 
 	@Override
 	public void open() {
+		shared.overworld.getSceneObject().setTransformation(islandTransform);
 		starting = false;
 		GLContext.showCursor();
 		introScene.getLightManager().rewriteUBO();
