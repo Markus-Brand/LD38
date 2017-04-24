@@ -23,7 +23,7 @@ public class Goblin extends Monster {
 	ShaderProgram animationShader;
 
 	public Goblin(final PlayerEntity playerEntity, final ShaderProgram animationShader) {
-		super(0.6f, 35, 10, 2f, 5, 0.5f, 0.8f, 0.5f, 1f, playerEntity);
+		super(0.6f, 35, 10, 2f, 5, 0.8f, 0.3f, 0.8f, 1f, playerEntity);
 
 		mesh = new ObjectLoader().loadFromFileAnim("goblin.fbx");
 		mesh.setTransform(new Matrix4f().rotate(new AxisAngle4f((float) (Math.PI) / -2, 1, 0, 0)));
@@ -50,7 +50,7 @@ public class Goblin extends Monster {
 
 		parent.addSubObject(monsterObject);
 		final MonsterEntity monster = new MonsterEntity(radius, monsterObject, goblinAnimatedRenderable, healthpoints, visionRange, attackRange, attackDamage, attackPreperationTime, attackDuration,
-				attackCooldown, movingSpeed, healthBarGui);
+				attackCooldown, movingSpeed, healthBarGui, soundEnvironment);
 
 		monster.addBehaviour(2, new IBehaviour() {
 			@Override

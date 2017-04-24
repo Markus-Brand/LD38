@@ -3,6 +3,7 @@ package mbeb.lifeforms;
 import mbeb.ld38.*;
 import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.scene.*;
+import mbeb.opengldefault.sound.*;
 
 public class MonsterEntity extends LifeformEntity {
 
@@ -19,11 +20,10 @@ public class MonsterEntity extends LifeformEntity {
 
 	private final AnimationStateFacade animator;
 
-	public MonsterEntity(final float radius, final SceneObject monsterObject, final AnimationStateFacade animator,
-			final float healthpoints, final float visionRange, final float attackRange,
-			final float attackDamage, final float attackPreperationTime, final float attackDuration,
-			final float attackCooldown, final float movingSpeed, final HealthBarGUI healthGui) {
-		super(monsterObject, healthpoints, radius, healthGui);
+	public MonsterEntity(final float radius, final SceneObject monsterObject, final AnimationStateFacade animator, final float healthpoints, final float visionRange, final float attackRange,
+			final float attackDamage, final float attackPreperationTime, final float attackDuration, final float attackCooldown, final float movingSpeed, final HealthBarGUI healthGui,
+			final SoundEnvironment soundEnvironment) {
+		super(monsterObject, healthpoints, radius, healthGui, soundEnvironment);
 		this.visionRange = visionRange;
 		this.attackRange = attackRange;
 		this.attackDamage = attackDamage;
@@ -35,6 +35,31 @@ public class MonsterEntity extends LifeformEntity {
 		this.animator = animator;
 
 		setSword(new Sword(4, -0.4f, 2, LootType.Steel, SwordType.DAGGER_REVERSE));
+	}
+
+	@Override
+	public String getAttackSound() {
+		return "goblin_attack_small";
+	}
+
+	@Override
+	public String getHurtSound() {
+		return "goblin_damage";
+	}
+
+	@Override
+	public String getDieSound() {
+		return "goblin_die";
+	}
+
+	@Override
+	public void damage(final float damage) {
+		super.damage(damage);
+		if (healthpoints <= 0) {
+			DieSource.play();
+		} else {
+			HurtSource.play();
+		}
 	}
 
 	@Override

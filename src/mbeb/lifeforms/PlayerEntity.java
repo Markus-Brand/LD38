@@ -1,5 +1,7 @@
 package mbeb.lifeforms;
 
+import static org.lwjgl.glfw.GLFW.*;
+
 import org.joml.*;
 import org.lwjgl.glfw.*;
 
@@ -11,9 +13,6 @@ import mbeb.opengldefault.scene.*;
 import mbeb.opengldefault.scene.behaviour.*;
 import mbeb.opengldefault.scene.entities.*;
 import mbeb.opengldefault.sound.*;
-
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
 
 public class PlayerEntity extends LifeformEntity {
 
@@ -35,12 +34,9 @@ public class PlayerEntity extends LifeformEntity {
 	private Sound walkingSandSound;
 	private Sound walkingStoneSound;
 
-	public PlayerEntity(final float radius, final SceneObject sceneObject, final AnimationStateFacade animator,
-			final float healthpoints, final IHeightSource heightSource,
+	public PlayerEntity(final float radius, final SceneObject sceneObject, final AnimationStateFacade animator, final float healthpoints, final IHeightSource heightSource,
 			final HealthBarGUI healthGui, final SoundEnvironment soundEnvironment) {
-		super(sceneObject, healthpoints, radius, healthGui);
-		initSounds(soundEnvironment);
-		initSwordChangingSound(soundEnvironment);
+		super(sceneObject, healthpoints, radius, healthGui, soundEnvironment);
 		this.animator = animator;
 		heightWalk = new WalkOnHeightMapBehaviour(heightSource, playerSpeed);
 		addBehaviour(0, new CombinedBehaviour(new SamuraiPlayerBehaviour(), heightWalk));
@@ -52,25 +48,19 @@ public class PlayerEntity extends LifeformEntity {
 
 		setSword(inventory.getSelectedSword());
 
-		final SceneObject lampObject =
-				new SceneObject(Player.lampRenderable, new BoneTransformation(null, null, new Vector3f(0.3f)));
+		final SceneObject lampObject = new SceneObject(Player.lampRenderable, new BoneTransformation(null, null, new Vector3f(0.3f)));
 
 		final PointLight light = new PointLight(new Vector3f(1f, 0.5f, 0.2f), new Vector3f(), 15f);
-		lightEntity =
-				(PointLightEntity) light.asEntity().addBehaviour(0,
-						new ParentBehaviour(lampObject, new Vector3f(0, 2, 0)));
-		lampEntity =
-				(SceneEntity) lampObject.asNewEntity().addBehaviour(
-						0,
-						new BoneTrackingBehaviour(sceneObject, animator.getAnimatedRenderable(), "Hand.Left")
-								.fixedDirection());
-
+		lightEntity = (PointLightEntity) light.asEntity().addBehaviour(0, new ParentBehaviour(lampObject, new Vector3f(0, 2, 0)));
+		lampEntity = (SceneEntity) lampObject.asNewEntity().addBehaviour(0, new BoneTrackingBehaviour(sceneObject, animator.getAnimatedRenderable(), "Hand.Left").fixedDirection());
+		initSound(soundEnvironment);
 	}
 
-	private void initSounds(final SoundEnvironment soundEnvironment) {
-		final Sound sound = soundEnvironment.createSound("crafting");
+	@Override
+	protected void initSound(final SoundEnvironment soundEnvironment) {
+		final Sound craftingSound = soundEnvironment.createSound("crafting");
 		this.craftingSoundSource = soundEnvironment.createSoundSource(false, true);
-		craftingSoundSource.setSound(sound);
+		craftingSoundSource.setSound(craftingSound);
 		craftingSoundSource.asNewEntity().attachTo(this);
 
 		walkingSandSound = soundEnvironment.createSound("walking_sand");
@@ -78,13 +68,26 @@ public class PlayerEntity extends LifeformEntity {
 		this.walkingSoundSource = soundEnvironment.createSoundSource(true, true);
 		walkingSoundSource.setSound(walkingSandSound);
 		walkingSoundSource.asNewEntity().attachTo(this);
+
+		final Sound swordSound = soundEnvironment.createSound("change_sword");
+		this.swordChangeSoundSource = soundEnvironment.createSoundSource(false, true);
+		swordChangeSoundSource.setSound(swordSound);
+		swordChangeSoundSource.asNewEntity().attachTo(this);
 	}
 
-	private void initSwordChangingSound(final SoundEnvironment soundEnvironment) {
-		final Sound sound = soundEnvironment.createSound("change_sword");
-		this.swordChangeSoundSource = soundEnvironment.createSoundSource(false, true);
-		swordChangeSoundSource.setSound(sound);
-		swordChangeSoundSource.asNewEntity().attachTo(this);
+	@Override
+	public String getAttackSound() {
+		return "player_attack";
+	}
+
+	@Override
+	public String getHurtSound() {
+		return "player_damage";
+	}
+
+	@Override
+	public String getDieSound() {
+		return "player_die";
 	}
 
 	@Override
@@ -108,11 +111,11 @@ public class PlayerEntity extends LifeformEntity {
 		if (KeyBoard.isKeyDown(GLFW_KEY_W) || KeyBoard.isKeyDown(GLFW_KEY_S)) {
 			walkingSoundSource.play();
 		} else {
-			walkingSoundSource.stop();
+			walkingSoundSource.pause();
 		}
 	}
 
-	public void setStoneWalkingSound(boolean stoneNotSand) {
+	public void setStoneWalkingSound(final boolean stoneNotSand) {
 		if (stoneNotSand) {
 			walkingSoundSource.setSound(walkingStoneSound);
 		} else {

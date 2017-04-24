@@ -55,6 +55,7 @@ public class JumpingBehaviour extends ReferenceEntityBehaviour {
 				goblin.setPosition(startingPosition.lerp(playerPosition, progress, new Vector3f()));
 				goblin.getAnimator().ensureRunning("Jump", isActive, false);
 				goblin.getAnimator().ensureRunning("Jump", false, false);
+				goblin.AttackSource.play();
 			} else {
 				goblin.getAnimator().ensureRunning("Run", false, true);
 

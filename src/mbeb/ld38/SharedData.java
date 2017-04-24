@@ -12,7 +12,7 @@ public class SharedData {
 	public HealthBarGUI healthBarGUI;
 	public PlayerEntity playerEntity;
 	public OverWorld overworld;
-	public SoundEnvironment soundEnv;
+	public SoundEnvironment soundEnvironment;
 
 	public SharedData(HealthBarGUI healthBarGUI) {
 		this.healthBarGUI = healthBarGUI;
