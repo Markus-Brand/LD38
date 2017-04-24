@@ -13,7 +13,8 @@ import mbeb.opengldefault.scene.materials.*;
 
 public class Player extends Lifeform {
 
-	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1).rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
+	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1)
+			.rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
 
 	private final Material material;
 	private final AnimatedMesh mesh;
@@ -22,7 +23,8 @@ public class Player extends Lifeform {
 
 	private Sword sword;
 
-	public Player(final float healthpoints, final ShaderProgram animationShader, final HeightSource heightSource, final Sword sword) {
+	public Player(final float healthpoints, final ShaderProgram animationShader, final HeightSource heightSource,
+			final Sword sword) {
 		super(0.3f, healthpoints);
 		this.animationShader = animationShader;
 		material = new Material("material/samurai", 1);
@@ -51,7 +53,8 @@ public class Player extends Lifeform {
 		playerAnimatedRenderable.registerAnimation("Jogging", "Jogging", 32, 0.4f, 0.4f);
 		playerAnimatedRenderable.registerAnimation("Pierce", "Pierce", 32, 0.1f, 0.1f, 1.1f);
 
-		final SceneObject playerObject = new SceneObject(playerAnimatedRenderable, new BoneTransformation(new Vector3f(1, 10, 0)));
+		final SceneObject playerObject =
+				new SceneObject(playerAnimatedRenderable, new BoneTransformation(new Vector3f(1, 10, 0)));
 
 		playerObject.setShader(animationShader);
 
@@ -59,7 +62,8 @@ public class Player extends Lifeform {
 
 		final SwordEntity swordEntity = sword.spawnNew(parent, playerObject, playerAnimatedRenderable);
 
-		final PlayerEntity playerEntity = new PlayerEntity(1f, playerObject, playerAnimatedRenderable, healthpoints, heightSource, swordEntity);
+		final PlayerEntity playerEntity =
+				new PlayerEntity(1f, playerObject, playerAnimatedRenderable, healthpoints, heightSource, swordEntity);
 
 		return playerEntity;
 	}

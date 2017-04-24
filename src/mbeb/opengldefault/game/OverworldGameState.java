@@ -74,7 +74,8 @@ public class OverworldGameState implements GameState {
 		overworldScene.getLightManager().addShader(defaultShader);
 		overworldScene.getSceneGraph().setShader(defaultShader);
 
-		final SceneObject waterObject = new SceneObject(water, new BoneTransformation(new Vector3f(), new Quaternionf(), new Vector3f(100)));
+		final SceneObject waterObject =
+				new SceneObject(water, new BoneTransformation(new Vector3f(), new Quaternionf(), new Vector3f(100)));
 		waterObject.setShader(waterShader);
 
 		final ShaderProgram animationShader = new ShaderProgram("boneAnimation.vert", "basic.frag");
@@ -85,14 +86,18 @@ public class OverworldGameState implements GameState {
 		overworldScene.getSceneGraph().addSubObject(overworld.getSceneObject());
 		overworld.getSceneObject().addSubObject(waterObject);
 
-		player = new Player(100, animationShader, new HeightFromHeightMap(Texture.loadBufferedImage("overworldHeight.png"), new Rectangle(new Vector2f(-16), new Vector2f(32)), 2f, 1f),
-				new Sword(10, 1f, 1f));
+		player =
+				new Player(100, animationShader, new HeightFromHeightMap(
+						Texture.loadBufferedImage("overworldHeight.png"), new Rectangle(new Vector2f(-16),
+								new Vector2f(32)), 2f, 1f),
+						new Sword(10, 1f, 1f));
 
 		final PlayerEntity playerEntity = player.spawnNew(new Vector3f(0, 10, 1), 0, overworld.getSceneObject());
 		playerEntity.setSword(new Sword(20f, 1f, 1f));
 		world.add(playerEntity);
 
-		world.add(topDownViewCamera).addBehaviour(0, new TopDownViewBehaviour(playerEntity, 7, 2, 2)).setPosition(new Vector3f(3, 4, 5));
+		world.add(topDownViewCamera).addBehaviour(0, new TopDownViewBehaviour(playerEntity, 7, 2, 2))
+				.setPosition(new Vector3f(3, 4, 5));
 
 		final DirectionalLight sun = new DirectionalLight(Color.WHITE, new Vector3f(0.2f, -1, 0).normalize());
 		overworldScene.getLightManager().addLight(sun);
@@ -100,10 +105,10 @@ public class OverworldGameState implements GameState {
 		world.update(0.0001f);
 
 		final Goblin goblin = new Goblin(playerEntity, animationShader);
-		goblinEntity = goblin.spawnNew(new Vector3f(1, 3, 0), 0, overworld.getSceneObject());
-		//world.add(goblinEntity);
+		goblinEntity = goblin.spawnNew(new Vector3f(10, 3, 0), 0, overworld.getSceneObject());
+		world.add(goblinEntity);
 
-		//playerEntity.addTarsched(goblinEntity);
+		playerEntity.addTarsched(goblinEntity);
 	}
 
 	@Override
@@ -112,10 +117,10 @@ public class OverworldGameState implements GameState {
 		overworldScene.update(deltaTime);
 		world.update(deltaTime);
 
-		/*if (goblinEntity.isDead()) {
+		if (goblinEntity.isDead()) {
 			overworldScene.getSceneGraph().removeSubObject(goblinEntity.getSceneObject());
 			world.remove(goblinEntity);
-		}*/
+		}
 	}
 
 	@Override

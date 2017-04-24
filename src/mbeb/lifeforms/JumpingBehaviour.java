@@ -10,15 +10,14 @@ public class JumpingBehaviour extends ReferenceEntityBehaviour {
 	private static final String TAG = "JumpingBehaviour";
 
 	float attackDuration = -1;
-	double stoppingTime;
 	boolean isJumping;
 	Vector3f startingPosition;
 	Vector3f playerPosition;
 
+	float timePassed;
+
 	public JumpingBehaviour(final PlayerEntity playerEntity) {
 		super(playerEntity);
-		this.attackDuration = attackDuration;
-		this.stoppingTime = -1;
 		this.isJumping = false;
 	}
 
@@ -31,21 +30,33 @@ public class JumpingBehaviour extends ReferenceEntityBehaviour {
 		} catch(final ClassCastException e) {
 			Log.error(TAG, "Entity has to be a MonsterEntity to use " + TAG, e);
 		}
-		System.out.println("Jump!!!");
 		if (!isJumping) {
-			stoppingTime = deltaTime + attackDuration;
-			startingPosition = goblin.getPosition();
-			playerPosition = getReference().getPosition();
+			startingPosition = new Vector3f(goblin.getPosition());
+			playerPosition = new Vector3f(getReference().getPosition());
+			System.out.println(startingPosition);
+			System.out.println(playerPosition);
 			goblin.setDirection(playerPosition.sub(startingPosition, new Vector3f()));
 			isJumping = true;
+			timePassed = 0;
+		} else {
+			timePassed += deltaTime;
 		}
-		if (stoppingTime < deltaTime) {
+		if (attackDuration < timePassed) {
 			isJumping = false;
 		}
 		if (isJumping) {
-			goblin.setPosition(startingPosition.lerp(playerPosition, 1.0f - (float) (stoppingTime - deltaTime) / attackDuration, new Vector3f()));
+			float progress = 1.0f - (attackDuration - timePassed) / attackDuration;
+			goblin.setPosition(startingPosition.lerp(playerPosition, progress, new Vector3f()));
+			System.out.println(progress + " " + goblin.getPosition());
 		}
 
 		goblin.getAnimator().ensureRunning("Jump", isJumping, false);
+		goblin.getAnimator().ensureRunning("Jump", false, false);
+	}
+
+	@Override
+	public boolean triggers(IEntity entity) {
+		return isJumping
+				|| entity.getPosition().distance(getReference().getPosition()) < ((MonsterEntity) entity).attackRange;
 	}
 }
