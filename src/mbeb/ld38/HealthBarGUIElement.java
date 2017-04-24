@@ -71,7 +71,7 @@ public class HealthBarGUIElement extends AtlasGUIElement {
 	@Override
 	public void writeTo(GLBufferWriter writer) {
 		super.writeTo(writer);
-		writer.write(new Vector4f(color1, health)).write(new Vector4f(color2, shadowHealth)).write(new Vector4f(color3, 0));
+		writer.write(new Vector4f(color1, Math.min(health, shadowHealth))).write(new Vector4f(color2, Math.max(health, shadowHealth))).write(new Vector4f(color3, 0));
 		//writer.write(color1).write(health).write(color2).write(shadowHealth).write(color3).write(0f);
 	}
 }

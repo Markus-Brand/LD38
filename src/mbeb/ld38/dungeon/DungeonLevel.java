@@ -180,6 +180,7 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 													0.0f,
 													room,
 													chestEntity -> {
+														player.damage(-5);
 														final EnumMap<LootType, Integer> counts =
 																new EnumMap<>(LootType.class);
 														for (final LootType lootType : LootType.values()) {
