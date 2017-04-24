@@ -80,7 +80,7 @@ public class DungeonGameState implements GameState {
 		infoBox.setPositionRelativeToScreen(new Vector2f(0.01f, 0.01f));
 		infoBox.setColor(Color.WHITE);
 
-		level = new DungeonLevel(scene.getLightManager(), goblin, shared.healthBarGUI, camera, chest, infoBox, scene.getSoundEnvironment());
+		level = new DungeonLevel(scene.getLightManager(), goblin, shared.healthBarGUI, camera, chest, infoBox, shared.soundEnvironment);
 		level.setEnemySpawns(0.2f, 0.2f, 0.2f, 0.2f, 0.2f);
 		level.generate(size, size);
 		level.setFinishListener(dungeonLevel -> {
@@ -118,6 +118,7 @@ public class DungeonGameState implements GameState {
 
 	@Override
 	public void update(final double deltaTime) {
+		shared.soundEnvironment.makeCurrent();
 		if (KeyBoard.pullKeyDown(GLFW_KEY_T)) {
 			if (this.level.getActiveRoom() != null) {
 				if (this.level.getActiveRoom().isOpen()) {
@@ -166,9 +167,10 @@ public class DungeonGameState implements GameState {
 
 	@Override
 	public void open() {
+		shared.soundEnvironment.makeCurrent();
 		if (this.exitDungeon) {
 			this.level.removeSelf();
-			this.level = new DungeonLevel(scene.getLightManager(), goblin, shared.healthBarGUI, camera, chest, infoBox, scene.getSoundEnvironment());
+			this.level = new DungeonLevel(scene.getLightManager(), goblin, shared.healthBarGUI, camera, chest, infoBox, shared.soundEnvironment);
 			this.level.generate(size, size);
 			this.scene.getSceneGraph().addSubObject(this.level);
 			level.setFinishListener(dungeonLevel -> {
@@ -185,6 +187,5 @@ public class DungeonGameState implements GameState {
 		this.level.setPlayer(this.shared.playerEntity);
 		GLContext.hideCursor();
 		scene.getLightManager().rewriteUBO();
-		shared.soundEnvironment.makeCurrent();
 	}
 }

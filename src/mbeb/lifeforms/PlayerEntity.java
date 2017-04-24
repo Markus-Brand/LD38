@@ -31,9 +31,12 @@ public class PlayerEntity extends LifeformEntity {
 
 	public SoundSource craftingSoundSource;
 	public SoundSource swordChangeSoundSource;
+
 	public SoundSource walkingSoundSource;
+	public SoundSource walkingSoundSourceStone;
 	private Sound walkingSandSound;
 	private Sound walkingStoneSound;
+	private boolean stoneWalk = false;
 
 	public PlayerEntity(final float radius, final SceneObject sceneObject, final AnimationStateFacade animator, final float healthpoints, final IHeightSource heightSource,
 			final HealthBarGUI healthGui, final SoundEnvironment soundEnvironment) {
@@ -67,8 +70,11 @@ public class PlayerEntity extends LifeformEntity {
 		walkingSandSound = soundEnvironment.createSound("walking_sand");
 		walkingStoneSound = soundEnvironment.createSound("walking_stone");
 		this.walkingSoundSource = soundEnvironment.createSoundSource(true, true);
+		this.walkingSoundSourceStone = soundEnvironment.createSoundSource(true, true);
 		walkingSoundSource.setSound(walkingSandSound);
+		walkingSoundSourceStone.setSound(walkingStoneSound);
 		walkingSoundSource.asNewEntity().attachTo(this);
+		walkingSoundSourceStone.asNewEntity().attachTo(this);
 
 		final Sound swordSound = soundEnvironment.createSound("change_sword");
 		this.swordChangeSoundSource = soundEnvironment.createSoundSource(false, true);
@@ -110,18 +116,24 @@ public class PlayerEntity extends LifeformEntity {
 		}
 
 		if (KeyBoard.isKeyDown(GLFW_KEY_W) || KeyBoard.isKeyDown(GLFW_KEY_S)) {
-			walkingSoundSource.play();
+			if (stoneWalk) {
+				walkingSoundSourceStone.play();
+			} else {
+				walkingSoundSource.play();
+			}
 		} else {
-			walkingSoundSource.pause();
+			if (stoneWalk) {
+				walkingSoundSourceStone.pause();
+			} else {
+				walkingSoundSource.pause();
+			}
 		}
 	}
 
 	public void setStoneWalkingSound(final boolean stoneNotSand) {
-		if (stoneNotSand) {
-			walkingSoundSource.setSound(walkingStoneSound);
-		} else {
-			walkingSoundSource.setSound(walkingSandSound);
-		}
+		this.stoneWalk = stoneNotSand;
+		walkingSoundSource.stop();
+		walkingSoundSourceStone.stop();
 	}
 
 	public void startStroke() {

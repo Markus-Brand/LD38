@@ -121,7 +121,7 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 		float level = (float)Math.sqrt(total);
 
 		for (int typeNumber = 0; typeNumber < LootType.values().length; typeNumber++) {
-			float targetAmount = level - typeNumber;
+			float targetAmount = level - typeNumber + 1;
 			if (targetAmount > 0) {
 				float[] data = new float[(int)(targetAmount + 0.5f)];
 				for (int i = 0; i < data.length; i++) {
