@@ -14,7 +14,9 @@ public class SamuraiPlayerBehaviour implements IBehaviour {
 
 		player.getAnimator().ensureRunning("Idle");
 		player.getAnimator().ensureRunning("Jogging", KeyBoard.isKeyDown(GLFW.GLFW_KEY_W));
-		player.getAnimator().ensureRunning("Pierce", KeyBoard.isKeyDown(GLFW.GLFW_KEY_Q), false);
+		if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_Q)) {
+			player.startStroke();
+		}
 
 	}
 

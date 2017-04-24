@@ -6,4 +6,6 @@ public interface Shape {
 	public boolean contains(Vector2f point);
 
 	public boolean intersectsShape(Shape other);
+
+	public void setPosition(Vector2f position);
 }

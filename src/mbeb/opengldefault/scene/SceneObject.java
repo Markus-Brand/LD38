@@ -109,6 +109,9 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 		box = null;
 	}
 
+	public SceneObject getParent() {
+		return parent;
+	}
 
 	public void setVisible(boolean visible) {
 		this.visible = visible;
@@ -143,6 +146,10 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 
 	public void setTransformation(BoneTransformation transformation) {
 		this.transformation = transformation;
+	}
+
+	public void removeSelf() {
+		parent.removeSubObject(this);
 	}
 
 	/**
@@ -344,7 +351,11 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 	}
 
 	public void removeSubObject(SceneObject curveObj) {
-		subObjects.remove(curveObj);
+		if (!subObjects.remove(curveObj)) {
+			for (SceneObject sceneObject : subObjects) {
+				sceneObject.removeSubObject(curveObj);
+			}
+		}
 	}
 
 	@Override

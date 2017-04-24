@@ -73,4 +73,9 @@ public class Circle implements Shape {
 		return other.intersectsShape(this);
 	}
 
+	@Override
+	public void setPosition(Vector2f position) {
+		this.position = position;
+	}
+
 }
