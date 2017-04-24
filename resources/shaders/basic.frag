@@ -12,7 +12,7 @@ out vec4 color;
 #include modules/Struct_PointLight.glsl
 #include modules/Struct_SpotLight.glsl
 
-float ambientStrength = 0.05;
+float ambientStrength = 0.02;
 float specularStrength = 1.0;
 
 #include modules/DirectionalLightBlock.glsl
