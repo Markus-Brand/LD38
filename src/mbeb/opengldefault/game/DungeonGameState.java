@@ -13,7 +13,6 @@ import org.joml.Vector3f;
 import mbeb.ld38.dungeon.DungeonLevel;
 import mbeb.ld38.dungeon.room.RoomType;
 import mbeb.lifeforms.Player;
-import mbeb.opengldefault.animation.AnimationStateFacade;
 import mbeb.opengldefault.camera.Camera;
 import mbeb.opengldefault.camera.PerspectiveCamera;
 import mbeb.opengldefault.controls.KeyBoard;

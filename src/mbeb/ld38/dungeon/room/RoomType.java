@@ -113,7 +113,7 @@ public class RoomType {
 	private static void addDoor(RoomType type, Door door, IRenderable wall_segment) {
 		float rect = (float)Math.PI / 2;
 
-		type.addLight(new Vector3f(0, 1.9f, 0),new Color(12, 255, 0), 20f);
+		//type.addLight(new Vector3f(0, 1.9f, 0),new Color(12, 255, 0), 20f);
 
 		type.addSlot("right",
 				new BoneTransformation(new Vector3f(4, 0, 0), new Quaternionf(new AxisAngle4f(2 * rect, 0, 1, 0)))
