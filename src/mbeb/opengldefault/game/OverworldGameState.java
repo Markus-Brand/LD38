@@ -4,18 +4,16 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.awt.*;
 
-import mbeb.ld38.SharedData;
-import mbeb.opengldefault.gl.GLContext;
-import org.joml.Quaternionf;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
+import org.joml.*;
+import org.lwjgl.glfw.*;
 
+import mbeb.ld38.*;
 import mbeb.ld38.overworld.*;
 import mbeb.lifeforms.*;
 import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.camera.*;
 import mbeb.opengldefault.controls.*;
+import mbeb.opengldefault.gl.*;
 import mbeb.opengldefault.gl.shader.*;
 import mbeb.opengldefault.gl.texture.*;
 import mbeb.opengldefault.light.*;
@@ -29,9 +27,9 @@ import mbeb.opengldefault.shapes.Rectangle;
 
 public class OverworldGameState implements GameState {
 
-	private Vector3f port = new Vector3f(0.41f, 2.509f, -7.46f);
-	private Vector3f key = new Vector3f(-2.27f, 2.74f, -7.44f);
-	private float threshold = 0.75f;
+	private final Vector3f port = new Vector3f(0.41f, 2.509f, -7.46f);
+	private final Vector3f key = new Vector3f(-2.27f, 2.74f, -7.44f);
+	private final float threshold = 0.75f;
 	private boolean leftForDungeon = false;
 
 	private Scene overworldScene;
@@ -49,9 +47,9 @@ public class OverworldGameState implements GameState {
 	private ShaderProgram defaultShader;
 
 	private final Player player;
-	private IHeightSource playerHeight;
+	private final IHeightSource playerHeight;
 
-	private SharedData shared;
+	private final SharedData shared;
 
 	MonsterEntity goblinEntity;
 
@@ -59,12 +57,10 @@ public class OverworldGameState implements GameState {
 	@ButtonOption
 	public static boolean showBBs = true;
 
-	public OverworldGameState(SharedData shared) {
+	public OverworldGameState(final SharedData shared) {
 		this.shared = shared;
 		player = new Player(100, null, null);
-		playerHeight = new HeightFromHeightMap(
-				Texture.loadBufferedImage("overworldHeight.png"), new Rectangle(new Vector2f(-16),
-				new Vector2f(32)), 2f, 1f);
+		playerHeight = new HeightFromHeightMap(Texture.loadBufferedImage("overworldHeight.png"), new Rectangle(new Vector2f(-16), new Vector2f(32)), 2f, 1f);
 	}
 
 	@Override
@@ -89,8 +85,7 @@ public class OverworldGameState implements GameState {
 		overworldScene.getLightManager().addShader(defaultShader);
 		overworldScene.getSceneGraph().setShader(defaultShader);
 
-		final SceneObject waterObject =
-				new SceneObject(water, new BoneTransformation(new Vector3f(), new Quaternionf(), new Vector3f(100)));
+		final SceneObject waterObject = new SceneObject(water, new BoneTransformation(new Vector3f(), new Quaternionf(), new Vector3f(100)));
 		waterObject.setShader(waterShader);
 
 		final ShaderProgram animationShader = new ShaderProgram("boneAnimation.vert", "basic.frag");
@@ -108,8 +103,7 @@ public class OverworldGameState implements GameState {
 
 		shared.playerEntity.setHeightSource(playerHeight);
 
-		world.add(topDownViewCamera).addBehaviour(0, new TopDownViewBehaviour(shared.playerEntity, 7, 2, 2))
-				.setPosition(new Vector3f(3, 4, 5));
+		world.add(topDownViewCamera).addBehaviour(0, new TopDownViewBehaviour(shared.playerEntity, 7, 2, 2)).setPosition(new Vector3f(3, 4, 5));
 
 		final DirectionalLight sun = new DirectionalLight(Color.WHITE, new Vector3f(0.2f, -1, 0).normalize());
 		overworldScene.getLightManager().addLight(sun);
@@ -122,6 +116,8 @@ public class OverworldGameState implements GameState {
 
 		goblinEntity.showHealthBar(topDownViewCamera);
 		shared.playerEntity.showHealthBar(null);
+
+		goblinEntity.addTarsched(shared.playerEntity);
 	}
 
 	@Override

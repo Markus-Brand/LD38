@@ -1,39 +1,32 @@
 package mbeb.lifeforms;
 
-import java.awt.Color;
+import java.awt.*;
+import java.lang.Math;
 
-import mbeb.ld38.HealthBarGUI;
-import mbeb.opengldefault.animation.AnimatedMesh;
-import mbeb.opengldefault.animation.AnimationStateFacade;
-import mbeb.opengldefault.animation.BoneTransformation;
-import mbeb.opengldefault.gl.shader.ShaderProgram;
-import mbeb.opengldefault.rendering.io.ObjectLoader;
-import mbeb.opengldefault.scene.SceneObject;
-import mbeb.opengldefault.scene.behaviour.FollowingBehaviour;
-import mbeb.opengldefault.scene.behaviour.IBehaviour;
-import mbeb.opengldefault.scene.entities.IEntity;
-import mbeb.opengldefault.scene.materials.ColorMaterial;
-import mbeb.opengldefault.scene.materials.Material;
+import org.joml.*;
 
-import org.joml.AxisAngle4f;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
+import mbeb.ld38.*;
+import mbeb.opengldefault.animation.*;
+import mbeb.opengldefault.gl.shader.*;
+import mbeb.opengldefault.rendering.io.*;
+import mbeb.opengldefault.scene.*;
+import mbeb.opengldefault.scene.behaviour.*;
+import mbeb.opengldefault.scene.entities.*;
+import mbeb.opengldefault.scene.materials.*;
 
 public class Goblin extends Monster {
 
-	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1)
-			.rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
+	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1).rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
 
 	Material material;
 	AnimatedMesh mesh;
 	ShaderProgram animationShader;
 
 	public Goblin(final PlayerEntity playerEntity, final ShaderProgram animationShader) {
-		super(2, 100, 10, 2f, 5, 0.8f, 1f, playerEntity);
+		super(2, 100, 10, 2f, 5, 0.5f, 0.8f, 0.5f, 1f, playerEntity);
 
 		mesh = new ObjectLoader().loadFromFileAnim("goblin.fbx");
-		mesh.setTransform(new Matrix4f().rotate(new AxisAngle4f((float)(Math.PI) / -2, 1, 0, 0)));
+		mesh.setTransform(new Matrix4f().rotate(new AxisAngle4f((float) (Math.PI) / -2, 1, 0, 0)));
 		mesh.getSkeleton().printRecursive("");
 		material = new ColorMaterial(Color.ORANGE);
 
@@ -49,18 +42,13 @@ public class Goblin extends Monster {
 		goblinAnimatedRenderable.registerAnimation("Run", "Run", 32, 0.4f, 0.4f);
 		goblinAnimatedRenderable.registerAnimation("Jump", "Jump", 32, 0.1f, 0.1f, 1.1f);
 
-		final SceneObject monsterObject =
-				new SceneObject(goblinAnimatedRenderable, new BoneTransformation(position, new Quaternionf(
-						new AxisAngle4f(angle, new Vector3f(0, 1, 0)))));
+		final SceneObject monsterObject = new SceneObject(goblinAnimatedRenderable, new BoneTransformation(position, new Quaternionf(new AxisAngle4f(angle, new Vector3f(0, 1, 0)))));
 
 		monsterObject.setShader(animationShader);
 
 		parent.addSubObject(monsterObject);
-		MonsterEntity monster =
-				new MonsterEntity(radius, monsterObject, goblinAnimatedRenderable, healthpoints, visionRange,
-						attackRange, attackDamage, attackDuration, movingSpeed, healthBarGui);
-
-		System.out.println("DUR" + monster.attackDuration);
+		final MonsterEntity monster = new MonsterEntity(radius, monsterObject, goblinAnimatedRenderable, healthpoints, visionRange, attackRange, attackDamage, attackPreperationTime, attackDuration,
+				attackCooldown, movingSpeed, healthBarGui);
 
 		monster.addBehaviour(2, new IBehaviour() {
 			@Override
@@ -76,7 +64,7 @@ public class Goblin extends Monster {
 				super.update(deltaTime, entity);
 				final MonsterEntity goblin = (MonsterEntity) entity;
 
-				goblin.getAnimator().ensureRunning("Run");
+				goblin.getAnimator().ensureRunning("Run", true, true);
 			}
 		}.limited(monster.getVisionRange()));
 

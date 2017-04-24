@@ -1,38 +1,32 @@
 package mbeb.lifeforms;
 
-import mbeb.ld38.HealthBarGUI;
-import mbeb.ld38.dungeon.DungeonLevel;
-import mbeb.opengldefault.animation.AnimationStateFacade;
-import mbeb.opengldefault.controls.KeyBoard;
-import mbeb.opengldefault.scene.*;
-import mbeb.opengldefault.scene.behaviour.CombinedBehaviour;
-import mbeb.opengldefault.scene.behaviour.IHeightSource;
-import mbeb.opengldefault.scene.behaviour.SamuraiPlayerBehaviour;
-import mbeb.opengldefault.scene.behaviour.WalkOnHeightMapBehaviour;
+import org.joml.*;
+import org.lwjgl.glfw.*;
 
-import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
+import mbeb.ld38.*;
+import mbeb.opengldefault.animation.*;
+import mbeb.opengldefault.controls.*;
+import mbeb.opengldefault.scene.*;
+import mbeb.opengldefault.scene.behaviour.*;
 
 public class PlayerEntity extends LifeformEntity {
 
-	private AnimationStateFacade animator;
+	private final AnimationStateFacade animator;
 
 	private SwordEntity swordEntity;
 
-	private float playerSpeed = 4f;
+	private final float playerSpeed = 4f;
 
-	private Inventory inventory;
+	private final Inventory inventory;
 
 	private final WalkOnHeightMapBehaviour heightWalk;
 
-	public PlayerEntity(float radius, final SceneObject sceneObject, AnimationStateFacade animator,
-						final float healthpoints, IHeightSource heightSource, final HealthBarGUI healthGui) {
+	public PlayerEntity(final float radius, final SceneObject sceneObject, final AnimationStateFacade animator, final float healthpoints, final IHeightSource heightSource,
+			final HealthBarGUI healthGui) {
 		super(sceneObject, healthpoints, radius, healthGui);
 		this.animator = animator;
 		heightWalk = new WalkOnHeightMapBehaviour(heightSource, playerSpeed);
-		addBehaviour(0, new CombinedBehaviour(
-				new SamuraiPlayerBehaviour(),
-				heightWalk));
+		addBehaviour(0, new CombinedBehaviour(new SamuraiPlayerBehaviour(), heightWalk));
 		setHealthBarOffset(new Vector3f(0, 2, 0));
 		inventory = new Inventory();
 
@@ -48,7 +42,7 @@ public class PlayerEntity extends LifeformEntity {
 	}
 
 	@Override
-	public void update(double deltaTime) {
+	public void update(final double deltaTime) {
 		super.update(deltaTime);
 		swordEntity.update(deltaTime);
 
@@ -72,13 +66,13 @@ public class PlayerEntity extends LifeformEntity {
 		return animator;
 	}
 
-	public void setSword(Sword sword) {
+	public void setSword(final Sword sword) {
 		setSwordEntity(sword.spawnNew(getSceneObject().getParent(), getSceneObject(), animator));
 	}
 
-	public void setSwordEntity(SwordEntity swordEntity) {
+	public void setSwordEntity(final SwordEntity swordEntity) {
 		if (this.swordEntity != null) {
-			for (LifeformEntity tarsched : this.swordEntity.getTarscheds().keySet()) {
+			for (final LifeformEntity tarsched : this.swordEntity.getTarscheds().keySet()) {
 				swordEntity.addTarsched(tarsched);
 			}
 			this.swordEntity.getSceneObject().removeSelf();
@@ -90,11 +84,11 @@ public class PlayerEntity extends LifeformEntity {
 		return swordEntity;
 	}
 
-	public void addTarsched(LifeformEntity tarsched) {
+	public void addTarsched(final LifeformEntity tarsched) {
 		swordEntity.addTarsched(tarsched);
 	}
 
-	public void setHeightSource(IHeightSource heightSource) {
+	public void setHeightSource(final IHeightSource heightSource) {
 		heightWalk.setHeightSource(heightSource);
 	}
 }

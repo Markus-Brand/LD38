@@ -9,8 +9,10 @@ import mbeb.opengldefault.scene.entities.*;
 public class JumpingBehaviour extends ReferenceEntityBehaviour {
 	private static final String TAG = "JumpingBehaviour";
 
+	float attackPreperationTime = -1;
 	float attackDuration = -1;
-	boolean isJumping;
+	float attackCooldown = -1;
+	boolean isActive;
 	Vector3f startingPosition;
 	Vector3f playerPosition;
 
@@ -18,7 +20,7 @@ public class JumpingBehaviour extends ReferenceEntityBehaviour {
 
 	public JumpingBehaviour(final PlayerEntity playerEntity) {
 		super(playerEntity);
-		this.isJumping = false;
+		this.isActive = false;
 	}
 
 	@Override
@@ -26,37 +28,46 @@ public class JumpingBehaviour extends ReferenceEntityBehaviour {
 		MonsterEntity goblin = null;
 		try {
 			goblin = (MonsterEntity) entity;
+			attackPreperationTime = goblin.attackPreperationTime;
 			attackDuration = goblin.attackDuration;
+			attackCooldown = goblin.attackCooldown;
 		} catch(final ClassCastException e) {
 			Log.error(TAG, "Entity has to be a MonsterEntity to use " + TAG, e);
 		}
-		if (!isJumping) {
+		if (!isActive) {
 			startingPosition = new Vector3f(goblin.getPosition());
 			playerPosition = new Vector3f(getReference().getPosition());
 			System.out.println(startingPosition);
 			System.out.println(playerPosition);
 			goblin.setDirection(playerPosition.sub(startingPosition, new Vector3f()));
-			isJumping = true;
+			isActive = true;
 			timePassed = 0;
 		} else {
 			timePassed += deltaTime;
 		}
-		if (attackDuration < timePassed) {
-			isJumping = false;
+		if (timePassed > attackPreperationTime + attackDuration + attackCooldown) {
+			isActive = false;
 		}
-		if (isJumping) {
-			float progress = 1.0f - (attackDuration - timePassed) / attackDuration;
-			goblin.setPosition(startingPosition.lerp(playerPosition, progress, new Vector3f()));
-			System.out.println(progress + " " + goblin.getPosition());
-		}
+		if (isActive) {
+			if (timePassed < attackPreperationTime) {
+				goblin.getAnimator().ensureRunning("Run", false, true);
 
-		goblin.getAnimator().ensureRunning("Jump", isJumping, false);
-		goblin.getAnimator().ensureRunning("Jump", false, false);
+			} else if (timePassed < attackPreperationTime + attackDuration) {
+				final float progress = 1.0f - (attackPreperationTime + attackDuration - timePassed) / attackDuration;
+				goblin.setPosition(startingPosition.lerp(playerPosition, progress, new Vector3f()));
+				System.out.println(progress + " " + goblin.getPosition());
+				goblin.getAnimator().ensureRunning("Jump", isActive, false);
+				goblin.getAnimator().ensureRunning("Jump", false, false);
+			} else {
+				goblin.getAnimator().ensureRunning("Run", false, true);
+
+			}
+			goblin.startStroke();
+		}
 	}
 
 	@Override
-	public boolean triggers(IEntity entity) {
-		return isJumping
-				|| entity.getPosition().distance(getReference().getPosition()) < ((MonsterEntity) entity).attackRange;
+	public boolean triggers(final IEntity entity) {
+		return isActive || entity.getPosition().distance(getReference().getPosition()) < ((MonsterEntity) entity).attackRange;
 	}
 }

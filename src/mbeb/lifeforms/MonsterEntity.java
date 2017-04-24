@@ -1,6 +1,6 @@
 package mbeb.lifeforms;
 
-import mbeb.ld38.HealthBarGUI;
+import mbeb.ld38.*;
 import mbeb.opengldefault.animation.*;
 import mbeb.opengldefault.scene.*;
 
@@ -10,22 +10,35 @@ public class MonsterEntity extends LifeformEntity {
 	float visionRange;
 	float attackRange;
 	float attackDamage;
+	float attackPreperationTime;
 	float attackDuration;
+	float attackCooldown;
 	float movingSpeed;
+
+	private SwordEntity swordEntity;
 
 	private final AnimationStateFacade animator;
 
-	public MonsterEntity(final float radius, final SceneObject monsterObject, final AnimationStateFacade animator,
-						 final float healthpoints, final float visionRange, final float attackRange,
-						 final float attackDamage, final float attackDuration, final float movingSpeed, HealthBarGUI healthGui) {
+	public MonsterEntity(final float radius, final SceneObject monsterObject, final AnimationStateFacade animator, final float healthpoints, final float visionRange, final float attackRange,
+			final float attackDamage, final float attackPreperationTime, final float attackDuration, final float attackCooldown, final float movingSpeed, final HealthBarGUI healthGui) {
 		super(monsterObject, healthpoints, radius, healthGui);
 		this.visionRange = visionRange;
 		this.attackRange = attackRange;
 		this.attackDamage = attackDamage;
+		this.attackPreperationTime = attackPreperationTime;
 		this.attackDuration = attackDuration;
+		this.attackCooldown = attackCooldown;
 		this.movingSpeed = movingSpeed;
 
 		this.animator = animator;
+
+		setSword(new Sword(10, 1, 6, LootType.Steel));
+	}
+
+	@Override
+	public void update(final double deltaTime) {
+		super.update(deltaTime);
+		swordEntity.update(deltaTime);
 	}
 
 	public float getVisionRange() {
@@ -62,5 +75,36 @@ public class MonsterEntity extends LifeformEntity {
 
 	public AnimationStateFacade getAnimator() {
 		return animator;
+	}
+
+	public void setSword(final Sword sword) {
+		setSwordEntity(sword.spawnNew(getSceneObject().getParent(), getSceneObject(), animator));
+	}
+
+	public void setSwordEntity(final SwordEntity swordEntity) {
+		if (this.swordEntity != null) {
+			for (final LifeformEntity tarsched : this.swordEntity.getTarscheds().keySet()) {
+				swordEntity.addTarsched(tarsched);
+			}
+			this.swordEntity.getSceneObject().removeSelf();
+		}
+		this.swordEntity = swordEntity;
+	}
+
+	public SwordEntity getSword() {
+		return swordEntity;
+	}
+
+	public void startStroke() {
+		if (!swordEntity.isStriking()) {
+			swordEntity.startStriking();
+			//			getAnimator().setDuration("Pierce", swordEntity.getStrokeTime());
+			//			getAnimator().ensureRunning("Pierce", true, false);
+			//			getAnimator().ensureRunning("Pierce", false, false);
+		}
+	}
+
+	public void addTarsched(final LifeformEntity tarsched) {
+		swordEntity.addTarsched(tarsched);
 	}
 }
