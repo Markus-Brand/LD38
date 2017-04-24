@@ -33,6 +33,8 @@ public class OverWorld {
 		}
 	};
 
+	private Vector3f anvilPos = new Vector3f(9.27f, 0.993f, -4.43f);
+
 	private EntityWorld environment = new EntityWorld();
 	private List<PalmTree> palms = new ArrayList<>();
 	DungeonEntrance entrance;
@@ -46,12 +48,16 @@ public class OverWorld {
 	private void init() {
 		parent = new SceneObject();
 		Material landMaterial = new Material("material/beach", 1);
+		Material anvilMaterial = new Material("material/metal", "jpg", 2);
 
 		ObjectLoader loader = new ObjectLoader();
 		IRenderable island = loader.loadFromFile("overworld/island.obj").withMaterial(landMaterial);
+		IRenderable anvil = loader.loadFromFile("overworld/anvil.obj").withMaterial(anvilMaterial);
 
 		parent.addSubObject(new SceneObject(island, new BoneTransformation(new Vector3f(), new Quaternionf(),
 				new Vector3f(1, 1, -1))));
+
+		parent.addSubObject(new SceneObject(anvil, new BoneTransformation(anvilPos)));
 
 		entrance = new DungeonEntrance(new BoneTransformation(new Vector3f(-2.74f, 0.65f, -7.43f)));
 		entrance.addTo(parent);
@@ -72,7 +78,6 @@ public class OverWorld {
 			palms.add(currentPalm);
 			number++;
 		}
-
 
 	}
 
