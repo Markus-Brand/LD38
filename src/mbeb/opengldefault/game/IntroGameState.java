@@ -79,7 +79,7 @@ public class IntroGameState implements GameState {
 
 	private TextGUIElement fps, buttonGame;
 
-	private GUIElement buttonExit, buttonOptions;
+	private GUIElement buttonExit;
 
 	private GameStateIdentifier nextGameState = null;
 
@@ -169,8 +169,7 @@ public class IntroGameState implements GameState {
 
 		buttonGame =
 				(TextGUIElement) textGUI.addText("Start Game", new Vector2f(), 0.2f).setPositionRelativeToScreen(0.5f,
-						0.4f);
-		buttonOptions = textGUI.addText("Options", new Vector2f(), 0.2f).setPositionRelativeToScreen(0.5f, 0.6f);
+						0.2f);
 
 		buttonExit =
 				menuGUI.addAtlasGUIElement(0, new Vector2f(), new Vector2f(0.1f, GLContext.getAspectRatio() * 0.1f))
@@ -198,33 +197,23 @@ public class IntroGameState implements GameState {
 			}
 
 			if (buttonGame.selected()) {
-				buttonGame.setColor(Color.RED);
+				buttonGame.setColor(new Color(130, 130, 220));
 				if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
 					starting = true;
 					clickSound.play();
 				}
 			} else {
-				buttonGame.setColor(Color.GREEN);
-			}
-
-			if (buttonOptions.selected()) {
-				buttonOptions.setColor(Color.RED);
-				if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
-					nextGameState = GameStateIdentifier.OPTIONS;
-					clickSound.play();
-				}
-			} else {
-				buttonOptions.setColor(Color.GREEN);
+				buttonGame.setColor(Color.LIGHT_GRAY);
 			}
 
 			if (buttonExit.selected()) {
-				buttonExit.setColor(Color.RED);
+				buttonExit.setColor(new Color(130, 130, 220));
 				if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
 					nextGameState = GameStateIdentifier.EXIT;
 					clickSound.play();
 				}
 			} else {
-				buttonExit.setColor(Color.GREEN);
+				buttonExit.setColor(Color.LIGHT_GRAY);
 			}
 		}
 		camera.update(deltaTime);
