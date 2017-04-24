@@ -94,14 +94,17 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 	private final Chest chest;
 	private final HealthBarGUI gui;
 	private final Camera camera;
+	private final SoundEnvironment soundEnvironment;
 	private final EnumMap<LootType, Table> lootSpawns;
+	private Consumer<DungeonLevel> finishListener;
 
-	public DungeonLevel(final LightManager manager, final Goblin enemy, final HealthBarGUI gui, final Camera camera, final Chest chest, final TextGUIElement infoBox) {
+	public DungeonLevel(final LightManager manager, final Goblin enemy, final HealthBarGUI gui, final Camera camera, final Chest chest, final TextGUIElement infoBox, final SoundEnvironment soundEnvironment) {
 
 		super();
 		this.manager = manager;
 		this.enemy = enemy;
 		this.gui = gui;
+		this.soundEnvironment = soundEnvironment;
 		this.camera = camera;
 		this.chest = chest;
 		this.lootSpawns = new EnumMap<>(LootType.class);
@@ -112,7 +115,7 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 		this.enemySpawns = new Table(0.25f, 0.5f, 0.25f);
 	}
 
-	public void generate(final int width, final int height, final SoundEnvironment soundEnvironment) {
+	public void generate(final int width, final int height) {
 		rooms = new HashMap<>();
 		final MazeGrid grid = MazeBuilder.make4Maze(width, height, 0.11f);
 		this.addSubObject(new SceneObject(RoomType.getCORNER(), new BoneTransformation(null, new Quaternionf(new AxisAngle4f((float) Math.PI / -2, 0, 1, 0)))));
@@ -354,6 +357,14 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 		player.setPosition(new Vector3f(9 * x, 1, 9 * y));
 	}
 
+	public Consumer<DungeonLevel> getFinishListener() {
+		return finishListener;
+	}
+
+	public void setFinishListener(Consumer<DungeonLevel> finishListener) {
+		this.finishListener = finishListener;
+	}
+
 	@Override
 	public void update(final double deltaTime) {
 		super.update(deltaTime);
@@ -371,6 +382,15 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 				this.activeRoom = current;
 				if (this.activeRoom != null) {
 					this.activeRoom.onEntry();
+				}
+			}
+			if (this.activeRoom == this.exit) {
+				float rx = this.getPlayer().getPosition().x() - (this.activeRoom.getPosition().getX() * 9);
+				float ry = this.getPlayer().getPosition().z() - (this.activeRoom.getPosition().getY() * 9);
+				if (((rx * rx) + (ry * ry)) < 2.0f){
+					if(this.finishListener != null){
+						this.finishListener.accept(this);
+					}
 				}
 			}
 		}

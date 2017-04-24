@@ -35,8 +35,12 @@ public class DungeonGameState implements GameState {
 	private DungeonLevel level;
 	private EntityWorld world;
 	private Goblin goblin;
+	private Camera camera;
+	private Chest chest;
 	private TextGUI infoGUI;
 	private TextGUIElement infoBox;
+	private boolean exitDungeon = false;
+	private int size = 2;
 
 	private final SharedData shared;
 
@@ -46,7 +50,7 @@ public class DungeonGameState implements GameState {
 
 	@Override
 	public void init() {
-		final Camera camera = new PerspectiveCamera();
+		camera = new PerspectiveCamera();
 		final Skybox skybox = new Skybox("darkbox/db");
 
 		scene = new Scene(camera, skybox);
@@ -66,16 +70,23 @@ public class DungeonGameState implements GameState {
 		goblin = new Goblin(shared.playerEntity, animationShader);
 
 		RoomType.initializeRoomTypes();
-		final Chest chest = new Chest(animationShader, shared.playerEntity);
+		chest = new Chest(animationShader, shared.playerEntity);
 
 		infoGUI = new TextGUI(new Font("Comic Sans MS", 0, 64));
 		infoBox =infoGUI.addText(" ", new Vector2f());
 		infoBox.setPositionRelativeToScreen(new Vector2f(0.01f, 0.01f));
 		infoBox.setColor(Color.WHITE);
 
-		level = new DungeonLevel(scene.getLightManager(), goblin, shared.healthBarGUI, camera, chest, infoBox);
+		level = new DungeonLevel(scene.getLightManager(), goblin, shared.healthBarGUI, camera, chest, infoBox, scene.getSoundEnvironment());
 		level.setEnemySpawns(0.2f, 0.2f, 0.2f, 0.2f, 0.2f);
-		level.generate(3, 4, scene.getSoundEnvironment());
+		level.generate(size, size);
+		level.setFinishListener(dungeonLevel -> {
+			if(!exitDungeon) {
+				this.exitDungeon = true;
+				this.shared.playerEntity.resetHealth();
+				this.size++;
+			}
+		});
 
 		scene.getSceneGraph().addSubObject(level);
 
@@ -127,12 +138,7 @@ public class DungeonGameState implements GameState {
 
 	@Override
 	public GameStateIdentifier getNextState() {
-		return KeyBoard.pullKeyDown(GLFW_KEY_ESCAPE) ? GameStateIdentifier.OVERWORLD : null;
-	}
-
-	@Override
-	public boolean isActive() {
-		return !KeyBoard.isKeyDown(GLFW_KEY_ESCAPE);
+		return exitDungeon ? GameStateIdentifier.OVERWORLD : null;
 	}
 
 	@Override
@@ -142,6 +148,20 @@ public class DungeonGameState implements GameState {
 
 	@Override
 	public void open() {
+		if(this.exitDungeon) {
+			this.level.removeSelf();
+			this.level = new DungeonLevel(scene.getLightManager(), goblin, shared.healthBarGUI, camera, chest, infoBox, scene.getSoundEnvironment());
+			this.level.generate(size, size);
+			this.scene.getSceneGraph().addSubObject(this.level);
+			level.setFinishListener(dungeonLevel -> {
+				if(!exitDungeon) {
+					this.exitDungeon = true;
+					this.shared.playerEntity.resetHealth();
+					this.size++;
+				}
+			});
+		}
+		this.exitDungeon = false;
 		this.shared.playerEntity.addTo(scene.getSceneGraph(), scene.getLightManager());
 		this.level.setPlayer(this.shared.playerEntity);
 		GLContext.hideCursor();

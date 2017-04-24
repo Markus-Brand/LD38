@@ -47,6 +47,11 @@ public abstract class LifeformEntity extends SceneEntity {
 		return hitCircle;
 	}
 
+	public void resetHealth() {
+		this.healthpoints = maxHealth;
+		this.damage(0.0f);
+	}
+
 	public float getHealthpoints() {
 		return healthpoints;
 	}
