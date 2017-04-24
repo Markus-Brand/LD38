@@ -32,8 +32,8 @@ public class PlayerEntity extends LifeformEntity {
 		setHealthBarOffset(new Vector3f(0, 2, 0));
 		inventory = new Inventory();
 
-		inventory.addSword(new Sword(10, 1, 6));
-		inventory.addSword(new Sword(5, 1, 0.1f));
+		inventory.addSword(new Sword(10, 1, 6, LootType.Stone));
+		inventory.addSword(new Sword(5, 1, 0.1f, LootType.Gold));
 
 		setSword(inventory.getSelectedSword());
 

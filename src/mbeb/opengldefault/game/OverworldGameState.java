@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL11.*;
 import java.awt.*;
 
 import mbeb.ld38.HealthBarGUI;
+import mbeb.opengldefault.gl.GLContext;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -175,7 +176,7 @@ public class OverworldGameState implements GameState {
 			playerEntity.setPosition(port);
 		}
 		overworldScene.getLightManager().rewriteUBO();
-		//GLContext.hideCursor();
+		GLContext.hideCursor();
 	}
 
 }
