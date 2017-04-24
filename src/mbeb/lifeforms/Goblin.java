@@ -29,7 +29,7 @@ public class Goblin extends Monster {
 	ShaderProgram animationShader;
 
 	public Goblin(final PlayerEntity playerEntity, final ShaderProgram animationShader) {
-		super(123, 123456, 10, 2f, 1234, 0.8f, 0.5f, playerEntity);
+		super(123, 100, 10, 2f, 1234, 0.8f, 0.5f, playerEntity);
 
 		mesh = new ObjectLoader().loadFromFileAnim("goblin.fbx");
 		mesh.setTransform(MeshFlip);

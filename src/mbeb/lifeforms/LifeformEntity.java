@@ -85,9 +85,7 @@ public abstract class LifeformEntity extends SceneEntity {
 			healthBar.setPositionRelativeToScreen(0.01f, 0.99f);
 		} else {
 			Vector3f screenSpace = camera.getPositionOnScreen(getHealthBarPosition());
-			System.out.println(screenSpace);
 			Vector2f hudSpace = new Vector2f((screenSpace.x + 1) / 2, (screenSpace.y + 1) / 2);
-			System.out.println(hudSpace);
 			healthBar.setPositionRelativeToScreen(hudSpace);
 		}
 	}
