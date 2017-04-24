@@ -11,6 +11,8 @@ import mbeb.opengldefault.shapes.Circle;
 import mbeb.opengldefault.shapes.Shape;
 import org.joml.Vector3f;
 
+import java.util.function.Consumer;
+
 public abstract class LifeformEntity extends SceneEntity {
 
 	private float healthpoints;
@@ -19,6 +21,8 @@ public abstract class LifeformEntity extends SceneEntity {
 	private boolean dead;
 
 	private Shape hitCircle;
+
+	private Consumer<LifeformEntity> deathListener;
 
 	Vector3f healthBarOffset = new Vector3f();
 	private HealthBarGUIElement healthBar;
@@ -49,10 +53,16 @@ public abstract class LifeformEntity extends SceneEntity {
 	}
 
 	public void damage(float damage) {
+		if (dead) {
+			return;
+		}
 		healthpoints -= damage;
 		System.out.println(healthpoints);
 		if (healthpoints <= 0) {
 			dead = true;
+			if(this.deathListener != null) {
+				this.deathListener.accept(this);
+			}
 		}
 		healthBar.setHealth(healthpoints / maxHealth);
 		
@@ -92,5 +102,9 @@ public abstract class LifeformEntity extends SceneEntity {
 	
 	public void setCamera(Camera camera) {
 		this.camera = camera;
+	}
+
+	public void setDeathListener(Consumer<LifeformEntity> deathListener) {
+		this.deathListener = deathListener;
 	}
 }
