@@ -244,13 +244,13 @@ public class OverworldGameState implements GameState {
 		shared.playerEntity.addTo(scene.getSceneGraph(), scene.getLightManager());
 		shared.playerEntity.setHeightSource(playerHeight);
 		shared.playerEntity.setPosition(port);
-		shared.playerEntity.setStoneWalkingSound(false);
 		if (leftForDungeon) {
 			leftForDungeon = false;
 		}
 		scene.getLightManager().rewriteUBO();
 		GLContext.hideCursor();
 		scene.getSoundEnvironment().makeCurrent();
+		shared.playerEntity.setStoneWalkingSound(false);
 	}
 
 }
