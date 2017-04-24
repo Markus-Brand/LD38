@@ -1,11 +1,13 @@
 package mbeb.ld38.dungeon;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import mbeb.lifeforms.LootType;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
@@ -27,6 +29,7 @@ import mbeb.opengldefault.camera.Camera;
 import mbeb.opengldefault.light.LightManager;
 import mbeb.opengldefault.scene.SceneObject;
 import mbeb.opengldefault.scene.behaviour.IHeightSource;
+import sun.tools.jconsole.Tab;
 
 public class DungeonLevel extends SceneObject implements IHeightSource {
 
@@ -72,19 +75,47 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 		}
 	}
 
+	public class Table {
+		private float[] table;
+
+		public Table(float... table) {
+			this.table = table;
+		}
+
+		public int getValue(float v) {
+			float acc = 0.0f;
+			int i;
+			for (i = 0; i < table.length && acc <= v; i++) {
+				acc += table[i];
+			}
+			return i-1;
+		}
+	}
+
 	private Map<Point, Room> rooms;
 	private Room activeRoom;
 	private Room entrance;
 	private Room exit;
 	private PlayerEntity player;
+	private Table enemySpawns;
+	private LightManager manager;
+	private Goblin enemy;
+	private HealthBarGUI gui;
+	private Camera camera;
+	private EnumMap<LootType, Table> lootSpawns;
 
-	public DungeonLevel(int width, int height, LightManager manager, Goblin enemy, HealthBarGUI gui, Camera camera) {
+	public DungeonLevel(LightManager manager, Goblin enemy, HealthBarGUI gui, Camera camera) {
 		super();
-		rooms = new HashMap<>();
-		this.generate(width, height, manager, enemy, gui, camera);
+		this.manager = manager;
+		this.enemy = enemy;
+		this.gui = gui;
+		this.camera = camera;
+		this.lootSpawns = new EnumMap<>(LootType.class);
+		this.enemySpawns = new Table(0.25f, 0.5f, 0.25f);
 	}
 
-	private void generate(int width, int height, LightManager manager, Goblin enemy, HealthBarGUI gui, Camera camera) {
+	public void generate(int width, int height) {
+		rooms = new HashMap<>();
 		MazeGrid grid = MazeBuilder.make4Maze(width, height, 0.11f);
 		this.addSubObject(new SceneObject(RoomType.getCORNER(), new BoneTransformation(null, new Quaternionf(new AxisAngle4f((float) Math.PI / -2, 0, 1, 0)))));
 		for (int x = 0; x < width; x++) {
@@ -109,8 +140,8 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 
 		Consumer<Room> normalRoom = room -> {
 			if (markVisited.apply(room)) {
-				room.close();
-				for (int i = 0; i < 64; i++) {
+				int count = this.getEnemySpawns().getValue(random.nextFloat());
+				for (int i = 0; i < count; i++) {
 					MonsterEntity e = enemy.spawnNew(new Vector3f(random.nextFloat() * 6 - 3, 1, random.nextFloat() * 6 - 3), 0.0f, room, gui);
 					e.showHealthBar(camera);
 					player.addTarsched(e);
@@ -121,6 +152,9 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 							room.open();
 						}
 					});
+				}
+				if (count > 0) {
+					room.close();
 				}
 			}
 		};
@@ -163,6 +197,22 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 				}
 			}
 		}
+	}
+
+	public Table getEnemySpawns() {
+		return enemySpawns;
+	}
+
+	public void setEnemySpawns(float... spawns) {
+		this.enemySpawns = new Table(spawns);
+	}
+
+	public Table getLootSpawn(LootType key) {
+		return lootSpawns.get(key);
+	}
+
+	public Table setLootSpawn(LootType key, float... spawns) {
+		return lootSpawns.put(key, new Table(spawns));
 	}
 
 	public Room getRoom(int x, int y) {
@@ -262,6 +312,8 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 	public PlayerEntity getPlayer() {
 		return player;
 	}
+
+
 
 	public void setPlayer(PlayerEntity player) {
 		this.player = player;
