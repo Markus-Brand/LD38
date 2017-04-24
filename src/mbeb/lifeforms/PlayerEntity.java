@@ -89,6 +89,8 @@ public class PlayerEntity extends LifeformEntity {
 	public void addTo(SceneObject so) {
 		this.getSceneObject().removeSelf();
 		so.addSubObject(this.getSceneObject());
+		this.swordEntity.getSceneObject().removeSelf();
+		so.addSubObject(this.swordEntity.getSceneObject());
 	}
 
 	public SwordEntity getSword() {
