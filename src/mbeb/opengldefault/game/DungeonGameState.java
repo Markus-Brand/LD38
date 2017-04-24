@@ -101,6 +101,7 @@ public class DungeonGameState implements GameState {
 				}
 			}
 		}
+		shared.healthBarGUI.update(deltaTime);
 		scene.update(deltaTime);
 		world.update(deltaTime);
 	}
@@ -108,6 +109,7 @@ public class DungeonGameState implements GameState {
 	@Override
 	public void render() {
 		scene.render(KeyBoard.isKeyDown(GLFW_KEY_TAB));
+		shared.healthBarGUI.render();
 	}
 
 	@Override
