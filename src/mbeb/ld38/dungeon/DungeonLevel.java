@@ -121,7 +121,7 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 		final float level = (float) Math.sqrt(total);
 
 		for (int typeNumber = 0; typeNumber < LootType.values().length; typeNumber++) {
-			final float targetAmount = level - typeNumber + 1;
+			final float targetAmount = (level - typeNumber + 1) * 1.6f; //balancing here
 			if (targetAmount > 0) {
 				final float[] data = new float[(int) (targetAmount + 0.5f)];
 				for (int i = 0; i < data.length; i++) {
@@ -255,7 +255,7 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 	}
 
 	private void adjustGoblins(final int size) {
-		enemy.setHealthpoints(enemy.getHealthpoints() + 15);
+		enemy.setHealthpoints(enemy.getHealthpoints() + 8);//balancing here
 		enemy.attackDamage += 1;
 	}
 

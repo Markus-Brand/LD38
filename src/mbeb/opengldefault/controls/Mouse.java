@@ -3,6 +3,7 @@ package mbeb.opengldefault.controls;
 import mbeb.opengldefault.gl.GLContext;
 
 import org.joml.*;
+import org.lwjgl.glfw.GLFW;
 
 public class Mouse {
 
@@ -73,7 +74,7 @@ public class Mouse {
 	 * @return true when mouseButton with given id is down currently
 	 */
 	public static boolean isDown(int button) {
-		return mouseDown[button];
+		return mouseDown[button] || KeyBoard.isKeyDown(GLFW.GLFW_KEY_SPACE); //todo remove this
 	}
 
 	/**
