@@ -10,7 +10,6 @@ public class BunnyGame extends Game {
 
 	@Override
 	public void init() {
-		final OptionsMenu options = new OptionsMenu();
 
 		SharedData data = new SharedData(new HealthBarGUI());
 		data.overworld = new OverWorld();
