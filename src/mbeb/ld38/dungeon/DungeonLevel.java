@@ -256,7 +256,7 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 
 	private void adjustGoblins(final int size) {
 		enemy.setHealthpoints(enemy.getHealthpoints() + 15);
-		System.out.println(enemy.getHealthpoints());
+		enemy.attackDamage += 1;
 	}
 
 	public Table getEnemySpawns() {

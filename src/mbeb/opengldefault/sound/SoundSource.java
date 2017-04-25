@@ -4,7 +4,6 @@ import static org.lwjgl.openal.AL10.*;
 
 import org.joml.*;
 
-import mbeb.opengldefault.logging.*;
 import mbeb.opengldefault.scene.entities.*;
 
 /**
@@ -79,7 +78,6 @@ public class SoundSource implements IEntityConvertable {
 	 *            a new position
 	 */
 	public void setPosition(final Vector3f position) {
-		Log.log(TAG, "Source Position: " + position);
 		setProperty(AL_POSITION, position);
 	}
 

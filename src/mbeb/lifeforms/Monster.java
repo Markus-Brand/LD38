@@ -4,7 +4,7 @@ public abstract class Monster extends Lifeform {
 
 	float visionRange;
 	float attackRange;
-	float attackDamage;
+	public float attackDamage;
 	float attackPreperationTime;
 	float attackDuration;
 	float attackCooldown;
