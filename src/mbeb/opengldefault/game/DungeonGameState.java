@@ -74,7 +74,6 @@ public class DungeonGameState implements GameState {
 
 		RoomType.initializeRoomTypes(shared.soundEnvironment);
 		chest = new Chest(animationShader, shared.playerEntity);
-		chest = new Chest(animationShader, shared.playerEntity);
 
 		infoGUI = new TextGUI(new Font("Comic Sans MS", 0, 64));
 		infoBox = infoGUI.addText(" ", new Vector2f());

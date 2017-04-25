@@ -23,7 +23,7 @@ public class Chest {
 	PlayerEntity playerEntity;
 
 	public Chest(final ShaderProgram animationShader, final PlayerEntity playerEntity) {
-		this.interactionRadius = 100;
+		this.interactionRadius = 3;
 
 		material = new Material("material/chest", 1);
 		mesh = new ObjectLoader().loadFromFileAnim("chest.fbx");
@@ -47,7 +47,7 @@ public class Chest {
 		chestObject.setShader(animationShader);
 
 		parent.addSubObject(chestObject);
-		final ChestEntity chest = new ChestEntity(chestObject, chestAnimatedRenderable, 3, soundEnvironment);
+		final ChestEntity chest = new ChestEntity(chestObject, chestAnimatedRenderable, soundEnvironment);
 		chest.addBehaviour(1, new ChestBehaviour(playerEntity, consumer).limited(interactionRadius));
 		return chest;
 	}

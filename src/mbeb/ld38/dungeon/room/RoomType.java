@@ -50,8 +50,8 @@ public class RoomType {
 		Material wallMaterial = new Material("material/stonewall/seam", 1);
 		Material doorFrameMaterial = new Material("material/stonewall/purple", 1);
 		Material floorMaterial = new Material("material/cobble/moss", 4);
-		Material entranceMaterial = new Material("material/bunny", 4);
-		Material exitMaterial = new Material("material/player", 2);
+		Material entranceMaterial = new Material("material/carpet", 1);
+		Material exitMaterial = new Material("material/chest", 2);
 
 		//meshes
 		final ObjectLoader loader = new ObjectLoader();
@@ -63,8 +63,8 @@ public class RoomType {
 		CORNER = loader.loadFromFile("dungeon/general/origin_corner.obj").withMaterial(wallMaterial);
 		SEGMENT = loader.loadFromFile("dungeon/general/axis_corner.obj").withMaterial(wallMaterial);
 
-		IRenderable entrance = loader.loadFromFile("bunny.obj").withMaterial(entranceMaterial);
-		IRenderable exit = loader.loadFromFile("player.fbx").withMaterial(exitMaterial);
+		IRenderable entrance = loader.loadFromFile("dungeon/carpet.obj").withMaterial(entranceMaterial);
+		IRenderable exit = loader.loadFromFile("ladder.obj").withMaterial(exitMaterial);
 		SceneObject exitObject = new SceneObject(exit);
 		exitObject.setVisible(false);
 
@@ -95,6 +95,8 @@ public class RoomType {
 		base.addSubObject(entrance);
 		ENTRANCE_ROOM.addBaseObject(base);
 
+		//ENTRANCE_ROOM.addLight(new Vector3f(0, 3, 0), Color.WHITE, 20);
+
 		addDoor(ENTRANCE_ROOM, door, wall_segment, soundEnvironment);
 		//</editor-fold>
 
@@ -107,8 +109,7 @@ public class RoomType {
 		EXIT_ROOM.addBaseObject(base);
 
 		EXIT_ROOM.addSlot(
-				"exit", new BoneTransformation(new Vector3f(0, 1, 0), new Quaternionf(), new Vector3f(0.25f))
-				).
+				"exit", new BoneTransformation(null, null)).
 				addIf(exitObject, roomParameter -> true);
 
 		addDoor(EXIT_ROOM, door, wall_segment, soundEnvironment);
