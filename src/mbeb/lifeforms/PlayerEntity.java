@@ -52,7 +52,6 @@ public class PlayerEntity extends LifeformEntity {
 		inventory = new Inventory();
 
 		inventory.addSword(new Sword(10, 1, 1.5f, LootType.Wood, SwordType.LONG_SWORD));
-		inventory.addSword(new Sword(5, 1, 0.1f, LootType.Diamond, SwordType.LONG_SWORD));
 
 		setSword(inventory.getSelectedSword());
 

@@ -130,9 +130,7 @@ public class OverworldGameState implements GameState {
 		infoBox = text.addText(" ", new Vector2f());
 		infoBox.setPositionRelativeToScreen(0.01f, 0.01f);
 		infoBox.setColor(Color.WHITE);
-
-		shared.playerEntity.getInventory().addLoot(LootType.Steel, 10);
-		shared.playerEntity.getInventory().addLoot(LootType.Wood, 10);
+		shared.playerEntity.getInventory().addLoot(LootType.Wood, 5);
 
 		craftingHUD = new CraftingHUD(hud, text, shared.playerEntity);
 
