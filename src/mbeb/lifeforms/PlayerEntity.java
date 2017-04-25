@@ -38,7 +38,11 @@ public class PlayerEntity extends LifeformEntity {
 	private Sound walkingStoneSound;
 	private boolean stoneWalk = false;
 
-	public PlayerEntity(final float radius, final SceneObject sceneObject, final AnimationStateFacade animator, final float healthpoints, final IHeightSource heightSource,
+	private int lastClearedLevel = 0;
+	private int oldLastClearedLevel = 0;
+
+	public PlayerEntity(final float radius, final SceneObject sceneObject, final AnimationStateFacade animator,
+			final float healthpoints, final IHeightSource heightSource,
 			final HealthBarGUI healthGui, final SoundEnvironment soundEnvironment) {
 		super(sceneObject, healthpoints, radius, healthGui, soundEnvironment);
 		this.animator = animator;
@@ -52,11 +56,18 @@ public class PlayerEntity extends LifeformEntity {
 
 		setSword(inventory.getSelectedSword());
 
-		final SceneObject lampObject = new SceneObject(Player.lampRenderable, new BoneTransformation(null, null, new Vector3f(0.3f)));
+		final SceneObject lampObject =
+				new SceneObject(Player.lampRenderable, new BoneTransformation(null, null, new Vector3f(0.3f)));
 
 		final PointLight light = new PointLight(new Vector3f(1f, 0.5f, 0.2f), new Vector3f(), 15f);
-		lightEntity = (PointLightEntity) light.asEntity().addBehaviour(0, new ParentBehaviour(lampObject, new Vector3f(0, 2, 0)));
-		lampEntity = (SceneEntity) lampObject.asNewEntity().addBehaviour(0, new BoneTrackingBehaviour(sceneObject, animator.getAnimatedRenderable(), "Hand.Left").fixedDirection());
+		lightEntity =
+				(PointLightEntity) light.asEntity().addBehaviour(0,
+						new ParentBehaviour(lampObject, new Vector3f(0, 2, 0)));
+		lampEntity =
+				(SceneEntity) lampObject.asNewEntity().addBehaviour(
+						0,
+						new BoneTrackingBehaviour(sceneObject, animator.getAnimatedRenderable(), "Hand.Left")
+								.fixedDirection());
 		initSound(soundEnvironment);
 	}
 
@@ -207,5 +218,28 @@ public class PlayerEntity extends LifeformEntity {
 
 	public Inventory getInventory() {
 		return inventory;
+	}
+
+	/**
+	 * @return the lastClearedLevel
+	 */
+	public int getLastClearedLevel() {
+		oldLastClearedLevel = lastClearedLevel;
+		return lastClearedLevel;
+	}
+
+	/**
+	 * @return the lastClearedLevel
+	 */
+	public boolean newLastClearedLevel() {
+		return lastClearedLevel != oldLastClearedLevel;
+	}
+
+	/**
+	 * @param lastClearedLevel
+	 *            the lastClearedLevel to set
+	 */
+	public void setLastClearedLevel(int lastClearedLevel) {
+		this.lastClearedLevel = lastClearedLevel;
 	}
 }

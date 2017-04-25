@@ -29,6 +29,13 @@ public class Inventory {
 		return true;
 	}
 
+	public void looseXPercentofYerShit(float x) {
+		float keepingPercentage = 1.0f - x;
+		for (Map.Entry<LootType, Integer> entry : lootMap.entrySet()) {
+			lootMap.put(entry.getKey(), (int) (lootMap.get(entry.getKey()) * keepingPercentage));
+		}
+	}
+
 	public void craft(Recipe recipe) {
 		if (!canCraft(recipe)) {
 			return;

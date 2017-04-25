@@ -31,7 +31,8 @@ public class DungeonGameState implements GameState {
 
 	private static final String TAG = "DungeonGameState";
 
-	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1).rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
+	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1)
+			.rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
 
 	private Scene scene;
 	private DungeonLevel level;
@@ -80,13 +81,17 @@ public class DungeonGameState implements GameState {
 		infoBox.setPositionRelativeToScreen(new Vector2f(0.01f, 0.01f));
 		infoBox.setColor(Color.WHITE);
 
-		level = new DungeonLevel(scene.getLightManager(), goblin, shared.healthBarGUI, camera, chest, infoBox, shared.soundEnvironment);
+		level =
+				new DungeonLevel(scene.getLightManager(), goblin, shared.healthBarGUI, camera, chest, infoBox,
+						shared.soundEnvironment);
+
 		level.setEnemySpawns(0.2f, 0.2f, 0.2f, 0.2f, 0.2f);
 		level.generate(size, size);
 		level.setFinishListener(dungeonLevel -> {
 			if (!exitDungeon) {
 				this.exitDungeon = true;
 				this.shared.playerEntity.resetHealth();
+				this.shared.playerEntity.setLastClearedLevel(size - 1);
 				this.size++;
 			}
 		});
@@ -101,10 +106,12 @@ public class DungeonGameState implements GameState {
 		shared.playerEntity.setDeathListener(lifeformEntity -> {
 			shared.playerEntity.revive();
 			shared.playerEntity.setJustDied(true);
+			shared.playerEntity.getInventory().looseXPercentofYerShit(0.5f);
 			this.exitDungeon = true;
 		});
 
-		world.add(camera).addBehaviour(0, new TopDownViewBehaviour(shared.playerEntity, 8, 1.5f, 2)).setPosition(new Vector3f(3, 4, 5));
+		world.add(camera).addBehaviour(0, new TopDownViewBehaviour(shared.playerEntity, 8, 1.5f, 2))
+				.setPosition(new Vector3f(3, 4, 5));
 
 		//light
 		final DirectionalLight sun = new DirectionalLight(new Color(8, 7, 6), new Vector3f(0, -1, 0));
@@ -147,7 +154,7 @@ public class DungeonGameState implements GameState {
 
 	@Override
 	public GameStateIdentifier getNextState() {
-		if(exitDungeon) {
+		if (exitDungeon) {
 			Collection<MonsterEntity> enemies = new HashSet<>(this.level.getActiveRoom().getEnemies());
 			this.level.getActiveRoom().getEnemies().clear();
 			enemies.forEach(monsterEntity -> {
@@ -170,13 +177,18 @@ public class DungeonGameState implements GameState {
 		shared.soundEnvironment.makeCurrent();
 		if (this.exitDungeon) {
 			this.level.removeSelf();
-			this.level = new DungeonLevel(scene.getLightManager(), goblin, shared.healthBarGUI, camera, chest, infoBox, shared.soundEnvironment);
+
+			this.level =
+					new DungeonLevel(scene.getLightManager(), goblin, shared.healthBarGUI, camera, chest, infoBox,
+							shared.soundEnvironment);
+
 			this.level.generate(size, size);
 			this.scene.getSceneGraph().addSubObject(this.level);
 			level.setFinishListener(dungeonLevel -> {
 				if (!exitDungeon) {
 					this.exitDungeon = true;
 					this.shared.playerEntity.resetHealth();
+					this.shared.playerEntity.setLastClearedLevel(size - 1);
 					this.size++;
 				}
 			});
@@ -187,5 +199,9 @@ public class DungeonGameState implements GameState {
 		this.level.setPlayer(this.shared.playerEntity);
 		GLContext.hideCursor();
 		scene.getLightManager().rewriteUBO();
+	}
+
+	public int getDungeonLevel() {
+		return size - 1;
 	}
 }

@@ -77,7 +77,7 @@ public class IntroGameState implements GameState {
 
 	private ShaderProgram guiShader;
 
-	private TextGUIElement fps, buttonGame;
+	private TextGUIElement buttonGame;
 
 	private GUIElement buttonExit;
 
@@ -163,10 +163,6 @@ public class IntroGameState implements GameState {
 		textGUI.setShader(guiShader);
 		menuGUI.setShader(guiShader);
 
-		fps = textGUI.addText("0", new Vector2f(), 0.03f);
-		fps.setPositionRelativeToScreen(0, 0);
-		fps.setColor(Color.ORANGE);
-
 		buttonGame =
 				(TextGUIElement) textGUI.addText("Start Game", new Vector2f(), 0.2f).setPositionRelativeToScreen(0.5f,
 						0.2f);
@@ -217,8 +213,6 @@ public class IntroGameState implements GameState {
 			}
 		}
 		camera.update(deltaTime);
-
-		fps.setText("FPS: " + (int) (1 / deltaTime));
 		menuGUI.update(deltaTime);
 		textGUI.update(deltaTime);
 

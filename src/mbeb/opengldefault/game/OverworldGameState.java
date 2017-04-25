@@ -61,8 +61,6 @@ public class OverworldGameState implements GameState {
 
 	private boolean crafting;
 
-	MonsterEntity goblinEntity;
-
 	private final Vector3f anvilPos = new Vector3f(9.27f, 0.993f, -4.43f);
 
 	@Option(category = "Game")
@@ -125,18 +123,6 @@ public class OverworldGameState implements GameState {
 		final DirectionalLight sun = new DirectionalLight(Color.WHITE, new Vector3f(0.2f, -1, 0).normalize());
 		scene.getLightManager().addLight(sun);
 
-		final Goblin goblin = new Goblin(shared.playerEntity, animationShader);
-		goblinEntity =
-				goblin.spawnNew(new Vector3f(10, 3, 0), 0, scene.getSceneGraph(), shared.healthBarGUI,
-						scene.getSoundEnvironment());
-		world.add(goblinEntity);
-
-		shared.playerEntity.addTarsched(goblinEntity);
-
-		goblinEntity.showHealthBar(topDownViewCamera);
-
-		goblinEntity.addTarsched(shared.playerEntity);
-
 		shared.playerEntity.showHealthBar(null);
 
 		hud = new AtlasGUI("menu.png", 4, 4);
@@ -150,33 +136,25 @@ public class OverworldGameState implements GameState {
 
 		craftingHUD = new CraftingHUD(hud, text, shared.playerEntity);
 
-		final Chest chest = new Chest(animationShader, shared.playerEntity);
-		final ChestEntity chestEntity = chest.spawnNew(new Vector3f(-5, 3, -5), 0, scene.getSceneGraph(), ce -> {
-			shared.playerEntity.getInventory().addLoot(LootType.Wood, 100);
-			shared.playerEntity.getInventory().addLoot(LootType.Stone, 100);
-			shared.playerEntity.getInventory().addLoot(LootType.Steel, 100);
-			shared.playerEntity.getInventory().addLoot(LootType.Gold, 100);
-			shared.playerEntity.getInventory().addLoot(LootType.Diamond, 100);
-		}, scene.getSoundEnvironment());
-		world.add(chestEntity);
-
 		scene.getSoundEnvironment().getListener().asNewEntity().attachTo(topDownViewCamera.asEntity());
 	}
 
 	@Override
 	public void update(final double deltaTime) {
 
+		if (shared.playerEntity.newLastClearedLevel()) {
+			infoBox.setText("Your cleared the dungeon level " + shared.playerEntity.getLastClearedLevel());
+		}
+
 		if (new Vector2f(anvilPos.x, anvilPos.z).distance(new Vector2f(shared.playerEntity.getPosition().x,
 				shared.playerEntity.getPosition().z)) < 1.3f) {
-			infoBox.setText("Press C for crafting");
+			infoBox.setText("Press C for crafting at the anvil");
 			if (KeyBoard.isKeyDown(GLFW.GLFW_KEY_C)) {
 				infoBox.setText(" ");
 				crafting = true;
 				craftingHUD.show();
 				GLContext.showCursor();
 			}
-		} else {
-			//infoBox.setText(" ");
 		}
 		if (crafting) {
 			if (KeyBoard.pullKeyDown(GLFW.GLFW_KEY_ESCAPE)) {
@@ -190,10 +168,6 @@ public class OverworldGameState implements GameState {
 		totalTimePassed += deltaTime;
 		world.update(deltaTime);
 
-		if (goblinEntity.isDead()) {
-			scene.getSceneGraph().removeSubObject(goblinEntity.getSceneObject());
-			world.remove(goblinEntity);
-		}
 		scene.update(deltaTime);
 		shared.healthBarGUI.update(deltaTime);
 		text.update(deltaTime);
@@ -243,7 +217,7 @@ public class OverworldGameState implements GameState {
 		shared.playerEntity.addTo(scene.getSceneGraph(), scene.getLightManager());
 		shared.playerEntity.setHeightSource(playerHeight);
 		shared.playerEntity.setPosition(port);
-		if(shared.playerEntity.isJustDied()) {
+		if (shared.playerEntity.isJustDied()) {
 			infoBox.setText("Ye be dead. Ye lost half yer shit.");
 			shared.playerEntity.setJustDied(false);
 		}
