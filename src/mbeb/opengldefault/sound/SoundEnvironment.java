@@ -84,7 +84,7 @@ public class SoundEnvironment {
 	 */
 	public Sound createSound(final String filename) {
 		makeCurrent();
-		final Sound sound = new Sound("resources/sounds/" + filename + ".ogg");
+		final Sound sound = new Sound("sounds/" + filename + ".ogg");
 		soundList.add(sound);
 		return sound;
 	}

@@ -151,26 +151,16 @@ public class Sound {
 	public static ByteBuffer ioResourceToByteBuffer(String resource, int bufferSize) throws IOException {
 		ByteBuffer buffer;
 
-		Path path = Paths.get(resource);
-		if (Files.isReadable(path)) {
-			try(SeekableByteChannel fc = Files.newByteChannel(path)) {
-				buffer = createByteBuffer((int) fc.size() + 1);
-				while(fc.read(buffer) != -1) {
-					//no logic in the body
-				}
-			}
-		} else {
-			try(InputStream source = Sound.class.getClassLoader().getResourceAsStream(resource); ReadableByteChannel rbc = Channels.newChannel(source)) {
-				buffer = createByteBuffer(bufferSize);
+		try(InputStream source = Sound.class.getClassLoader().getResourceAsStream(resource); ReadableByteChannel rbc = Channels.newChannel(source)) {
+			buffer = createByteBuffer(bufferSize);
 
-				while(true) {
-					int bytes = rbc.read(buffer);
-					if (bytes == -1) {
-						break;
-					}
-					if (buffer.remaining() == 0) {
-						buffer = resizeBuffer(buffer, buffer.capacity() * 2);
-					}
+			while(true) {
+				int bytes = rbc.read(buffer);
+				if (bytes == -1) {
+					break;
+				}
+				if (buffer.remaining() == 0) {
+					buffer = resizeBuffer(buffer, buffer.capacity() * 2);
 				}
 			}
 		}
