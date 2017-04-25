@@ -134,6 +134,7 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 
 	public void generate(final int width, final int height) {
 		this.adjustValues(width, height);
+		adjustGoblins(height);
 		rooms = new HashMap<>();
 		final MazeGrid grid = MazeBuilder.make4Maze(width, height, 0.11f);
 		this.addSubObject(new SceneObject(RoomType.getCORNER(), new BoneTransformation(null, new Quaternionf(new AxisAngle4f((float) Math.PI / -2, 0, 1, 0)))));
@@ -251,6 +252,11 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 				}
 			}
 		}
+	}
+
+	private void adjustGoblins(final int size) {
+		enemy.setHealthpoints(enemy.getHealthpoints() + 15);
+		System.out.println(enemy.getHealthpoints());
 	}
 
 	public Table getEnemySpawns() {
