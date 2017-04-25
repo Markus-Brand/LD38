@@ -1,9 +1,6 @@
 package mbeb.lifeforms;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import mbeb.ld38.recipe.Recipe;
 
@@ -34,6 +31,21 @@ public class Inventory {
 		for (Map.Entry<LootType, Integer> entry : lootMap.entrySet()) {
 			lootMap.put(entry.getKey(), (int) (lootMap.get(entry.getKey()) * keepingPercentage));
 		}
+		Random r = new Random();
+		LinkedList<Sword> delete = new LinkedList<>();
+		int i = 0;
+		for (Sword sword : swords) {
+			if(r.nextFloat() < x) {
+				delete.add(sword);
+			}
+		}
+		for (Sword sword : delete) {
+			swords.remove(sword);
+		}
+		if(swords.isEmpty()) {
+			this.addSword(new Sword(10, 1, 1.5f, LootType.Wood, SwordType.LONG_SWORD));
+		}
+		this.switchSword();
 	}
 
 	public void craft(Recipe recipe) {
