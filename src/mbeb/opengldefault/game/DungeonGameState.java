@@ -125,15 +125,7 @@ public class DungeonGameState implements GameState {
 	@Override
 	public void update(final double deltaTime) {
 		shared.soundEnvironment.makeCurrent();
-		if (KeyBoard.pullKeyDown(GLFW_KEY_T)) {
-			if (this.level.getActiveRoom() != null) {
-				if (this.level.getActiveRoom().isOpen()) {
-					this.level.getActiveRoom().close();
-				} else {
-					this.level.getActiveRoom().open();
-				}
-			}
-		}
+
 		shared.healthBarGUI.update(deltaTime);
 		infoGUI.update(deltaTime);
 		scene.update(deltaTime);
