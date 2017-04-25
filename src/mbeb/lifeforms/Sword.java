@@ -27,9 +27,9 @@ public class Sword {
 		});
 	}
 
-	private final float damage;
-	private final float range;
-	private final float strokeTime;
+	protected final float damage;
+	protected final float range;
+	protected final float strokeTime;
 	private final IRenderable sword;
 	private String name;
 

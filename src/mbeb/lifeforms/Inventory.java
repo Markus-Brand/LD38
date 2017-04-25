@@ -42,9 +42,21 @@ public class Inventory {
 		for (Sword sword : delete) {
 			swords.remove(sword);
 		}
-		if(swords.isEmpty()) {
-			this.addSword(new Sword(10, 1, 1.5f, LootType.Wood, SwordType.LONG_SWORD));
+		boolean containsEmptySword = false;
+		for (Sword sword : swords) {
+			if (sword instanceof EmptySword) {
+				containsEmptySword = true;
+				continue;
+			}
 		}
+		if (!containsEmptySword) {
+			swords.add(new EmptySword());
+		}
+
+		while (lootMap.get(LootType.Wood) < 5) {
+			this.addLoot(LootType.Wood, 1);
+		}
+
 		this.switchSword();
 	}
 
