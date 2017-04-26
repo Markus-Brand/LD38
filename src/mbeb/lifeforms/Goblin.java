@@ -1,23 +1,79 @@
 package mbeb.lifeforms;
 
+import java.lang.Math;
+
 import org.joml.*;
 
-import mbeb.opengldefault.rendering.renderable.*;
+import mbeb.ld38.*;
+import mbeb.opengldefault.animation.*;
+import mbeb.opengldefault.gl.shader.*;
+import mbeb.opengldefault.rendering.io.*;
 import mbeb.opengldefault.scene.*;
 import mbeb.opengldefault.scene.behaviour.*;
+import mbeb.opengldefault.scene.entities.*;
+import mbeb.opengldefault.scene.materials.*;
+import mbeb.opengldefault.sound.*;
 
 public class Goblin extends Monster {
 
-	public Goblin(final float healthpoints, final float visionRange, final float attackRange, final float attackDamage, final float movingSpeed, final IRenderable body,
-			final PlayerEntity playerEntity) {
-		super(healthpoints, visionRange, attackRange, attackDamage, movingSpeed, body, playerEntity);
+	private static final Matrix4f MeshFlip = new Matrix4f(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1).rotate(new AxisAngle4f((float) Math.PI / 2, 0, 0, 1));
+
+	Material material;
+	AnimatedMesh mesh;
+	ShaderProgram animationShader;
+
+	public Goblin(final PlayerEntity playerEntity, final ShaderProgram animationShader) {
+		super(0.6f, 8, 10, 2f, 5, 0.8f, 0.3f, 0.8f, 1f, playerEntity);//balancing here
+
+		mesh = new ObjectLoader().loadFromFileAnim("goblin.fbx");
+		mesh.setTransform(new Matrix4f().rotate(new AxisAngle4f((float) (Math.PI) / -2, 1, 0, 0)));
+		mesh.getSkeleton().printRecursive("");
+		//mesh.setTransform(MeshFlip);
+		material = new Material("material/goblin", 2);
+
+		this.animationShader = animationShader;
+
 	}
 
 	@Override
-	public MonsterEntity spawnNew(final Vector3f position, final float angle, final SceneObject parent) {
-		final MonsterEntity monster = super.spawnNew(position, angle, parent);
-		monster.addBehaviour(1, new FollowingBehaviour(playerEntity, monster.getMovingSpeed()).limited(monster.getVisionRange())).addBehaviour(0,
-				new JumpingBehaviour(playerEntity).limited(monster.getAttackRange()));
+	public MonsterEntity spawnNew(final Vector3f position, final float angle, final SceneObject parent, final HealthBarGUI healthBarGui, final SoundEnvironment soundEnvironment) {
+		final AnimationStateFacade goblinAnimatedRenderable = new AnimationStateFacade(mesh, material);
+
+		goblinAnimatedRenderable.registerAnimation("Idle", "Idle", 32);
+		goblinAnimatedRenderable.registerAnimation("Run", "Run", 32, 0.4f, 0.4f);
+		goblinAnimatedRenderable.registerAnimation("Jump", "Jump", 32, 0.1f, 0.1f, 1.1f);
+
+		final SceneObject monsterObject =
+				new SceneObject(goblinAnimatedRenderable, new BoneTransformation(position, new Quaternionf(new AxisAngle4f(angle, new Vector3f(0, 1, 0))), new Vector3f(0.5f)));
+
+		monsterObject.setShader(animationShader);
+
+		parent.addSubObject(monsterObject);
+		final MonsterEntity monster = new MonsterEntity(radius, monsterObject, goblinAnimatedRenderable, healthpoints, visionRange, attackRange, attackDamage, attackPreperationTime, attackDuration,
+				attackCooldown, movingSpeed, healthBarGui, soundEnvironment);
+
+		monster.addBehaviour(2, new IBehaviour() {
+			@Override
+			public void update(final double deltaTime, final IEntity entity) {
+				final MonsterEntity goblin = (MonsterEntity) entity;
+				goblin.getAnimator().ensureRunning("Idle");
+			}
+		});
+
+		monster.addBehaviour(1, new FollowingBehaviour(playerEntity, monster.getMovingSpeed()) {
+			@Override
+			public void update(final double deltaTime, final IEntity entity) {
+				super.update(deltaTime, entity);
+				final MonsterEntity goblin = (MonsterEntity) entity;
+
+				goblin.getAnimator().ensureRunning("Run", true, true);
+			}
+		}.limited(monster.getVisionRange()));
+
+		monster.addBehaviour(0, new JumpingBehaviour(playerEntity));
+
+		monster.setHealthBarOffset(new Vector3f(0, 1.2f, 0));
+		monster.addTarsched(playerEntity);
 		return monster;
 	}
 

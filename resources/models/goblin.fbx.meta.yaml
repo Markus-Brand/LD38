@@ -1,0 +1,8 @@
+sizeFactor: 1.5
+animations:
+  Idle:
+    Root: 0
+  Run:
+    Root: 5
+  Jump:
+    Root: 7

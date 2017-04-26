@@ -12,7 +12,7 @@ out vec4 color;
 #include modules/Struct_PointLight.glsl
 #include modules/Struct_SpotLight.glsl
 
-float ambientStrength = 0.4;
+float ambientStrength = 0.03;
 float specularStrength = 1.0;
 
 #include modules/DirectionalLightBlock.glsl
@@ -82,13 +82,13 @@ void main(){
 	result += emissionColor;
 
 
-#ifdef GAMMA_CORRECTION
-	float gamma = 2.2;
+//#ifdef GAMMA_CORRECTION
+	float gamma = 1.1;
 	float gammaInverse = 1.0 / gamma;
 	result.x = pow(result.x, gammaInverse);
 	result.y = pow(result.y, gammaInverse);
 	result.z = pow(result.z, gammaInverse);
-#endif
+//#endif
 
 	vec4 texColor = vec4(result, materialAlpha);
 	if(texColor.a > 0.5){

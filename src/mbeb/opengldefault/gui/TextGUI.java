@@ -4,6 +4,7 @@ import java.awt.Font;
 
 import mbeb.opengldefault.gui.elements.TextGUIElement;
 import mbeb.opengldefault.gl.GLContext;
+import mbeb.opengldefault.gl.shader.ShaderProgram;
 
 import org.joml.Vector2f;
 
@@ -11,9 +12,15 @@ public class TextGUI extends AtlasGUI {
 
 	private Font font;
 
+	private static ShaderProgram textShader;
+
 	public TextGUI(Font font) {
 		super(FontCache.getFont(font), 32, 16);
 		setFont(font);
+		if (textShader == null) {
+			textShader = new ShaderProgram("gui.vert", "gui.frag");
+		}
+		setShader(textShader);
 	}
 
 	/**

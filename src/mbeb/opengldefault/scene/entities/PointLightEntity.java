@@ -14,7 +14,7 @@ import mbeb.opengldefault.light.*;
 public class PointLightEntity extends Entity implements ColorfulEntity {
 
 	/** my {@link PointLight} */
-	private final PointLight pointlight;
+	private PointLight pointlight;
 
 	/**
 	 * @param pointlight
@@ -66,5 +66,13 @@ public class PointLightEntity extends Entity implements ColorfulEntity {
 	@Override
 	public void setDirection(final Vector3f direction) {
 		//just ignore the value
+	}
+
+	public PointLight getLight() {
+		return pointlight;
+	}
+
+	public void setPointlight(PointLight pointlight) {
+		this.pointlight = pointlight;
 	}
 }

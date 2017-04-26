@@ -109,6 +109,9 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 		box = null;
 	}
 
+	public SceneObject getParent() {
+		return parent;
+	}
 
 	public void setVisible(boolean visible) {
 		this.visible = visible;
@@ -126,6 +129,7 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 		this.globalTransformation = null;
 		this.transformation = new BoneTransformation(source.transformation);
 		this.selected = false;
+		this.visible = source.visible;
 		for (SceneObject su : source.getSubObjects()) {
 			this.addSubObject(new SceneObject(su));
 		}
@@ -143,6 +147,12 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 
 	public void setTransformation(BoneTransformation transformation) {
 		this.transformation = transformation;
+	}
+
+	public void removeSelf() {
+		if (parent != null) {
+			parent.removeSubObject(this);
+		}
 	}
 
 	/**
@@ -165,6 +175,18 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 	 */
 	public void addSubObject(SceneObject object) {
 		getSubObjects().add(object);
+		object.setParent(this);
+		adjustBoundingBoxFor(object);
+	}
+
+	/**
+	 * add a new Scene-Object as child of this one to the scene, but render it before the other children
+	 *
+	 * @param object
+	 *            the new object to add
+	 */
+	public void addSubObjectFront(SceneObject object) {
+		getSubObjects().add(0, object);
 		object.setParent(this);
 		adjustBoundingBoxFor(object);
 	}
@@ -344,11 +366,15 @@ public class SceneObject implements BoundingBox.Owner, IEntityConvertable {
 	}
 
 	public void removeSubObject(SceneObject curveObj) {
-		subObjects.remove(curveObj);
+		if (!subObjects.remove(curveObj)) {
+			for (SceneObject sceneObject : subObjects) {
+				sceneObject.removeSubObject(curveObj);
+			}
+		}
 	}
 
 	@Override
-	public IEntity asNewEntity() {
+	public SceneEntity asNewEntity() {
 		return new SceneEntity(this);
 	}
 }

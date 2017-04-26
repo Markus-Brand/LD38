@@ -19,7 +19,7 @@ public class EntityWorld {
 
 	/**
 	 * add a new entity to this world
-	 * 
+	 *
 	 * @param newEntity
 	 *            the object that can be represented as Entity
 	 * @return the actual IEntity that got added
@@ -30,9 +30,13 @@ public class EntityWorld {
 		return entity;
 	}
 
+	public boolean remove(IEntity deletedEntity) {
+		return entities.remove(deletedEntity);
+	}
+
 	/**
 	 * iterate through all the entities of this world
-	 * 
+	 *
 	 * @param action
 	 *            the action to perform for each entity
 	 */
@@ -42,7 +46,7 @@ public class EntityWorld {
 
 	/**
 	 * update this world and all entities in it
-	 * 
+	 *
 	 * @param deltaTime
 	 */
 	public void update(double deltaTime) {

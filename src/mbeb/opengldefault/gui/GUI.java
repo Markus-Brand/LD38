@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL31.glDrawElementsInstanced;
 import java.util.ArrayList;
 import java.util.List;
 
+import mbeb.ld38.HealthBarGUIElement;
 import mbeb.opengldefault.constants.Constants;
 import mbeb.opengldefault.gl.buffer.GLBufferWriter;
 import mbeb.opengldefault.gl.buffer.VertexBuffer;
@@ -129,7 +130,7 @@ public class GUI implements IRenderable {
 	private void loadBufferData() {
 		GLBufferWriter writer = vbo.writer(getElementsSize() * stride * FLOAT_SIZE);
 		elements.forEach(writer::write);
-		writer.flush();
+		writer.flush(GLBufferWriter.WriteType.FULL_DATA);
 	}
 
 	/**
@@ -155,6 +156,8 @@ public class GUI implements IRenderable {
 
 	@Override
 	public void render(ShaderProgram shader) {
+		if(this.elements.isEmpty())
+			return;
 		vbo.bind();
 		if (dirty) {
 			setupVAO();
@@ -164,7 +167,7 @@ public class GUI implements IRenderable {
 
 		if (lut != null) {
 			this.lut.bind();
-			shader.setUniform("u_lut", lut);
+			shader.setUniform("u_lut", lut, false, true);
 		}
 
 		glEnable(GL_BLEND);
@@ -224,5 +227,14 @@ public class GUI implements IRenderable {
 	 */
 	public void setShader(ShaderProgram shader) {
 		this.shader = shader;
+	}
+
+	/**
+	 * remove an element again
+	 * @param guiElement
+	 */
+	public void remove(GUIElement guiElement) {
+		this.elements.remove(guiElement);
+		this.dirty = true;
 	}
 }

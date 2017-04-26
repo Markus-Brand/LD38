@@ -273,4 +273,12 @@ public class AnimationStateFacade implements IRenderableHolder {
 		}
 	}
 
+	public void setDuration(String presetName, float duration) {
+		setSpeed(presetName, getDuration(presetName) / duration);
+	}
+
+	public float getDuration(String presetName) {
+		return (float) getPreset(presetName).getAnimation().getDuration();
+	}
+
 }

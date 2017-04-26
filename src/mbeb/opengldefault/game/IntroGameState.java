@@ -7,6 +7,8 @@ import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 
+import mbeb.ld38.SharedData;
+
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
@@ -39,7 +41,9 @@ import mbeb.opengldefault.scene.behaviour.BezierBehaviour;
 import mbeb.opengldefault.scene.behaviour.CombinedBehaviour;
 import mbeb.opengldefault.scene.behaviour.LookAtBehaviour;
 import mbeb.opengldefault.scene.entities.EntityWorld;
-import mbeb.opengldefault.scene.materials.Material;
+import mbeb.opengldefault.sound.Sound;
+import mbeb.opengldefault.sound.SoundEnvironment;
+import mbeb.opengldefault.sound.SoundSource;
 
 public class IntroGameState implements GameState {
 
@@ -53,7 +57,7 @@ public class IntroGameState implements GameState {
 
 	private Camera camera;
 
-	private SceneObject world, island;
+	private SceneObject world;
 
 	private ShaderProgram worldShader;
 	private ShaderProgram curveShader;
@@ -73,13 +77,25 @@ public class IntroGameState implements GameState {
 
 	private ShaderProgram guiShader;
 
-	private TextGUIElement fps, buttonGame;
+	private TextGUIElement buttonGame;
 
-	private GUIElement buttonExit, buttonOptions;
+	private GUIElement buttonExit;
 
 	private GameStateIdentifier nextGameState = null;
 
 	private boolean starting;
+
+	private SoundSource clickSound;
+
+	private SharedData shared;
+	private final BoneTransformation islandTransform = new BoneTransformation(new Vector3f(0.9999f, 0, 0),
+			new Quaternionf(new AxisAngle4f(
+					(float) Math.PI / 2f,
+					new Vector3f(0, 0, -1))), new Vector3f(0.001f));
+
+	public IntroGameState(SharedData shared) {
+		this.shared = shared;
+	}
 
 	@Override
 	public void init() {
@@ -120,20 +136,13 @@ public class IntroGameState implements GameState {
 
 		final IRenderable worldRenderable = new ObjectLoader().loadFromFile("planet.obj");
 
-		final IRenderable islandRenderable =
-				new ObjectLoader().loadFromFile("overworld/island.obj").withMaterial(new Material("material/beach", 1));
-
 		world = new SceneObject(worldRenderable);
 		world.setShader(worldShader);
 
-		island = new SceneObject(islandRenderable);
-		island.setTransformation(new BoneTransformation(new Vector3f(0.9999f, 0, 0), new Quaternionf(new AxisAngle4f(
-				(float) Math.PI / 2f,
-				new Vector3f(0, 0, -1))), new Vector3f(0.001f)));
-		island.setShader(islandShader);
+		shared.overworld.getSceneObject().setShader(islandShader);
 
 		introScene.getSceneGraph().addSubObject(world);
-		introScene.getSceneGraph().addSubObject(island);
+		introScene.getSceneGraph().addSubObject(shared.overworld.getSceneObject());
 
 		SceneObject curveObj = new SceneObject(new BezierCurveRenderable(curve));
 		curveObj.setShader(curveShader);
@@ -144,7 +153,7 @@ public class IntroGameState implements GameState {
 		entities.add(camera).addBehaviour(0,
 				new CombinedBehaviour(
 						bezierBehaviour,
-						new LookAtBehaviour(island.asEntity())));
+						new LookAtBehaviour(new SceneObject(null, islandTransform).asEntity())));
 		GL11.glDisable(GL_CULL_FACE);
 
 		menuGUI = new AtlasGUI("menu.png", 4, 4);
@@ -154,19 +163,15 @@ public class IntroGameState implements GameState {
 		textGUI.setShader(guiShader);
 		menuGUI.setShader(guiShader);
 
-		fps = textGUI.addText("0", new Vector2f(), 0.03f);
-		fps.setPositionRelativeToScreen(0, 0);
-		fps.setColor(Color.ORANGE);
-
 		buttonGame =
 				(TextGUIElement) textGUI.addText("Start Game", new Vector2f(), 0.2f).setPositionRelativeToScreen(0.5f,
-						0.4f);
-		buttonOptions = textGUI.addText("Options", new Vector2f(), 0.2f).setPositionRelativeToScreen(0.5f, 0.6f);
+						0.2f);
 
 		buttonExit =
 				menuGUI.addAtlasGUIElement(0, new Vector2f(), new Vector2f(0.1f, GLContext.getAspectRatio() * 0.1f))
 						.setPositionRelativeToScreen(0.01f, 0.99f);
 		entities.update(0.0000001f);
+		initClickSound(introScene.getSoundEnvironment());
 	}
 
 	@Override
@@ -186,39 +191,31 @@ public class IntroGameState implements GameState {
 			if (KeyBoard.isKeyDown(GLFW_KEY_ESCAPE)) {
 				nextGameState = GameStateIdentifier.EXIT;
 			}
+
+			if (buttonGame.selected()) {
+				buttonGame.setColor(new Color(130, 130, 220));
+				if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
+					starting = true;
+					clickSound.play();
+				}
+			} else {
+				buttonGame.setColor(Color.LIGHT_GRAY);
+			}
+
+			if (buttonExit.selected()) {
+				buttonExit.setColor(new Color(130, 130, 220));
+				if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
+					nextGameState = GameStateIdentifier.EXIT;
+					clickSound.play();
+				}
+			} else {
+				buttonExit.setColor(Color.LIGHT_GRAY);
+			}
 		}
 		camera.update(deltaTime);
-
-		fps.setText("FPS: " + (int) (1 / deltaTime));
 		menuGUI.update(deltaTime);
 		textGUI.update(deltaTime);
 
-		if (buttonGame.selected()) {
-			buttonGame.setColor(Color.RED);
-			if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
-				starting = true;
-			}
-		} else {
-			buttonGame.setColor(Color.GREEN);
-		}
-
-		if (buttonOptions.selected()) {
-			buttonOptions.setColor(Color.RED);
-			if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
-				nextGameState = GameStateIdentifier.OPTIONS;
-			}
-		} else {
-			buttonOptions.setColor(Color.GREEN);
-		}
-
-		if (buttonExit.selected()) {
-			buttonExit.setColor(Color.RED);
-			if (Mouse.isDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
-				nextGameState = GameStateIdentifier.EXIT;
-			}
-		} else {
-			buttonExit.setColor(Color.GREEN);
-		}
 	}
 
 	@Override
@@ -241,14 +238,22 @@ public class IntroGameState implements GameState {
 		nextGameState = null;
 	}
 
+	private void initClickSound(final SoundEnvironment soundEnvironment) {
+		final Sound sound = soundEnvironment.createSound("click");
+		clickSound = soundEnvironment.createSoundSource(false, true);
+		clickSound.setSound(sound);
+	}
+
 	@Override
 	public void open() {
+		shared.overworld.getSceneObject().setTransformation(islandTransform);
 		starting = false;
 		GLContext.showCursor();
 		introScene.getLightManager().rewriteUBO();
 		bezierBehaviour.resetProgress();
 		progress = 0;
 		entities.update(0.0000001f);
+		introScene.getSoundEnvironment().makeCurrent();
 	}
 
 }

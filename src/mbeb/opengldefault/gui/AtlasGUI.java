@@ -22,6 +22,7 @@ public class AtlasGUI extends GUI {
 	 * Width and height of the texture Atlas
 	 */
 	protected int atlasWidth, atlasHeight;
+	private static ShaderProgram defaultShader;
 
 	public AtlasGUI(String atlasName, int atlasWidth, int atlasHeight) {
 		this(GUI.loadGUITexture(atlasName), atlasWidth, atlasHeight);
@@ -34,6 +35,10 @@ public class AtlasGUI extends GUI {
 		this.atlas = atlas;
 		//Store a Matrix, the offset Vector from {@link AtlasGUIElement} and the lut Vector
 		stride = Constants.MAT4_COMPONENTS + Constants.VEC4_COMPONENTS + Constants.VEC4_COMPONENTS;
+		if (defaultShader == null) {
+			defaultShader = new ShaderProgram("gui.vert", "gui.frag");
+		}
+		setShader(defaultShader);
 	}
 
 	/**

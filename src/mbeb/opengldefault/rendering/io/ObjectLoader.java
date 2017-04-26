@@ -1,48 +1,27 @@
 package mbeb.opengldefault.rendering.io;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.CopyOption;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
 
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
+import org.joml.*;
 import org.lwjgl.assimp.*;
 
 import mbeb.opengldefault.animation.*;
-import mbeb.opengldefault.gl.GLContext;
-import mbeb.opengldefault.gl.buffer.GLBufferWriter;
-import mbeb.opengldefault.logging.Log;
-import mbeb.opengldefault.rendering.renderable.IRenderable;
-import mbeb.opengldefault.rendering.renderable.VAORenderable;
-import mbeb.opengldefault.scene.BoundingBox;
+import mbeb.opengldefault.gl.*;
+import mbeb.opengldefault.gl.buffer.*;
+import mbeb.opengldefault.logging.*;
+import mbeb.opengldefault.rendering.renderable.*;
+import mbeb.opengldefault.scene.*;
 
 /**
  * Contains logic to create Renderables from Files
  */
 public class ObjectLoader {
 
-	private static final DataFragment[] PosNormUv = new DataFragment[] {
-			DataFragment.POSITION,
-			DataFragment.NORMAL,
-			DataFragment.TANGENT,
-			DataFragment.UV
-	};
-	private static final DataFragment[] PosNormUvAnim3 = new DataFragment[] {
-			DataFragment.POSITION,
-			DataFragment.NORMAL,
-			DataFragment.TANGENT,
-			DataFragment.UV,
-			DataFragment.BONE_INDICES_3,
-			DataFragment.BONE_WEIGHTS_3
-	};
+	private static final DataFragment[] PosNormUv = new DataFragment[] {DataFragment.POSITION, DataFragment.NORMAL, DataFragment.TANGENT, DataFragment.UV};
+	private static final DataFragment[] PosNormUvAnim3 =
+			new DataFragment[] {DataFragment.POSITION, DataFragment.NORMAL, DataFragment.TANGENT, DataFragment.UV, DataFragment.BONE_INDICES_3, DataFragment.BONE_WEIGHTS_3};
 	private static final float THRESHOLD = 0.2f; //vertices with smaller weights are not included into the boundingBox
 	//todo test for good values here
 
@@ -56,7 +35,7 @@ public class ObjectLoader {
 	 *            the absolute File-Path to the object
 	 * @return a VAO-Renderable
 	 */
-	public IRenderable loadFromFile(String path) {
+	public IRenderable loadFromFile(final String path) {
 		return loadFromFile(path, PosNormUv);
 	}
 
@@ -67,8 +46,8 @@ public class ObjectLoader {
 	 *            the absolute File-Path to the object
 	 * @return a Renderable
 	 */
-	public AnimatedMesh loadFromFileAnim(String path) {
-		AnimatedMesh mesh = (AnimatedMesh) loadFromFile(path, PosNormUvAnim3);
+	public AnimatedMesh loadFromFileAnim(final String path) {
+		final AnimatedMesh mesh = (AnimatedMesh) loadFromFile(path, PosNormUvAnim3);
 		loadAnimationMetaData(mesh, path + ".meta.yaml");
 		return mesh;
 	}
@@ -81,25 +60,25 @@ public class ObjectLoader {
 	 * @param metaPath
 	 *            path to the file containing this information
 	 */
-	private void loadAnimationMetaData(AnimatedMesh mesh, String metaPath) {
-		String extractedPath = getExtractedPath(metaPath);
+	private void loadAnimationMetaData(final AnimatedMesh mesh, final String metaPath) {
+		final String extractedPath = getExtractedPath(metaPath);
 		if (extractedPath == null) {
 			return;
 		}
-		YAMLParser.YAMLNode root = new YAMLParser(new File(extractedPath)).getRoot();
-
-		YAMLParser.YAMLNode animations = root.getChildByName("animations");
-		for (YAMLParser.YAMLNode animNode : animations.getChildren().values()) {
-			Animation anim = mesh.getAnimationByName(animNode.getName());
+		final YAMLParser.YAMLNode root = new YAMLParser(new File(extractedPath)).getRoot();
+		System.out.println(root.getChildren().size());
+		final YAMLParser.YAMLNode animations = root.getChildByName("animations");
+		for (final YAMLParser.YAMLNode animNode : animations.getChildren().values()) {
+			final Animation anim = mesh.getAnimationByName(animNode.getName());
 
 			if (anim != null) {
-				for (YAMLParser.YAMLNode boneNode : animNode.getChildren().values()) {
+				for (final YAMLParser.YAMLNode boneNode : animNode.getChildren().values()) {
 					adjustBoneAnimationPriorities(anim, anim.getSkeleton(), boneNode);
 				}
 			}
 		}
 
-		YAMLParser.YAMLNode sizeFactor = root.getChildByName("sizeFactor");
+		final YAMLParser.YAMLNode sizeFactor = root.getChildByName("sizeFactor");
 		if (sizeFactor != null) {
 			mesh.setBoundingBoxSizeFactor(Float.valueOf(sizeFactor.getData()));
 		}
@@ -115,11 +94,11 @@ public class ObjectLoader {
 	 * @param boneNode
 	 *            the directive to apply
 	 */
-	private void adjustBoneAnimationPriorities(Animation anim, Bone bone, YAMLParser.YAMLNode boneNode) {
+	private void adjustBoneAnimationPriorities(final Animation anim, final Bone bone, final YAMLParser.YAMLNode boneNode) {
 		if (bone.getName().toLowerCase().contains(boneNode.getName().toLowerCase())) {
-			bone.foreach((Bone ancestor) -> anim.setBonePriority(ancestor, Integer.valueOf(boneNode.getData())));
+			bone.foreach((final Bone ancestor) -> anim.setBonePriority(ancestor, Integer.valueOf(boneNode.getData())));
 		} else {
-			for (Bone child : bone.getChildren()) {
+			for (final Bone child : bone.getChildren()) {
 				adjustBoneAnimationPriorities(anim, child, boneNode);
 			}
 		}
@@ -134,12 +113,12 @@ public class ObjectLoader {
 	 *            which data to load
 	 * @return a VAO-Renderable
 	 */
-	public IRenderable loadFromFile(String path, DataFragment[] format) {
+	public IRenderable loadFromFile(final String path, final DataFragment[] format) {
 		try {
-			String realPath = getExtractedPath(path);
-			AIScene scene = Assimp.aiImportFile(realPath, Assimp.aiProcess_Triangulate | Assimp.aiProcess_CalcTangentSpace);
-			
-			Bone sceneStructure = parseScene(scene);
+			final String realPath = getExtractedPath(path);
+			final AIScene scene = Assimp.aiImportFile(realPath, Assimp.aiProcess_Triangulate | Assimp.aiProcess_CalcTangentSpace);
+
+			final Bone sceneStructure = parseScene(scene);
 
 			if (scene.mNumMeshes() > 0) {
 				return loadMesh(scene, 0, format, sceneStructure);
@@ -149,27 +128,27 @@ public class ObjectLoader {
 				return null;
 			}
 
-		} catch(Exception ex) {
+		} catch(final Exception ex) {
 			Log.error(TAG, "unable to load " + path, ex);
 			return null;
 		}
 	}
 
-	private String getExtractedPath(String rawPath) {
-		File res = new File("res");
+	private String getExtractedPath(final String rawPath) {
+		final File res = new File("res");
 		if (!res.exists()) {
 			res.mkdirs();
 		}
-		File export = new File(res, rawPath);
+		final File export = new File(res, rawPath);
 		if (!export.exists()) {
 			export.getParentFile().mkdirs();
 			try {
-				InputStream inStream = GLContext.class.getResourceAsStream("/models/" + rawPath);
+				final InputStream inStream = GLContext.class.getResourceAsStream("/models/" + rawPath);
 				if (inStream == null) {
 					return null;
 				}
 				Files.copy(inStream, export.toPath(), StandardCopyOption.REPLACE_EXISTING);
-			} catch(IOException ex) {
+			} catch(final IOException ex) {
 				Log.error(TAG, "Cannot extract resource " + rawPath, ex);
 			}
 		}
@@ -187,16 +166,16 @@ public class ObjectLoader {
 	 *            the format the data should be in
 	 * @return
 	 */
-	private IRenderable loadMesh(AIScene scene, int meshID, DataFragment[] format, Bone sceneStructure) {
-		AIMesh mesh = AIMesh.create(scene.mMeshes().get(meshID));
+	private IRenderable loadMesh(final AIScene scene, final int meshID, final DataFragment[] format, final Bone sceneStructure) {
+		final AIMesh mesh = AIMesh.create(scene.mMeshes().get(meshID));
 
-		int vertexCount = mesh.mNumVertices();
+		final int vertexCount = mesh.mNumVertices();
 
-		VAORenderable vaomesh = new VAORenderable(vertexCount, format);
-		GLBufferWriter dataWriter = vaomesh.dataWriter();
+		final VAORenderable vaomesh = new VAORenderable(vertexCount, format);
+		final GLBufferWriter dataWriter = vaomesh.dataWriter();
 
 		BoundingBox box = new BoundingBox.Empty();
-		boolean isAnimated = DataFragment.needsBoneData(format);
+		final boolean isAnimated = DataFragment.needsBoneData(format);
 		// vertex-id  3elements     bone-id  weight
 		Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights = null;
 		Bone skeleton = null;
@@ -205,13 +184,13 @@ public class ObjectLoader {
 			skeleton = parseSkeleton(mesh, sceneStructure);
 			vertexBoneWeights = loadVertexWeights(mesh, skeleton, 3);
 		}
-		Matrix4f sceneTransform = BoneTransformation.matrixFromAI(scene.mRootNode().mTransformation());
+		final Matrix4f sceneTransform = BoneTransformation.matrixFromAI(scene.mRootNode().mTransformation());
 
 		for (int v = 0; v < vertexCount; v++) {
-			AIVector3D aiposition = mesh.mVertices().get(v);
-			Vector3f position = new Vector3f(aiposition.x(), aiposition.y(), aiposition.z());
+			final AIVector3D aiposition = mesh.mVertices().get(v);
+			final Vector3f position = new Vector3f(aiposition.x(), aiposition.y(), aiposition.z());
 			box = box.extendTo(position);
-			for (DataFragment dataFormat : format) {
+			for (final DataFragment dataFormat : format) {
 				dataFormat.addTo(mesh, v, dataWriter, vertexBoneWeights);
 			}
 		}
@@ -223,7 +202,7 @@ public class ObjectLoader {
 		vaomesh.finishWriting();
 
 		if (isAnimated) {
-			AnimatedMesh animMesh = new AnimatedMesh(vaomesh, skeleton);
+			final AnimatedMesh animMesh = new AnimatedMesh(vaomesh, skeleton);
 			animMesh.setTransform(sceneTransform);
 			loadAnimations(animMesh, scene);
 			return animMesh;
@@ -241,19 +220,18 @@ public class ObjectLoader {
 	 *            how many bones per vertex
 	 * @return
 	 */
-	private Map<Integer, List<Map.Entry<Integer, Float>>>
-			loadVertexWeights(AIMesh mesh, Bone skeleton, int weightsAmount) {
+	private Map<Integer, List<Map.Entry<Integer, Float>>> loadVertexWeights(final AIMesh mesh, final Bone skeleton, final int weightsAmount) {
 		//calculate weights here
-		Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights = new HashMap<>();
-		Map<Integer, Map<Integer, Float>> rawVertexBoneWeights = new HashMap<>(2 * mesh.mNumVertices());
+		final Map<Integer, List<Map.Entry<Integer, Float>>> vertexBoneWeights = new HashMap<>();
+		final Map<Integer, Map<Integer, Float>> rawVertexBoneWeights = new HashMap<>(2 * mesh.mNumVertices());
 		for (int b = 0; b < mesh.mNumBones(); b++) {
-			AIBone bone = AIBone.create(mesh.mBones().get(b));
+			final AIBone bone = AIBone.create(mesh.mBones().get(b));
 			for (int w = 0; w < bone.mNumWeights(); w++) {
-				AIVertexWeight aiWeight = bone.mWeights().get(w);
-				int vertex = aiWeight.mVertexId();
-				Map<Integer, Float> vertexMapping = rawVertexBoneWeights.computeIfAbsent(vertex, k -> new HashMap<>());
-				String boneName = bone.mName().dataString();
-				int boneID = skeleton.firstBoneNamed(boneName).getIndex();
+				final AIVertexWeight aiWeight = bone.mWeights().get(w);
+				final int vertex = aiWeight.mVertexId();
+				final Map<Integer, Float> vertexMapping = rawVertexBoneWeights.computeIfAbsent(vertex, k -> new HashMap<>());
+				final String boneName = bone.mName().dataString();
+				final int boneID = skeleton.firstBoneNamed(boneName).getIndex();
 				vertexMapping.put(boneID, aiWeight.mWeight());
 			}
 			bone.close();
@@ -268,17 +246,16 @@ public class ObjectLoader {
 				//putting 0 at some non-existent index
 				weights.put(-weights.size() - 1, 0f);
 			}
-			ArrayList<Map.Entry<Integer, Float>> list = new ArrayList<>(weights.entrySet());
+			final ArrayList<Map.Entry<Integer, Float>> list = new ArrayList<>(weights.entrySet());
 
-			list.sort((Map.Entry<Integer, Float> o1, Map.Entry<Integer, Float> o2) -> o2.getValue().compareTo(
-					o1.getValue()));
+			list.sort((final Map.Entry<Integer, Float> o1, final Map.Entry<Integer, Float> o2) -> o2.getValue().compareTo(o1.getValue()));
 
 			while(list.size() > weightsAmount) {
 				list.remove(list.size() - 1);
 			}
 			//adjusts weights
-			float sum = list.stream().map(Map.Entry::getValue).reduce(0f, Float::sum);
-			for (Map.Entry<Integer, Float> entry : list) {
+			final float sum = list.stream().map(Map.Entry::getValue).reduce(0f, Float::sum);
+			for (final Map.Entry<Integer, Float> entry : list) {
 				entry.setValue(entry.getValue() / sum);
 			}
 
@@ -296,14 +273,14 @@ public class ObjectLoader {
 	 *            the total scene structure
 	 * @return
 	 */
-	private Bone parseSkeleton(AIMesh mesh, Bone sceneStructure) {
+	private Bone parseSkeleton(final AIMesh mesh, final Bone sceneStructure) {
 		//todo: Try to merge this method with load Vertex weights
 		//This is necessary to make sonar stop complaining about unclosed resources, because the assimp binding actually
 		//destroys any object that is closed.
 		Bone rootBone = null;
 		for (int b = 0; b < mesh.mNumBones(); b++) {
-			AIBone aibone = AIBone.create(mesh.mBones().get(b));
-			String boneName = aibone.mName().dataString();
+			final AIBone aibone = AIBone.create(mesh.mBones().get(b));
+			final String boneName = aibone.mName().dataString();
 			Bone bone;
 			if (rootBone == null) {
 				bone = sceneStructure.firstBoneNamed(boneName);
@@ -327,7 +304,7 @@ public class ObjectLoader {
 	 * @param scene
 	 * @return
 	 */
-	private Bone parseScene(AIScene scene) {
+	private Bone parseScene(final AIScene scene) {
 		return parseScene(scene.mRootNode());
 	}
 
@@ -338,11 +315,11 @@ public class ObjectLoader {
 	 * @param node
 	 * @return
 	 */
-	private Bone parseScene(AINode node) {
-		Bone bone = new Bone(node.mName().dataString());
+	private Bone parseScene(final AINode node) {
+		final Bone bone = new Bone(node.mName().dataString());
 		bone.setDefaultBoneTransform(BoneTransformation.matrixFromAI(node.mTransformation()));
 		for (int c = 0; c < node.mNumChildren(); c++) {
-			AINode childNode = AINode.create(node.mChildren().get(c));
+			final AINode childNode = AINode.create(node.mChildren().get(c));
 			bone.getChildren().add(parseScene(childNode));
 		}
 		return bone;
@@ -356,37 +333,27 @@ public class ObjectLoader {
 	 * @param scene
 	 *            the aiScene to load from
 	 */
-	private void loadAnimations(AnimatedMesh animMesh, AIScene scene) {
+	private void loadAnimations(final AnimatedMesh animMesh, final AIScene scene) {
 		for (int a = 0; a < scene.mNumAnimations(); a++) {
-			AIAnimation aianim = AIAnimation.create(scene.mAnimations().get(a));
-			Animation anim = Animation.copySettingsFromAI(aianim);
+			final AIAnimation aianim = AIAnimation.create(scene.mAnimations().get(a));
+			final Animation anim = Animation.copySettingsFromAI(aianim);
 
 			for (int channel = 0; channel < aianim.mNumChannels(); channel++) {
-				AINodeAnim node = AINodeAnim.create(aianim.mChannels().get(channel));
-				String boneName = node.mNodeName().dataString();
+				final AINodeAnim node = AINodeAnim.create(aianim.mChannels().get(channel));
+				final String boneName = node.mNodeName().dataString();
 
-				Log.assertEqual(TAG, node.mNumPositionKeys(), node.mNumRotationKeys(),
-						"unequal position and rotation key amount");
-				Log.assertEqual(TAG, node.mNumScalingKeys(), node.mNumRotationKeys(),
-						"unequal scaling and rotation key amount");
+				Log.assertEqual(TAG, node.mNumPositionKeys(), node.mNumRotationKeys(), "unequal position and rotation key amount");
+				Log.assertEqual(TAG, node.mNumScalingKeys(), node.mNumRotationKeys(), "unequal scaling and rotation key amount");
 
 				for (int key = 0; key < node.mNumPositionKeys(); key++) {
 
-					AIVectorKey pos = node.mPositionKeys().get(key);
-					AIQuatKey rot = node.mRotationKeys().get(key);
-					AIVectorKey scale = node.mScalingKeys().get(key);
+					final AIVectorKey pos = node.mPositionKeys().get(key);
+					final AIQuatKey rot = node.mRotationKeys().get(key);
+					final AIVectorKey scale = node.mScalingKeys().get(key);
 
-					BoneTransformation transform =
-							new BoneTransformation(new Vector3f(pos.mValue().x(), pos.mValue().y(), pos.mValue().z()),
-									new Quaternionf(
-											rot.mValue().x(),
-											rot.mValue().y(),
-											rot.mValue().z(),
-											rot.mValue().w()),
-									new Vector3f(scale.mValue().x(), scale.mValue().y(), scale.mValue().z()));
-					KeyFrame keyFrame =
-							new KeyFrame(pos.mTime(), new Pose(animMesh.getSkeleton(), animMesh.getTransform()).put(
-									boneName, transform));
+					final BoneTransformation transform = new BoneTransformation(new Vector3f(pos.mValue().x(), pos.mValue().y(), pos.mValue().z()),
+							new Quaternionf(rot.mValue().x(), rot.mValue().y(), rot.mValue().z(), rot.mValue().w()), new Vector3f(scale.mValue().x(), scale.mValue().y(), scale.mValue().z()));
+					final KeyFrame keyFrame = new KeyFrame(pos.mTime(), new Pose(animMesh.getSkeleton(), animMesh.getTransform()).put(boneName, transform));
 
 					anim.mergeKeyFrame(keyFrame);
 				}
