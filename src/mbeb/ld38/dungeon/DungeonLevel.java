@@ -121,7 +121,7 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 		final float level = (float) Math.sqrt(total);
 
 		for (int typeNumber = 0; typeNumber < LootType.values().length; typeNumber++) {
-			final float targetAmount = level - typeNumber + 1;
+			final float targetAmount = (level - typeNumber + 1) * 1.6f; //balancing here
 			if (targetAmount > 0) {
 				final float[] data = new float[(int) (targetAmount + 0.5f)];
 				for (int i = 0; i < data.length; i++) {
@@ -134,6 +134,7 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 
 	public void generate(final int width, final int height) {
 		this.adjustValues(width, height);
+		adjustGoblins(height);
 		rooms = new HashMap<>();
 		final MazeGrid grid = MazeBuilder.make4Maze(width, height, 0.11f);
 		this.addSubObject(new SceneObject(RoomType.getCORNER(), new BoneTransformation(null, new Quaternionf(new AxisAngle4f((float) Math.PI / -2, 0, 1, 0)))));
@@ -251,6 +252,11 @@ public class DungeonLevel extends SceneObject implements IHeightSource {
 				}
 			}
 		}
+	}
+
+	private void adjustGoblins(final int size) {
+		enemy.setHealthpoints(enemy.getHealthpoints() + 8);//balancing here
+		enemy.attackDamage += 1;
 	}
 
 	public Table getEnemySpawns() {

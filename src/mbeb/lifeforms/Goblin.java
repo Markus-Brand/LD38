@@ -23,7 +23,7 @@ public class Goblin extends Monster {
 	ShaderProgram animationShader;
 
 	public Goblin(final PlayerEntity playerEntity, final ShaderProgram animationShader) {
-		super(0.6f, 35, 10, 2f, 5, 0.8f, 0.3f, 0.8f, 1f, playerEntity);
+		super(0.6f, 8, 10, 2f, 5, 0.8f, 0.3f, 0.8f, 1f, playerEntity);//balancing here
 
 		mesh = new ObjectLoader().loadFromFileAnim("goblin.fbx");
 		mesh.setTransform(new Matrix4f().rotate(new AxisAngle4f((float) (Math.PI) / -2, 1, 0, 0)));

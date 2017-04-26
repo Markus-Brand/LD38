@@ -63,9 +63,6 @@ public class OverworldGameState implements GameState {
 
 	private final Vector3f anvilPos = new Vector3f(9.27f, 0.993f, -4.43f);
 
-	@Option(category = "Game")
-	@ButtonOption
-	public static boolean showBBs = true;
 
 	public OverworldGameState(final SharedData shared) {
 		this.shared = shared;
@@ -181,7 +178,7 @@ public class OverworldGameState implements GameState {
 		waterShader.setUniform("time", totalTimePassed);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		scene.render(showBBs);
+		scene.render(false);
 
 		shared.healthBarGUI.render();
 		hud.render();
