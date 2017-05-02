@@ -213,16 +213,17 @@ public class OverworldGameState implements GameState {
 		shared.playerEntity.setHeightSource(playerHeight);
 		shared.playerEntity.setPosition(port);
 		if (shared.playerEntity.isJustDied()) {
-			infoBox.setText("Ye be dead. Ye lost half yer shit.");
+			infoBox.setText("You died and lost half of your inventory.");
 			shared.playerEntity.setJustDied(false);
 		}
 		if (leftForDungeon) {
 			leftForDungeon = false;
 		}
-		scene.getLightManager().rewriteUBO();
 		GLContext.hideCursor();
 		shared.soundEnvironment.makeCurrent();
 		shared.playerEntity.setStoneWalkingSound(false);
+		update(0.0001);
+		scene.getLightManager().rewriteUBO();
 	}
 
 }
